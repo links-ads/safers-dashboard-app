@@ -39,6 +39,8 @@
 .navbar-brand-box {
     padding: 0 1.5rem;
     text-align: center;
+    border-bottom: .05rem solid $navbar-brand-border-color;
+    // box-shadow: 10px 0 5px -2px #888;
     width: $navbar-brand-box-width;
 }
 
