@@ -7,7 +7,8 @@ import SidebarContent from './SidebarContent'
 import { Link } from 'react-router-dom'
 
 import logo from '../assets/images/logo.svg'
-import logoDark from '../assets/images/safers-logo.svg'
+// import logoDark from '../assets/images/safers-logo.svg'
+import logoPng from '../assets/images/background-light-logo@3x.png'
 
 const Sidebar = props => {
 
@@ -20,7 +21,7 @@ const Sidebar = props => {
               <img src={logo} alt='' height='22' />
             </span>
             <span className='logo-lg'>
-              <img src={logoDark} alt='' height='17' />
+              <img src={logoPng} alt='' height='60' />
             </span>
           </Link>
         </div>

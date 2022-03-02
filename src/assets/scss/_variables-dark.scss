@@ -17,7 +17,7 @@ $sidebar-width-sm:  160px;
 $layout-collapsed-min-height: 1760px;
 
 // Vertical Sidebar - Dark
-$sidebar-dark-bg: #2a3042; //2c313a
+$sidebar-dark-bg: #31343C; //2c313a
 $sidebar-dark-menu-item-color: #a6b0cf;
 $sidebar-dark-menu-sub-item-color: #79829c;
 $sidebar-dark-menu-item-icon-color: #6a7187;
@@ -26,19 +26,19 @@ $sidebar-dark-menu-item-active-color: #ffffff;
 
 // Topbar - Deafult Light
 $header-height: 70px;
-$header-bg: #262b3c;
+$header-bg: #31343C;
 $header-item-color: #a6b0cf;
 
 // Topbar - Dark
-$header-dark-bg: #556ee6;
+$header-dark-bg: #31343C;
 $header-dark-item-color: #e9ecef;
 
 // Topbar Search
-$topbar-search-bg: #2a3042;
+$topbar-search-bg: #31343C;
 
 // Footer
 $footer-height: 60px;
-$footer-bg: #262b3c;
+$footer-bg: #31343C;
 $footer-color: #a6b0cf;
 
 // Horizontal nav
@@ -58,14 +58,14 @@ $navbar-brand-box-width: 250px;
 
 // Boxed layout width
 $boxed-layout-width:    1300px;
-$boxed-body-bg:       #32394f;
+$boxed-body-bg:       #31343C;
 
 // Font Weight
 $fw-medium: 500;
 $font-weight-semibold: 600;
 
 // apex charts
-$apex-grid-color: #32394e;
+$apex-grid-color: #31343C;
 
 // table
 $table-head-bg:               rgba($gray-600, .05);
@@ -80,12 +80,12 @@ $table-dark-border-color:     tint-color($gray-800, 7.5%);
 // Color system
 
 $white:    #fff;
-$gray-100: #212529;
-$gray-200: #2a3042;
-$gray-300: #32394e;
-$gray-400: #a6b0cf;
-$gray-500: #bfc8e2;
-$gray-600: #c3cbe4;
+$gray-100: #393a3a;
+$gray-200: #545555;
+$gray-300: #6F7070;
+$gray-400: #8A8A8A;
+$gray-500: #B3B2B2;
+$gray-600: #DBDADA;
 $gray-700: #f6f6f6;
 $gray-800: #eff2f7;
 $gray-900: #f8f9fa;
@@ -110,10 +110,10 @@ $blue:    #556ee6;
 $indigo:  #564ab1;
 $purple:  #6f42c1;
 $pink:    #e83e8c;
-$red:     #E6334F;
-$orange:  #E27B1D;
+$red:     #e6334f;
+$orange:  #e27b1d;
 $yellow:  #f1b44c;
-$green:   #34c38f;
+$green:   #1ad598;
 $teal:    #050505;
 $cyan:    #50a5f1;
 
@@ -135,7 +135,7 @@ $colors: (
 );
 // scss-docs-end colors-map
 
-$primary:       $blue;
+$primary:       $orange;
 $secondary:     $gray-600;
 $success:       $green;
 $info:          $cyan;
@@ -156,6 +156,7 @@ $theme-colors: (
     "light":      $light,
     "dark":       $dark
 );
+
 // scss-docs-end theme-colors-map
 
 // The contrast ratio to reach against white, to determine if color changes from "light" to "dark". Acceptable values for WCAG 2.0 are 3, 4.5 and 7.

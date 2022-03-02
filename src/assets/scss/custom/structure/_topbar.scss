@@ -44,9 +44,13 @@
 
 .logo {
     line-height: 70px;
-
     .logo-sm {
         display: none;
+    }
+    .logo-lg {
+        img {
+            fill: white;
+        }
     }
 }
 
