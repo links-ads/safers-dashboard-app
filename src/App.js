@@ -1,18 +1,37 @@
-/* eslint-disable react/react-in-jsx-scope */
-import { Provider } from 'react-redux';
-import { PersistGate } from 'redux-persist/integration/react';
-import store, { persistor } from './store';
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import './App.scss';
+import React from 'react';
+import { authRoutes, userRoutes } from './routes/allRoutes';
+import Authmiddleware from './routes/middleware/Authmiddleware'
+import { Routes, Route } from 'react-router-dom';
 import './assets/scss/theme.scss'
-import AppRouter from './router/AppRouter';
+
 
 const App = () => (
-  <Provider store={store}>
-    <PersistGate persistor={persistor}>
-      <AppRouter />
-    </PersistGate>
-  </Provider>
+  <Routes>
+    {authRoutes.map((route, idx) => (
+      <Route key={idx} path={route.path} element=
+        {
+          <Authmiddleware
+            path={route.path}
+            component={route.component}
+            isAuthProtected={false}
+            exact
+          />
+        }
+      />
+    ))}
+    {userRoutes.map((route, idx) => (
+      <Route key={idx} path={route.path} element=
+        {
+          <Authmiddleware
+            path={route.path}
+            component={route.component}
+            isAuthProtected={true}
+            exact
+          />
+        }
+      />
+    ))}
+  </Routes>
 );
 
 
