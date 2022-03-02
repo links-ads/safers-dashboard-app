@@ -42,7 +42,7 @@ $footer-bg: #31343C;
 $footer-color: #a6b0cf;
 
 // Horizontal nav
-$topnav-bg:   #282e3f;
+$topnav-bg:   #31343C;
 $menu-item-color: #a6b0cf;
 $menu-item-active-color: #556ee6;
 
@@ -55,6 +55,8 @@ $display-block: none;
 
 // Brand 
 $navbar-brand-box-width: 250px;
+$navbar-brand-border-color: $primary;
+$navbar-brand-border-width: .4rem;
 
 // Boxed layout width
 $boxed-layout-width:    1300px;
@@ -344,7 +346,7 @@ $position-values: (
 //
 // Settings for the `<body>` element.
 
-$body-bg:                   #222736;
+$body-bg:                   #31343c;
 $body-color:                $gray-400;
 $body-text-align:           null;
 
