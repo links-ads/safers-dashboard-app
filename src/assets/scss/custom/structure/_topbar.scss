@@ -9,7 +9,8 @@
     left: $sidebar-width;
     z-index: 1002;
     background-color: $header-bg;
-    box-shadow: $box-shadow;
+    // box-shadow: $box-shadow;
+    box-shadow: 3px 3px 1px 1px #1d1f24;
     @media (max-width: 991.98px) {
         left: 0;
     }
@@ -40,7 +41,6 @@
     padding: 0 1.5rem;
     text-align: center;
     border-bottom: .05rem solid $navbar-brand-border-color;
-    // box-shadow: 10px 0 5px -2px #888;
     width: $navbar-brand-box-width;
 }
 
