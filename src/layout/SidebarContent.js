@@ -89,10 +89,10 @@ const SidebarContent = () => {
       <SimpleBar style={{ maxHeight: '100%' }} ref={ref}>
         <div id='sidebar-menu'>
           <ul className='metismenu list-unstyled' id='side-menu'>
-            <li className='menu-title'>Menu </li>
+      
             <li>
               <Link to='/#' className=''>
-                <i className='bx bx-home-circle'></i>
+                <i className='bx bx-layout'></i>
                 
                 <span>Dashboard</span>
               </Link>
@@ -109,20 +109,20 @@ const SidebarContent = () => {
 
             <li>
               <Link to='/chat' className=''>
-                <i className='bx bx-chat'></i>
+                <i className='bx bx-copy'></i>
                 <span>Data Layers</span>
               </Link>
             </li>
             <li>
               <Link to='/apps-filemanager' className=''>
-                <i className='bx bx-calendar'></i>
+                <i className='bx bx-calendar-event'></i>
                 <span>Events</span>
               </Link>
             </li>
 
             <li>
               <Link to='/#'>
-                <i className='bx bx-store'></i>
+                <i className='bx bx-clipboard'></i>
                 <span>Reports</span>
               </Link>
             </li>
@@ -136,15 +136,14 @@ const SidebarContent = () => {
 
             <li>
               <Link to='/#'>
-                <i className="fa fa-twitter"></i>
-                {/* <i className='bx bx-twitter'></i> */}
+                <i className='bx bxl-twitter'></i>
                 <span>Social Monitor</span>
               </Link>
             </li>
 
             <li>
               <Link to='/#'>
-                <i className='bx bx-store'></i>
+                <i className='bx bx-image'></i>
                 <span>In-Situ Cameras</span>
               </Link>
             </li>
