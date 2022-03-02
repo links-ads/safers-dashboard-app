@@ -41,7 +41,7 @@
   position: fixed;
   top: 0;
   padding-top: $header-height;
-  box-shadow: 3px 0px 1px 0px #1d1f24;
+  box-shadow: $box-shadow-vertical-menu;
   @media (max-width: 991.98px) {
     top: $header-height;
     padding-top: 0px;
@@ -195,6 +195,7 @@
   body.sidebar-enable {
     .vertical-menu {
       display: block;
+      z-index: 1003;
     }
   }
 }

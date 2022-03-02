@@ -9,8 +9,7 @@
     left: $sidebar-width;
     z-index: 1002;
     background-color: $header-bg;
-    // box-shadow: $box-shadow;
-    box-shadow: 3px 3px 1px 1px #1d1f24;
+    box-shadow: $box-shadow-top-bar;
     @media (max-width: 991.98px) {
         left: 0;
     }
