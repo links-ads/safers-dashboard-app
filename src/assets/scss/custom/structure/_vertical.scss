@@ -34,14 +34,14 @@
 
 .vertical-menu {
   width: $sidebar-width;
-  z-index: 1001;
+  z-index: 1003;
   background: $sidebar-bg;
   bottom: 0;
   margin-top: 0;
   position: fixed;
   top: 0;
   padding-top: $header-height;
-  box-shadow: $box-shadow;
+  box-shadow: $box-shadow-vertical-menu;
   @media (max-width: 991.98px) {
     top: $header-height;
     padding-top: 0px;
@@ -96,8 +96,9 @@
         padding: 0.625rem 1.5rem;
         color: $sidebar-menu-item-color;
         position: relative;
-        font-size: 13px;
+        font-size: 16px;
         transition: all 0.4s;
+        margin: 5px 8px;
 
         i {
           display: inline-block;
@@ -112,7 +113,9 @@
 
         &:hover {
           color: $sidebar-menu-item-hover-color;
-
+          background-color: #46484F;
+          // margin: 5px 8px;
+          border-radius: 5px;
           i {
             color: $sidebar-menu-item-hover-color;
           }
@@ -173,6 +176,11 @@
   }
   .active {
     color: $sidebar-menu-item-active-color !important;
+    a {
+      background-color: #46484F;
+      margin: 5px 8px;
+      border-radius: 5px;
+    }
 
     i {
       color: $sidebar-menu-item-active-color !important;
@@ -195,6 +203,7 @@
   body.sidebar-enable {
     .vertical-menu {
       display: block;
+      z-index: 1003;
     }
   }
 }
@@ -272,6 +281,7 @@
             padding: 15px 20px;
             min-height: 55px;
             transition: none;
+            font-size: 1.45rem;
 
             &:hover,
             &:active,
