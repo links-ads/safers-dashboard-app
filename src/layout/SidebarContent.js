@@ -89,16 +89,65 @@ const SidebarContent = () => {
       <SimpleBar style={{ maxHeight: '100%' }} ref={ref}>
         <div id='sidebar-menu'>
           <ul className='metismenu list-unstyled' id='side-menu'>
-            <li className='menu-title'>Menu </li>
+      
             <li>
               <Link to='/#' className=''>
-                <i className='bx bx-home-circle'></i>
-                <span className='badge rounded-pill bg-info float-end'>
-                  04
-                </span>
-                <span>Dashboards</span>
+                <i className='bx bx-layout'></i>
+                
+                <span>Dashboard</span>
+              </Link>
+              
+            </li>
+
+
+            <li>
+              <Link to='/calendar' className=' '>
+                <i className='bx bxs-hot'></i>
+                <span>Fire Alerts</span>
               </Link>
             </li>
+
+            <li>
+              <Link to='/chat' className=''>
+                <i className='bx bx-copy'></i>
+                <span>Data Layers</span>
+              </Link>
+            </li>
+            <li>
+              <Link to='/apps-filemanager' className=''>
+                <i className='bx bx-calendar-event'></i>
+                <span>Events</span>
+              </Link>
+            </li>
+
+            <li>
+              <Link to='/#'>
+                <i className='bx bx-clipboard'></i>
+                <span>Reports</span>
+              </Link>
+            </li>
+
+            <li>
+              <Link to='/#'>
+                <i className='bx bx-bell'></i>
+                <span>Notifications</span>
+              </Link>
+            </li>
+
+            <li>
+              <Link to='/#'>
+                <i className='bx bxl-twitter'></i>
+                <span>Social Monitor</span>
+              </Link>
+            </li>
+
+            <li>
+              <Link to='/#'>
+                <i className='bx bx-image'></i>
+                <span>In-Situ Cameras</span>
+              </Link>
+            </li>
+  
           </ul>
         </div>
       </SimpleBar>
