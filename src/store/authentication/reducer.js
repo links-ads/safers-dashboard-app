@@ -2,12 +2,10 @@ import * as actionTypes from './types';
 import { updateObject } from '../utility';
 
 const initialState = {
-  allIngredients: [],
-  oldIndex: undefined,
-  newIndex: undefined,
+  user: {},
+  isLoggedIn: false,
   error: false,
   loading: false
-
 };
 
 const ingredientsReducer = (state = initialState, action) => {

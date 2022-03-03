@@ -10,7 +10,7 @@ const Authmiddleware = ({
 }) => {
   if (isAuthProtected && !localStorage.getItem('authUser')) {
     return (
-      <Navigate state={{ from: rest.location }}  to="/login" />
+      <Navigate state={{ from: rest.location }}  to="/auth/sign-in" />
     )
   }
 

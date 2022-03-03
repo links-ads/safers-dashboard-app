@@ -3,7 +3,7 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 export const signIn = (username, password) => async (dispatch) => {
-  const response = await api.post(endpoints.authentication.signIn, { username, password });
+  const response = await api.get(endpoints.authentication.signIn, { username, password });//should be post with the backend
   if (response.status === 200)
     return dispatch(signInSuccess(response.data));
   else

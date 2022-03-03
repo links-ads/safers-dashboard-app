@@ -1,6 +1,6 @@
 export const endpoints = {
   authentication: {
-    signIn: '/sign-in',
+    signIn: '/sign-in.json',//.json for mock response
     signUp: '/sign-up',
     forgotPassword: 'forgot-password'
   },
