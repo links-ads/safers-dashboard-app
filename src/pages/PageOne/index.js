@@ -1,11 +1,9 @@
 import React from 'react';
-import IndexViews from '../../views'
 
 const PageOne = () => {
   return (
     <div>
-      <IndexViews/>
-      
+      <h1>Page One </h1>
     </div>
   );
 }
