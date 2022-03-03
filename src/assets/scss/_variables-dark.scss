@@ -8,7 +8,7 @@
 $sidebar-bg: #ffffff;
 $sidebar-menu-item-color: #545a6d;
 $sidebar-menu-sub-item-color: #545a6d;
-$sidebar-menu-item-icon-color: #7f8387;
+$sidebar-menu-item-icon-color: #dbdada;
 $sidebar-menu-item-hover-color: #383c40;
 $sidebar-menu-item-active-color: #556ee6;
 $sidebar-width:  250px;
@@ -18,11 +18,11 @@ $layout-collapsed-min-height: 1760px;
 
 // Vertical Sidebar - Dark
 $sidebar-dark-bg: #31343C; //2c313a
-$sidebar-dark-menu-item-color: #a6b0cf;
-$sidebar-dark-menu-sub-item-color: #79829c;
-$sidebar-dark-menu-item-icon-color: #6a7187;
-$sidebar-dark-menu-item-hover-color: #ffffff;
-$sidebar-dark-menu-item-active-color: #ffffff;
+$sidebar-dark-menu-item-color: #dbdada;
+$sidebar-dark-menu-sub-item-color: #dbdada;
+$sidebar-dark-menu-item-icon-color: #dbdada;
+$sidebar-dark-menu-item-hover-color: #e27b1d;
+$sidebar-dark-menu-item-active-color: #e27b1d;
 
 // Topbar - Deafult Light
 $header-height: 70px;
@@ -453,8 +453,8 @@ $box-shadow-sm:               0 .125rem .25rem rgba($black, .075);
 $box-shadow:                  0 0.75rem 1.5rem rgba(18,38,63,.03);
 $box-shadow-lg:               0 1rem 3rem rgba($black, .175);
 $box-shadow-inset:            inset 0 1px 2px rgba($black, .075);
-$box-shadow-vertical-menu:    3px 0px 1px 0px #1d1f24;
-$box-shadow-top-bar:          0px 3px 1px 0px #1d1f24;
+$box-shadow-vertical-menu:    2px 0px 4px 0px rgba(0, 0, 0, 0.5);
+$box-shadow-top-bar:          0px 2px 4px 0px rgba(0, 0, 0, 0.5);
 
 $component-active-color:      $primary;
 $component-active-bg:         $white;
@@ -484,7 +484,7 @@ $aspect-ratios: (
 // Font, line-height, and color for body text, headings, and more.
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif:      'Roboto+Condensed', sans-serif;
+$font-family-sans-serif:      'Roboto', sans-serif;
 $font-family-monospace:       SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
 // stylelint-enable value-keyword-case
