@@ -8,7 +8,7 @@ import './assets/scss/theme.scss'
 const App = () => (
   <Routes>
     {publicRoutes.map((route, idx) => (
-      <Route key={idx} path={route.path} element={<route.component/>} />
+      <Route key={idx} path={route.path} element={<route.component />} />
     ))}
     {privateRoutes.map((route, idx) => (
       <Route key={idx} path={route.path} element=
@@ -16,7 +16,7 @@ const App = () => (
           <Authmiddleware
             path={route.path}
             component={route.component}
-            isAuthProtected={false}
+            isAuthProtected={true}
             exact
           />
         }

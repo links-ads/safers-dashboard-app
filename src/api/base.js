@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { authHeader } from '../helpers/authHelper';
 
 //apply base url for axios
 const BASE_URL = 'http://localhost:3000'
@@ -7,9 +8,9 @@ const axiosApi = axios.create({
   baseURL: BASE_URL,
 })
 
-const authUser = JSON.parse(localStorage.getItem('authUser'));
+//const authUser = JSON.parse(localStorage.getItem('authUser'));
 
-axiosApi.defaults.headers.common['Authorization'] = authUser ? authUser.accessToken : '';
+//axiosApi.defaults.headers.common['Authorization'] = authUser ? authUser.accessToken : '';
 
 axiosApi.interceptors.response.use(
   response => response,
@@ -17,23 +18,23 @@ axiosApi.interceptors.response.use(
 )
 
 export async function get(url, config = {}) {
-  return await axiosApi.get(url, { ...config }).then(response => response)
+  return await axiosApi.get(url, { ...config, headers: authHeader() }).then(response => response)
 }
 
 export async function post(url, data, config = {}) {
   return axiosApi
-    .post(url, { ...data }, { ...config })
+    .post(url, { ...data }, { ...config, headers: authHeader() })
     .then(response => response)
 }
 
 export async function put(url, data, config = {}) {
   return axiosApi
-    .put(url, { ...data }, { ...config })
+    .put(url, { ...data }, { ...config, headers: authHeader() })
     .then(response => response)
 }
 
 export async function del(url, config = {}) {
   return await axiosApi
-    .delete(url, { ...config })
+    .delete(url, { ...config, headers: authHeader() })
     .then(response => response)
 }

@@ -9,7 +9,7 @@
         "code_country": "00967",
         "avatar": "http://localhost:3000/default_image.jpg",
         "customer_id": 3,
-        "provider_id": null
-    },
-    "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6OCwibmFtZSI6Im1tYiIsImVtYWlsIjoibW1iLjIyMTE3N0BnbWFpbC5jb20iLCJpYXQiOjE1NDc5NjYxMzQsImV4cCI6MTU1MDU1ODEzNH0.TLMc6owRpsOWl-al7yErWKcF7ylEGYW4ihEK_gLn5KY"
+        "provider_id": null,
+        "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6OCwibmFtZSI6Im1tYiIsImVtYWlsIjoibW1iLjIyMTE3N0BnbWFpbC5jb20iLCJpYXQiOjE1NDc5NjYxMzQsImV4cCI6MTU1MDU1ODEzNH0.TLMc6owRpsOWl-al7yErWKcF7ylEGYW4ihEK_gLn5KY"
+    }
 }

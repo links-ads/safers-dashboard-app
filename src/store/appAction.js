@@ -1,5 +1,6 @@
 export {
   signIn,
-  signUp
+  signUp,
+  signOut
 }
   from './authentication/action';
