@@ -76,7 +76,7 @@ const SignIn = () => {
                         className={errors.password ? 'is-invalid' : ''}
                         name="password"
                         placeholder="password"
-                        type="password"
+                        type={passwordToggle ? 'text' : 'password'}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         value={values.password}
