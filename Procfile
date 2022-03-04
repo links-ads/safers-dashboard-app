@@ -1,3 +1,3 @@
-web: react-scripts start
-release: react-scripts build
+web: npm start
+release: npm run build
 
