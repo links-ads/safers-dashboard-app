@@ -43,10 +43,10 @@ const SignIn = () => {
         isSubmitting,
       }) => (
         <div className="jumbotron">
-          <div className="container">
+          <div className="container auth-form">
             <Form onSubmit={handleSubmit} noValidate>
               <Row form>
-                <Col md={6}>
+                <Col>
                   <FormGroup className="form-group">
                     <Label for="userEmail">
                       EMAIL ADDRESS:
@@ -65,7 +65,7 @@ const SignIn = () => {
                     {errors.email && touched.email && (<div className="invalid-feedback">{errors.email}</div>)}
                   </FormGroup>
                 </Col>
-                <Col md={6}>
+                <Col >
                   <FormGroup className="form-group">
                     <Label for="userPassword">
                       PASSWORD:
@@ -106,15 +106,18 @@ const SignIn = () => {
                   Remember Me
                 </Label>
               </FormGroup>
-              <Button
-                className="my-4"
-                color="primary"
-                disabled={isSubmitting}>
+              <div className="form-group center-sign-in">
+                <Button
+                  className="sign-in-btn"
+                  color="primary"
+                  disabled={isSubmitting}>
                 SIGN IN
-              </Button>
-              <div className="mt-4">
+                </Button>
+                
+              </div>
+              <div className="mt-1 center-sign-in">
                 <Link to="/auth/forgot-password" className="text-muted">
-                  Forgot password
+                  Forgot password?
                 </Link>
               </div>
             </Form>
