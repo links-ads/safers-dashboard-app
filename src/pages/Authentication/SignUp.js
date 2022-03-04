@@ -5,6 +5,7 @@ import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label,
 import { Link, useNavigate } from 'react-router-dom';
 import PasswordChecklist from 'react-password-checklist'
 import PasswordStrengthBar from 'react-password-strength-bar';
+import * as Yup from 'yup'
 import { signUp as registration } from '../../store/appAction';
 import { organisations, roles } from '../../constants/dropdowns';
 
@@ -13,37 +14,33 @@ const SignUp = () => {
   const [passwordToggle, setPasswordToggle] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   useEffect(() => {
     if (loggingIn)
       navigate('/dashboard');
   }, [loggingIn]);
 
-  const validations = (values) => {
-    const errors = {};
-    if (!values.email) {
-      errors.email = 'The field cannot be empty';
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-    ) {
-      errors.email = 'Invalid email address';
-    }
-    if (!values.password) {
-      errors.password = 'The field cannot be empty';
-    } else {
-      //todo
-    }
-    if (!values.firstName)
-      errors.firstName = 'The field cannot be empty';
-    if (!values.lastName)
-      errors.lastName = 'The field cannot be empty';
-    if (!values.userRole)
-      errors.userRole = 'The field cannot be empty';
-    if (!values.userOrg)
-      errors.userOrg = 'The field cannot be empty';
+  const signUpSchema = Yup.object().shape({
+    email: Yup.string()
+      .email('Invalid email address')
+      .required('The field cannot be empty'),
+    password: Yup.string()
+      .matches(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+        'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number'
+      )
+      .required('The field cannot be empty'),
+    firstName: Yup.string()
+      .required('The field cannot be empty'),
+    lastName: Yup.string()
+      .required('The field cannot be empty'),
+    userRole: Yup.string()
+      .required('The field cannot be empty'),
+    userOrg: Yup.string()
+      .required('The field cannot be empty'),
+    agreeTermsConditions: Yup.bool()
+      .oneOf([true], 'Please accept the terms and conditions')
+  });
 
-    return errors;
-  }
   return (
     <Formik
       initialValues={{
@@ -55,7 +52,7 @@ const SignUp = () => {
         userOrg: '',
         agreeTermsConditions: false
       }}
-      validate={values => validations(values)}
+      validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
         console.log(values)
         dispatch(registration(values));
@@ -188,7 +185,7 @@ const SignUp = () => {
                       <option value={''} >--Select your role--</option>
                       {roles.map((role, index) => { return (<option key={index} value={role}>{role}</option>) })}
                     </Input>
-                    {errors.lastName && touched.lastName && (<div className="invalid-feedback">{errors.lastName}</div>)}
+                    {errors.userRole && touched.userRole && (<div className="invalid-feedback">{errors.userRole}</div>)}
                   </FormGroup>
                 </Col>
                 <Col md={6}>
@@ -209,36 +206,39 @@ const SignUp = () => {
                       <option value={''} >--Select organisation--</option>
                       {organisations.map((org, index) => { return (<option key={index} value={org.code}>{org.code} - {org.name}</option>) })}
                     </Input>
-                    {errors.lastName && touched.lastName && (<div className="invalid-feedback">{errors.lastName}</div>)}
+                    {errors.userOrg && touched.userOrg && (<div className="invalid-feedback">{errors.userOrg}</div>)}
+                  </FormGroup>
+                </Col>
+                <Col md={6}>
+                  <FormGroup className="form-group" check>
+                    <Input
+                      id="agreeTermsConditions"
+                      name="agreeTermsConditions"
+                      type="checkbox"
+                      value={values.agreeTermsConditions}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                    />
+                    {errors.agreeTermsConditions && (<div className="invalid-feedback">{errors.agreeTermsConditions}</div>)}
+                    <Label
+                      check
+                      for="agreeTermsConditions"
+                    >
+                      <p>
+                        <span>I agree to the </span>
+                        <Link to="/terms-of-user">
+                          Terms of User
+                        </Link>
+                        <span> and </span>
+                        <Link to="/privacy-policy">
+                          Privacy Policy
+                        </Link>
+                        <span>, to the processing of my personal data, and to receive emails</span>
+                      </p>
+                    </Label>
                   </FormGroup>
                 </Col>
               </Row>
-              <FormGroup className="form-group" check>
-                <Input
-                  id="agreeTermsConditions"
-                  name="agreeTermsConditions"
-                  type="checkbox"
-                  value={values.agreeTermsConditions}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                />
-                <Label
-                  check
-                  for="rememberMe"
-                >
-                  <p>
-                    <span>I agree to the </span>
-                    <Link to="/terms-of-user">
-                      Terms of User
-                    </Link>
-                    <span> and </span>
-                    <Link to="/privacy-policy">
-                      Privacy Policy
-                    </Link>
-                    <span>, to the processing of my personal data, and to receive emails</span>
-                  </p>
-                </Label>
-              </FormGroup>
               <Button
                 className="my-4"
                 color="primary"

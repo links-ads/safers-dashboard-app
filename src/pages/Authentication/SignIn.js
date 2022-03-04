@@ -1,41 +1,34 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { signIn } from '../../store/appAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
-import { Button, Col, Form, FormGroup, Input, Label, Row, } from 'reactstrap';
+import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import * as Yup from 'yup'
 
 const SignIn = () => {
   const loggingIn = useSelector(state => state.auth.isLoggedIn);
+  const [passwordToggle, setPasswordToggle] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  const validations = (values) => {
-    const errors = {};
-    if (!values.email) {
-      errors.email = 'The field cannot be empty';
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
-    ) {
-      errors.email = 'Invalid email address';
-    }
-    if (!values.password) {
-      errors.password = 'The field cannot be empty';
-    }
-    return errors;
-  }
-
   useEffect(() => {
     if (loggingIn)
       navigate('/dashboard');
   }, [loggingIn]);
 
+  const signInSchema = Yup.object().shape({
+    email: Yup.string()
+      .email('Invalid email address')
+      .required('The field cannot be empty'),
+    password: Yup.string()
+      .required('The field cannot be empty'),
+  });
+
   return (
     <Formik
       initialValues={{ email: '', password: '', rememberMe: false }}
-      validate={values => validations(values)}
+      validationSchema={signInSchema}
       onSubmit={(values, { setSubmitting }) => {
-        console.log(values)
         dispatch(signIn(values));
         setSubmitting(false);
       }}
@@ -77,17 +70,22 @@ const SignIn = () => {
                     <Label for="userPassword">
                       PASSWORD:
                     </Label>
-                    <Input
-                      id="userPassword"
-                      className={errors.password ? 'is-invalid' : ''}
-                      name="password"
-                      placeholder="password"
-                      type="password"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.password}
-                      autoComplete="on"
-                    />
+                    <InputGroup>
+                      <Input
+                        id="userPassword"
+                        className={errors.password ? 'is-invalid' : ''}
+                        name="password"
+                        placeholder="password"
+                        type="password"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.password}
+                        autoComplete="on"
+                      />
+                      <InputGroupText>
+                        <i onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
+                      </InputGroupText>
+                    </InputGroup>
                     {errors.password && touched.password && (<div className="invalid-feedback">{errors.password}</div>)}
                   </FormGroup>
                 </Col>
