@@ -4,6 +4,9 @@ import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col } from 
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 
+import logodark from '../../assets/images/background-light-logo.png'
+import logolight from '../../assets/images/background-light-logo.png'
+
 const Authentication = () => {
   const DEFAULT_ACTIVE_TAB = 'sign-in';
   const { activeTab } = useParams();
@@ -24,32 +27,48 @@ const Authentication = () => {
     <div>
       <Container fluid className="p-0">
         <Row className="g-0">
-          <Col xl={6}>
-            <div className="auth-full-bg pt-lg-5 p-4">
-              <div className="w-100">
-                <div className="bg-overlay"></div>
-              </div>
-            </div>
+          <Col xl={7} className="bg-overlay">
+            <p> Structured Approaches for<br></br>
+                  Forest fire Emergencies<br></br> in Resilient Societies</p>
+    
           </Col>
-          <Col xl={6}>
-            <div className="auth-full-page-content p-md-5 p-4">
+          <Col xl={5}>
+            <div className="auth-full-page-content">
               <div className="w-100">
-                <Nav tabs>
-                  <NavItem>
-                    <NavLink className={activeTab == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
+                <div className="mb-4 mb-md-5">
+                  <div className="d-block auth-logo">
+                    <img
+                      src={logodark}
+                      alt=""
+                      
+                      className="auth-logo-dark"
+                    />
+                    <img
+                      src={logolight}
+                      alt=""
+                      
+                      className="auth-logo-light"
+                    />
+                  </div>
+                </div>
+                <div className='tab-container'>
+                  <Nav tabs className='nav-tabs-custom'>
+                    <NavItem>
+                      <NavLink className={activeTab == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
                       SIGN IN
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink className={activeTab == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink className={activeTab == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
                       SIGN UP
-                    </NavLink>
-                  </NavItem>
-                </Nav>
-                <TabContent activeTab={activeTab}>
-                  <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
-                  <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
-                </TabContent>
+                      </NavLink>
+                    </NavItem>
+                  </Nav>
+                  <TabContent activeTab={activeTab}>
+                    <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
+                    <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
+                  </TabContent>
+                </div>
               </div>
             </div>
           </Col>

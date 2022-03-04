@@ -19,10 +19,23 @@
     .auth-logo-light{
         display: $display-none;
     }
+    img {
+        margin: auto;
+        height: 5rem;
+    }
 }
 
 .auth-body-bg{
     background-color: $card-bg;
+}
+.tab-container {
+    width: 80%;
+    margin: auto;
+    padding: 0 0 16px;
+    border-radius: 20px;
+    box-shadow: 12px 8px 24px -12px rgba(0, 0, 0, 0.3);
+    border: solid 1px #545555;
+    background-color: #3d3f47;
 }
 
 
@@ -37,6 +50,31 @@
 }
 
 // authentication full page
+.bg-overlay {
+    background: url("../../../images/group-2@3x.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    text-align: right;
+    @media (max-width: 1200px){
+        display: none;
+    }
+    p{
+        opacity: 0.84;
+        font-family: Helvetica;
+        font-size: 2.5rem;
+        font-weight: normal;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: normal;
+        letter-spacing: 2.07px;
+        color: #fefefe;
+        margin: 0 20px 0 0;
+    }
+}
 
 .auth-full-bg{
     background-color: rgba($primary, 0.25);
@@ -61,6 +99,7 @@
     //     background-repeat: no-repeat;
     //     background-position: center;
     // }
+    
 }
 
 .auth-full-page-content{
@@ -86,4 +125,23 @@
             }
         }
     }
+}
+
+.auth-form {
+    width: 80%;
+    margin-top: 2rem;
+}
+
+.input-group-text {
+    background: $white;
+}
+
+.center-sign-in {
+    display: flex;
+    justify-content: center;
+}
+.sign-in-btn {
+    width: 12rem;
+    color: #000;
+    margin: .5rem;
 }

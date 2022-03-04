@@ -69,10 +69,10 @@ const SignUp = () => {
         isSubmitting,
       }) => (
         <div className="jumbotron">
-          <div className="container">
+          <div className="container auth-form">
             <Form onSubmit={handleSubmit} noValidate>
               <Row form>
-                <Col md={6}>
+                <Col>
                   <FormGroup className="form-group">
                     <Label for="userEmail">
                       EMAIL ADDRESS:
@@ -91,7 +91,7 @@ const SignUp = () => {
                     {errors.email && touched.email && (<div className="invalid-feedback">{errors.email}</div>)}
                   </FormGroup>
                 </Col>
-                <Col md={6}>
+                <Col>
                   <FormGroup className="form-group">
                     <Label for="firstName">
                       FIRST NAME:
@@ -110,7 +110,7 @@ const SignUp = () => {
                     {errors.firstName && touched.firstName && (<div className="invalid-feedback">{errors.firstName}</div>)}
                   </FormGroup>
                 </Col>
-                <Col md={6}>
+                <Col >
                   <FormGroup className="form-group">
                     <Label for="lastName">
                       LAST NAME:
@@ -129,7 +129,7 @@ const SignUp = () => {
                     {errors.lastName && touched.lastName && (<div className="invalid-feedback">{errors.lastName}</div>)}
                   </FormGroup>
                 </Col>
-                <Col md={6}>
+                <Col>
                   <FormGroup className="form-group">
                     <Label for="userPassword">
                       PASSWORD:
@@ -167,7 +167,7 @@ const SignUp = () => {
                     {errors.password && touched.password && (<div className="invalid-feedback">{errors.password}</div>)}
                   </FormGroup>
                 </Col>
-                <Col md={6}>
+                <Col >
                   <FormGroup className="form-group">
                     <Label for="userRole">
                       SELECT YOUR ROLE:
@@ -188,7 +188,7 @@ const SignUp = () => {
                     {errors.userRole && touched.userRole && (<div className="invalid-feedback">{errors.userRole}</div>)}
                   </FormGroup>
                 </Col>
-                <Col md={6}>
+                <Col >
                   <FormGroup className="form-group">
                     <Label for="userOrg">
                       SELECT ORGANISATION:
@@ -209,7 +209,7 @@ const SignUp = () => {
                     {errors.userOrg && touched.userOrg && (<div className="invalid-feedback">{errors.userOrg}</div>)}
                   </FormGroup>
                 </Col>
-                <Col md={6}>
+                <Col>
                   <FormGroup className="form-group" check>
                     <Input
                       id="agreeTermsConditions"
@@ -239,12 +239,14 @@ const SignUp = () => {
                   </FormGroup>
                 </Col>
               </Row>
-              <Button
-                className="my-4"
-                color="primary"
-                disabled={isSubmitting}>
+              <div className='center-sign-in'>
+                <Button
+                  className="my-4 sign-in-btn"
+                  color="primary"
+                  disabled={isSubmitting}>
                 SIGN UP
-              </Button>
+                </Button>
+              </div>
             </Form>
           </div>
         </div>
