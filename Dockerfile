@@ -5,7 +5,7 @@ WORKDIR /usr/app/src
 COPY ./ /usr/app/src
 
 RUN npm i 
-RUN npm build
+RUN npm run build
 
 # runtime
 FROM nginx:1.21-alpine
