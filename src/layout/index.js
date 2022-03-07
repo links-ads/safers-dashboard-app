@@ -49,7 +49,7 @@ class Layout extends Component {
       </>
     )
   }
-};
+}
 
 Layout.propTypes = {
   changeLayoutWidth: PropTypes.func,
