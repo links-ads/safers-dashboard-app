@@ -46,6 +46,13 @@
   }
 }
 
+#pswStrength {
+  background-color: transparent;
+  .grey {
+    background-color: $gray-400;
+  }
+}
+
 @keyframes animate-positive {
   0% {
       width: 0;
