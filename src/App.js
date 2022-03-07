@@ -1,5 +1,5 @@
 import React from 'react';
-import { authRoutes, userRoutes } from './routes/allRoutes';
+import { publicRoutes, privateRoutes } from './routes/allRoutes';
 import Authmiddleware from './routes/middleware/Authmiddleware'
 import { Routes, Route } from 'react-router-dom';
 import './assets/scss/theme.scss'
@@ -7,19 +7,10 @@ import './assets/scss/theme.scss'
 
 const App = () => (
   <Routes>
-    {authRoutes.map((route, idx) => (
-      <Route key={idx} path={route.path} element=
-        {
-          <Authmiddleware
-            path={route.path}
-            component={route.component}
-            isAuthProtected={false}
-            exact
-          />
-        }
-      />
+    {publicRoutes.map((route, idx) => (
+      <Route key={idx} path={route.path} element={<route.component />} />
     ))}
-    {userRoutes.map((route, idx) => (
+    {privateRoutes.map((route, idx) => (
       <Route key={idx} path={route.path} element=
         {
           <Authmiddleware

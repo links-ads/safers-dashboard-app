@@ -1,20 +1,18 @@
 
 //Pages
+import Authentication from '../pages/Authentication';
+import ForgotPassword from '../pages/Authentication/ForgotPassword';
 import PageOne from '../pages/PageOne';
 import PageTwo from '../pages/PageTwo';
 
+const publicRoutes = [
+  { path: 'auth/:activeTab', component: Authentication },
+  { path: 'auth/forgot-password', component: ForgotPassword },
 
-
-
-const userRoutes = [
-  { path: '/page1', component: PageOne },
+]
+const privateRoutes = [
+  { path: '/dashboard', component: PageOne },
+  { path: '/fire-alerts', component: PageTwo },
 ]
 
-const authRoutes = [
-  { path: '/logout', component: PageTwo },
-  { path: '/login', component: PageTwo },
-  { path: '/forgot-password', component: PageTwo },
-  { path: '/register', component: PageTwo }
-]
-
-export { userRoutes, authRoutes }
+export { publicRoutes, privateRoutes }

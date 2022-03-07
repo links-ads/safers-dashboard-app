@@ -132,7 +132,7 @@
         li {
           a {
             padding: 0.4rem 1.5rem 0.4rem 3.5rem;
-            font-size: 13px;
+            font-size: 16px;
             color: $sidebar-menu-sub-item-color;
             &:hover {
               color: $sidebar-menu-item-hover-color;
@@ -145,7 +145,7 @@
             li {
               a {
                 padding: 0.4rem 1.5rem 0.4rem 4.5rem;
-                font-size: 13px;
+                font-size: 16px;
               }
             }
           }
@@ -222,6 +222,7 @@
     left: $sidebar-collapsed-width;
     @media (max-width: 991.98px) {
         left: 0;
+        z-index: 1004;
     }
   }
 
@@ -278,10 +279,10 @@
           white-space: nowrap;
 
           > a {
-            padding: 15px 20px;
+            padding: 15px;
             min-height: 55px;
             transition: none;
-            font-size: 1.45rem;
+            font-size: 16px;
 
             &:hover,
             &:active,
@@ -291,7 +292,7 @@
 
             i {
               font-size: 1.45rem;
-              margin-left: 4px;
+              // margin-left: 4px;
             }
 
             span {

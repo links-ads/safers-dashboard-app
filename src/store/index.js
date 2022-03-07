@@ -3,13 +3,13 @@ import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';//or session
 import thunk from 'redux-thunk';
 
-import reducers from './reducers';
+import reducers from './appReducer';
 import logger from './middleware/logger';
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['todo'],
+  whitelist: ['auth'],
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
