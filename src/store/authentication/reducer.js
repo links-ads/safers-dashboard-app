@@ -55,7 +55,6 @@ const signUpFail = (state) => {
 const reqResetPswSuccess = (state, action) => {
   const updatedState = {
     forgotPswresponse: action.payload,
-    isLoggedIn: true,
     error: false,
   }
   return updateObject(state, updatedState);
