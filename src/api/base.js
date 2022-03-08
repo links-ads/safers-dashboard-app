@@ -2,7 +2,8 @@ import axios from 'axios'
 import { authHeader } from '../helpers/authHelper';
 
 //apply base url for axios
-const BASE_URL = 'http://localhost:3000'
+// const BASE_URL = 'http://localhost:3000'
+const BASE_URL = 'https://safers-dashboard.herokuapp.com/'
 
 const axiosApi = axios.create({
   baseURL: BASE_URL,
