@@ -1,18 +1,31 @@
 import React from 'react';
 import { Formik } from 'formik';
-import { Button, Col, Form, FormGroup, Input, Label, Row } from 'reactstrap';
+import { Button, Col, Form, FormGroup, Input, Label, Row, Alert } from 'reactstrap';
 import * as Yup from 'yup'
-import { useDispatch } from 'react-redux';
-import { signUp as registration } from '../../store/appAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { reqResetPsw } from '../../store/appAction';
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
+  const forgotPswresponse = useSelector(state => state.auth.forgotPswresponse);
+
+  console.log('forgotPswresponse..', forgotPswresponse);
 
   const signUpSchema = Yup.object().shape({
     email: Yup.string()
       .email('Invalid email address')
       .required('The field cannot be empty')
   });
+  
+  if(forgotPswresponse) {
+    return (
+      <div className='forgot-psw'>
+        <Alert color="success" role="alert">
+          Your request has been received. Please check your email for the instructions.
+        </Alert>  
+      </div>
+    );
+  }
 
   return (
     <Formik
@@ -21,7 +34,7 @@ const ForgotPassword = () => {
       }}
       validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
-        dispatch(registration(values));
+        dispatch(reqResetPsw(values));
         setSubmitting(false);
       }}
     >
