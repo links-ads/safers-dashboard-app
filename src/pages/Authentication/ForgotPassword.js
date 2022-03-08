@@ -9,8 +9,6 @@ const ForgotPassword = () => {
   const dispatch = useDispatch();
   const forgotPswresponse = useSelector(state => state.auth.forgotPswresponse);
 
-  console.log('forgotPswresponse..', forgotPswresponse);
-
   const signUpSchema = Yup.object().shape({
     email: Yup.string()
       .email('Invalid email address')
