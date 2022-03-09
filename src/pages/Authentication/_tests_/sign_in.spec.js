@@ -1,9 +1,11 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import { findByTestAttr } from '../../../TestUtils';
 import '@testing-library/jest-dom/extend-expect';
 import ShallowRenderer from 'react-test-renderer/shallow';
 import SignIn from '../SignIn';
+import { render, screen } from '@testing-library/react'
+import { BrowserRouter } from 'react-router-dom';
 // import configureStore from 'redux-mock-store';
 
 const mockedNavigator = jest.fn();
@@ -44,5 +46,16 @@ describe('Authentication Component', () => {
     })
       
   });
+
+  describe('Form testing', () => {
+    beforeEach(() => {
+      render(<BrowserRouter>
+        <SignIn/>
+      </BrowserRouter>)
+    })
+    test('Should render correctly', () => {
+      expect(screen).not.toBeNull();
+    })
+  })
   
 })
