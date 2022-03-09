@@ -1,6 +1,7 @@
 export {
   signIn,
   signUp,
-  signOut
+  signOut,
+  reqResetPsw
 }
   from './authentication/action';

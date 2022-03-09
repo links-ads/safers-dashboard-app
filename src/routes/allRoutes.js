@@ -1,13 +1,11 @@
 
 //Pages
 import Authentication from '../pages/Authentication';
-import ForgotPassword from '../pages/Authentication/ForgotPassword';
 import PageOne from '../pages/PageOne';
 import PageTwo from '../pages/PageTwo';
 
 const publicRoutes = [
-  { path: 'auth/:activeTab', component: Authentication },
-  { path: 'auth/forgot-password', component: ForgotPassword },
+  { path: 'auth/:currentPage', component: Authentication },
 
 ]
 const privateRoutes = [
