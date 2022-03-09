@@ -8,7 +8,7 @@ import PageTwo from '../pages/PageTwo';
 const publicRoutes = [
   { path: 'auth/:activeTab', component: Authentication },
   { path: 'auth/forgot-password', component: ForgotPassword },
-
+  { path: '/', component: Authentication },
 ]
 const privateRoutes = [
   { path: '/dashboard', component: PageOne },
