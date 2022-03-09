@@ -25,10 +25,10 @@ const Authentication = () => {
   }
   return (
     <div>
-      <Container fluid className="p-0">
+      <Container fluid className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">
-            <p> Structured Approaches for<br></br>
+            <p data-test="overlay-text"> Structured Approaches for<br></br>
                   Forest fire Emergencies<br></br> in Resilient Societies</p>
     
           </Col>
@@ -54,12 +54,12 @@ const Authentication = () => {
                 <div className='tab-container'>
                   <Nav tabs className='nav-tabs-custom'>
                     <NavItem>
-                      <NavLink className={activeTab == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
+                      <NavLink data-test="sign-in-tab" className={activeTab == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
                       SIGN IN
                       </NavLink>
                     </NavItem>
                     <NavItem>
-                      <NavLink className={activeTab == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
+                      <NavLink data-test="sign-up-tab" className={activeTab == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
                       SIGN UP
                       </NavLink>
                     </NavItem>

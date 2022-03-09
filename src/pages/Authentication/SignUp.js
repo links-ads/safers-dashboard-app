@@ -132,6 +132,7 @@ const SignUp = () => {
         dispatch(registration(values));
         setSubmitting(false);
       }}
+      data-test="signUpComponent"
     >
       {({
         values,

@@ -28,6 +28,7 @@ const SignIn = () => {
     <Formik
       initialValues={{ email: '', password: '', rememberMe: false }}
       validationSchema={signInSchema}
+      data-test="signInComponent"
       onSubmit={(values, { setSubmitting }) => {
         dispatch(signIn(values));
         setSubmitting(false);
@@ -42,7 +43,7 @@ const SignIn = () => {
         handleSubmit,
         isSubmitting,
       }) => (
-        <div className="jumbotron">
+        <div className="jumbotron" >
           <div className="container auth-form">
             <Form onSubmit={handleSubmit} noValidate>
               <Row form>
