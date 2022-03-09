@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, Progress, List } from 'reactstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup'
 import { signUp as registration } from '../../store/appAction';
 import { organisations, roles } from '../../constants/dropdowns';
@@ -99,15 +99,21 @@ const SignUp = () => {
       </Row>
       <Row>
         <Col>
-          <List type="unstyled" className='mt-3'>
-            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i>8 characters long</li>
-            <li className='mb-1'><i className={`${iconClass} ${chkUpperCase ? successIcon :errorIcon}`}></i>Uppercase letter</li>
-            <li className='mb-1'><i className={`${iconClass} ${chkLowerCase ? successIcon : errorIcon}`}></i>Lowercase letter</li>
-            <li className='mb-1'><i className={`${iconClass} ${hasNumber ? successIcon : errorIcon}`}></i>Must contain number</li>
+          <List id="pswInstructions" type="unstyled" className='mt-3'>
+            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i><span className={!chkLength? 'text-white' : ''}>8 characters long</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkUpperCase ? successIcon :errorIcon}`}></i><span className={!chkUpperCase? 'text-white' : ''}>Uppercase letter</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkLowerCase ? successIcon : errorIcon}`}></i><span className={!chkLowerCase? 'text-white' : ''}>Lowercase letter</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${hasNumber ? successIcon : errorIcon}`}></i><span className={!hasNumber? 'text-white' : ''}>Must contain number</span></li>
           </List>
         </Col>
       </Row>
     </>)
+  }
+
+  const getError = (key, errors, touched, errStyle=true) => {
+    if(errors[key] && touched[key]){
+      return (errStyle ? 'is-invalid': <div className="invalid-feedback">{errors[key]}</div> )
+    }
   }
   return (
     <Formik
@@ -147,7 +153,7 @@ const SignUp = () => {
                     </Label>
                     <Input
                       id="userEmail"
-                      className={errors.email ? 'is-invalid' : ''}
+                      className={getError('email', errors, touched)}
                       name="email"
                       placeholder="email address"
                       type="email"
@@ -156,7 +162,7 @@ const SignUp = () => {
                       value={values.email}
                       autoComplete="on"
                     />
-                    {errors.email && touched.email && (<div className="invalid-feedback">{errors.email}</div>)}
+                    {getError('email', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col>
@@ -166,7 +172,7 @@ const SignUp = () => {
                     </Label>
                     <Input
                       id="firstName"
-                      className={errors.firstName ? 'is-invalid' : ''}
+                      className={getError('firstName', errors, touched)}
                       name="firstName"
                       placeholder="first name"
                       type="text"
@@ -175,7 +181,7 @@ const SignUp = () => {
                       value={values.firstName}
                       autoComplete="on"
                     />
-                    {errors.firstName && touched.firstName && (<div className="invalid-feedback">{errors.firstName}</div>)}
+                    {getError('firstName', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col >
@@ -185,7 +191,7 @@ const SignUp = () => {
                     </Label>
                     <Input
                       id="lastName"
-                      className={errors.lastName ? 'is-invalid' : ''}
+                      className={getError('lastName', errors, touched)}
                       name="lastName"
                       placeholder="last name"
                       type="lastName"
@@ -194,7 +200,7 @@ const SignUp = () => {
                       value={values.lastName}
                       autoComplete="on"
                     />
-                    {errors.lastName && touched.lastName && (<div className="invalid-feedback">{errors.lastName}</div>)}
+                    {getError('lastName', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col>
@@ -205,7 +211,7 @@ const SignUp = () => {
                     <InputGroup>
                       <Input
                         id="userPassword"
-                        className={errors.password ? 'is-invalid' : ''}
+                        className={getError('password', errors, touched)}
                         name="password"
                         placeholder="password"
                         type={passwordToggle ? 'text' : 'password'}
@@ -219,7 +225,7 @@ const SignUp = () => {
                       </InputGroupText>
                     </InputGroup>
                     {values.password && (<>{pswStrengthIndicator(values.password)}</>)}
-                    {errors.password && touched.password && (<div className="invalid-feedback">{errors.password}</div>)}
+                    {getError('password', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col >
@@ -229,7 +235,7 @@ const SignUp = () => {
                     </Label>
                     <Input
                       id="userRole"
-                      className={errors.userRole ? 'is-invalid' : ''}
+                      className={getError('userRole', errors, touched)}
                       name="userRole"
                       placeholder="select role"
                       type="select"
@@ -240,17 +246,17 @@ const SignUp = () => {
                       <option value={''} >--Select your role--</option>
                       {roles.map((role, index) => { return (<option key={index} value={role}>{role}</option>) })}
                     </Input>
-                    {errors.userRole && touched.userRole && (<div className="invalid-feedback">{errors.userRole}</div>)}
+                    {getError('userRole', errors, touched, false)}
                   </FormGroup>
                 </Col>
-                <Col >
+                <Col className={values.userRole == 'Citizen' ? 'd-none': ''}>
                   <FormGroup className="form-group">
                     <Label for="userOrg">
                       SELECT ORGANISATION:
                     </Label>
                     <Input
                       id="userOrg"
-                      className={errors.userOrg ? 'is-invalid' : ''}
+                      className={getError('userOrg', errors, touched)}
                       name="userOrg"
                       placeholder="select organisation"
                       type="select"
@@ -261,7 +267,7 @@ const SignUp = () => {
                       <option value={''} >--Select organisation--</option>
                       {organisations.map((org, index) => { return (<option key={index} value={org.code}>{org.code} - {org.name}</option>) })}
                     </Input>
-                    {errors.userOrg && touched.userOrg && (<div className="invalid-feedback">{errors.userOrg}</div>)}
+                    {getError('userOrg', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col>
@@ -281,13 +287,13 @@ const SignUp = () => {
                     >
                       <p>
                         <span>I agree to the </span>
-                        <Link to="/terms-of-user">
+                        <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" rel="noreferrer" target="_blank">
                           Terms of User
-                        </Link>
+                        </a>
                         <span> and </span>
-                        <Link to="/privacy-policy">
+                        <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" rel="noreferrer" target="_blank">
                           Privacy Policy
-                        </Link>
+                        </a>
                         <span>, to the processing of my personal data, and to receive emails</span>
                       </p>
                     </Label>
