@@ -19,7 +19,7 @@ const ForgotPassword = () => {
     return (
       <div className='forgot-psw'>
         <Alert color="success" role="alert">
-          Your request has been received. Please check your email for the instructions.
+          Please check your email for the instructions on password resetting.
         </Alert>  
       </div>
     );
