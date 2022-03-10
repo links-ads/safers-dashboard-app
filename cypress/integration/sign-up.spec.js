@@ -7,7 +7,7 @@ const password = 'HelloWorld1';
 
 describe('Sign user up', () => {
   it('Sign up in user', () => {
-
+    //uncomment to intercept post request
     // cy.intercept('POST', 'https://safers-dashboard.herokuapp.com/*', { fixture: 'user.json' });
     
     cy.visit('http://localhost:3000/auth/sign-up');
@@ -32,8 +32,6 @@ describe('Sign user up', () => {
 
     cy.get('[data-testid="signUpButton"]')
       .click();
-
-    // Locate and submit the form
     
     // Verify the app redirected you to the dashboard
     cy.location('pathname', { timeout: 10000 }).should('eq', '/dashboard');

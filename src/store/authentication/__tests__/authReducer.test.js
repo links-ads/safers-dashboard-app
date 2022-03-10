@@ -27,7 +27,6 @@ describe('fetchUser Success ', () => {
       isLoggedIn: false,
       error: false,
       forgotPswresponse: null
-      //loading: false
     };
 
     store = mockStore(initialState);

@@ -21,9 +21,6 @@ describe('Sign in in', () => {
 
     cy.get('[data-testid="signInButton"]')
       .click();
-
-    // Locate and submit the form
-    
     // Verify the app redirected you to the dashboard
     cy.location('pathname', { timeout: 10000 }).should('eq', '/dashboard');
     
