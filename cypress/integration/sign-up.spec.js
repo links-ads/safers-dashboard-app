@@ -5,9 +5,9 @@ const username = 'mmb.221177@gmail.com';
 const password = 'HelloWorld1';
 
 
-describe('Sign in in', () => {
+describe('Sign user in', () => {
   it('Sign up in user', () => {
-    cy.intercept('GET', 'https://safers-dashboard.herokuapp.com/*', { fixture: 'user.json' })
+    cy.intercept('POST', 'https://safers-dashboard.herokuapp.com/*', { fixture: 'user.json' })
     cy.visit('http://localhost:3000/auth/sign-up');
   
     cy.get('[data-testid="sign-up-email"]')
