@@ -318,7 +318,7 @@ const SignUp = () => {
                   className="my-4 sign-in-btn"
                   color="primary"
                   disabled={isSubmitting}
-                  data-testid="sign-up-btn">
+                  data-testid="signUpButton">
                 SIGN UP
                 </Button>
               </div>

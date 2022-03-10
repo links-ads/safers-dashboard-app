@@ -32,6 +32,7 @@ const SignIn = () => {
         dispatch(signIn(values));
         setSubmitting(false);
       }}
+      id="login-form"
     >
       {({
         values,

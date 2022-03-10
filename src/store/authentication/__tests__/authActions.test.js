@@ -3,7 +3,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import * as mockUser from '../../../mockData/mock_user';
-// import '../../../testConfig/config';
 import { signIn } from '../action';
 
 global.fetch = require('jest-fetch-mock');
@@ -17,6 +16,10 @@ describe('Sign in user', () => {
     rememberMe : false};
 
   beforeEach(() => {
+    request = {
+      username : 'mmb.221177@gmail.com',
+      password : '1234', 
+      rememberMe : false};
     fetch.resetMocks();
   });
 
@@ -46,29 +49,4 @@ describe('Sign in user', () => {
     });
   });
   
-  // it('check action for sign in user - Error Scenario', () => {
-  //   fetch.mockReject(new Error(mockUser.COMMON_ERROR_MSG));
-    
-  //   request = {
-  //     username : 'mmb.221177@gmail.com',
-  //     password : '1234', 
-  //     rememberMe : false};
-
-  //   const authInitialState = {};
-
-  //   const middlewares = [thunk];
-  //   const mockStore = configureMockStore(middlewares);
-  //   const initialState = { authInitialState };
-  //   newStore = mockStore(initialState);
-
-  //   const expectedActions = [
-  //     mockUser.FETCH_USER_FAILURE_ACTION,
-  //   ];
-    
-  //   return newStore.dispatch(signIn(request)).then(() => {
-  //     actions = newStore.getActions();
-  //     console.log(actions)
-  //     expect(actions).toEqual(expectedActions);
-  //   });
-  // });
 });

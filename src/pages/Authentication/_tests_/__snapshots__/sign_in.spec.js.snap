@@ -2,6 +2,7 @@
 
 exports[`Authentication Component Renders Should match snapshot 1`] = `
 <Formik
+  id="login-form"
   initialValues={
     Object {
       "email": "",

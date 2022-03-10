@@ -1,16 +1,15 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-
-import { getSession } from '../../src/helpers/authHelper';
 
 const username = 'mmb.221177@gmail.com';
 const password = '123456';
-// describe('The Home Page', () => {
-//   it('successfully loads', () => {
-//     cy.visit('http://localhost:3000/')
-//   })
-// })
+
+
 describe('Sign in in', () => {
+  
   it('Logn in user', () => {
+    cy.intercept('GET', 'https://safers-dashboard.herokuapp.com/*', { fixture: 'user.json' })
+
     cy.visit('http://localhost:3000/auth/sign-in');
   
     cy.get('[data-testid="sign-in-email"]')
@@ -22,16 +21,12 @@ describe('Sign in in', () => {
 
     cy.get('[data-testid="signInButton"]')
       .click();
-  
-    //we should be redirected to /dashboard
-   
-      // cy.url().should('include', '/dashboard')
-   
 
-    // our auth cookie should be present
-    const sessionCookie = getSession();
-    // expect(sessionCookie).to.not.equal(null);
-  
-    // cy.location('pathname').should('eq', '/dashboard')
+    // Locate and submit the form
+    
+    // Verify the app redirected you to the dashboard
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/dashboard');
+    
+    
   });
 });
