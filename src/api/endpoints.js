@@ -16,7 +16,7 @@ const realEndpoints = {
 const mockEndpoints = {
   authentication: {
     signIn: '/mock-api-sign-in.json',
-    signUp: '/sign-up',
+    signUp: '/mock-api-sign-in.json',
     forgotPassword: '/res-success.json'
 
   },

@@ -36,7 +36,7 @@ const signInFail = (error) => {
 };
 
 export const signUp = (userInfo) => async (dispatch) => {
-  const response = await api.get(endpoints.authentication.signIn, { userInfo });//should be post and signIn endpoint with the backend
+  const response = await api.get(endpoints.authentication.signUp, { userInfo });//should be post with the backend
   if (response.status === 200) {
     setSession(response.data?.user, false);
     return dispatch(signUpSuccess(response.data?.user));
