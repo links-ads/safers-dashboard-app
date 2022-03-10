@@ -45,7 +45,6 @@ const SignUp = () => {
   });
 
   const pswStrengthIndicator = (password) => {
-    signUpSchema.shape.bind
     let chkUpperCase = false, chkLowerCase = false, hasNumber = false, chkLength = false, pswStrengthColor = 'Secondary';
     let strengthScore = 0, pswStrength = 'Weak';
 
