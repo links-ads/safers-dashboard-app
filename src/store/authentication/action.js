@@ -7,10 +7,20 @@ export const signIn = ({ username, password, rememberMe }) => async (dispatch) =
   const response = await api.get(endpoints.authentication.signIn, { username, password });//should be post with the backend
   if (response.status === 200) {
     setSession(response.data?.user, rememberMe);
+    if (response.data?.user.default_aoi)
+      setAoiBySignInSuccess(response.data?.user.default_aoi);
+
     return dispatch(signInSuccess(response.data?.user));
   }
   else
     return dispatch(signInFail(response.error));
+};
+
+const setAoiBySignInSuccess = (aoi) => {
+  return {
+    type: actionTypes.SET_AOI_SUCCESS,
+    payload: aoi
+  };
 };
 const signInSuccess = (user) => {
   return {
@@ -27,8 +37,10 @@ const signInFail = (error) => {
 
 export const signUp = (userInfo) => async (dispatch) => {
   const response = await api.get(endpoints.authentication.signIn, { userInfo });//should be post and signIn endpoint with the backend
-  if (response.status === 200)
-    return dispatch(signUpSuccess(response.data));
+  if (response.status === 200) {
+    setSession(response.data?.user, false);
+    return dispatch(signUpSuccess(response.data?.user));
+  }
   else
     return dispatch(signUpFail(response.error));
 };

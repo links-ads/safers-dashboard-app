@@ -8,13 +8,16 @@ import * as Yup from 'yup'
 
 const SignIn = () => {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-  //const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(state => state.user.defaultAoi);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (isLoggedIn)
+    if (isLoggedIn) {
       navigate('/dashboard');
+      if (!defaultAoi)
+        navigate('/user/select-aoi');
+    }
   }, [isLoggedIn]);
 
   const signInSchema = Yup.object().shape({
@@ -112,9 +115,9 @@ const SignIn = () => {
                   className="sign-in-btn"
                   color="primary"
                   disabled={isSubmitting}>
-                SIGN IN
+                  SIGN IN
                 </Button>
-                
+
               </div>
               <div className="mt-1 center-sign-in">
                 <Link to="/auth/forgot-password" className="text-muted">
