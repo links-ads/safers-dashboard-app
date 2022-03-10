@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { shallow } from 'enzyme';
 
@@ -6,7 +7,7 @@ import '@testing-library/jest-dom/extend-expect';
 import SignIn from '../SignIn';
 import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { BrowserRouter } from 'react-router-dom';
-// import configureStore from 'redux-mock-store';
+import ShallowRenderer from 'react-test-renderer/shallow';
 
 const mockedNavigator = jest.fn();
 const mockedHref = jest.fn();
@@ -30,25 +31,27 @@ describe('Authentication Component', () => {
   let wrapper = null;
   // pay attention to write it at the top level of your file
   describe('Renders', () => {
-    // beforeEach(() => {
-    //   wrapper = shallow(
-    //     <SignIn/>
-    //   )
-    // })
+    beforeEach(() => {
+      wrapper = shallow(
+        <SignIn/>
+      )
+    })
     
-    // it('Should match snapshot', () => {
-    //   const renderer = new ShallowRenderer()
-    //   const result = renderer.render(<SignIn />)
-    //   expect(result).toMatchSnapshot()
-    // })
+    it('Should match snapshot', () => {
+      const renderer = new ShallowRenderer()
+      const result = renderer.render(<SignIn />)
+      expect(result).toMatchSnapshot()
+    })
       
   });
 
   describe('Form testing', () => {
     beforeEach(() => {
-      render(<BrowserRouter>
-        <SignIn/>
-      </BrowserRouter>)
+      render(
+        <BrowserRouter>
+          <SignIn/>
+        </BrowserRouter>
+      )
     })
     test('Should render correctly', () => {
       expect(screen).not.toBeNull();

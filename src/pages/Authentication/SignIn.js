@@ -82,6 +82,7 @@ const SignIn = () => {
                         onBlur={handleBlur}
                         value={values.password}
                         autoComplete="on"
+                        data-testid="sign-in-password"
                       />
                       <InputGroupText>
                         <i data-testid="password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
@@ -112,6 +113,7 @@ const SignIn = () => {
                 <Button
                   className="sign-in-btn"
                   color="primary"
+                  data-testid="signInButton"
                   disabled={isSubmitting}>
                 SIGN IN
                 </Button>

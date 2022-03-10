@@ -167,6 +167,7 @@ const SignUp = () => {
                       onBlur={handleBlur}
                       value={values.email}
                       autoComplete="on"
+                      data-testid = "sign-up-email"
                     />
                     {getError('email', errors, touched, false)}
                   </FormGroup>
@@ -180,6 +181,7 @@ const SignUp = () => {
                       id="firstName"
                       className={getError('firstName', errors, touched)}
                       name="firstName"
+                      data-testid="sign-up-firstName"
                       placeholder="first name"
                       type="text"
                       onChange={handleChange}
@@ -205,6 +207,7 @@ const SignUp = () => {
                       onBlur={handleBlur}
                       value={values.lastName}
                       autoComplete="on"
+                      data-testid="sign-up-lastName"
                     />
                     {getError('lastName', errors, touched, false)}
                   </FormGroup>
@@ -225,9 +228,10 @@ const SignUp = () => {
                         onBlur={handleBlur}
                         value={values.password}
                         autoComplete="on"
+                        data-testid="sign-up-password"
                       />
                       <InputGroupText>
-                        <i onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
+                        <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
                       </InputGroupText>
                     </InputGroup>
                     {values.password && (<>{pswStrengthIndicator(values.password)}</>)}
@@ -248,6 +252,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.userRole}
+                      data-testid="sign-up-role"
                     >
                       <option value={''} >--Select your role--</option>
                       {roles.map((role, index) => { return (<option key={index} value={role}>{role}</option>) })}
@@ -269,6 +274,7 @@ const SignUp = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.userOrg}
+                      data-testid="sign-up-org"
                     >
                       <option value={''} >--Select organisation--</option>
                       {organisations.map((org, index) => { return (<option key={index} value={org.code}>{org.code} - {org.name}</option>) })}
@@ -285,6 +291,7 @@ const SignUp = () => {
                       value={values.agreeTermsConditions}
                       onChange={handleChange}
                       onBlur={handleBlur}
+                      data-testid="sign-up-agreeTermsConditions"
                     />
                     <Label
                       check
@@ -310,7 +317,8 @@ const SignUp = () => {
                 <Button
                   className="my-4 sign-in-btn"
                   color="primary"
-                  disabled={isSubmitting}>
+                  disabled={isSubmitting}
+                  data-testid="sign-up-btn">
                 SIGN UP
                 </Button>
               </div>

@@ -14,7 +14,6 @@ export const signIn = ({username, password, rememberMe}) => async (dispatch) => 
       return dispatch(signInFail(response.error));
     }
   }catch(error) {
-    console.log(error)
     return dispatch(signInFail(error));
   }
     
