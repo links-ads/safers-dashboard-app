@@ -27,6 +27,11 @@ const BaseMap = ({
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
 }) => {
+
+  const onClick = (info, event) => {
+    console.log(info, event);
+  };
+
   const tileLayer = new TileLayer({
     // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
     data: [
@@ -71,6 +76,7 @@ const BaseMap = ({
     <DeckGL
       //views={new MapView({ repeat: true })}
       //effects={theme.effects}
+      onClick={onClick}
       initialViewState={initialViewState}
       controller={true}
       layers={finalLayerSet}

@@ -44,14 +44,14 @@ const SelectArea = () => {
     const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
     setAoi(objAoi);
     setPolygonLayer(getPolygonLayer(objAoi));
-    setViewState(getViewState(objAoi.features[0].properties.midPoint))
+    setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel))
   }
 
-  const getViewState = (midPoint) => {
+  const getViewState = (midPoint, zoomLevel = 4) => {
     return {
       longitude: midPoint[0],
       latitude: midPoint[1],
-      zoom: 4,
+      zoom: zoomLevel,
       bearing: 0,
       pitch: 0
     };
