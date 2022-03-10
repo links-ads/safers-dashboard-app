@@ -2,7 +2,7 @@ const realEndpoints = {
   authentication: {
     signIn: '/sign-in',
     signUp: '/sign-up',
-    forgotPassword: 'forgot-password'
+    forgotPassword: '/forgot-password'
   },
   aoi: {
     getAll: '/aoi/all',
@@ -15,15 +15,16 @@ const realEndpoints = {
 
 const mockEndpoints = {
   authentication: {
-    signIn: 'mock-api-sign-in.json',
+    signIn: '/mock-api-sign-in.json',
     signUp: '/sign-up',
-    forgotPassword: 'forgot-password'
+    forgotPassword: '/res-success.json'
+
   },
   aoi: {
-    getAll: 'mock-api-aoi-all.json',
+    getAll: '/mock-api-aoi-all.json',
   },
   user: {
-    setDefaultAoi: '/user/set-default-aoi',
+    setDefaultAoi: '/res-success.json',
     updateProfile: '/user/update-profile'
   }
 };

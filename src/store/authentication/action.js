@@ -45,6 +45,27 @@ const signUpFail = (error) => {
   };
 };
 
+export const reqResetPsw = (email) => async (dispatch) => {
+  const response = await api.get(endpoints.authentication.forgotPassword, { email });// To Do: change to post when API ready
+  if (response.status === 200)
+    return dispatch(reqResetPswSuccess(response.data));
+  else
+    return dispatch(reqResetPswFail(response.error));
+};
+const reqResetPswSuccess = (res) => {
+  return {
+    type: actionTypes.FORGOT_PASSWORD_SUCCESS,
+    payload: res
+  };
+};
+const reqResetPswFail = (error) => {
+  return {
+    type: actionTypes.FORGOT_PASSWORD_FAIL,
+    payload: error
+  };
+};
+
+
 
 export const signOut = () => async (dispatch) => {
   deleteSession();

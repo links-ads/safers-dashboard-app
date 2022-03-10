@@ -3,26 +3,55 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col } from 'reactstrap';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
+import ForgotPassword from './ForgotPassword';
 
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
 
 const Authentication = () => {
-  const DEFAULT_ACTIVE_TAB = 'sign-in';
-  const { activeTab } = useParams();
+  const DEFAULT_PAGE = 'sign-in';
+  const { currentPage } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!activeTab) {
-      navigate(`/auth/${DEFAULT_ACTIVE_TAB}`);
+    if (!currentPage) {
+      navigate(`/auth/${DEFAULT_PAGE}`);
     }
   }, []);
 
   const toggleTab = tab => {
-    if (activeTab !== tab) {
+    if (currentPage !== tab) {
       navigate(`/auth/${tab}`);
     }
   }
+  const getMarkup = (currentPage) => {
+    
+    if(currentPage == 'forgot-password'){
+      return <ForgotPassword />
+    }
+
+    return (                
+      <div className='tab-container'>
+        <Nav tabs className='nav-tabs-custom'>
+          <NavItem>
+            <NavLink className={currentPage == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
+            SIGN IN
+            </NavLink>
+          </NavItem>
+          <NavItem>
+            <NavLink className={currentPage == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
+            SIGN UP
+            </NavLink>
+          </NavItem>
+        </Nav>
+        <TabContent activeTab={currentPage}>
+          <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
+          <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
+        </TabContent>
+      </div>
+    );
+  }
+
   return (
     <div>
       <Container fluid className="p-0">
@@ -51,24 +80,7 @@ const Authentication = () => {
                     />
                   </div>
                 </div>
-                <div className='tab-container'>
-                  <Nav tabs className='nav-tabs-custom'>
-                    <NavItem>
-                      <NavLink className={activeTab == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
-                      SIGN IN
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink className={activeTab == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
-                      SIGN UP
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
-                  <TabContent activeTab={activeTab}>
-                    <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
-                    <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
-                  </TabContent>
-                </div>
+                {getMarkup(currentPage)}
               </div>
             </div>
           </Col>

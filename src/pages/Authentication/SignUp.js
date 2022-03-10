@@ -10,13 +10,13 @@ import { organisations, roles } from '../../constants/dropdowns';
 const SignUp = () => {
   const loggingIn = useSelector(state => state.auth.isLoggedIn);
   const [passwordToggle, setPasswordToggle] = useState(false);
-  const [isCitizen, setIsCitizen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     if (loggingIn)
       navigate('/user/select-aoi');
   }, [loggingIn]);
+
 
   const signUpSchema = Yup.object().shape({
     email: Yup.string()
@@ -34,9 +34,14 @@ const SignUp = () => {
       .required('The field cannot be empty'),
     userRole: Yup.string()
       .required('The field cannot be empty'),
-    userOrg: isCitizen ? Yup.string().notRequired() : Yup.string().required('The field cannot be empty'),
     agreeTermsConditions: Yup.bool()
       .oneOf([true], 'Please accept the terms and conditions')
+  }).when((values, schema) => {
+    if (values.userRole !== 'Citizen') {
+      return schema.shape({
+        userOrg: Yup.string().required('The field cannot be empty'),
+      });
+    }
   });
 
   const pswStrengthIndicator = (password) => {
@@ -78,7 +83,6 @@ const SignUp = () => {
     default:
       pswStrengthColor = 'Secondary';
       pswStrength = 'Weak';
-
     }
 
     const iconClass = 'float-start fs-4 fw-bold me-1';
@@ -113,7 +117,7 @@ const SignUp = () => {
 
   const getError = (key, errors, touched, errStyle = true) => {
     if (errors[key] && touched[key]) {
-      return (errStyle ? 'is-invalid' : <div className="invalid-feedback">{errors[key]}</div>)
+      return (errStyle ? 'is-invalid' : <div className="invalid-feedback d-block">{errors[key]}</div>)
     }
   }
   return (
@@ -241,10 +245,7 @@ const SignUp = () => {
                       name="userRole"
                       placeholder="select role"
                       type="select"
-                      onChange={(e) => {
-                        setIsCitizen(e.target.value == 'Citizen')
-                        handleChange(e);
-                      }}
+                      onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.userRole}
                     >
@@ -285,7 +286,6 @@ const SignUp = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
-                    {errors.agreeTermsConditions && (<div className="invalid-feedback">{errors.agreeTermsConditions}</div>)}
                     <Label
                       check
                       for="agreeTermsConditions"
@@ -302,6 +302,7 @@ const SignUp = () => {
                         <span>, to the processing of my personal data, and to receive emails</span>
                       </p>
                     </Label>
+                    {getError('agreeTermsConditions', errors, touched, false)}
                   </FormGroup>
                 </Col>
               </Row>

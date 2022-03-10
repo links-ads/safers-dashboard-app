@@ -7,11 +7,11 @@ import PageOne from '../pages/PageOne';
 import PageTwo from '../pages/PageTwo';
 
 const publicRoutes = [
-  { path: 'auth/:activeTab', component: Authentication },
   { path: 'auth/forgot-password', component: ForgotPassword },
+  { path: 'auth/:currentPage', component: Authentication },
   { path: 'user/select-aoi', component: SelectArea },
-
 ]
+
 const privateRoutes = [
   { path: '/dashboard', component: PageOne },
   { path: '/fire-alerts', component: PageTwo },
