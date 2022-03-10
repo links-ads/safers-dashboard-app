@@ -5,6 +5,16 @@ import { Formik } from 'formik';
 import DateComponent from './DateComponent';
 import MapComponent from './MapComponent';
 import ImageComponent from './ImageComponent';
+import TwitterContainer from './Containers/TwitterContainer';
+
+const tweetIDs = [
+  '1495718988952838147',
+  '1473967871512367105',
+  '1468979511907790861',
+  '1503322032477552641',
+  '1503186160524439557',
+  '1501558771293765636',
+]
 
 const Dashboard = () => {
 
@@ -209,7 +219,8 @@ const Dashboard = () => {
             </Card>
           </Col>
         </Row>
-        <Row className='weather-variables-card'>
+
+        <Row>
           <Col md={12} className='d-flex'>
             <Card className='card-weather' >
               <Row className='mb-2'>
@@ -240,6 +251,24 @@ const Dashboard = () => {
                 <Col md={3} className='d-flex  dashboard-image'>
                   <ImageComponent/>
                 </Col>
+              </Row>
+            </Card>
+          </Col>
+        </Row>
+
+        <Row>
+          <Col md={12} className='d-flex'>
+            <Card className='card-weather' >
+              <Row className='mb-2'>
+                <span className='weather-text'>Latest Tweets</span>
+              </Row>
+              <Row >
+                {tweetIDs.map((tweetID, index) => {
+                  return <Col md={4} key={index}>
+                    <TwitterContainer  tweetID={tweetID}/>
+                  </Col>
+                })}
+                  
               </Row>
             </Card>
           </Col>
