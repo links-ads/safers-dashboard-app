@@ -7,14 +7,15 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as Yup from 'yup'
 
 const SignIn = () => {
-  const loggingIn = useSelector(state => state.auth.isLoggedIn);
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  //const defaultAoi = useSelector(state => state.user.defaultAoi);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (loggingIn)
+    if (isLoggedIn)
       navigate('/dashboard');
-  }, [loggingIn]);
+  }, [isLoggedIn]);
 
   const signInSchema = Yup.object().shape({
     email: Yup.string()

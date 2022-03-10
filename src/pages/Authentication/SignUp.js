@@ -10,11 +10,12 @@ import { organisations, roles } from '../../constants/dropdowns';
 const SignUp = () => {
   const loggingIn = useSelector(state => state.auth.isLoggedIn);
   const [passwordToggle, setPasswordToggle] = useState(false);
+  const [isCitizen, setIsCitizen] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
     if (loggingIn)
-      navigate('/dashboard');
+      navigate('/user/select-aoi');
   }, [loggingIn]);
 
   const signUpSchema = Yup.object().shape({
@@ -33,35 +34,35 @@ const SignUp = () => {
       .required('The field cannot be empty'),
     userRole: Yup.string()
       .required('The field cannot be empty'),
-    userOrg: Yup.string()
-      .required('The field cannot be empty'),
+    userOrg: isCitizen ? Yup.string().notRequired() : Yup.string().required('The field cannot be empty'),
     agreeTermsConditions: Yup.bool()
       .oneOf([true], 'Please accept the terms and conditions')
   });
 
   const pswStrengthIndicator = (password) => {
+    signUpSchema.shape.bind
     let chkUpperCase = false, chkLowerCase = false, hasNumber = false, chkLength = false, pswStrengthColor = 'Secondary';
     let strengthScore = 0, pswStrength = 'Weak';
 
-    if(password.length > 7) {
+    if (password.length > 7) {
       strengthScore++;
       chkLength = true;
     }
 
-    if(password.match(/(?=.*[A-Z])/)){
+    if (password.match(/(?=.*[A-Z])/)) {
       strengthScore++;
       chkUpperCase = true;
     }
-    if(password.match(/(?=.*[a-z])/)){
+    if (password.match(/(?=.*[a-z])/)) {
       strengthScore++;
       chkLowerCase = true;
     }
-    if(password.match(/(?=.*[0-9])/)){
+    if (password.match(/(?=.*[0-9])/)) {
       strengthScore++
       hasNumber = true;
     }
 
-    switch(strengthScore) {
+    switch (strengthScore) {
     case 1:
     case 2:
       pswStrengthColor = 'danger';
@@ -100,19 +101,19 @@ const SignUp = () => {
       <Row>
         <Col>
           <List id="pswInstructions" type="unstyled" className='mt-3'>
-            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i><span className={!chkLength? 'text-white' : ''}>8 characters long</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${chkUpperCase ? successIcon :errorIcon}`}></i><span className={!chkUpperCase? 'text-white' : ''}>Uppercase letter</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${chkLowerCase ? successIcon : errorIcon}`}></i><span className={!chkLowerCase? 'text-white' : ''}>Lowercase letter</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${hasNumber ? successIcon : errorIcon}`}></i><span className={!hasNumber? 'text-white' : ''}>Must contain number</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i><span className={!chkLength ? 'text-white' : ''}>8 characters long</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkUpperCase ? successIcon : errorIcon}`}></i><span className={!chkUpperCase ? 'text-white' : ''}>Uppercase letter</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkLowerCase ? successIcon : errorIcon}`}></i><span className={!chkLowerCase ? 'text-white' : ''}>Lowercase letter</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${hasNumber ? successIcon : errorIcon}`}></i><span className={!hasNumber ? 'text-white' : ''}>Must contain number</span></li>
           </List>
         </Col>
       </Row>
     </>)
   }
 
-  const getError = (key, errors, touched, errStyle=true) => {
-    if(errors[key] && touched[key]){
-      return (errStyle ? 'is-invalid': <div className="invalid-feedback">{errors[key]}</div> )
+  const getError = (key, errors, touched, errStyle = true) => {
+    if (errors[key] && touched[key]) {
+      return (errStyle ? 'is-invalid' : <div className="invalid-feedback">{errors[key]}</div>)
     }
   }
   return (
@@ -126,6 +127,7 @@ const SignUp = () => {
         userOrg: '',
         agreeTermsConditions: false
       }}
+      enableReinitialize={true}
       validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
         console.log(values)
@@ -239,7 +241,10 @@ const SignUp = () => {
                       name="userRole"
                       placeholder="select role"
                       type="select"
-                      onChange={handleChange}
+                      onChange={(e) => {
+                        setIsCitizen(e.target.value == 'Citizen')
+                        handleChange(e);
+                      }}
                       onBlur={handleBlur}
                       value={values.userRole}
                     >
@@ -249,7 +254,7 @@ const SignUp = () => {
                     {getError('userRole', errors, touched, false)}
                   </FormGroup>
                 </Col>
-                <Col className={values.userRole == 'Citizen' ? 'd-none': ''}>
+                {values.userRole !== 'Citizen' && <Col>
                   <FormGroup className="form-group">
                     <Label for="userOrg">
                       SELECT ORGANISATION:
@@ -269,7 +274,7 @@ const SignUp = () => {
                     </Input>
                     {getError('userOrg', errors, touched, false)}
                   </FormGroup>
-                </Col>
+                </Col>}
                 <Col>
                   <FormGroup className="form-group" check>
                     <Input
@@ -285,7 +290,7 @@ const SignUp = () => {
                       check
                       for="agreeTermsConditions"
                     >
-                      <p>
+                      <p className='mb-0'>
                         <span>I agree to the </span>
                         <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" rel="noreferrer" target="_blank">
                           Terms of User
@@ -305,7 +310,7 @@ const SignUp = () => {
                   className="my-4 sign-in-btn"
                   color="primary"
                   disabled={isSubmitting}>
-                SIGN UP
+                  SIGN UP
                 </Button>
               </div>
             </Form>

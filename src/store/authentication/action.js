@@ -1,9 +1,9 @@
 import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
-import { setSession ,deleteSession} from '../../helpers/authHelper';
+import { setSession, deleteSession } from '../../helpers/authHelper';
 
-export const signIn = ({username, password, rememberMe}) => async (dispatch) => {
+export const signIn = ({ username, password, rememberMe }) => async (dispatch) => {
   const response = await api.get(endpoints.authentication.signIn, { username, password });//should be post with the backend
   if (response.status === 200) {
     setSession(response.data?.user, rememberMe);
@@ -26,7 +26,7 @@ const signInFail = (error) => {
 };
 
 export const signUp = (userInfo) => async (dispatch) => {
-  const response = await api.post(endpoints.authentication.signIn, { userInfo });
+  const response = await api.get(endpoints.authentication.signIn, { userInfo });//should be post and signIn endpoint with the backend
   if (response.status === 200)
     return dispatch(signUpSuccess(response.data));
   else
