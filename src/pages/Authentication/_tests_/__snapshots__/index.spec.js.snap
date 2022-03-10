@@ -99,7 +99,6 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
                 >
                   <NavLink
                     className=""
-                    data-test="sign-in-tab"
                     onClick={[Function]}
                     tag="a"
                   >
@@ -111,7 +110,6 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
                 >
                   <NavLink
                     className=""
-                    data-test="sign-up-tab"
                     onClick={[Function]}
                     tag="a"
                   >

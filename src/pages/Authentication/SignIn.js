@@ -28,7 +28,6 @@ const SignIn = () => {
     <Formik
       initialValues={{ email: '', password: '', rememberMe: false }}
       validationSchema={signInSchema}
-      data-test="signInComponent"
       onSubmit={(values, { setSubmitting }) => {
         dispatch(signIn(values));
         setSubmitting(false);
@@ -43,8 +42,8 @@ const SignIn = () => {
         handleSubmit,
         isSubmitting,
       }) => (
-        <div className="jumbotron" >
-          <div className="container auth-form">
+        <div className="jumbotron">
+          <div className="container auth-form" data-test="signInComponent">
             <Form onSubmit={handleSubmit} noValidate>
               <Row form>
                 <Col>
@@ -62,6 +61,7 @@ const SignIn = () => {
                       onBlur={handleBlur}
                       value={values.email}
                       autoComplete="on"
+                      data-testid="sign-in-email"
                     />
                     {errors.email && touched.email && (<div className="invalid-feedback">{errors.email}</div>)}
                   </FormGroup>
@@ -84,7 +84,7 @@ const SignIn = () => {
                         autoComplete="on"
                       />
                       <InputGroupText>
-                        <i onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
+                        <i data-testid="password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
                       </InputGroupText>
                     </InputGroup>
                     {errors.password && touched.password && (<div className="invalid-feedback">{errors.password}</div>)}
@@ -94,6 +94,7 @@ const SignIn = () => {
               <FormGroup className="form-group" check>
                 <Input
                   id="rememberMe"
+                  data-testid="rememberMe"
                   name="rememberMe"
                   type="checkbox"
                   value={values.rememberMe}

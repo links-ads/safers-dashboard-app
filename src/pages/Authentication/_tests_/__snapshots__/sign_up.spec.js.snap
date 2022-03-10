@@ -25,7 +25,6 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
       "_excludedEdges": Array [],
       "_nodes": Array [
         "agreeTermsConditions",
-        "userOrg",
         "userRole",
         "lastName",
         "firstName",
@@ -39,7 +38,22 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
         "refs": Map {},
       },
       "_whitelistError": undefined,
-      "conditions": Array [],
+      "conditions": Array [
+        Condition {
+          "fn": [Function],
+          "refs": Array [
+            Reference {
+              "getter": "",
+              "isContext": false,
+              "isSibling": false,
+              "isValue": true,
+              "key": ".",
+              "map": undefined,
+              "path": "",
+            },
+          ],
+        },
+      ],
       "deps": Array [],
       "exclusiveTests": Object {},
       "fields": Object {
@@ -207,40 +221,6 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
           },
           "tests": Array [
             [Function],
-            [Function],
-          ],
-          "transforms": Array [
-            [Function],
-          ],
-          "type": "string",
-        },
-        "userOrg": StringSchema {
-          "_blacklist": ReferenceSet {
-            "list": Set {},
-            "refs": Map {},
-          },
-          "_blacklistError": undefined,
-          "_mutate": undefined,
-          "_typeError": [Function],
-          "_whitelist": ReferenceSet {
-            "list": Set {},
-            "refs": Map {},
-          },
-          "_whitelistError": undefined,
-          "conditions": Array [],
-          "deps": Array [],
-          "exclusiveTests": Object {
-            "required": true,
-          },
-          "spec": Object {
-            "abortEarly": true,
-            "nullable": false,
-            "presence": "required",
-            "recursive": true,
-            "strict": false,
-            "strip": false,
-          },
-          "tests": Array [
             [Function],
           ],
           "transforms": Array [
