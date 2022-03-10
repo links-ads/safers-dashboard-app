@@ -8,7 +8,7 @@ export const signIn = ({ username, password, rememberMe }) => async (dispatch) =
   if (response.status === 200) {
     setSession(response.data?.user, rememberMe);
     if (response.data?.user.default_aoi)
-      setAoiBySignInSuccess(response.data?.user.default_aoi);
+      dispatch(setAoiBySignInSuccess(response.data?.user.default_aoi));
 
     return dispatch(signInSuccess(response.data?.user));
   }

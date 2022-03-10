@@ -13,6 +13,7 @@ const publicRoutes = [
 ]
 
 const privateRoutes = [
+  { path: '/', component: PageOne },
   { path: '/dashboard', component: PageOne },
   { path: '/fire-alerts', component: PageTwo },
 ]

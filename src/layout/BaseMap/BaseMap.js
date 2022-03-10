@@ -96,7 +96,7 @@ const BaseMap = ({
         initialViewState={initialViewState}
         mapStyle={'mapbox://styles/mapbox/streets-v9'}
       >
-        <NavigationControl style={{ zIndex: 2 }} position='bottom-left' showCompass={false} capturePointerMove={true} />
+        <NavigationControl style={{ zIndex: 1000000 }} position='bottom-left' showCompass={false} capturePointerMove={true} />
         <FullscreenControl position='top-left' />
       </Map>
     </DeckGL>
