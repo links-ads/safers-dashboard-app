@@ -52,8 +52,6 @@ const SelectArea = () => {
       longitude: midPoint[0],
       latitude: midPoint[1],
       zoom: 4,
-      maxZoom: 20,
-      maxPitch: 85,
       bearing: 0,
       pitch: 0
     };

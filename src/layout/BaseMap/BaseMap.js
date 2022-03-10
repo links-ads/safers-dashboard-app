@@ -1,30 +1,32 @@
 /* eslint-disable react/prop-types */
 import React, { /*useState, useEffect */ } from 'react';
-import Map, /*StaticMap,*/ { MapProvider, FullscreenControl, NavigationControl } from 'react-map-gl';
+import /*Map,*/ { FullscreenControl, NavigationControl, MapContext,/* StaticMap*/ } from 'react-map-gl';
 // import { MapView } from '@deck.gl/core';
-import DeckGL from '@deck.gl/react';
-import { /*PolygonLayer,*/ BitmapLayer, PathLayer } from '@deck.gl/layers';
-import { TileLayer } from '@deck.gl/geo-layers';
+import DeckGL, { TileLayer, BitmapLayer } from 'deck.gl';
 
 const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
   latitude: 43.02777403,
   zoom: 4,
-  maxZoom: 20,
-  maxPitch: 85,
   bearing: 0,
   pitch: 0
 };
-
-// const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/dark-matter-nolabels-gl-style/style.json';
+// const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json';
+const SCREEN_CONTROL_STYLE = {
+  position: 'absolute',
+  top: 10,
+  left: 10
+};
+const NAV_CONTROL_STYLE = {
+  position: 'absolute',
+  bottom: 10,
+  left: 10
+}
 
 const BaseMap = ({
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
-  // mapStyle = MAP_STYLE,
-  showBorder = false, onTilesLoad = null
 }) => {
-
   const tileLayer = new TileLayer({
     // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
     data: [
@@ -37,7 +39,7 @@ const BaseMap = ({
     // and we aren't limited by the browser to a certain number per domain.
     maxRequests: 20,
     pickable: true,
-    onViewportLoad: onTilesLoad,
+    onViewportLoad: null,
     autoHighlight: false,
     highlightColor: [60, 60, 60, 40],
     // https://wiki.openstreetmap.org/wiki/Zoom_levels
@@ -56,23 +58,6 @@ const BaseMap = ({
           image: props.data,
           bounds: [west, south, east, north]
         }),
-        showBorder &&
-        new PathLayer({
-          id: `${props.id}-border`,
-          visible: props.visible,
-          data: [
-            [
-              [west, north],
-              [west, south],
-              [east, south],
-              [east, north],
-              [west, north]
-            ]
-          ],
-          getPath: d => d,
-          getColor: [255, 0, 0],
-          widthMinPixels: 4
-        })
       ];
     }
   });
@@ -84,21 +69,20 @@ const BaseMap = ({
 
   return (
     <DeckGL
-      layers={finalLayerSet}
       //views={new MapView({ repeat: true })}
       //effects={theme.effects}
       initialViewState={initialViewState}
       controller={true}
-      ContextProvider={MapProvider}
+      layers={finalLayerSet}
+      ContextProvider={MapContext.Provider}
     >
-      <Map
+      {/* <StaticMap
         mapboxAccessToken='pk.eyJ1IjoidGlsYW5wZXJ1bWEiLCJhIjoiY2wwamF1aGZ0MGF4MTNlb2EwcDBpNGR6YSJ9.ay3qveZBddbe4zVS78iM3w'
         initialViewState={initialViewState}
-        mapStyle={'mapbox://styles/mapbox/streets-v9'}
-      >
-        <NavigationControl style={{ zIndex: 1000000 }} position='bottom-left' showCompass={false} capturePointerMove={true} />
-        <FullscreenControl position='top-left' />
-      </Map>
+        mapStyle={MAP_STYLE}
+      /> */}
+      <FullscreenControl style={SCREEN_CONTROL_STYLE} />
+      <NavigationControl style={NAV_CONTROL_STYLE} showCompass={false} />
     </DeckGL>
   );
 }
