@@ -5,9 +5,11 @@ const username = 'mmb.221177@gmail.com';
 const password = 'HelloWorld1';
 
 
-describe('Sign user in', () => {
+describe('Sign user up', () => {
   it('Sign up in user', () => {
-    cy.intercept('POST', 'https://safers-dashboard.herokuapp.com/*', { fixture: 'user.json' })
+
+    // cy.intercept('POST', 'https://safers-dashboard.herokuapp.com/*', { fixture: 'user.json' });
+    
     cy.visit('http://localhost:3000/auth/sign-up');
   
     cy.get('[data-testid="sign-up-email"]')
@@ -34,7 +36,7 @@ describe('Sign user in', () => {
     // Locate and submit the form
     
     // Verify the app redirected you to the dashboard
-    // cy.location('pathname', { timeout: 10000 }).should('eq', '/dashboard');
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/dashboard');
     
     
   });
