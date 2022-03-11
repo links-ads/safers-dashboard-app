@@ -1,7 +1,7 @@
 
 //Pages
 import Authentication from '../pages/Authentication';
-import PageOne from '../pages/PageOne';
+import MyProfile from '../pages/MyProfile';
 import PageTwo from '../pages/PageTwo';
 
 const publicRoutes = [
@@ -9,8 +9,8 @@ const publicRoutes = [
   { path: '/', component: Authentication },
 ]
 const privateRoutes = [
-  { path: '/dashboard', component: PageOne },
-  { path: '/fire-alerts', component: PageTwo },
+  { path: '/dashboard', component: PageTwo },
+  { path: '/my-profile/:operation', component: MyProfile },
 ]
 
 export { publicRoutes, privateRoutes }
