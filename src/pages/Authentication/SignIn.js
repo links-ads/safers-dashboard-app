@@ -32,6 +32,7 @@ const SignIn = () => {
         dispatch(signIn(values));
         setSubmitting(false);
       }}
+      id="login-form"
     >
       {({
         values,
@@ -43,7 +44,7 @@ const SignIn = () => {
         isSubmitting,
       }) => (
         <div className="jumbotron">
-          <div className="container auth-form">
+          <div className="container auth-form" data-test="signInComponent">
             <Form onSubmit={handleSubmit} noValidate>
               <Row form>
                 <Col>
@@ -61,6 +62,7 @@ const SignIn = () => {
                       onBlur={handleBlur}
                       value={values.email}
                       autoComplete="on"
+                      data-testid="sign-in-email"
                     />
                     {errors.email && touched.email && (<div className="invalid-feedback">{errors.email}</div>)}
                   </FormGroup>
@@ -81,9 +83,10 @@ const SignIn = () => {
                         onBlur={handleBlur}
                         value={values.password}
                         autoComplete="on"
+                        data-testid="sign-in-password"
                       />
                       <InputGroupText>
-                        <i onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
+                        <i data-testid="password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
                       </InputGroupText>
                     </InputGroup>
                     {errors.password && touched.password && (<div className="invalid-feedback">{errors.password}</div>)}
@@ -93,6 +96,7 @@ const SignIn = () => {
               <FormGroup className="form-group" check>
                 <Input
                   id="rememberMe"
+                  data-testid="rememberMe"
                   name="rememberMe"
                   type="checkbox"
                   value={values.rememberMe}
@@ -110,6 +114,7 @@ const SignIn = () => {
                 <Button
                   className="sign-in-btn"
                   color="primary"
+                  data-testid="signInButton"
                   disabled={isSubmitting}>
                 SIGN IN
                 </Button>
