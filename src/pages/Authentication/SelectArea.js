@@ -98,25 +98,27 @@ const SelectArea = () => {
     
     return (<>
       {sortedAois.map((aoisChunk, i) => {
-        return (<Col key={i}>{aoisChunk.map((aoi, index) => {
-          return(
-            <FormGroup key={index} className="form-group mb-2" check>
-              <Input
-                id="rememberMe"
-                name="rememberMe"
-                type="radio"
+        return (
+          <div className='d-flex flex-column me-5' key={i}>{aoisChunk.map((aoi, index) => {
+            return(
+              <FormGroup key={index} className="form-group mb-2" check>
+                <Input
+                  id="rememberMe"
+                  name="rememberMe"
+                  type="radio"
                           
-              />
-              <Label
-                check
-                for="rememberMe"
-              >
-                {aoi}
-              </Label>
-            </FormGroup>
-          )
-        })}
-        </Col>)
+                />
+                <Label
+                  check
+                  for="rememberMe"
+                >
+                  {aoi}
+                </Label>
+              </FormGroup>
+            )
+          })}
+          </div>
+        )
       })}
       
     </>
@@ -155,9 +157,9 @@ const SelectArea = () => {
                   <h5>Choose your area of interest</h5>
                 </div>
                 <hr/>
-                <Row className='m-4'>
+                <div className='m-4 d-flex flex-row'>
                   {renderAreasOfInterest()}
-                </Row>
+                </div>
                 <Col xl={8} md={10} xs={10} className='mx-auto'>
                   <Row>
                     <div style={{ height: 350 }} className="mb-5">
