@@ -17,6 +17,7 @@ const SignUp = () => {
       navigate('/dashboard');
   }, [loggingIn]);
 
+
   const signUpSchema = Yup.object().shape({
     email: Yup.string()
       .email('Invalid email address')
@@ -33,10 +34,14 @@ const SignUp = () => {
       .required('The field cannot be empty'),
     userRole: Yup.string()
       .required('The field cannot be empty'),
-    userOrg: Yup.string()
-      .required('The field cannot be empty'),
     agreeTermsConditions: Yup.bool()
       .oneOf([true], 'Please accept the terms and conditions')
+  }) .when((values, schema) => {
+    if (values.userRole !== 'Citizen') {
+      return schema.shape({
+        userOrg: Yup.string().required('The field cannot be empty'),
+      });
+    }
   });
 
   const pswStrengthIndicator = (password) => {
@@ -112,7 +117,7 @@ const SignUp = () => {
 
   const getError = (key, errors, touched, errStyle=true) => {
     if(errors[key] && touched[key]){
-      return (errStyle ? 'is-invalid': <div className="invalid-feedback">{errors[key]}</div> )
+      return (errStyle ? 'is-invalid': <div className="invalid-feedback d-block">{errors[key]}</div> )
     }
   }
   return (
@@ -280,12 +285,11 @@ const SignUp = () => {
                       onChange={handleChange}
                       onBlur={handleBlur}
                     />
-                    {errors.agreeTermsConditions && (<div className="invalid-feedback">{errors.agreeTermsConditions}</div>)}
                     <Label
                       check
                       for="agreeTermsConditions"
                     >
-                      <p>
+                      <p className='mb-0'>
                         <span>I agree to the </span>
                         <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" rel="noreferrer" target="_blank">
                           Terms of User
@@ -297,6 +301,7 @@ const SignUp = () => {
                         <span>, to the processing of my personal data, and to receive emails</span>
                       </p>
                     </Label>
+                    {getError('agreeTermsConditions', errors, touched, false)}
                   </FormGroup>
                 </Col>
               </Row>
