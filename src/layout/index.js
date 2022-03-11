@@ -1,6 +1,3 @@
-/* eslint-disable react/react-in-jsx-scope */
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import './App.scss';
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import Header from './Header'
@@ -52,20 +49,9 @@ class Layout extends Component {
 }
 
 Layout.propTypes = {
-  changeLayoutWidth: PropTypes.func,
-  changeSidebarTheme: PropTypes.func,
-  changeSidebarThemeImage: PropTypes.func,
   changeSidebarType: PropTypes.func,
-  changeTopbarTheme: PropTypes.func,
   children: PropTypes.object,
-  isPreloader: PropTypes.any,
-  layoutWidth: PropTypes.any,
-  leftSideBarTheme: PropTypes.any,
-  leftSideBarThemeImage: PropTypes.any,
   leftSideBarType: PropTypes.any,
-  location: PropTypes.object,
-  showRightSidebar: PropTypes.any,
-  topbarTheme: PropTypes.any
 }
 
 
