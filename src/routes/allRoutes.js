@@ -6,7 +6,7 @@ import PageTwo from '../pages/PageTwo';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },
-
+  { path: '/', component: Authentication },
 ]
 const privateRoutes = [
   { path: '/dashboard', component: PageTwo },
