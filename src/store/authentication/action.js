@@ -4,15 +4,21 @@ import * as api from '../../api/base';
 import { setSession ,deleteSession} from '../../helpers/authHelper';
 
 export const signIn = ({username, password, rememberMe}) => async (dispatch) => {
-  const response = await api.get(endpoints.authentication.signIn, { username, password });//should be post with the backend
-  if (response.status === 200) {
-    setSession(response.data?.user, rememberMe);
-    return dispatch(signInSuccess(response.data?.user));
+  try{
+    const response = await api.get(endpoints.authentication.signIn, { username, password });//should be post with the backend
+    if (response.status === 200) {
+      setSession(response.data?.user, rememberMe);
+      return dispatch(signInSuccess(response.data?.user));
+    }
+    else{
+      return dispatch(signInFail(response.error));
+    }
+  }catch(error) {
+    return dispatch(signInFail(error));
   }
-  else
-    return dispatch(signInFail(response.error));
+    
 };
-const signInSuccess = (user) => {
+export const signInSuccess = (user) => {
   return {
     type: actionTypes.SIGN_IN_SUCCESS,
     payload: user
