@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Input, Row, } from 'reactstrap';
+import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 import { PolygonLayer } from '@deck.gl/layers';
 import BaseMap from '../../layout/BaseMap/BaseMap';
 import { setDefaultAoi } from '../../store/appAction';
 import { getAllAreas } from '../../api/services/aoi';
+
+import logodark from '../../assets/images/background-light-logo.png'
+import logolight from '../../assets/images/background-light-logo.png'
+
+//remove when implemented
+const aois = [
+  'Kenya',
+  'Uk',
+  'Sri Lanka',
+  'Nebraska',
+  'Barcelona',
+  'Norwich',
+  'Accra'
+];
 
 const SelectArea = () => {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
@@ -76,42 +90,111 @@ const SelectArea = () => {
       getLineWidth: 100
     }))
   }
+  function chunkMaxLength(arr, chunkSize, maxLength) {
+    return Array.from({length: maxLength}, () => arr.splice(0,chunkSize));
+  }
+  const renderAreasOfInterest =  () => {
+    const sortedAois = chunkMaxLength(aois, 3, Math.ceil(aois.length/3));
+    
+    return (<>
+      {sortedAois.map((aoisChunk, i) => {
+        return (<Col key={i}>{aoisChunk.map((aoi, index) => {
+          return(
+            <FormGroup key={index} className="form-group mb-2" check>
+              <Input
+                id="rememberMe"
+                name="rememberMe"
+                type="radio"
+                          
+              />
+              <Label
+                check
+                for="rememberMe"
+              >
+                {aoi}
+              </Label>
+            </FormGroup>
+          )
+        })}
+        </Col>)
+      })}
+      
+    </>
+    );
+  }
 
   return (
     <div className="jumbotron">
-      <div className="container">
-        <Row>
-          <p>
-            Before you start using the SAFERS software you need to select your area of interest. Please do select an area from the list below.
-          </p>
-        </Row>
-        <Row>
-          <div style={{ height: 500 }} className="mb-5">
-            <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
-          </div>
-        </Row>
-        <Row>
-          <Input
-            id="selectedAoi"
-            name="selectedAoi"
-            placeholder="Select area of interest"
-            type="select"
-            onChange={selectAoi}
-          >
-            <option value={''} >Select area of interest</option>
-            {allAoi.map((aoi, index) => { return (<option key={index} value={aoi.features[0].properties.id}>{aoi.features[0].properties.country} - {aoi.features[0].properties.name}</option>) })}
-          </Input>
-          <div className='center-sign-in'>
-            <Button
-              className="my-4 sign-in-btn"
-              color="primary"
-              onClick={handleSubmit}>
+      <Row>
+        <Col xl={2} className="bg-overlay">
+    
+        </Col>
+        <Col xl={10}>
+         
+          <Row>
+            <div className="p-2">
+              <div className="d-block auth-logo">
+                <img
+                  src={logodark}
+                  alt=""
+                      
+                  className="auth-logo-dark"
+                />
+                <img
+                  src={logolight}
+                  alt=""
+                      
+                  className="auth-logo-light"
+                />
+              </div>
+            </div>
+              
+            <Row>
+              <Col xl={11} md={10} xs={12} className='mx-auto sign-up-aoi-map-bg mb-2.5'>
+                <div className='d-flex justify-content-center'>
+                  <h5>Choose your area of interest</h5>
+                </div>
+                <hr/>
+                <Row className='m-4'>
+                  {renderAreasOfInterest()}
+                </Row>
+                <Col xl={8} md={10} xs={10} className='mx-auto'>
+                  <Row>
+                    <div style={{ height: 350 }} className="mb-5">
+                      <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
+                    </div>
+                  </Row>
+                  <Row>
+                    <Input
+                      id="selectedAoi"
+                      name="selectedAoi"
+                      placeholder="Select area of interest"
+                      type="select"
+                      onChange={selectAoi}
+                    >
+                      <option value={''} >Select area of interest</option>
+                      {allAoi.map((aoi, index) => { return (<option key={index} value={aoi.features[0].properties.id}>{aoi.features[0].properties.country} - {aoi.features[0].properties.name}</option>) })}
+                    </Input>
+                    <div className='center-sign-in'>
+                      <Button
+                        className="my-4 sign-in-btn"
+                        color="primary"
+                        onClick={handleSubmit}>
               SAVE AREA OF INTEREST
-            </Button>
-          </div>
-        </Row>
-      </div>
+                      </Button>
+                    </div>
+                  </Row>
+                </Col>
+              </Col>
+              
+            </Row>
+            
+          </Row>
+         
+        </Col>
+      </Row>
     </div>
+    
   );
 }
 
