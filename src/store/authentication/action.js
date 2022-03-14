@@ -1,7 +1,7 @@
 import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
-import { setSession ,deleteSession} from '../../helpers/authHelper';
+import { setSession, deleteSession } from '../../helpers/authHelper';
 
 export const signIn = ({email, password, rememberMe}) => async (dispatch) => {
   try{
@@ -10,13 +10,20 @@ export const signIn = ({email, password, rememberMe}) => async (dispatch) => {
       setSession(response, rememberMe);
       return dispatch(signInSuccess(response.user));
     }
-    else{
+    else {
       return dispatch(signInFail(response.error));
     }
-  }catch(error) {
+  } catch (error) {
     return dispatch(signInFail(error));
   }
-    
+
+};
+
+const setAoiBySignInSuccess = (aoi) => {
+  return {
+    type: actionTypes.SET_AOI_SUCCESS,
+    payload: aoi
+  };
 };
 export const signInSuccess = (user) => {
   return {
