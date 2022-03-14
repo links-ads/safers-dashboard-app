@@ -7,6 +7,8 @@ import * as Yup from 'yup'
 import { signUp as registration } from '../../store/appAction';
 import { organisations, roles } from '../../constants/dropdowns';
 
+const PWD_MIN_LENGTH = 8;
+
 const SignUp = () => {
   const loggingIn = useSelector(state => state.auth.isLoggedIn);
   const [passwordToggle, setPasswordToggle] = useState(false);
@@ -48,7 +50,7 @@ const SignUp = () => {
     let chkUpperCase = false, chkLowerCase = false, hasNumber = false, chkLength = false, pswStrengthColor = 'Secondary';
     let strengthScore = 0, pswStrength = 'Weak';
 
-    if (password.length > 7) {
+    if (password.length >= PWD_MIN_LENGTH) {
       strengthScore++;
       chkLength = true;
     }
@@ -104,7 +106,7 @@ const SignUp = () => {
       <Row>
         <Col>
           <List id="pswInstructions" type="unstyled" className='mt-3'>
-            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i><span className={!chkLength ? 'text-white' : ''}>8 characters long</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i><span className={!chkLength ? 'text-white' : ''}>{PWD_MIN_LENGTH} characters long</span></li>
             <li className='mb-1'><i className={`${iconClass} ${chkUpperCase ? successIcon : errorIcon}`}></i><span className={!chkUpperCase ? 'text-white' : ''}>Uppercase letter</span></li>
             <li className='mb-1'><i className={`${iconClass} ${chkLowerCase ? successIcon : errorIcon}`}></i><span className={!chkLowerCase ? 'text-white' : ''}>Lowercase letter</span></li>
             <li className='mb-1'><i className={`${iconClass} ${hasNumber ? successIcon : errorIcon}`}></i><span className={!hasNumber ? 'text-white' : ''}>Must contain number</span></li>
