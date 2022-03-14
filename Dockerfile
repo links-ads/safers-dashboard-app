@@ -1,6 +1,6 @@
 # build
 FROM node:14-alpine AS node
-ARG ENV_NAME
+ARG REACT_APP_DOMAIN
 WORKDIR /usr/app/src
 COPY ./ /usr/app/src
 

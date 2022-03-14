@@ -82,7 +82,7 @@ const ForgotPassword = () => {
                     className="my-4 sign-in-btn"
                     color="secondary"
                     disabled={isSubmitting}
-                    onClick={()=>{navigate('/auth/sign-up');}}>
+                    onClick={()=>{navigate('/auth/sign-in');}}>
                     BACK
                   </Button>
                   <Button
