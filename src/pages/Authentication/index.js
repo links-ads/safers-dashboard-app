@@ -54,10 +54,10 @@ const Authentication = () => {
 
   return (
     <div>
-      <Container fluid className="p-0">
+      <Container fluid className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">
-            <p> Structured Approaches for<br></br>
+            <p data-test="overlay-text"> Structured Approaches for<br></br>
                   Forest fire Emergencies<br></br> in Resilient Societies</p>
     
           </Col>

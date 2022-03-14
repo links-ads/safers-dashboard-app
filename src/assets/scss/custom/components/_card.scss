@@ -22,3 +22,15 @@
   margin-bottom: 24px;  
 }
 
+.default-panel.card {
+  border-radius: 10px;
+  background-color: $body-bg;
+  border: $border-width solid $border-color;
+  box-shadow: $box-shadow;
+  .card-body {
+    padding: 0;
+  }
+  .card-title, .card-text {
+    padding: 1.25rem 1.25rem;
+  }
+}

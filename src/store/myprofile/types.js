@@ -1,0 +1,6 @@
+export const MP_GET_SUCCESS = 'MP_GET_SUCCESS'
+export const MP_GET_FAIL = 'MP_GET_FAIL'
+export const MP_UPDATE_SUCCESS = 'MP_UPDATE_SUCCESS'
+export const MP_UPDATE_FAIL = 'MP_UPDATE_FAIL'
+
+

@@ -4,10 +4,12 @@ import { Button, Col, Form, FormGroup, Input, Label, Row, Alert } from 'reactstr
 import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux';
 import { reqResetPsw } from '../../store/appAction';
+import { useNavigate } from 'react-router-dom';
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
   const forgotPswresponse = useSelector(state => state.auth.forgotPswresponse);
+  const navigate = useNavigate();
 
   const signUpSchema = Yup.object().shape({
     email: Yup.string()
@@ -76,9 +78,11 @@ const ForgotPassword = () => {
                 </Row>
                 <div className='center-sign-in'>
                   <Button
+                    type="button"
                     className="my-4 sign-in-btn"
                     color="secondary"
-                    disabled={isSubmitting}>
+                    disabled={isSubmitting}
+                    onClick={()=>{navigate('/auth/sign-up');}}>
                     BACK
                   </Button>
                   <Button

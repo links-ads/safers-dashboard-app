@@ -10,7 +10,11 @@ const realEndpoints = {
   user: {
     setDefaultAoi: '/user/set-default-aoi',
     updateProfile: '/user/update-profile'
-  }
+  },
+  myprofile: {
+    getInfo: '/my-profile.json',
+    updateInfo: '/my-profile.json',
+  },
 };
 
 const mockEndpoints = {
@@ -26,7 +30,11 @@ const mockEndpoints = {
   user: {
     setDefaultAoi: '/res-success.json',
     updateProfile: '/user/update-profile'
-  }
+  },
+  myprofile: {
+    getInfo: '/my-profile.json',
+    updateInfo: '/my-profile.json',
+  },
 };
 
 // eslint-disable-next-line no-constant-condition
