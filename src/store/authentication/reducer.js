@@ -48,8 +48,8 @@ const signUpSuccess = (state, action) => {
   return updateObject(state, updatedState);
 }
 
-const signUpFail = (state) => {
-  return updateObject(state, { error: true });
+const signUpFail = (state, action) => {
+  return updateObject(state, { error: action.payload });
 };
 
 const reqResetPswSuccess = (state, action) => {

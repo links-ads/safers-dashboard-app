@@ -1,7 +1,7 @@
 export const authHeader = () => {
   let user = JSON.parse(getSession());
-  if (user && user.accessToken) {
-    return { 'Authorization': 'Bearer ' + user.accessToken };
+  if (user && user.access_token) {
+    return { 'Authorization': 'Bearer ' + user.access_token };
   } else {
     return {};
   }

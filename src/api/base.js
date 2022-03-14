@@ -25,6 +25,7 @@ export async function post(url, data, config = {}) {
   return axiosApi
     .post(url, { ...data }, { ...config, headers: authHeader() })
     .then(response => response)
+    .catch(error => error.response);
 }
 
 export async function put(url, data, config = {}) {
@@ -37,4 +38,12 @@ export async function del(url, config = {}) {
   return await axiosApi
     .delete(url, { ...config, headers: authHeader() })
     .then(response => response)
+}
+
+export function isSuccessResp(status) {
+  //2xx Status Codes [Success]
+  if(status >= 200 && status <= 299){
+    return true;
+  }
+  return false;
 }

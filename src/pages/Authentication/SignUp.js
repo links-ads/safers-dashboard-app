@@ -2,20 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, Progress, List } from 'reactstrap';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup'
-import { signUp as registration } from '../../store/appAction';
-import { organisations, roles } from '../../constants/dropdowns';
+import { signUp as registration, getOrgaList } from '../../store/appAction';
+import { roles } from '../../constants/dropdowns';
+import { getGeneralErrors }  from '../../helpers/errorHelper'
 
 const SignUp = () => {
-  const loggingIn = useSelector(state => state.auth.isLoggedIn);
   const [passwordToggle, setPasswordToggle] = useState(false);
-  const navigate = useNavigate();
+  const orgList = useSelector(state => state.common.orgList);
+  const error = useSelector(state => state.auth.error);
+  if(error){
+    window.scrollTo(0, 0);
+  }
+
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (loggingIn)
-      navigate('/dashboard');
-  }, [loggingIn]);
+    dispatch(getOrgaList());
+  }, []);
 
 
   const signUpSchema = Yup.object().shape({
@@ -28,18 +33,18 @@ const SignUp = () => {
         'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number'
       )
       .required('The field cannot be empty'),
-    firstName: Yup.string()
+    first_name: Yup.string()
       .required('The field cannot be empty'),
-    lastName: Yup.string()
+    last_name: Yup.string()
       .required('The field cannot be empty'),
-    userRole: Yup.string()
+    role: Yup.string()
       .required('The field cannot be empty'),
-    agreeTermsConditions: Yup.bool()
+    accepted_terms: Yup.bool()
       .oneOf([true], 'Please accept the terms and conditions')
   }) .when((values, schema) => {
-    if (values.userRole !== 'Citizen') {
+    if (values.role !== 'Citizen') {
       return schema.shape({
-        userOrg: Yup.string().required('The field cannot be empty'),
+        organization: Yup.string().required('The field cannot be empty'),
       });
     }
   });
@@ -116,20 +121,23 @@ const SignUp = () => {
   }
 
   const getError = (key, errors, touched, errStyle=true) => {
+    
     if(errors[key] && touched[key]){
       return (errStyle ? 'is-invalid': <div className="invalid-feedback d-block">{errors[key]}</div> )
     }
   }
+  
+  console.log('error..', error);
   return (
     <Formik
       initialValues={{
         email: '',
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         password: '',
-        userRole: '',
-        userOrg: '',
-        agreeTermsConditions: false
+        role: '',
+        organization: '',
+        accepted_terms: false
       }}
       validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
@@ -149,6 +157,7 @@ const SignUp = () => {
         isSubmitting,
       }) => (
         <div className="jumbotron">
+          {getGeneralErrors(error)}
           <div className="container auth-form">
             <Form onSubmit={handleSubmit} noValidate>
               <Row form>
@@ -174,42 +183,42 @@ const SignUp = () => {
                 </Col>
                 <Col>
                   <FormGroup className="form-group">
-                    <Label for="firstName">
+                    <Label for="first_name">
                       FIRST NAME:
                     </Label>
                     <Input
-                      id="firstName"
-                      className={getError('firstName', errors, touched)}
-                      name="firstName"
+                      id="first_name"
+                      className={getError('first_name', errors, touched)}
+                      name="first_name"
                       data-testid="sign-up-firstName"
                       placeholder="first name"
                       type="text"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.firstName}
+                      value={values.first_name}
                       autoComplete="on"
                     />
-                    {getError('firstName', errors, touched, false)}
+                    {getError('first_name', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col >
                   <FormGroup className="form-group">
-                    <Label for="lastName">
+                    <Label for="last_name">
                       LAST NAME:
                     </Label>
                     <Input
-                      id="lastName"
-                      className={getError('lastName', errors, touched)}
-                      name="lastName"
+                      id="last_name"
+                      className={getError('last_name', errors, touched)}
+                      name="last_name"
                       placeholder="last name"
-                      type="lastName"
+                      type="text"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.lastName}
+                      value={values.last_name}
                       autoComplete="on"
                       data-testid="sign-up-lastName"
                     />
-                    {getError('lastName', errors, touched, false)}
+                    {getError('last_name', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col>
@@ -240,62 +249,62 @@ const SignUp = () => {
                 </Col>
                 <Col >
                   <FormGroup className="form-group">
-                    <Label for="userRole">
+                    <Label for="role">
                       SELECT YOUR ROLE:
                     </Label>
                     <Input
-                      id="userRole"
-                      className={getError('userRole', errors, touched)}
-                      name="userRole"
+                      id="role"
+                      className={getError('role', errors, touched)}
+                      name="role"
                       placeholder="select role"
                       type="select"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.userRole}
+                      value={values.role}
                       data-testid="sign-up-role"
                     >
                       <option value={''} >--Select your role--</option>
                       {roles.map((role, index) => { return (<option key={index} value={role}>{role}</option>) })}
                     </Input>
-                    {getError('userRole', errors, touched, false)}
+                    {getError('role', errors, touched, false)}
                   </FormGroup>
                 </Col>
-                <Col className={values.userRole == 'Citizen' ? 'd-none': ''}>
+                <Col className={values.role == 'Citizen' ? 'd-none': ''}>
                   <FormGroup className="form-group">
-                    <Label for="userOrg">
+                    <Label for="organization">
                       SELECT ORGANISATION:
                     </Label>
                     <Input
-                      id="userOrg"
-                      className={getError('userOrg', errors, touched)}
-                      name="userOrg"
+                      id="organization"
+                      className={getError('organization', errors, touched)}
+                      name="organization"
                       placeholder="select organisation"
                       type="select"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.userOrg}
+                      value={values.organization}
                       data-testid="sign-up-org"
                     >
                       <option value={''} >--Select organisation--</option>
-                      {organisations.map((org, index) => { return (<option key={index} value={org.code}>{org.code} - {org.name}</option>) })}
+                      {orgList.map((org, index) => { return (<option key={index} value={org.name}>{org.name}</option>) })}
                     </Input>
-                    {getError('userOrg', errors, touched, false)}
+                    {getError('organization', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col>
                   <FormGroup className="form-group" check>
                     <Input
-                      id="agreeTermsConditions"
-                      name="agreeTermsConditions"
+                      id="accepted_terms"
+                      name="accepted_terms"
                       type="checkbox"
-                      value={values.agreeTermsConditions}
+                      value={values.accepted_terms}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       data-testid="sign-up-agreeTermsConditions"
                     />
                     <Label
                       check
-                      for="agreeTermsConditions"
+                      for="accepted_terms"
                     >
                       <p className='mb-0'>
                         <span>I agree to the </span>
@@ -309,7 +318,7 @@ const SignUp = () => {
                         <span>, to the processing of my personal data, and to receive emails</span>
                       </p>
                     </Label>
-                    {getError('agreeTermsConditions', errors, touched, false)}
+                    {getError('accepted_terms', errors, touched, false)}
                   </FormGroup>
                 </Col>
               </Row>

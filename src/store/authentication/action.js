@@ -3,12 +3,12 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import { setSession ,deleteSession} from '../../helpers/authHelper';
 
-export const signIn = ({username, password, rememberMe}) => async (dispatch) => {
+export const signIn = ({email, password, rememberMe}) => async (dispatch) => {
   try{
-    const response = await api.get(endpoints.authentication.signIn, { username, password });//should be post with the backend
+    const response = await api.post(endpoints.authentication.signIn, { email, password });//should be post with the backend
     if (response.status === 200) {
-      setSession(response.data?.user, rememberMe);
-      return dispatch(signInSuccess(response.data?.user));
+      setSession(response, rememberMe);
+      return dispatch(signInSuccess(response.user));
     }
     else{
       return dispatch(signInFail(response.error));
@@ -32,11 +32,12 @@ const signInFail = (error) => {
 };
 
 export const signUp = (userInfo) => async (dispatch) => {
-  const response = await api.post(endpoints.authentication.signIn, { userInfo });
-  if (response.status === 200)
+  const response = await api.post(endpoints.authentication.signUp, { ...userInfo });
+  if (api.isSuccessResp(response.status)) {
     return dispatch(signUpSuccess(response.data));
-  else
-    return dispatch(signUpFail(response.error));
+  }
+  
+  return dispatch(signUpFail(response.data));
 };
 const signUpSuccess = (user) => {
   return {
