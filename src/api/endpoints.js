@@ -1,15 +1,15 @@
 const realEndpoints = {
   authentication: {
-    signIn: '/sign-in',
-    signUp: '/sign-up',
-    forgotPassword: '/forgot-password'
+    signIn: '/api/auth/login',
+    signUp: '/api/auth/register',
+    forgotPassword: '/api/auth/password/reset'
   },
   aoi: {
-    getAll: '/aoi/all',
+    getAll: '/api/aois',
   },
   user: {
     setDefaultAoi: '/user/set-default-aoi',
-    updateProfile: '/user/update-profile'
+    profile: '/api/users/'
   },
   myprofile: {
     getInfo: '/my-profile.json',
