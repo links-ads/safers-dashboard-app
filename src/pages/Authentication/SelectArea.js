@@ -11,17 +11,6 @@ import { getAllAreas } from '../../api/services/aoi';
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
 
-//remove when implemented
-const aois = [
-  'Kenya',
-  'Uk',
-  'Sri Lanka',
-  'Nebraska',
-  'Barcelona',
-  'Norwich',
-  'Accra'
-];
-
 const SelectArea = () => {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -90,29 +79,31 @@ const SelectArea = () => {
       getLineWidth: 100
     }))
   }
-  function chunkMaxLength(arr, chunkSize, maxLength) {
-    return Array.from({length: maxLength}, () => arr.splice(0,chunkSize));
+
+  const chunkMaxLength = (arr, chunkSize, maxLength) => {
+    return Array.from({ length: maxLength }, () => arr.splice(0, chunkSize));
   }
-  const renderAreasOfInterest =  () => {
-    const sortedAois = chunkMaxLength(aois, 3, Math.ceil(aois.length/3));
-    
+  const renderAreasOfInterest = () => {
+    let aoisToSplit = _.cloneDeep(allAoi);
+    const sortedAois = chunkMaxLength(aoisToSplit, 3, Math.ceil(aoisToSplit.length / 3));
     return (<>
       {sortedAois.map((aoisChunk, i) => {
         return (
           <div className='d-flex flex-column me-5' key={i}>{aoisChunk.map((aoi, index) => {
-            return(
+            return (
               <FormGroup key={index} className="form-group mb-2" check>
                 <Input
-                  id="rememberMe"
+                  id={`selectAoi${index}`}
                   name="rememberMe"
                   type="radio"
-                          
+                  onChange={selectAoi}
+                  value={aoi.features[0].properties.id}
                 />
                 <Label
                   check
-                  for="rememberMe"
+                  id={`selectAoi${index}`}
                 >
-                  {aoi}
+                  {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
                 </Label>
               </FormGroup>
             )
@@ -120,7 +111,6 @@ const SelectArea = () => {
           </div>
         )
       })}
-      
     </>
     );
   }
@@ -129,34 +119,29 @@ const SelectArea = () => {
     <div className="jumbotron">
       <Row>
         <Col xl={2} className="bg-overlay">
-    
         </Col>
         <Col xl={10}>
-         
           <Row>
             <div className="p-2">
               <div className="d-block auth-logo">
                 <img
                   src={logodark}
                   alt=""
-                      
                   className="auth-logo-dark"
                 />
                 <img
                   src={logolight}
                   alt=""
-                      
                   className="auth-logo-light"
                 />
               </div>
             </div>
-              
             <Row>
               <Col xl={11} md={10} xs={12} className='mx-auto sign-up-aoi-map-bg mb-2.5'>
                 <div className='d-flex justify-content-center'>
                   <h5>Choose your area of interest</h5>
                 </div>
-                <hr/>
+                <hr />
                 <div className='m-4 d-flex flex-row'>
                   {renderAreasOfInterest()}
                 </div>
@@ -167,36 +152,23 @@ const SelectArea = () => {
                     </div>
                   </Row>
                   <Row>
-                    <Input
-                      id="selectedAoi"
-                      name="selectedAoi"
-                      placeholder="Select area of interest"
-                      type="select"
-                      onChange={selectAoi}
-                    >
-                      <option value={''} >Select area of interest</option>
-                      {allAoi.map((aoi, index) => { return (<option key={index} value={aoi.features[0].properties.id}>{aoi.features[0].properties.country} - {aoi.features[0].properties.name}</option>) })}
-                    </Input>
                     <div className='center-sign-in'>
                       <Button
                         className="my-4 sign-in-btn"
                         color="primary"
                         onClick={handleSubmit}>
-              SAVE AREA OF INTEREST
+                        SAVE AREA OF INTEREST
                       </Button>
                     </div>
                   </Row>
                 </Col>
               </Col>
-              
             </Row>
-            
           </Row>
-         
         </Col>
       </Row>
     </div>
-    
+
   );
 }
 

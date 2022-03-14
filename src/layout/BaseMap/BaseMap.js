@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { /*useState, useEffect */ } from 'react';
 import /*Map,*/ { FullscreenControl, NavigationControl, MapContext,/* StaticMap*/ } from 'react-map-gl';
-// import { MapView } from '@deck.gl/core';
+import { MapView } from '@deck.gl/core';
 import DeckGL, { TileLayer, BitmapLayer } from 'deck.gl';
 
 const INITIAL_VIEW_STATE = {
@@ -74,7 +74,7 @@ const BaseMap = ({
 
   return (
     <DeckGL
-      //views={new MapView({ repeat: true })}
+      views={new MapView({ repeat: true })}
       //effects={theme.effects}
       onClick={onClick}
       initialViewState={initialViewState}
