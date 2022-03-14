@@ -5,4 +5,9 @@ export {
   reqResetPsw
 }
   from './authentication/action';
+
+export {
+  setDefaultAoi
+}
+  from './user/action'
 export { getInfo, updateInfo } from './myprofile/action'

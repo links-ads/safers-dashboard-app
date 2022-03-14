@@ -1,22 +1,32 @@
 import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
-import { setSession ,deleteSession} from '../../helpers/authHelper';
+import { setSession, deleteSession } from '../../helpers/authHelper';
 
-export const signIn = ({username, password, rememberMe}) => async (dispatch) => {
-  try{
+export const signIn = ({ username, password, rememberMe }) => async (dispatch) => {
+  try {
     const response = await api.get(endpoints.authentication.signIn, { username, password });//should be post with the backend
     if (response.status === 200) {
       setSession(response.data?.user, rememberMe);
+      if (response.data?.user.default_aoi)
+        dispatch(setAoiBySignInSuccess(response.data?.user.default_aoi));
+
       return dispatch(signInSuccess(response.data?.user));
     }
-    else{
+    else {
       return dispatch(signInFail(response.error));
     }
-  }catch(error) {
+  } catch (error) {
     return dispatch(signInFail(error));
   }
-    
+
+};
+
+const setAoiBySignInSuccess = (aoi) => {
+  return {
+    type: actionTypes.SET_AOI_SUCCESS,
+    payload: aoi
+  };
 };
 export const signInSuccess = (user) => {
   return {
@@ -32,9 +42,11 @@ const signInFail = (error) => {
 };
 
 export const signUp = (userInfo) => async (dispatch) => {
-  const response = await api.post(endpoints.authentication.signIn, { userInfo });
-  if (response.status === 200)
-    return dispatch(signUpSuccess(response.data));
+  const response = await api.get(endpoints.authentication.signUp, { userInfo });//should be post with the backend
+  if (response.status === 200) {
+    setSession(response.data?.user, false);
+    return dispatch(signUpSuccess(response.data?.user));
+  }
   else
     return dispatch(signUpFail(response.error));
 };

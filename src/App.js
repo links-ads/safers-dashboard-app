@@ -1,9 +1,9 @@
 import React from 'react';
 import { publicRoutes, privateRoutes } from './routes/allRoutes';
-import Authmiddleware from './routes/middleware/Authmiddleware'
+import Authmiddleware from './routes/middleware/Authmiddleware';
 import { Routes, Route } from 'react-router-dom';
-import './assets/scss/theme.scss'
-
+import './assets/scss/theme.scss';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const App = () => (
   <Routes>

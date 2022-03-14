@@ -1,0 +1,59 @@
+{
+    "user": {
+        "id": 8,
+        "name": "mmb",
+        "email": "mmb.221177@gmail.com",
+        "status": 2,
+        "status_label": "Active",
+        "mobile": "738422532",
+        "code_country": "00967",
+        "avatar": "http://localhost:3000/default_image.jpg",
+        "customer_id": 3,
+        "provider_id": null,
+        "accessToken": "eyJhbGciOiJIUzI1NiJ9.eyJpZCI6OCwibmFtZSI6Im1tYiIsImVtYWlsIjoibW1iLjIyMTE3N0BnbWFpbC5jb20iLCJpYXQiOjE1NDc5NjYxMzQsImV4cCI6MTU1MDU1ODEzNH0.TLMc6owRpsOWl-al7yErWKcF7ylEGYW4ihEK_gLn5KY",
+        "default_aoi": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    21.70419794,
+                                    39.86806542
+                                ],
+                                [
+                                    24.4391029738,
+                                    39.86806542
+                                ],
+                                [
+                                    24.4391029738,
+                                    41.40658688
+                                ],
+                                [
+                                    21.70419794,
+                                    41.40658688
+                                ],
+                                [
+                                    21.70419794,
+                                    39.86806542
+                                ]
+                            ]
+                        ]
+                    },
+                    "properties": {
+                        "id": 2,
+                        "name": "Central Macedonia",
+                        "country": "Greece",
+                        "midPoint": [
+                            24.4391029738,
+                            41.40658688
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}

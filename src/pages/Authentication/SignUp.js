@@ -7,6 +7,8 @@ import * as Yup from 'yup'
 import { signUp as registration } from '../../store/appAction';
 import { organisations, roles } from '../../constants/dropdowns';
 
+const PWD_MIN_LENGTH = 8;
+
 const SignUp = () => {
   const loggingIn = useSelector(state => state.auth.isLoggedIn);
   const [passwordToggle, setPasswordToggle] = useState(false);
@@ -14,7 +16,7 @@ const SignUp = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     if (loggingIn)
-      navigate('/dashboard');
+      navigate('/user/select-aoi');
   }, [loggingIn]);
 
 
@@ -36,7 +38,7 @@ const SignUp = () => {
       .required('The field cannot be empty'),
     agreeTermsConditions: Yup.bool()
       .oneOf([true], 'Please accept the terms and conditions')
-  }) .when((values, schema) => {
+  }).when((values, schema) => {
     if (values.userRole !== 'Citizen') {
       return schema.shape({
         userOrg: Yup.string().required('The field cannot be empty'),
@@ -48,25 +50,25 @@ const SignUp = () => {
     let chkUpperCase = false, chkLowerCase = false, hasNumber = false, chkLength = false, pswStrengthColor = 'Secondary';
     let strengthScore = 0, pswStrength = 'Weak';
 
-    if(password.length > 7) {
+    if (password.length >= PWD_MIN_LENGTH) {
       strengthScore++;
       chkLength = true;
     }
 
-    if(password.match(/(?=.*[A-Z])/)){
+    if (password.match(/(?=.*[A-Z])/)) {
       strengthScore++;
       chkUpperCase = true;
     }
-    if(password.match(/(?=.*[a-z])/)){
+    if (password.match(/(?=.*[a-z])/)) {
       strengthScore++;
       chkLowerCase = true;
     }
-    if(password.match(/(?=.*[0-9])/)){
+    if (password.match(/(?=.*[0-9])/)) {
       strengthScore++
       hasNumber = true;
     }
 
-    switch(strengthScore) {
+    switch (strengthScore) {
     case 1:
     case 2:
       pswStrengthColor = 'danger';
@@ -82,7 +84,6 @@ const SignUp = () => {
     default:
       pswStrengthColor = 'Secondary';
       pswStrength = 'Weak';
-
     }
 
     const iconClass = 'float-start fs-4 fw-bold me-1';
@@ -105,19 +106,19 @@ const SignUp = () => {
       <Row>
         <Col>
           <List id="pswInstructions" type="unstyled" className='mt-3'>
-            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i><span className={!chkLength? 'text-white' : ''}>8 characters long</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${chkUpperCase ? successIcon :errorIcon}`}></i><span className={!chkUpperCase? 'text-white' : ''}>Uppercase letter</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${chkLowerCase ? successIcon : errorIcon}`}></i><span className={!chkLowerCase? 'text-white' : ''}>Lowercase letter</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${hasNumber ? successIcon : errorIcon}`}></i><span className={!hasNumber? 'text-white' : ''}>Must contain number</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i><span className={!chkLength ? 'text-white' : ''}>{PWD_MIN_LENGTH} characters long</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkUpperCase ? successIcon : errorIcon}`}></i><span className={!chkUpperCase ? 'text-white' : ''}>Uppercase letter</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${chkLowerCase ? successIcon : errorIcon}`}></i><span className={!chkLowerCase ? 'text-white' : ''}>Lowercase letter</span></li>
+            <li className='mb-1'><i className={`${iconClass} ${hasNumber ? successIcon : errorIcon}`}></i><span className={!hasNumber ? 'text-white' : ''}>Must contain number</span></li>
           </List>
         </Col>
       </Row>
     </>)
   }
 
-  const getError = (key, errors, touched, errStyle=true) => {
-    if(errors[key] && touched[key]){
-      return (errStyle ? 'is-invalid': <div className="invalid-feedback d-block">{errors[key]}</div> )
+  const getError = (key, errors, touched, errStyle = true) => {
+    if (errors[key] && touched[key]) {
+      return (errStyle ? 'is-invalid' : <div className="invalid-feedback d-block">{errors[key]}</div>)
     }
   }
   return (
@@ -131,6 +132,7 @@ const SignUp = () => {
         userOrg: '',
         agreeTermsConditions: false
       }}
+      enableReinitialize={true}
       validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
         console.log(values)
@@ -167,7 +169,7 @@ const SignUp = () => {
                       onBlur={handleBlur}
                       value={values.email}
                       autoComplete="on"
-                      data-testid = "sign-up-email"
+                      data-testid="sign-up-email"
                     />
                     {getError('email', errors, touched, false)}
                   </FormGroup>
@@ -260,7 +262,7 @@ const SignUp = () => {
                     {getError('userRole', errors, touched, false)}
                   </FormGroup>
                 </Col>
-                <Col className={values.userRole == 'Citizen' ? 'd-none': ''}>
+                {values.userRole !== 'Citizen' && <Col>
                   <FormGroup className="form-group">
                     <Label for="userOrg">
                       SELECT ORGANISATION:
@@ -281,7 +283,7 @@ const SignUp = () => {
                     </Input>
                     {getError('userOrg', errors, touched, false)}
                   </FormGroup>
-                </Col>
+                </Col>}
                 <Col>
                   <FormGroup className="form-group" check>
                     <Input
@@ -319,7 +321,7 @@ const SignUp = () => {
                   color="primary"
                   disabled={isSubmitting}
                   data-testid="signUpButton">
-                SIGN UP
+                  SIGN UP
                 </Button>
               </div>
             </Form>
