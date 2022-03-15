@@ -1,3 +1,8 @@
 .dflt-seperator {
   border-bottom: $border-width solid $border-color;
 }
+.react-datepicker__input-container {
+  input {
+    @extend .form-control;
+  }
+}

@@ -6,6 +6,7 @@ import SelectArea from '../pages/Authentication/SelectArea';
 import PageOne from '../pages/PageOne';
 import MyProfile from '../pages/MyProfile';
 import PageTwo from '../pages/PageTwo';
+import Dashboard from '../pages/Dashboard';
 
 const publicRoutes = [
   { path: 'auth/forgot-password', component: ForgotPassword },
@@ -15,7 +16,7 @@ const publicRoutes = [
 
 const privateRoutes = [
   { path: '/', component: PageOne },
-  { path: '/dashboard', component: PageOne },
+  { path: '/dashboard', component: Dashboard },
   { path: '/fire-alerts', component: PageTwo },
   { path: '/dashboard', component: PageTwo },
   { path: '/my-profile/:operation', component: MyProfile },
