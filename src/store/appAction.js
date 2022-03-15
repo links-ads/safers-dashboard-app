@@ -2,7 +2,8 @@ export {
   signIn,
   signUp,
   signOut,
-  reqResetPsw
+  reqResetPsw,
+  isRemembered
 }
   from './authentication/action';
 
@@ -11,4 +12,4 @@ export {
 }
   from './user/action'
 export { getInfo, updateInfo } from './myprofile/action'
-export { getOrgaList } from './common/action'
+export { getOrgList } from './common/action'

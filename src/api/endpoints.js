@@ -1,28 +1,32 @@
 const realEndpoints = {
   authentication: {
-    signIn: '/api/auth/login',
-    signUp: '/api/auth/register',
-    forgotPassword: '/api/auth/password/reset'
+    signIn: '/auth/login/',
+    signUp: '/auth/register/',
+    forgotPassword: '/auth/password/reset/',
+    refreshToken: '/auth/token/refresh/',
   },
   aoi: {
-    getAll: '/api/aois',
+    getAll: '/aois/',
   },
   user: {
     setDefaultAoi: '/user/set-default-aoi',
-    profile: '/api/users/'
+    profile: '/users/'
   },
   myprofile: {
     getInfo: '/my-profile.json',
     updateInfo: '/my-profile.json',
   },
+  common: {
+    organizations:'/organizations/'
+  }
 };
 
 const mockEndpoints = {
   authentication: {
     signIn: '/mock-api-sign-in.json',
     signUp: '/mock-api-sign-in.json',
-    forgotPassword: '/res-success.json'
-
+    forgotPassword: '/res-success.json',
+    refreshToken: '/res-success.json'
   },
   aoi: {
     getAll: '/mock-api-aoi-all.json',
@@ -36,13 +40,11 @@ const mockEndpoints = {
     updateInfo: '/my-profile.json',
   },
   common: {
-    // organizations: '/api/organizations/'
+    // organizations: '/organizations/'
     organizations: '/res-success.json'
-  },
-  getFavoriteIngredients: '/ingredients/favorite',
-  addToFavoriteIngredients: '/ingredients/add-to/favorite'
+  }
 };
 
 // eslint-disable-next-line no-constant-condition
-export const endpoints = true ? mockEndpoints : realEndpoints;
+export const endpoints = false ? mockEndpoints : realEndpoints;
 

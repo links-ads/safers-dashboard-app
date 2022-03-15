@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { signIn } from '../../store/appAction';
+import { signIn, isRemembered } from '../../store/appAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, } from 'reactstrap';
@@ -17,6 +17,9 @@ const SignIn = () => {
       navigate('/dashboard');
       if (!defaultAoi)
         navigate('/user/select-aoi');
+    }
+    else {
+      dispatch(isRemembered());
     }
   }, [isLoggedIn]);
 
