@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, Progress, List } from 'reactstrap';
-// import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup'
-import { signUp as registration, getOrgaList } from '../../store/appAction';
-import { roles } from '../../constants/dropdowns';
+import { signUp as registration, getOrgList, getRoleList } from '../../store/appAction';
 import { getGeneralErrors }  from '../../helpers/errorHelper'
 
 const PWD_MIN_LENGTH = 8;
@@ -13,6 +11,7 @@ const PWD_MIN_LENGTH = 8;
 const SignUp = () => {
   const [passwordToggle, setPasswordToggle] = useState(false);
   const orgList = useSelector(state => state.common.orgList);
+  const roles = useSelector(state => state.common.roleList);
   const error = useSelector(state => state.auth.error);
   if(error){
     window.scrollTo(0, 0);
@@ -21,7 +20,10 @@ const SignUp = () => {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    dispatch(getOrgaList());
+    if(roles.length===0)
+      dispatch(getOrgList());
+    if(orgList.length===0)
+      dispatch(getRoleList());
   }, []);
 
 
@@ -266,7 +268,7 @@ const SignUp = () => {
                       data-testid="sign-up-role"
                     >
                       <option value={''} >--Select your role--</option>
-                      {roles.map((role, index) => { return (<option key={index} value={role}>{role}</option>) })}
+                      {roles.map((role, index) => { return (<option key={index} value={role.name}>{role.name}</option>) })}
                     </Input>
                     {getError('role', errors, touched, false)}
                   </FormGroup>
@@ -292,7 +294,7 @@ const SignUp = () => {
                     </Input>
                     {getError('organization', errors, touched, false)}
                   </FormGroup>
-                </Col>}
+                </Col>
                 <Col>
                   <FormGroup className="form-group" check>
                     <Input

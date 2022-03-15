@@ -2,6 +2,7 @@ const realEndpoints = {
   authentication: {
     signIn: '/auth/login/',
     signUp: '/auth/register/',
+    signOut: '/auth/logout/',
     forgotPassword: '/auth/password/reset/',
     refreshToken: '/auth/token/refresh/',
   },
@@ -17,7 +18,8 @@ const realEndpoints = {
     updateInfo: '/my-profile.json',
   },
   common: {
-    organizations:'/organizations/'
+    organizations:'/organizations/',
+    roles: '/roles/'
   }
 };
 

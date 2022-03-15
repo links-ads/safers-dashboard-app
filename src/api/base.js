@@ -3,9 +3,12 @@ import { authHeader } from '../helpers/authHelper';
 
 //apply base url for axios
 const BASE_URL = process.env.REACT_APP_DOMAIN ? process.env.REACT_APP_DOMAIN : 'https://safers-dashboard.herokuapp.com'
+const API_PREFIX = 'api';
+
+console.log('process.env.REACT_APP_DOMAIN..', process.env.REACT_APP_DOMAIN);
 
 const axiosApi = axios.create({
-  baseURL: BASE_URL,
+  baseURL: `${BASE_URL}/${API_PREFIX}`,
 })
 
 //const authUser = JSON.parse(localStorage.getItem('authUser'));

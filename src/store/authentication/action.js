@@ -100,8 +100,11 @@ const reqResetPswFail = (error) => {
 
 
 export const signOut = () => async (dispatch) => {
-  deleteSession();
-  return dispatch(signOutSuccess());
+  const response = await api.post(endpoints.authentication.signOut);
+  if (response.status === 200) {
+    deleteSession();
+    return dispatch(signOutSuccess());
+  }
 };
 
 const signOutSuccess = () => {

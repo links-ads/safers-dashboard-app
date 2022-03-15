@@ -12,4 +12,4 @@ export {
 }
   from './user/action'
 export { getInfo, updateInfo } from './myprofile/action'
-export { getOrgList } from './common/action'
+export { getOrgList, getRoleList } from './common/action'
