@@ -3,6 +3,7 @@ export {
   signUp,
   signOut,
   reqResetPsw,
+  resetPsw,
   isRemembered
 }
   from './authentication/action';

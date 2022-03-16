@@ -78,7 +78,7 @@ const signUpFail = (error) => {
 };
 
 export const reqResetPsw = (email) => async (dispatch) => {
-  const response = await api.get(endpoints.authentication.forgotPassword, { email });// To Do: change to post when API ready
+  const response = await api.post(endpoints.authentication.forgotPswReset, email);// To Do: change to post when API ready
   if (response.status === 200)
     return dispatch(reqResetPswSuccess(response.data));
   else
@@ -93,6 +93,25 @@ const reqResetPswSuccess = (res) => {
 const reqResetPswFail = (error) => {
   return {
     type: actionTypes.FORGOT_PASSWORD_FAIL,
+    payload: error
+  };
+};
+export const resetPsw = (data) => async (dispatch) => {
+  const response = await api.post(endpoints.authentication.resetPsw, { ...data });
+  if (response.status === 200)
+    return dispatch(resetPswSuccess(response.data));
+  
+  return dispatch(resetPswFail(response.data));
+};
+const resetPswSuccess = (res) => {
+  return {
+    type: actionTypes.RESET_PASSWORD_SUCCESS,
+    payload: res
+  };
+};
+const resetPswFail = (error) => {
+  return {
+    type: actionTypes.RESET_PASSWORD_FAIL,
     payload: error
   };
 };

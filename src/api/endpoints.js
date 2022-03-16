@@ -3,7 +3,8 @@ const realEndpoints = {
     signIn: '/auth/login/',
     signUp: '/auth/register/',
     signOut: '/auth/logout/',
-    forgotPassword: '/auth/password/reset/',
+    forgotPswReset: '/auth/password/reset/',
+    resetPsw: '/auth/password/reset/confirm/',
     refreshToken: '/auth/token/refresh/',
   },
   aoi: {

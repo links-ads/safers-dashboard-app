@@ -1,17 +1,15 @@
 import React from 'react';
-import { Card, CardBody, CardTitle, CardText, List } from 'reactstrap';
+import { Card, CardBody, CardTitle, List } from 'reactstrap';
 
 export const getGeneralErrors = (errors) => {
   if(!errors) return '';
   const errArr = Object.keys(errors);
 
   const getErrContainer = (error) => {
-    if(Array.isArray(errors[error])){
-      return <List>
-        {errors[error].map((errorElem, index) => {
-          return (<li key={`${error}-${index}`}>{error} - {errorElem}</li>);
-        })}
-      </List>
+    if(Array.isArray(errors[error])) {
+      return errors[error].map((errorElem, index) => {
+        return (<li key={index}>{error} - {errorElem}</li>);
+      })
     }
     return <p>{error}</p>
   }
@@ -21,12 +19,19 @@ export const getGeneralErrors = (errors) => {
         <CardTitle className="mb-4 text-white">
           <i className="mdi mdi-alert-outline me-3" />Please fix the following error(s):
         </CardTitle>
-        <CardText className="text-light">
-          {errArr.map((error) => {
+        <List className="text-white">{
+          errArr.map((error) => {
             return getErrContainer(error);
           })}
-        </CardText>
+        </List>
       </CardBody>
     </Card>
   )
+}
+
+export const getError = (key, errors, touched, errStyle=true) => {
+    
+  if(errors[key] && touched[key]){
+    return (errStyle ? 'is-invalid': <div className="invalid-feedback d-block">{errors[key]}</div> )
+  }
 }
