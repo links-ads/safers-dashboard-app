@@ -6,3 +6,21 @@
     @extend .form-control;
   }
 }
+
+.calender-left {
+  border-top-left-radius: .3rem;
+  border-bottom-left-radius: .3rem;
+  i {
+    color: $gray-100;
+  }
+}
+.calender-right {
+  border-top-right-radius: .3rem;
+  border-bottom-right-radius: .3rem;
+  i {
+    color: $gray-100;
+  }
+}
+.flatpickr-input {
+  border : none;
+}

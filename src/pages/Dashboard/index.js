@@ -1,20 +1,16 @@
 import React  from 'react';
-import { Container, Row, Col, Form, Label, Input, FormGroup, Card, CardHeader, CardBody, CardFooter, Badge,  } from 'reactstrap';
-import { Formik } from 'formik';
+import { Container, Row, Col, Card, CardHeader, CardBody, CardFooter, Badge,  } from 'reactstrap';
 // import { roles } from '../../constants/dropdowns';
-import DateComponent from './DateComponent';
-import MapComponent from './MapComponent';
 import ImageComponent from './ImageComponent';
-import TwitterContainer from './Containers/TwitterContainer';
+import SearchContainer from './Containers/SearchContainer';
+import MapContainer from './Containers/MapContainer';
+// import TwitterContainer from './Containers/TwitterContainer';
 
-const tweetIDs = [
-  '1495718988952838147',
-  '1473967871512367105',
-  '1468979511907790861',
-  '1503322032477552641',
-  '1503186160524439557',
-  '1501558771293765636',
-]
+// const tweetIDs = [
+//   '1495718988952838147',
+//   '1473967871512367105',
+//   '1468979511907790861',
+// ]
 
 const Dashboard = () => {
 
@@ -22,57 +18,8 @@ const Dashboard = () => {
     <div className="page-content">
       <Container fluid className='p-0'>
         
-        <Row className='g-0'>
-          <Col >
-            <Formik
-              initialValues={{
-                areaOfInterest: '',
-                dateRange: '',
-              }}
-              
-              onSubmit={() => {
-                
-              }}
-            >
-              {({
-                // values,
-                // handleChange,
-                // handleBlur,
-                handleSubmit,
-              }) => (
-                <Form onSubmit={handleSubmit} noValidate>
-                  <Row >
-                    <Col md={6}  className=''>
-                      <FormGroup row>
-                        <Label
-                          for="exampleEmail"
-                          size="lg"
-                          sm={4}
-                          className='text-nowrap'
-                        >
-                            Area of interest
-                        </Label>
-                        <Col sm={8}>
-                          <Input
-                            bsSize="md"
-                            id="exampleEmail"
-                            name="email"
-                            placeholder="lg"
-                            type="email"
-                          />
-                        </Col>
-                      </FormGroup>
-                    </Col>
-                    <Col></Col>
-                    <Col md={3}>
-                      <DateComponent/>
-                    </Col>
-                  </Row>
-                </Form>
-              )}
-            </Formik>
-          </Col>
-        </Row>
+        <SearchContainer/>
+        
         <Row>
           <Col>
             <Card className='stats-card px-2 pb-3'>
@@ -128,7 +75,7 @@ const Dashboard = () => {
         <Row>
           <Col md={5}>
             <Card>
-              <MapComponent/>
+              <MapContainer/>
             </Card>
           </Col>
           <Col md={7} className='d-flex'>
@@ -256,7 +203,7 @@ const Dashboard = () => {
           </Col>
         </Row>
 
-        <Row>
+        {/* <Row>
           <Col md={12} className='d-flex'>
             <Card className='card-weather' >
               <Row className='mb-2'>
@@ -272,7 +219,7 @@ const Dashboard = () => {
               </Row>
             </Card>
           </Col>
-        </Row>
+        </Row> */}
         
       </Container>
     </div>
