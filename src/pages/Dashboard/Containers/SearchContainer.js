@@ -1,11 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Label, Input, FormGroup,  } from 'reactstrap';
 import { Formik } from 'formik';
 // import { roles } from '../../constants/dropdowns';
 // import DateComponent from '../Components/DateComponent';
 import DateRangeComponent from '../Components/DateRange';
+import { useSelector } from 'react-redux';
+import { getAllAreas } from '../../../api/services/aoi';
+import _ from 'lodash';
 
 const SearchContainer = () => {
+  const defaultAoi = useSelector(state => state.user.defaultAoi);
+
+  const [selectedAoi, setAoi] = useState(null);
+  const [allAoi, setAllAoi] = useState([]);
+  
+
+  useEffect(() => {
+    const getAllAoi = async () => {
+      let aoiList = await getAllAreas();
+      setAllAoi(aoiList)
+    }
+    getAllAoi();
+  }, []);
+
+  const selectAoi = (e) => {
+    const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
+    setAoi(objAoi);
+    console.log(objAoi)
+  }
+
   return(
     <Row className='g-0'>
       <Col >
@@ -40,12 +63,18 @@ const SearchContainer = () => {
                     </Col>
                     <Col sm={8}>
                       <Input
-                        bsSize="md"
-                        id="exampleEmail"
-                        name="email"
-                        placeholder="lg"
-                        type="email"
-                      />
+                        id="exampleSelect"
+                        name="select"
+                        type="select"
+                        onChange={(e) => selectAoi(e)}
+                        value={selectedAoi ? selectedAoi.features[0].properties.id : defaultAoi}
+                      >
+                        <option value=''> ---- Select Area ------</option>
+                        {allAoi.map((aoi, index) => <option key={index} value={aoi.features[0].properties.id}>
+                          {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
+                        </option>)}
+                        
+                      </Input>
                     </Col>
                   </FormGroup>
                 </Col>

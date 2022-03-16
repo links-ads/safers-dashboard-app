@@ -74,9 +74,7 @@ const Dashboard = () => {
 
         <Row>
           <Col md={5}>
-            <Card>
-              <MapContainer/>
-            </Card>
+            <MapContainer/>
           </Col>
           <Col md={7} className='d-flex'>
             <Card className='card-weather' >
