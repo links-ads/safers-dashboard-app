@@ -9,10 +9,6 @@ const axiosApi = axios.create({
   baseURL: `${BASE_URL}/${API_PREFIX}`,
 })
 
-//const authUser = JSON.parse(localStorage.getItem('authUser'));
-
-//axiosApi.defaults.headers.common['Authorization'] = authUser ? authUser.accessToken : '';
-
 axiosApi.interceptors.response.use(
   response => response,
   error => Promise.reject(error)
