@@ -1,16 +1,17 @@
 import React  from 'react';
 import { Container, Row, Col, Card, CardHeader, CardBody, CardFooter, Badge,  } from 'reactstrap';
 // import { roles } from '../../constants/dropdowns';
-import ImageComponent from './ImageComponent';
+import ImageComponent from './Components/ImageComponent';
 import SearchContainer from './Containers/SearchContainer';
 import MapContainer from './Containers/MapContainer';
-// import TwitterContainer from './Containers/TwitterContainer';
+import VideoComponent from './Components/VideoCOmponent';
+import TwitterContainer from './Containers/TwitterContainer';
 
-// const tweetIDs = [
-//   '1495718988952838147',
-//   '1473967871512367105',
-//   '1468979511907790861',
-// ]
+const tweetIDs = [
+  '1495718988952838147',
+  '1473967871512367105',
+  '1468979511907790861',
+]
 
 const Dashboard = () => {
 
@@ -185,7 +186,7 @@ const Dashboard = () => {
                   <ImageComponent/>
                 </Col>
                 <Col md={3} className='d-flex  dashboard-image'>
-                  <ImageComponent/>
+                  <VideoComponent/>
                 </Col>
                 <Col md={3} className='d-flex  dashboard-image'>
                   <ImageComponent/>
@@ -194,30 +195,32 @@ const Dashboard = () => {
                   <ImageComponent/>
                 </Col>
                 <Col md={3} className='d-flex  dashboard-image'>
-                  <ImageComponent/>
+                  <VideoComponent/>
                 </Col>
               </Row>
             </Card>
           </Col>
         </Row>
 
-        {/* <Row>
+        <Row>
           <Col md={12} className='d-flex'>
             <Card className='card-weather' >
               <Row className='mb-2'>
                 <span className='weather-text'>Latest Tweets</span>
               </Row>
-              <Row >
+              <div className='row'>
                 {tweetIDs.map((tweetID, index) => {
                   return <Col md={4} key={index}>
-                    <TwitterContainer  tweetID={tweetID}/>
+                    <div className="embed-responsive embed-responsive-16by9">
+                      <TwitterContainer  tweetID={tweetID}/>
+                    </div>
                   </Col>
                 })}
                   
-              </Row>
+              </div>
             </Card>
           </Col>
-        </Row> */}
+        </Row>
         
       </Container>
     </div>

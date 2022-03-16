@@ -16,6 +16,7 @@ export default function Tweet({
           conversation: 'none',
           dnt: true,
           theme: 'dark',
+          height:'380px !important'
         }
       ).then(() => setIsLoading(false));
     }
