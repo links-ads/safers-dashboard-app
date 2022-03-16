@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
-import { PolygonLayer } from '@deck.gl/layers';
+import { PolygonLayer, FlyToInterpolator } from 'deck.gl';
 import BaseMap from '../../layout/BaseMap/BaseMap';
 import { setDefaultAoi } from '../../store/appAction';
 import { getAllAreas } from '../../api/services/aoi';
@@ -56,7 +56,9 @@ const SelectArea = () => {
       latitude: midPoint[1],
       zoom: zoomLevel,
       bearing: 0,
-      pitch: 0
+      pitch: 0,
+      transitionDuration: 1000,
+      transitionInterpolator: new FlyToInterpolator()
     };
   }
 
