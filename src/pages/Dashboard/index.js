@@ -211,9 +211,7 @@ const Dashboard = () => {
               <div className='row'>
                 {tweetIDs.map((tweetID, index) => {
                   return <Col md={4} key={index}>
-                    <div className="embed-responsive embed-responsive-16by9">
-                      <TwitterContainer  tweetID={tweetID}/>
-                    </div>
+                    <TwitterContainer  tweetID={tweetID}/>
                   </Col>
                 })}
                   

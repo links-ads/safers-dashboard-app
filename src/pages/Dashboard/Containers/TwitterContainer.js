@@ -14,16 +14,20 @@ export default function Tweet({
         {
           align: 'center',
           conversation: 'none',
+          cards: 'vivible',
           dnt: true,
           theme: 'dark',
-          height:'380px !important'
         }
-      ).then(() => setIsLoading(false));
+      ).then(() => {
+        setIsLoading(false)
+        const tweet = document.querySelector('[data-tweet-id="'+tweetID+'"]');
+        tweet.removeAttribute('scrolling')
+      });
     }
   }, [tweetID]);
 
   return (
-    <div className="w-full animate-fadeIn" id={tweetID}>
+    <div className="w-full animate-fadeIn twitter-component" id={tweetID}>
       {isLoading && <p>LOADING</p>}
     </div>
   );
