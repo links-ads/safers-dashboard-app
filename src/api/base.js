@@ -2,7 +2,7 @@ import axios from 'axios'
 import { authHeader } from '../helpers/authHelper';
 
 //apply base url for axios
-const BASE_URL = process.env.REACT_APP_API ? process.env.REACT_APP_API : 'https://safers-gateway.herokuapp.com'
+export const BASE_URL = process.env.REACT_APP_API ? process.env.REACT_APP_API : 'https://safers-gateway.herokuapp.com'
 const API_PREFIX = 'api';
 
 const axiosApi = axios.create({

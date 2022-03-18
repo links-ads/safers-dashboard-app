@@ -20,7 +20,9 @@ export const endpoints = {
   },
   common: {
     organizations:'/organizations/',
-    roles: '/roles/'
+    roles: '/roles/',
+    termsNconditions: '/api/documents/terms-current',
+    privacyPolicy: '/api/documents/privacy-current'
   }
 };
 
