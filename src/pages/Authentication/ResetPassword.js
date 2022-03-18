@@ -28,11 +28,11 @@ const ResetPassword = () => {
       .oneOf([Yup.ref('new_password1')], 'Passwords must match'),
   });
 
-  if(resetPswRes) {
+  if(resetPswRes?.detail) {
     return (
       <div className='forgot-psw'>
         <Alert color="success" role="alert">
-          {resetPswRes}. Please <Link to='/auth/sign-in'>Sign in</Link>
+          {resetPswRes.detail}. Please <Link to='/auth/sign-in'>Sign in</Link>
         </Alert>  
       </div>
     );
