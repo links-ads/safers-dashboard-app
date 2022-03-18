@@ -4,6 +4,7 @@ import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col } from 
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
+import ResetPassword from './ResetPassword';
 
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
@@ -25,31 +26,33 @@ const Authentication = () => {
     }
   }
   const getMarkup = (currentPage) => {
-    
-    if(currentPage == 'forgot-password'){
-      return <ForgotPassword />
+    switch (currentPage) {
+    case 'forgot-password':
+      return <ForgotPassword />;
+    case 'password':
+      return <ResetPassword />;
+    default:
+      return (                
+        <div className='tab-container'>
+          <Nav tabs className='nav-tabs-custom'>
+            <NavItem>
+              <NavLink className={currentPage == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
+              SIGN IN
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink className={currentPage == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
+              SIGN UP
+              </NavLink>
+            </NavItem>
+          </Nav>
+          <TabContent activeTab={currentPage}>
+            <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
+            <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
+          </TabContent>
+        </div>
+      );
     }
-
-    return (                
-      <div className='tab-container'>
-        <Nav tabs className='nav-tabs-custom'>
-          <NavItem>
-            <NavLink className={currentPage == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
-            SIGN IN
-            </NavLink>
-          </NavItem>
-          <NavItem>
-            <NavLink className={currentPage == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
-            SIGN UP
-            </NavLink>
-          </NavItem>
-        </Nav>
-        <TabContent activeTab={currentPage}>
-          <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
-          <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
-        </TabContent>
-      </div>
-    );
   }
 
   return (

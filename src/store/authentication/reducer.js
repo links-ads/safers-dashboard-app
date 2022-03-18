@@ -5,7 +5,9 @@ const initialState = {
   user: {},
   isLoggedIn: false,
   error: false,
-  forgotPswresponse: null
+  forgotPswresponse: null,
+  resetPswRes: null,
+  resetPswError: null
   //loading: false
 };
 
@@ -17,6 +19,8 @@ const ingredientsReducer = (state = initialState, action) => {
   case actionTypes.SIGN_UP_FAIL: return signUpFail(state, action);
   case actionTypes.FORGOT_PASSWORD_SUCCESS: return reqResetPswSuccess(state, action);
   case actionTypes.FORGOT_PASSWORD_FAIL: return reqResetPswFail(state, action);
+  case actionTypes.RESET_PASSWORD_SUCCESS: return resetPswSuccess(state, action);
+  case actionTypes.RESET_PASSWORD_FAIL: return resetPswFail(state, action);
   case actionTypes.SIGN_OUT: return signOut(state, action);
   default:
     return state;
@@ -48,8 +52,20 @@ const signUpSuccess = (state, action) => {
   return updateObject(state, updatedState);
 }
 
-const signUpFail = (state) => {
-  return updateObject(state, { error: true });
+const signUpFail = (state, action) => {
+  return updateObject(state, { error: action.payload });
+};
+
+const resetPswSuccess = (state, action) => {
+  const updatedState = {
+    resetPswRes: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const resetPswFail = (state, action) => {
+  return updateObject(state, { resetPswError: action.payload });
 };
 
 const reqResetPswSuccess = (state, action) => {
@@ -60,8 +76,8 @@ const reqResetPswSuccess = (state, action) => {
   return updateObject(state, updatedState);
 }
 
-const reqResetPswFail = (state) => {
-  return updateObject(state, { error: true });
+const reqResetPswFail = (state, action) => {
+  return updateObject(state, { error: action.payload });
 };
 
 const signOut = (state) => {

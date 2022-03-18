@@ -1,42 +1,26 @@
-const realEndpoints = {
+export const endpoints = {
   authentication: {
-    signIn: '/api/auth/login',
-    signUp: '/api/auth/register',
-    forgotPassword: '/api/auth/password/reset'
+    signIn: '/auth/login/',
+    signUp: '/auth/register/',
+    signOut: '/auth/logout/',
+    forgotPswReset: '/auth/password/reset/',
+    resetPsw: '/auth/password/reset/confirm/',
+    refreshToken: '/auth/token/refresh/',
   },
   aoi: {
-    getAll: '/api/aois',
+    getAll: '/aois/',
   },
   user: {
     setDefaultAoi: '/user/set-default-aoi',
-    profile: '/api/users/'
+    profile: '/users/'
   },
   myprofile: {
-    getInfo: '/my-profile.json',
-    updateInfo: '/my-profile.json',
+    getInfo: '/myprofile/view/',
+    updateInfo: '/myprofile/update',
   },
+  common: {
+    organizations:'/organizations/',
+    roles: '/roles/'
+  }
 };
-
-const mockEndpoints = {
-  authentication: {
-    signIn: '/mock-api-sign-in.json',
-    signUp: '/mock-api-sign-in.json',
-    forgotPassword: '/res-success.json'
-
-  },
-  aoi: {
-    getAll: '/mock-api-aoi-all.json',
-  },
-  user: {
-    setDefaultAoi: '/res-success.json',
-    updateProfile: '/user/update-profile'
-  },
-  myprofile: {
-    getInfo: '/my-profile.json',
-    updateInfo: '/my-profile.json',
-  },
-};
-
-// eslint-disable-next-line no-constant-condition
-export const endpoints = true ? mockEndpoints : realEndpoints;
 
