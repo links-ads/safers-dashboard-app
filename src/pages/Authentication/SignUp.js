@@ -1,23 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
-import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, Progress, List } from 'reactstrap';
-import { useNavigate } from 'react-router-dom';
+import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row } from 'reactstrap';
 import * as Yup from 'yup'
-import { signUp as registration } from '../../store/appAction';
-import { organisations, roles } from '../../constants/dropdowns';
-
-const PWD_MIN_LENGTH = 8;
+import { signUp as registration, getOrgList, getRoleList } from '../../store/appAction';
+import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
+import { passwordHelper, pwdRegEx, pwdValidationTxt }  from '../../helpers/passwordHelper';
+import { endpoints } from '../../api/endpoints';
+import { BASE_URL } from '../../api/base';
 
 const SignUp = () => {
-  const loggingIn = useSelector(state => state.auth.isLoggedIn);
   const [passwordToggle, setPasswordToggle] = useState(false);
-  const navigate = useNavigate();
+  const orgList = useSelector(state => state.common.orgList);
+  const roles = useSelector(state => state.common.roleList);
+  const error = useSelector(state => state.auth.error);
+  const docTNM = BASE_URL +  endpoints.common.termsNconditions;
+  const docPP = BASE_URL +  endpoints.common.privacyPolicy;
+
+  if(error){
+    window.scrollTo(0, 0);
+  }
+
+  // const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (loggingIn)
-      navigate('/user/select-aoi');
-  }, [loggingIn]);
+    if(roles.length===0)
+      dispatch(getOrgList());
+    if(orgList.length===0)
+      dispatch(getRoleList());
+  }, []);
 
 
   const signUpSchema = Yup.object().shape({
@@ -26,111 +37,36 @@ const SignUp = () => {
       .required('The field cannot be empty'),
     password: Yup.string()
       .matches(
-        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
-        'Must Contain 8 Characters, One Uppercase, One Lowercase, One Number'
+        pwdRegEx,
+        pwdValidationTxt
       )
       .required('The field cannot be empty'),
-    firstName: Yup.string()
+    first_name: Yup.string()
       .required('The field cannot be empty'),
-    lastName: Yup.string()
+    last_name: Yup.string()
       .required('The field cannot be empty'),
-    userRole: Yup.string()
+    role: Yup.string()
       .required('The field cannot be empty'),
-    agreeTermsConditions: Yup.bool()
+    accepted_terms: Yup.bool()
       .oneOf([true], 'Please accept the terms and conditions')
   }).when((values, schema) => {
-    if (values.userRole !== 'Citizen') {
+    if (values.role !== 'Citizen') {
       return schema.shape({
-        userOrg: Yup.string().required('The field cannot be empty'),
+        organization: Yup.string().required('The field cannot be empty'),
       });
     }
   });
 
-  const pswStrengthIndicator = (password) => {
-    let chkUpperCase = false, chkLowerCase = false, hasNumber = false, chkLength = false, pswStrengthColor = 'Secondary';
-    let strengthScore = 0, pswStrength = 'Weak';
-
-    if (password.length >= PWD_MIN_LENGTH) {
-      strengthScore++;
-      chkLength = true;
-    }
-
-    if (password.match(/(?=.*[A-Z])/)) {
-      strengthScore++;
-      chkUpperCase = true;
-    }
-    if (password.match(/(?=.*[a-z])/)) {
-      strengthScore++;
-      chkLowerCase = true;
-    }
-    if (password.match(/(?=.*[0-9])/)) {
-      strengthScore++
-      hasNumber = true;
-    }
-
-    switch (strengthScore) {
-    case 1:
-    case 2:
-      pswStrengthColor = 'danger';
-      break;
-    case 3:
-      pswStrengthColor = 'warning';
-      pswStrength = 'Average';
-      break;
-    case 4:
-      pswStrengthColor = 'success';
-      pswStrength = 'Strong';
-      break;
-    default:
-      pswStrengthColor = 'Secondary';
-      pswStrength = 'Weak';
-    }
-
-    const iconClass = 'float-start fs-4 fw-bold me-1';
-    const successIcon = 'bx bx-check-circle text-success';
-    const errorIcon = 'bx bx-x-circle text-danger';
-    return (<>
-      <Row className='mt-2'>
-        <Col>
-          <Progress id="pswStrength" multi width={25}>
-            <Progress bar color={strengthScore > 0 ? pswStrengthColor : ''} value={25} className="rounded grey" />
-            <Progress bar color={strengthScore > 1 ? pswStrengthColor : ''} value={25} className="ms-2 rounded grey" />
-            <Progress bar color={strengthScore > 2 ? pswStrengthColor : ''} value={25} className="ms-2 rounded grey" />
-            <Progress bar color={strengthScore > 3 ? pswStrengthColor : ''} value={25} className="ms-2 rounded grey" />
-          </Progress>
-        </Col>
-        <Col>
-          <span color={pswStrengthColor} className="float-end">{pswStrength}</span>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <List id="pswInstructions" type="unstyled" className='mt-3'>
-            <li className='mb-1'><i className={`${iconClass} ${chkLength ? successIcon : errorIcon}`}></i><span className={!chkLength ? 'text-white' : ''}>{PWD_MIN_LENGTH} characters long</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${chkUpperCase ? successIcon : errorIcon}`}></i><span className={!chkUpperCase ? 'text-white' : ''}>Uppercase letter</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${chkLowerCase ? successIcon : errorIcon}`}></i><span className={!chkLowerCase ? 'text-white' : ''}>Lowercase letter</span></li>
-            <li className='mb-1'><i className={`${iconClass} ${hasNumber ? successIcon : errorIcon}`}></i><span className={!hasNumber ? 'text-white' : ''}>Must contain number</span></li>
-          </List>
-        </Col>
-      </Row>
-    </>)
-  }
-
-  const getError = (key, errors, touched, errStyle = true) => {
-    if (errors[key] && touched[key]) {
-      return (errStyle ? 'is-invalid' : <div className="invalid-feedback d-block">{errors[key]}</div>)
-    }
-  }
   return (
     <Formik
       initialValues={{
         email: '',
-        firstName: '',
-        lastName: '',
+        first_name: '',
+        last_name: '',
         password: '',
-        userRole: '',
-        userOrg: '',
-        agreeTermsConditions: false
+        role: '',
+        organization: '',
+        accepted_terms: false
       }}
       enableReinitialize={true}
       validationSchema={signUpSchema}
@@ -151,6 +87,7 @@ const SignUp = () => {
         isSubmitting,
       }) => (
         <div className="jumbotron">
+          {getGeneralErrors(error)}
           <div className="container auth-form">
             <Form onSubmit={handleSubmit} noValidate>
               <Row form>
@@ -176,42 +113,42 @@ const SignUp = () => {
                 </Col>
                 <Col>
                   <FormGroup className="form-group">
-                    <Label for="firstName">
+                    <Label for="first_name">
                       FIRST NAME:
                     </Label>
                     <Input
-                      id="firstName"
-                      className={getError('firstName', errors, touched)}
-                      name="firstName"
+                      id="first_name"
+                      className={getError('first_name', errors, touched)}
+                      name="first_name"
                       data-testid="sign-up-firstName"
                       placeholder="first name"
                       type="text"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.firstName}
+                      value={values.first_name}
                       autoComplete="on"
                     />
-                    {getError('firstName', errors, touched, false)}
+                    {getError('first_name', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col >
                   <FormGroup className="form-group">
-                    <Label for="lastName">
+                    <Label for="last_name">
                       LAST NAME:
                     </Label>
                     <Input
-                      id="lastName"
-                      className={getError('lastName', errors, touched)}
-                      name="lastName"
+                      id="last_name"
+                      className={getError('last_name', errors, touched)}
+                      name="last_name"
                       placeholder="last name"
-                      type="lastName"
+                      type="text"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.lastName}
+                      value={values.last_name}
                       autoComplete="on"
                       data-testid="sign-up-lastName"
                     />
-                    {getError('lastName', errors, touched, false)}
+                    {getError('last_name', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col>
@@ -236,82 +173,82 @@ const SignUp = () => {
                         <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
                       </InputGroupText>
                     </InputGroup>
-                    {values.password && (<>{pswStrengthIndicator(values.password)}</>)}
+                    {values.password && (<>{passwordHelper(values.password)}</>)}
                     {getError('password', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col >
                   <FormGroup className="form-group">
-                    <Label for="userRole">
+                    <Label for="role">
                       SELECT YOUR ROLE:
                     </Label>
                     <Input
-                      id="userRole"
-                      className={getError('userRole', errors, touched)}
-                      name="userRole"
+                      id="role"
+                      className={getError('role', errors, touched)}
+                      name="role"
                       placeholder="select role"
                       type="select"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.userRole}
+                      value={values.role}
                       data-testid="sign-up-role"
                     >
                       <option value={''} >--Select your role--</option>
-                      {roles.map((role, index) => { return (<option key={index} value={role}>{role}</option>) })}
+                      {roles.map((role, index) => { return (<option key={index} value={role.name}>{role.name}</option>) })}
                     </Input>
-                    {getError('userRole', errors, touched, false)}
+                    {getError('role', errors, touched, false)}
                   </FormGroup>
                 </Col>
-                {values.userRole !== 'Citizen' && <Col>
+                <Col className={values.role == 'Citizen' ? 'd-none': ''}>
                   <FormGroup className="form-group">
-                    <Label for="userOrg">
+                    <Label for="organization">
                       SELECT ORGANISATION:
                     </Label>
                     <Input
-                      id="userOrg"
-                      className={getError('userOrg', errors, touched)}
-                      name="userOrg"
+                      id="organization"
+                      className={getError('organization', errors, touched)}
+                      name="organization"
                       placeholder="select organisation"
                       type="select"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.userOrg}
+                      value={values.organization}
                       data-testid="sign-up-org"
                     >
                       <option value={''} >--Select organisation--</option>
-                      {organisations.map((org, index) => { return (<option key={index} value={org.code}>{org.code} - {org.name}</option>) })}
+                      {orgList.map((org, index) => { return (<option key={index} value={org.name}>{org.name}</option>) })}
                     </Input>
-                    {getError('userOrg', errors, touched, false)}
+                    {getError('organization', errors, touched, false)}
                   </FormGroup>
-                </Col>}
+                </Col>
                 <Col>
                   <FormGroup className="form-group" check>
                     <Input
-                      id="agreeTermsConditions"
-                      name="agreeTermsConditions"
+                      id="accepted_terms"
+                      name="accepted_terms"
                       type="checkbox"
-                      value={values.agreeTermsConditions}
+                      value={values.accepted_terms}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       data-testid="sign-up-agreeTermsConditions"
                     />
                     <Label
                       check
-                      for="agreeTermsConditions"
+                      for="accepted_terms"
                     >
                       <p className='mb-0'>
                         <span>I agree to the </span>
-                        <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" rel="noreferrer" target="_blank">
+                        <a href={docTNM} rel="noreferrer" target="_blank">
                           Terms of User
                         </a>
                         <span> and </span>
-                        <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" rel="noreferrer" target="_blank">
+                        <a href={docPP} rel="noreferrer" target="_blank">
                           Privacy Policy
                         </a>
                         <span>, to the processing of my personal data, and to receive emails</span>
                       </p>
                     </Label>
-                    {getError('agreeTermsConditions', errors, touched, false)}
+                    {getError('accepted_terms', errors, touched, false)}
                   </FormGroup>
                 </Col>
               </Row>
