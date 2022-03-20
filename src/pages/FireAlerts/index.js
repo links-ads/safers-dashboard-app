@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { /*useDispatch,*/ useSelector } from 'react-redux';
-import {/* Button,Input,*/ Row, Col, /* Label */ Button } from 'reactstrap';
+import {/* Button,Input,*/ Row, Col, /* Label */ Button, Card, CardBody, CardTitle, CardText, Badge } from 'reactstrap';
 // import { useNavigate } from 'react-router-dom';
 // import _ from 'lodash';
 import { PolygonLayer, FlyToInterpolator } from 'deck.gl';
@@ -106,7 +106,88 @@ const FireAlerts = () => {
                   </Col>
                   <Col xl={4}>Results 18</Col>
                 </Row>
-                <Row></Row>
+                <Row>
+                  <Col sm={12} className='p-3'>
+                    <Card className='mb-3'>
+                      <CardBody>
+                        <CardText className='mb-2'>
+                          <Badge className="me-1 rounded-pill bg-success">
+                            Validated
+                          </Badge>
+                          <button
+                            type="button"
+                            className="btn float-end py-0 px-1"
+                          >
+                            <i className="mdi mdi-pencil d-block font-size-16"></i>
+                          </button>
+                        </CardText>
+                        <button
+                          type="button"
+                          className="btn float-end py-0 px-1"
+                        >
+                          <i className="mdi mdi-star-outline d-block font-size-16"></i>
+                        </button>
+                        <CardTitle>EMSR192: Fires in Athens, Greece</CardTitle>
+                        <CardText>
+                          This is another card with title and supporting text below.
+                          This card has some additional content to make it slightly
+                          taller overall.
+                        </CardText>
+                        <CardText>
+                          <small className="text-muted">
+                            Sep 3, 2021,17:07
+                          </small>
+                          <span className='float-end'>Source</span>
+                        </CardText>
+                      </CardBody>
+                    </Card>
+                    <Card>
+                      <CardBody>
+                        <CardTitle>Card title</CardTitle>
+                        <CardText>
+                          This is another card with title and supporting text below.
+                          This card has some additional content to make it slightly
+                          taller overall.
+                        </CardText>
+                        <CardText>
+                          <small className="text-muted">
+                            Last updated 3 mins ago
+                          </small>
+                        </CardText>
+                      </CardBody>
+                    </Card>
+                    <Card>
+                      <CardBody>
+                        <CardTitle>Card title</CardTitle>
+                        <CardText>
+                          This is another card with title and supporting text below.
+                          This card has some additional content to make it slightly
+                          taller overall.
+                        </CardText>
+                        <CardText>
+                          <small className="text-muted">
+                            Last updated 3 mins ago
+                          </small>
+                        </CardText>
+                      </CardBody>
+                    </Card>
+                    <Card>
+                      <CardBody>
+                        <CardTitle>Card title</CardTitle>
+                        <CardText>
+                          This is another card with title and supporting text below.
+                          This card has some additional content to make it slightly
+                          taller overall.
+                        </CardText>
+                        <CardText>
+                          <small className="text-muted">
+                            Last updated 3 mins ago
+                          </small>
+                        </CardText>
+                      </CardBody>
+                    </Card>
+                  </Col>
+                </Row>
               </Col>
               <Col xl={7} className='mx-auto'>
                 <div style={{ height: 700 }} className="mb-5">
