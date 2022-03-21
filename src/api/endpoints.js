@@ -17,6 +17,7 @@ export const endpoints = {
   myprofile: {
     getInfo: '/myprofile/view/',
     updateInfo: '/myprofile/update',
+    uploadProfImg: '/myprofile/update',
   },
   common: {
     organizations:'/organizations/',

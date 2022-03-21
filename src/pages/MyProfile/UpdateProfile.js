@@ -1,17 +1,23 @@
-import React, { useEffect }  from 'react';
+import React, { useEffect, useRef }  from 'react';
 import { Row, Col, Card, CardBody, CardTitle, Media, Form, Label, Input } from 'reactstrap';
 import avatar from '../../assets/images/users/avatar-1.jpg';
 import { Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
-import { getInfo, updateInfo } from '../../store/appAction';
+import { getInfo, updateInfo, uploadProfImg } from '../../store/appAction';
 import { roles } from '../../constants/dropdowns';
 import countryList  from 'country-list';
-import * as Yup from 'yup'
+import * as Yup from 'yup';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css'
 
 
 const UpdateProfile = () => {
   const user = useSelector(state => state.myprofile.user);
+  const uploadFileSuccessRes = useSelector(state => state.myprofile.uploadFileSuccessRes);
+  const fileUploader = useRef(null);
   const dispatch = useDispatch();
+
+  console.log(uploadFileSuccessRes);
 
   const countryObj = countryList.getNameList();
   const countryNameArr = Object.keys(countryObj);
@@ -20,10 +26,28 @@ const UpdateProfile = () => {
     dispatch(getInfo())
   }, []);
 
+  useEffect(() => {
+    if(uploadFileSuccessRes?.detail) {
+      toastr.success(uploadFileSuccessRes.detail, '');
+    }  
+  }, [uploadFileSuccessRes]);
+
   const getError = (key, errors, touched, errStyle=true) => {
     if(errors[key] && touched[key]){
       return (errStyle ? 'is-invalid': <div className="invalid-feedback d-block">{errors[key]}</div> )
     }
+  }
+
+  const onChangeFile = (event) => {
+    event.stopPropagation();
+    event.preventDefault();
+    var file = event.target.files[0];
+    dispatch(uploadProfImg(file));
+  }
+
+
+  const handleClick = () => {
+    fileUploader.current.click();
   }
 
   const myProfileSchema = Yup.object().shape({
@@ -56,7 +80,8 @@ const UpdateProfile = () => {
                     alt=""
                     className="avatar-md rounded-circle img-thumbnail"
                   />
-                  <div className='text-center mt-2'><a className='lnk-edit'>Edit Image</a></div>
+                  <div className='text-center mt-2'><a className='lnk-edit' onClick={(e)=>{handleClick(e)}}>Edit Image</a></div>
+                  <input type="file" id="file" ref={fileUploader} style={{display: 'none'}} onChange={(e) => {onChangeFile(e)}}/>
                 </div>
                 <Media body className="ms-4 align-self-center">
                   <h1 className="h5">{user.name}</h1>

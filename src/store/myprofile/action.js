@@ -23,14 +23,36 @@ const getInfoFail = (error) => {
   };
 };
 
+export const uploadProfImg = (file) => async (dispatch) => {
+  const response = await api.post(endpoints.myprofile.uploadProfImg, {file});
+  if (response.status === 200) {
+    return dispatch(uploadFileSuccess(response.data));
+  }
+  else
+    return dispatch(uploadFileFailed(response.data));
+};
+
+const uploadFileSuccess = (res) => {
+  return {
+    type: actionTypes.MP_FILEUPLOAD_SUCCESS,
+    payload: res
+  };
+};
+const uploadFileFailed = (error) => {
+  return {
+    type: actionTypes.MP_FILEUPLOAD_FAIL,
+    payload: error
+  };
+};
+
 export const updateInfo = (userInfo) => async (dispatch) => {
-  const response = await api.get(endpoints.myprofile.updateInfo, {userInfo});
+  const response = await api.post(endpoints.myprofile.updateInfo, {userInfo});
   if (response.status === 200) {
     getInfo();
     return dispatch(updateInfoSuccess(response.data?.user));
   }
   else
-    return dispatch(updateInfoFail(response.error));
+    return dispatch(updateInfoFail(response.data));
 };
 const updateInfoSuccess = (user) => {
   return {

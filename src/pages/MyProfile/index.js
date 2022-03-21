@@ -2,6 +2,7 @@ import React , { useState } from 'react';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col, CardText } from 'reactstrap';
 import classnames from 'classnames';
 import UpdateProfile from './UpdateProfile';
+import ResetPsw from './ResetPsw';
 
 
 const MyProfile = () => {
@@ -69,23 +70,7 @@ const MyProfile = () => {
                   <UpdateProfile />
                 </TabPane>
                 <TabPane tabId="2">
-                  <Row>
-                    <Col sm="12">
-                      <CardText className="mb-0">
-                        Food truck fixie locavore, accusamus 
-                        marfa nulla single-origin coffee squid.
-                        Exercitation +1 labore velit, blog sartorial PBR
-                        leggings next level wes anderson artisan four loko
-                        farm-to-table craft beer twee. Qui photo booth
-                        letterpress, commodo enim craft beer mlkshk
-                        aliquip jean shorts ullamco ad vinyl cillum PBR.
-                        Homo nostrud organic, assumenda labore aesthetic
-                        magna delectus mollit. Keytar helvetica VHS salvia
-                        yr, vero magna velit sapiente labore stumptown.
-                        Vegan fanny pack odio cillum wes anderson 8-bit.
-                      </CardText>
-                    </Col>
-                  </Row>
+                  <ResetPsw />
                 </TabPane>
                 <TabPane tabId="3">
                   <Row>
