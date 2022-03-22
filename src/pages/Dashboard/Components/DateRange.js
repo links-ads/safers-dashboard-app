@@ -7,7 +7,6 @@ import Flatpickr from 'react-flatpickr'
 import { FormGroup, InputGroup } from 'reactstrap';
 
 const DateComponent = () => {
-//   const [startDate, setStartDate] = useState(new Date());
   return (
 
     <FormGroup className="mb-4">

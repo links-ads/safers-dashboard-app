@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Label, Input, FormGroup,  } from 'reactstrap';
 import { Formik } from 'formik';
-// import { roles } from '../../constants/dropdowns';
-// import DateComponent from '../Components/DateComponent';
 import DateRangeComponent from '../Components/DateRange';
 import { useSelector } from 'react-redux';
 import { getAllAreas } from '../../../api/services/aoi';
@@ -10,7 +8,7 @@ import _ from 'lodash';
 
 const SearchContainer = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-
+  
   const [selectedAoi, setAoi] = useState(null);
   const [allAoi, setAllAoi] = useState([]);
   
@@ -67,9 +65,10 @@ const SearchContainer = () => {
                         name="select"
                         type="select"
                         onChange={(e) => selectAoi(e)}
-                        value={selectedAoi ? selectedAoi.features[0].properties.id : defaultAoi}
+                        value={selectedAoi ? selectedAoi.features[0].properties.id : 
+                          defaultAoi ? defaultAoi.features[0].properties.id : ''}
                       >
-                        <option value=''> ---- Select Area ------</option>
+                        <option value='' key={''}> ---- Select Area ------</option>
                         {allAoi.map((aoi, index) => <option key={index} value={aoi.features[0].properties.id}>
                           {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
                         </option>)}

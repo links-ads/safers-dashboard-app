@@ -21,6 +21,13 @@ export const endpoints = {
   common: {
     organizations:'/organizations/',
     roles: '/roles/'
+  },
+  dashboard: {
+    getStats : '/dashboard/stats',
+    getWeatherStats : '/dashboard/weatherstats',
+    getWeatherVariables : '/dashboard/weathervariables',
+    getInSitu : '/dashboard/inSitu',
+    getTweets : '/dashboard/tweets'
   }
 };
 

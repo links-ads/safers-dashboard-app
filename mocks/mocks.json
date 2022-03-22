@@ -1,7 +1,7 @@
 [
   {
     "id": "base",
-    "routesVariants": ["add-headers:enabled", "login:success", "logout:success", "organizations:success", "roles:success", "aois:success", "myprofile:success"]
+    "routesVariants": ["add-headers:enabled", "login:success", "logout:success", "organizations:success", "roles:success", "aois:success", "myprofile:success", "dashboard:success", "dashboardWeather:success", "dashboardWeatherVars:success", "dashboardMedia:success", "dashboardTweets:success"]
   },
   {
     "id": "no-headers",
