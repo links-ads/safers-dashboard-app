@@ -1,8 +1,9 @@
 import React , { useState } from 'react';
-import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col, CardText } from 'reactstrap';
+import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 import classnames from 'classnames';
 import UpdateProfile from './UpdateProfile';
 import ResetPsw from './ResetPsw';
+import AoiHelper from '../../helpers/aoiHelper';
 
 
 const MyProfile = () => {
@@ -74,41 +75,15 @@ const MyProfile = () => {
                 </TabPane>
                 <TabPane tabId="3">
                   <Row>
-                    <Col sm="12">
-                      <CardText className="mb-0">
-                        Etsy mixtape wayfarers, ethical wes anderson tofu
-                        before they sold out  organic lomo
-                        retro fanny pack lo-fi farm-to-table readymade.
-                        Messenger bag gentrify pitchfork tattooed craft
-                        beer, iphone skateboard locavore carles etsy
-                        salvia banksy hoodie helvetica. DIY synth PBR
-                        banksy irony. Leggings gentrify squid 8-bit cred
-                        pitchfork. Williamsburg banh mi whatever
-                        gluten-free, carles pitchfork biodiesel fixie etsy
-                        retro mlkshk vice blog. Scenester cred you
-                        probably heard of them, vinyl craft beer
-                        blog stumptown. Pitchfork sustainable tofu synth
-                        chambray yr.
-                      </CardText>
-                    </Col>
-                  </Row>
-                </TabPane>
-                <TabPane tabId="4">
-                  <Row>
-                    <Col sm="12">
-                      <CardText className="mb-0">
-                        Trust fund seitan letterpress, keytar raw denim
-                        keffiyeh etsy art party before they sold out
-                        master cleanse gluten-free squid scenester freegan
-                        cosby sweater. Fanny pack portland seitan DIY, art
-                        party locavore wolf cliche high life echo park
-                        Austin. Cred vinyl keffiyeh DIY salvia PBR, banh
-                        mi before they sold out farm-to-table VHS viral
-                        locavore cosby sweater. Lomo wolf viral, mustache
-                        readymade thundercats keffiyeh craft beer marfa
-                        ethical. Wolf salvia freegan, sartorial keffiyeh
-                        echo park vegan.
-                      </CardText>
+                    <Col lg={12}>
+                      <Card color="dark default-panel">
+                        <CardBody>
+                          <CardTitle className="mb-2 dflt-seperator">
+                            <h3 className="h5 mb-0">Selected Area of Interest</h3>
+                          </CardTitle>
+                          <AoiHelper />
+                        </CardBody>
+                      </Card>
                     </Col>
                   </Row>
                 </TabPane>

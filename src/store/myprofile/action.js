@@ -23,6 +23,48 @@ const getInfoFail = (error) => {
   };
 };
 
+export const deleteAccount = () => async (dispatch) => {
+  const response = await api.get(endpoints.myprofile.getInfo);
+  if (response.status === 200) {
+    return dispatch(deleteAccSuccess(response.data));
+  }
+  else
+    return dispatch(deleteAccFail(response.error));
+};
+const deleteAccSuccess = (user) => {
+  return {
+    type: actionTypes.MP_DELETE_SUCCESS,
+    payload: user
+  };
+};
+const deleteAccFail = (error) => {
+  return {
+    type: actionTypes.MP_DELETE_FAIL,
+    payload: error
+  };
+};
+
+export const resetProfilePsw = () => async (dispatch) => {
+  const response = await api.get(endpoints.myprofile.getInfo);
+  if (response.status === 200) {
+    return dispatch(resetPswSuccess(response.data));
+  }
+  else
+    return dispatch(resetPswFail(response.error));
+};
+const resetPswSuccess = (res) => {
+  return {
+    type: actionTypes.MP_RESETPSW_SUCCESS,
+    payload: res
+  };
+};
+const resetPswFail = (error) => {
+  return {
+    type: actionTypes.MP_RESETPSW_FAIL,
+    payload: error
+  };
+};
+
 export const uploadProfImg = (file) => async (dispatch) => {
   const response = await api.post(endpoints.myprofile.uploadProfImg, {file});
   if (response.status === 200) {

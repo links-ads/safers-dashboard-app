@@ -1,8 +1,9 @@
 import React, { useState, useEffect }  from 'react';
 import { Row, Col, Card, CardBody, CardTitle, Form, Label, Input, InputGroup, InputGroupText } from 'reactstrap';
 import { Formik } from 'formik';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import * as Yup from 'yup';
+import { resetProfilePsw } from '../../store/appAction';
 import { passwordHelper, pwdRegEx, pwdValidationTxt }  from '../../helpers/passwordHelper'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper'
 import toastr from 'toastr';
@@ -10,19 +11,16 @@ import 'toastr/build/toastr.min.css'
 
 
 const ResetPsw = () => {
-  const uploadFileSuccessRes = useSelector(state => state.myprofile.uploadFileSuccessRes);
-  const error = useSelector(state => state.auth.resetPswError);
+  const resetPswSuccessRes = useSelector(state => state.myprofile.resetPswSuccessRes);
+  const error = useSelector(state => state.myprofile.resetPswFailRes);
   const [passwordToggle, setPasswordToggle] = useState(false);
-  // const dispatch = useDispatch();
-
-  console.log(uploadFileSuccessRes);
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    if(uploadFileSuccessRes?.detail) {
-      toastr.success(uploadFileSuccessRes.detail, '');
+    if(resetPswSuccessRes?.detail) {
+      toastr.success(resetPswSuccessRes.detail, '');
     }  
-  }, [uploadFileSuccessRes]);
+  }, [resetPswSuccessRes]);
 
   const pswResetSchema = Yup.object().shape({
     current_password: Yup.string()
@@ -53,8 +51,7 @@ const ResetPsw = () => {
               }}
               validationSchema={pswResetSchema}
               onSubmit={(values, { setSubmitting }) => {
-                console.log(values)
-                // dispatch(updateInfo(values));
+                dispatch(resetProfilePsw(values));
                 setSubmitting(false);
               }}
             >
@@ -66,6 +63,7 @@ const ResetPsw = () => {
                 handleBlur,
                 handleSubmit,
                 isSubmitting,
+                handleReset,
               }) => (
                 <Form className='p-3' onSubmit={handleSubmit} noValidate>
                   {getGeneralErrors(error)}
@@ -138,7 +136,7 @@ const ResetPsw = () => {
                     <button type="submit" className="btn btn-primary w-md me-2" disabled={isSubmitting}>
                     CHANGE PASSWORD
                     </button>
-                    <button type="submit" className="btn btn-secondary w-md">
+                    <button type="button" onClick={handleReset} className="btn btn-secondary w-md">
                     CLEAR
                     </button>
                   </div>
