@@ -39,36 +39,6 @@ const authorize = () => {
   window.location = `${AUTH_BASE_URL}/oauth2/authorize?${urlParams}`;
 };
 
-// const authenticate = (authCode) => async (dispatch) => {
-
-//   const response = await fetch(`${API_BASE_URL}/api/oauth2/login`, {
-//     method: 'POST',
-//     headers: {
-//       'Accept': 'application/json',
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({
-//       code: authCode,
-//     })
-//   })
-//   const content = await response.json()
-//   if (response.status === 200) {
-//     const sessionData = {
-//       access_token: content.token,
-//       userId: content.user.id 
-//     }
-//     setSession(sessionData)  
-//     if (content.user.default_aoi) {
-//       dispatch(setAoiBySignInSuccess(content.user.default_aoi))
-//     }
-//     dispatch(signInSuccess(content.user))
-//   }
-//   dispatch(signInFail(content))
-
-
-//   console.log(content)
-// }
-
 const OAuth2 = () => {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
   const genError = useSelector(state => state.auth.errorSignIn);
