@@ -54,7 +54,6 @@ const OAuth2 = () => {
   
   return (
     <div className='text-center'>
-      {getGeneralErrors(genError)}
       <Button
         className="outh2-btn"
         color="primary"
