@@ -17,7 +17,8 @@ which tries to exchange that code for a token from the API.
 */
 
 const OAuth2 = () => {
-  const genError = useSelector(state => state.auth.errorSignIn)
+  const genError = useSelector(state => state.auth.errorSignIn);
+  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
   const dispatch = useDispatch();
 
   const authorize = () => {
@@ -41,8 +42,8 @@ const OAuth2 = () => {
   const location = useLocation();
   const queryString = location.search;
   const params = new URLSearchParams(queryString);
-  const authCode = params.get('code')
-  if (authCode) {
+  const authCode = params.get('code');
+  if (!isLoggedIn && authCode) {
     console.log(authCode)
     dispatch(generalInProgress('You have successfully signed in. Please wait.'));
     dispatch(signInOauth2({authCode}));
