@@ -27,9 +27,9 @@ const BaseMap = ({
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
   hoverInfo = null,
-  renderTooltip = null,
-  onClick = null,
-  onViewStateChange = null
+  renderTooltip = () => { },
+  onClick = () => { },
+  onViewStateChange = () => { }
 }) => {
 
   const tileLayer = new TileLayer({
@@ -93,7 +93,7 @@ const BaseMap = ({
         <FullscreenControl style={SCREEN_CONTROL_STYLE} />
         <NavigationControl style={NAV_CONTROL_STYLE} showCompass={false} />
       </DeckGL>
-      {renderTooltip(hoverInfo)}
+      {renderTooltip && renderTooltip(hoverInfo)}
     </>
   );
 }
