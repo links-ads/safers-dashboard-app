@@ -23,6 +23,13 @@ export const endpoints = {
     roles: '/roles/',
     termsNconditions: '/api/documents/terms-current',
     privacyPolicy: '/api/documents/privacy-current'
+  },
+  dashboard: {
+    getStats : '/dashboard/stats',
+    getWeatherStats : '/dashboard/weatherstats',
+    getWeatherVariables : '/dashboard/weathervariables',
+    getInSitu : '/dashboard/inSitu',
+    getTweets : '/dashboard/tweets'
   }
 };
 
