@@ -65,12 +65,13 @@ const FireAlerts = () => {
   };
 
   const setSelectedAlert = (id) => {
-    setHoverInfo({});
     if (id) {
       setAlertId(id);
       let alertsToEdit = _.cloneDeep(alerts);
-      _.find(alertsToEdit, { id }).isSelected = true;
+      let selectedAlert = _.find(alertsToEdit, { id });
+      selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(alertsToEdit));
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
@@ -126,9 +127,13 @@ const FireAlerts = () => {
   };
 
   const renderTooltip = (info) => {
-    const { object, x, y } = info;
+    const { object, coordinate } = info;
     if (object) {
-      return <Tooltip key={object.id} object={object} x={x} y={y} />
+      return <Tooltip
+        key={object.id}
+        object={object}
+        coordinate={coordinate}
+      />
     }
     if (!object) {
       return null;

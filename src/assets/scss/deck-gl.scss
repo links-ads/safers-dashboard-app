@@ -9,9 +9,11 @@
 }
 
 .map-tooltip {
-  pointer-events: none;
+  pointer-events: all;
+  overflow-y: auto;
   position: absolute;
   z-index: 9;
+  width: 300px;
   //overflow-y: hidden;
   .tooltip-img {
     width: 130px;
@@ -20,9 +22,4 @@
   textarea {
     width: 210px;
   }
-}
-
-.map-tooltip.interactive {
-  pointer-events: all;
-  overflow-y: auto;
 }

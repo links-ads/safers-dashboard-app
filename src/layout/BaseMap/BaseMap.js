@@ -92,8 +92,8 @@ const BaseMap = ({
       /> */}
         <FullscreenControl style={SCREEN_CONTROL_STYLE} />
         <NavigationControl style={NAV_CONTROL_STYLE} showCompass={false} />
+        {renderTooltip(hoverInfo)}
       </DeckGL>
-      {renderTooltip && renderTooltip(hoverInfo)}
     </>
   );
 }
