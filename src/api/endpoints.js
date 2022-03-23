@@ -11,6 +11,9 @@ export const endpoints = {
   aoi: {
     getAll: '/aois/',
   },
+  fireAlerts: {
+    getAll: '/alerts/',
+  },
   user: {
     profile: '/users/'
   },
@@ -20,7 +23,7 @@ export const endpoints = {
     uploadProfImg: '/myprofile/update',
   },
   common: {
-    organizations:'/organizations/',
+    organizations: '/organizations/',
     roles: '/roles/',
     termsNconditions: '/api/documents/terms-current',
     privacyPolicy: '/api/documents/privacy-current'
