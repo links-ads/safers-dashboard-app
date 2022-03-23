@@ -6,6 +6,7 @@ export const endpoints = {
     forgotPswReset: '/auth/password/reset/',
     resetPsw: '/auth/password/reset/confirm/',
     refreshToken: '/auth/token/refresh/',
+    oAuth2SignIn: '/oauth2/login'
   },
   aoi: {
     getAll: '/aois/',
@@ -26,6 +27,13 @@ export const endpoints = {
     roles: '/roles/',
     termsNconditions: '/api/documents/terms-current',
     privacyPolicy: '/api/documents/privacy-current'
+  },
+  dashboard: {
+    getStats : '/dashboard/stats',
+    getWeatherStats : '/dashboard/weatherstats',
+    getWeatherVariables : '/dashboard/weathervariables',
+    getInSitu : '/dashboard/inSitu',
+    getTweets : '/dashboard/tweets'
   }
 };
 

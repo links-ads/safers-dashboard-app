@@ -12,7 +12,12 @@
       "aoi-set:success",
       "myprofile-update:success",
       "myprofile-view:success",
-      "myprofile-upload:success"
+      "myprofile-upload:success",
+      "dashboard:success",
+      "dashboardWeather:success",
+      "dashboardWeatherVars:success",
+      "dashboardMedia:success",
+      "dashboardTweets:success"
     ]
   },
   {

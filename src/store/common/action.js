@@ -2,6 +2,19 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
+
+export const generalInProgress = (msg) => async (dispatch) => {
+  dispatch(InProgress(msg));
+}
+
+const InProgress = (msg) => {
+  return {
+    type: actionTypes.CM_WIP,
+    payload: msg,
+    isLoading: true
+  };
+};
+
 export const getOrgList = () => async (dispatch) => {
   const response = await api.get(endpoints.common.organizations);
   if (response.status === 200) {
