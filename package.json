@@ -40,6 +40,7 @@
     "yup": "^0.32.11"
   },
   "scripts": {
+    "postinstall": "mocks-server",
     "start": "node server/server.js",
     "start:dev": "react-scripts start",
     "dev": "react-scripts start",
