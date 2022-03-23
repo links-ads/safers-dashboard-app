@@ -7,7 +7,7 @@ import { signUp as registration, getOrgList, getRoleList } from '../../store/app
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { passwordHelper, pwdRegEx, pwdValidationTxt }  from '../../helpers/passwordHelper';
 import { endpoints } from '../../api/endpoints';
-import { BASE_URL } from '../../api/base';
+import { BASE_URL } from '../../config';
 
 const SignUp = () => {
   const [passwordToggle, setPasswordToggle] = useState(false);

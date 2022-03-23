@@ -1,11 +1,44 @@
 import * as actionTypes from './types';
+import { CM_WIP } from '../common/types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import { setSession, deleteSession, getSession } from '../../helpers/authHelper';
 import _ from 'lodash';
 
+
+const InProgress = (status, msg='') => {
+  return {
+    type: CM_WIP,
+    payload: msg,
+    isLoading: status
+  };
+};
+
+export const signInOauth2 = ({authCode}) => async (dispatch) => {
+  const response = await api.post(endpoints.authentication.oAuth2SignIn, {
+    code: authCode,
+  });
+  const content = response.data;
+  dispatch(InProgress(false));
+  if (response.status === 200) {
+    const sessionData = {
+      access_token: content.token, 
+      // refresh_token: response.data.refresh_token, 
+      userId: content.user.id
+    };
+    setSession(sessionData, false);
+    if (content.user?.default_aoi) {
+      dispatch(setAoiBySignInSuccess(content.user?.default_aoi));
+    }
+    return dispatch(signInSuccess(content.user));
+  }
+  return dispatch(signInFail(content.detail));
+}
+
 export const signIn = ({email, password, rememberMe}) => async (dispatch) => {
+  dispatch(InProgress(true, 'Please wait..'));
   const response = await api.post(endpoints.authentication.signIn, { email, password });//should be post with the backend
+  dispatch(InProgress(false));
   if (response.status === 200) {
     const sessionData = {
       access_token: response.data.access_token, 
