@@ -11,7 +11,7 @@ export const endpoints = {
     getAll: '/aois/',
   },
   fireAlerts: {
-    getAll: 'mock-api-alerts-all.json',
+    getAll: '/alerts/',
   },
   user: {
     setDefaultAoi: '/user/set-default-aoi',
