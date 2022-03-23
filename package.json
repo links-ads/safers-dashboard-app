@@ -15,6 +15,7 @@
     "mapbox-gl": "^2.7.0",
     "metismenujs": "^1.2.1",
     "moment": "^2.29.1",
+    "rc-pagination": "^3.1.15",
     "react": "^17.0.2",
     "react-datepicker": "^4.7.0",
     "react-datetime": "^3.1.1",

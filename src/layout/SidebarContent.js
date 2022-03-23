@@ -101,7 +101,7 @@ const SidebarContent = () => {
 
 
             <li>
-              <Link to='/calendar' className=' '>
+              <Link to='/fire-alerts' className=' '>
                 <i className='bx bxs-hot'></i>
                 <span>Fire Alerts</span>
               </Link>

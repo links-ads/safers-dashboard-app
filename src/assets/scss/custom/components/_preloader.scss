@@ -3,23 +3,20 @@
 //
 
 #preloader {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: $card-bg;
     z-index: 9999;
-    display: none;
+    text-align: center;
 }
 
 #status {
-    width: 40px;
-    height: 40px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    margin: -20px 0 0 -20px;
+    margin-top: 20%;
+    display: inline-block;
+    text-align: center;
 }
 
 .spinner-chase {
