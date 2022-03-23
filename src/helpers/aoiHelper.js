@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { PolygonLayer } from '@deck.gl/layers';
 import BaseMap from '../layout/BaseMap/BaseMap';
 import { getAllAreas, setDefaultAoi } from '../store/appAction';
+import { FlyToInterpolator } from 'deck.gl';
 
 const AoiHelper = () => {
   const uid = useSelector(state => state.auth.user.id);
@@ -38,7 +39,9 @@ const AoiHelper = () => {
       latitude: midPoint[1],
       zoom: zoomLevel,
       bearing: 0,
-      pitch: 0
+      pitch: 0,
+      transitionDuration: 1000,
+      transitionInterpolator: new FlyToInterpolator()
     };
   }
 
