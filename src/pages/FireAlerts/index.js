@@ -1,27 +1,82 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { /*useDispatch,*/ useSelector } from 'react-redux';
-import {/* Button,Input,*/ Row, Col, /* Label */ Button, Card, CardBody, CardTitle, CardText, Badge } from 'reactstrap';
-// import { useNavigate } from 'react-router-dom';
-// import _ from 'lodash';
-import { PolygonLayer, FlyToInterpolator } from 'deck.gl';
+import { Row, Col, Button, Input } from 'reactstrap';
+import { FlyToInterpolator, IconLayer } from 'deck.gl';
+import _ from 'lodash';
+import Pagination from 'rc-pagination';
 import BaseMap from '../../layout/BaseMap/BaseMap';
+import { getAllFireAlerts } from '../../api/services/fireAlerts';
+import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
+
+import 'rc-pagination/assets/index.css';
+import Alert from './Alert';
+import Tooltip from './Tooltip';
+
+const ICON_MAPPING = {
+  marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
+};
+const PAGE_SIZE = 4;
 
 const FireAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-
-  const [polygonLayer, setPolygonLayer] = useState(undefined);
+  const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
+  const [sortByDate, setSortByDate] = useState('desc');
+  const [alertSource, setAlertSource] = useState('all');
+  const [alerts, setAlerts] = useState([]);
+  const [alertId, setAlertId] = useState(undefined);
+  const [hoverInfo, setHoverInfo] = useState({});
 
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginatedAlerts, setPaginatedAlerts] = useState([]);
   // const dispatch = useDispatch();
 
   useEffect(() => {
-    setPolygonLayer(getPolygonLayer(defaultAoi));
+    const getAllAlerts = async () => {
+      let alerts = await getAllFireAlerts();
+      setAlerts(alerts)
+      setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
+      setIconLayer(getIconLayer(alerts));
+    }
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+    getAllAlerts();
   }, []);
 
-  // const handleSubmit = () => {
-  //   dispatch(setDefaultAoi(selectedAoi))
-  // }
+  useEffect(() => {
+    const getAllAlerts = async () => {
+      let alerts = await getAllFireAlerts(
+        {
+          sortOrder: sortByDate,
+          source: alertSource
+        }
+      );
+      setAlerts(alerts);
+      setIconLayer(getIconLayer(alerts));
+    }
+    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+    getAllAlerts();
+  }, [sortByDate, alertSource]);
+
+  const updatePage = page => {
+    setCurrentPage(page);
+    const to = PAGE_SIZE * page;
+    const from = to - PAGE_SIZE;
+    setPaginatedAlerts(_.cloneDeep(alerts.slice(from, to)));
+  };
+
+  const setSelectedAlert = (id) => {
+    setHoverInfo({});
+    if (id) {
+      setAlertId(id);
+      let alertsToEdit = _.cloneDeep(alerts);
+      _.find(alertsToEdit, { id }).isSelected = true;
+      setIconLayer(getIconLayer(alertsToEdit));
+      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+    } else {
+      setAlertId(undefined);
+      setIconLayer(getIconLayer(alerts));
+    }
+  }
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -35,29 +90,60 @@ const FireAlerts = () => {
     };
   }
 
-  const getPolygonLayer = (aoi) => {
-    const coordinates = aoi.features[0].geometry.coordinates;
-    return (new PolygonLayer({
-      id: 'polygon-layer',
-      data: coordinates,
+  const getIconLayer = (alerts) => {
+    return (new IconLayer({
+      data: alerts,
       pickable: true,
-      stroked: true,
-      filled: true,
-      extruded: false,
-      wireframe: true,
-      lineWidthMinPixels: 1,
-      opacity: .25,
-      getPolygon: d => d,
-      // getElevation: () => 10,
-      getFillColor: [192, 105, 25],
-      getLineColor: [0, 0, 0],
-      getLineWidth: 100
+      getPosition: d => d.geometry.coordinates,
+      iconAtlas: firePin,
+      iconMapping: ICON_MAPPING,
+      // onHover: !hoverInfo.objects && setHoverInfo,
+      id: 'icon',
+      getIcon: () => 'marker',
+      getColor: d => { return (d.isSelected ? [226, 123, 29] : [230, 51, 79]) },
+      sizeMinPixels: 80,
+      sizeMaxPixels: 100,
+      sizeScale: 0.5,
     }))
   }
 
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
+
+  const hideTooltip = (e) => {
+    console.log('hideTooltip', e)
+    setHoverInfo({});
+  };
+  const showTooltip = info => {
+    console.log('showTooltip', info)
+    if (info.picked && info.object) {
+      setSelectedAlert(info.object.id);
+      setHoverInfo(info);
+    } else {
+      setHoverInfo({});
+    }
+  };
+
+  const renderTooltip = (info) => {
+    const { object, x, y } = info;
+    if (object) {
+      return <Tooltip key={object.id} object={object} x={x} y={y} />
+    }
+    if (!object) {
+      return null;
+    }
+  }
+
+  const getCard = (card, index) => {
+    return (
+      <Alert
+        key={index}
+        card={card}
+        setSelectedAlert={setSelectedAlert}
+        alertId={alertId} />
+    )
+  }
 
   return (
     <div className='page-content'>
@@ -85,120 +171,71 @@ const FireAlerts = () => {
               <Col xl={5}>
                 <Row>
                   <Col xl={4}>
-                    <input className="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search..." />
-                    <datalist id="datalistOptions">
-                      <option value="San Francisco" />
-                      <option value="New York" />
-                      <option value="Seattle" />
-                      <option value="Los Angeles" />
-                      <option value="Chicago" />
-                    </datalist>
+                    <Input
+                      id="sortByDate"
+                      className="btn-sm"
+                      name="sortByDate"
+                      placeholder="Sort By : Date"
+                      type="select"
+                      onChange={(e) => setSortByDate(e.target.value)}
+                      value={sortByDate}
+                    >
+                      <option value={'desc'} >Sort By : Date desc</option>
+                      <option value={'asc'} >Sort By : Date asc</option>
+                    </Input>
                   </Col>
                   <Col xl={4}>
-                    <input className="form-control" list="datalistOptions" id="exampleDataList" placeholder="Type to search..." />
-                    <datalist id="datalistOptions">
-                      <option value="San Francisco" />
-                      <option value="New York" />
-                      <option value="Seattle" />
-                      <option value="Los Angeles" />
-                      <option value="Chicago" />
-                    </datalist>
+                    <Input
+                      id="alertSource"
+                      className="btn-sm"
+                      name="alertSource"
+                      placeholder="Source"
+                      type="select"
+                      onChange={(e) => setAlertSource(e.target.value)}
+                      value={alertSource}
+                    >
+                      <option value={'all'} >Source : All</option>
+                      <option value={'web'} >Source : Web</option>
+                      <option value={'camera'} >Source : Camera</option>
+                      <option value={'satellite'} >Source : Satellite</option>
+                    </Input>
                   </Col>
-                  <Col xl={4}>Results 18</Col>
+                  <Col xl={4}>Results {alerts.length}</Col>
                 </Row>
                 <Row>
-                  <Col sm={12} className='p-3'>
-                    <Card className='mb-3'>
-                      <CardBody>
-                        <CardText className='mb-2'>
-                          <Badge className="me-1 rounded-pill bg-success">
-                            Validated
-                          </Badge>
-                          <button
-                            type="button"
-                            className="btn float-end py-0 px-1"
-                          >
-                            <i className="mdi mdi-pencil d-block font-size-16"></i>
-                          </button>
-                        </CardText>
-                        <button
-                          type="button"
-                          className="btn float-end py-0 px-1"
-                        >
-                          <i className="mdi mdi-star-outline d-block font-size-16"></i>
-                        </button>
-                        <CardTitle>EMSR192: Fires in Athens, Greece</CardTitle>
-                        <CardText>
-                          This is another card with title and supporting text below.
-                          This card has some additional content to make it slightly
-                          taller overall.
-                        </CardText>
-                        <CardText>
-                          <small className="text-muted">
-                            Sep 3, 2021,17:07
-                          </small>
-                          <span className='float-end'>Source</span>
-                        </CardText>
-                      </CardBody>
-                    </Card>
-                    <Card>
-                      <CardBody>
-                        <CardTitle>Card title</CardTitle>
-                        <CardText>
-                          This is another card with title and supporting text below.
-                          This card has some additional content to make it slightly
-                          taller overall.
-                        </CardText>
-                        <CardText>
-                          <small className="text-muted">
-                            Last updated 3 mins ago
-                          </small>
-                        </CardText>
-                      </CardBody>
-                    </Card>
-                    <Card>
-                      <CardBody>
-                        <CardTitle>Card title</CardTitle>
-                        <CardText>
-                          This is another card with title and supporting text below.
-                          This card has some additional content to make it slightly
-                          taller overall.
-                        </CardText>
-                        <CardText>
-                          <small className="text-muted">
-                            Last updated 3 mins ago
-                          </small>
-                        </CardText>
-                      </CardBody>
-                    </Card>
-                    <Card>
-                      <CardBody>
-                        <CardTitle>Card title</CardTitle>
-                        <CardText>
-                          This is another card with title and supporting text below.
-                          This card has some additional content to make it slightly
-                          taller overall.
-                        </CardText>
-                        <CardText>
-                          <small className="text-muted">
-                            Last updated 3 mins ago
-                          </small>
-                        </CardText>
-                      </CardBody>
-                    </Card>
+                  <Col xl={12} className='p-3'>
+                    <Row>
+                      {
+                        paginatedAlerts.map((alert, index) => getCard(alert, index))
+                      }
+                    </Row>
+                    <Row className='text-center'>
+                      <Pagination
+                        pageSize={PAGE_SIZE}
+                        onChange={updatePage}
+                        current={currentPage}
+                        total={alerts.length}
+                      />
+                    </Row>
                   </Col>
                 </Row>
               </Col>
               <Col xl={7} className='mx-auto'>
-                <div style={{ height: 700 }} className="mb-5">
-                  <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
-                </div>
+                <Row style={{ height: 700 }} className="mb-5">
+                  <BaseMap
+                    layers={[iconLayer]}
+                    initialViewState={viewState}
+                    hoverInfo={hoverInfo}
+                    renderTooltip={renderTooltip}
+                    onClick={showTooltip}
+                    onViewStateChange={hideTooltip}
+                  />
+                </Row>
               </Col>
             </Row>
           </Col>
         </Row>
       </Row >
-
     </div >
 
   );

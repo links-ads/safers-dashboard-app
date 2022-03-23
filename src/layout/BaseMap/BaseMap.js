@@ -26,11 +26,11 @@ const NAV_CONTROL_STYLE = {
 const BaseMap = ({
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
+  hoverInfo = null,
+  renderTooltip = null,
+  onClick = null,
+  onViewStateChange = null
 }) => {
-
-  const onClick = (info, event) => {
-    console.log(info, event);
-  };
 
   const tileLayer = new TileLayer({
     // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
@@ -73,23 +73,28 @@ const BaseMap = ({
   ];
 
   return (
-    <DeckGL
-      views={new MapView({ repeat: true })}
-      //effects={theme.effects}
-      onClick={onClick}
-      initialViewState={initialViewState}
-      controller={true}
-      layers={finalLayerSet}
-      ContextProvider={MapContext.Provider}
-    >
-      {/* <StaticMap
+    <>
+      <DeckGL
+        views={new MapView({ repeat: true })}
+        //effects={theme.effects}
+        onClick={onClick}
+        onViewStateChange={onViewStateChange}
+        onViewportLoad={(e) => { console.log(e) }}
+        initialViewState={initialViewState}
+        controller={true}
+        layers={finalLayerSet}
+        ContextProvider={MapContext.Provider}
+      >
+        {/* <StaticMap
         mapboxAccessToken='pk.eyJ1IjoidGlsYW5wZXJ1bWEiLCJhIjoiY2wwamF1aGZ0MGF4MTNlb2EwcDBpNGR6YSJ9.ay3qveZBddbe4zVS78iM3w'
         initialViewState={initialViewState}
         mapStyle={MAP_STYLE}
       /> */}
-      <FullscreenControl style={SCREEN_CONTROL_STYLE} />
-      <NavigationControl style={NAV_CONTROL_STYLE} showCompass={false} />
-    </DeckGL>
+        <FullscreenControl style={SCREEN_CONTROL_STYLE} />
+        <NavigationControl style={NAV_CONTROL_STYLE} showCompass={false} />
+      </DeckGL>
+      {renderTooltip(hoverInfo)}
+    </>
   );
 }
 export default BaseMap;
