@@ -18,9 +18,8 @@ const AoiHelper = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (allAoi.length === 0)
-      dispatch(getAllAreas());
-  }, [allAoi]);
+    dispatch(getAllAreas());
+  }, []);
 
   const handleSubmit = () => {
     dispatch(setDefaultAoi(uid, selectedAoi))
