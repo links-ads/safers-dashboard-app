@@ -30,11 +30,11 @@ const WeatherVariablesContainer = () => {
           <Row >
             {weatherVariables.map((weatherVariable, index) => {
               return( 
-                <Col className="my-2 col-md" sm={3} xs={6} key={index}>
+                <Col className="my-2 col-lg" sm={3} xs={6} md={3} key={index}>
                   <Card className='weather-variables-card flex-column text-center '>
-                    <Col className="p-2 "><span>{weatherVariable.time}</span></Col>
-                    <Col className="p-2 "><span>{weatherVariable.wind}m/s</span></Col>
-                    <Col className="p-2"><span>{weatherVariable.humidity}%</span></Col>
+                    <Col className="p-2 time-text"><span>{weatherVariable.time}</span></Col>
+                    <Col className="p-2 body-text"><span>{weatherVariable.wind}m/s</span></Col>
+                    <Col className="p-2 body-text"><span>{weatherVariable.humidity}%</span></Col>
                   </Card>
                 </Col>)
             })}

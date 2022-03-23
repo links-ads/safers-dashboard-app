@@ -114,6 +114,29 @@
   .weather-variables-card {
     @extend .card-temperature;
     height: 20rem;
+    .time-text {
+      opacity: 0.6;
+      font-family: LucidaGrande;
+      font-size: 1rem;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: 0.4px;
+      text-align: center;
+      color: #fdfdfd;
+    }
+    .body-text {
+      font-family: LucidaGrande;
+      font-size: 1.125rem;
+      font-weight: normal;
+      font-stretch: normal;
+      font-style: normal;
+      line-height: normal;
+      letter-spacing: 0.45px;
+      text-align: center;
+      color: #fdfdfd;
+    }
   }
 
   .dashboard-image {
