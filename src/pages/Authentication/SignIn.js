@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
+import { getGeneralErrors, getError }  from '../../helpers/errorHelper'
 import * as Yup from 'yup'
 
 const SignIn = () => {
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  const genError = useSelector(state => state.auth.errorSignIn);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -48,6 +50,7 @@ const SignIn = () => {
         isSubmitting,
       }) => (
         <div className="jumbotron">
+          {getGeneralErrors(genError)}
           <div className="container auth-form" data-test="signInComponent">
             <Form onSubmit={handleSubmit} noValidate>
               <Row form>
@@ -58,7 +61,7 @@ const SignIn = () => {
                     </Label>
                     <Input
                       id="userEmail"
-                      className={errors.email ? 'is-invalid' : ''}
+                      className={getError('email', errors, touched)}
                       name="email"
                       placeholder="email address"
                       type="email"
@@ -68,7 +71,7 @@ const SignIn = () => {
                       autoComplete="on"
                       data-testid="sign-in-email"
                     />
-                    {errors.email && touched.email && (<div className="invalid-feedback">{errors.email}</div>)}
+                    {getError('email', errors, touched, false)}
                   </FormGroup>
                 </Col>
                 <Col >
@@ -79,7 +82,7 @@ const SignIn = () => {
                     <InputGroup>
                       <Input
                         id="userPassword"
-                        className={errors.password ? 'is-invalid' : ''}
+                        className={getError('password', errors, touched)}
                         name="password"
                         placeholder="password"
                         type={passwordToggle ? 'text' : 'password'}
@@ -93,7 +96,7 @@ const SignIn = () => {
                         <i data-testid="password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
                       </InputGroupText>
                     </InputGroup>
-                    {errors.password && touched.password && (<div className="invalid-feedback">{errors.password}</div>)}
+                    {getError('password', errors, touched, false)}
                   </FormGroup>
                 </Col>
               </Row>

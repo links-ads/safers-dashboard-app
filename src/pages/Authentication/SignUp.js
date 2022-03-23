@@ -4,14 +4,19 @@ import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row } from 'reactstrap';
 import * as Yup from 'yup'
 import { signUp as registration, getOrgList, getRoleList } from '../../store/appAction';
-import { getGeneralErrors, getError }  from '../../helpers/errorHelper'
-import { passwordHelper, pwdRegEx, pwdValidationTxt }  from '../../helpers/passwordHelper'
+import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
+import { passwordHelper, pwdRegEx, pwdValidationTxt }  from '../../helpers/passwordHelper';
+import { endpoints } from '../../api/endpoints';
+import { BASE_URL } from '../../api/base';
 
 const SignUp = () => {
   const [passwordToggle, setPasswordToggle] = useState(false);
   const orgList = useSelector(state => state.common.orgList);
   const roles = useSelector(state => state.common.roleList);
   const error = useSelector(state => state.auth.error);
+  const docTNM = BASE_URL +  endpoints.common.termsNconditions;
+  const docPP = BASE_URL +  endpoints.common.privacyPolicy;
+
   if(error){
     window.scrollTo(0, 0);
   }
@@ -233,11 +238,11 @@ const SignUp = () => {
                     >
                       <p className='mb-0'>
                         <span>I agree to the </span>
-                        <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" rel="noreferrer" target="_blank">
+                        <a href={docTNM} rel="noreferrer" target="_blank">
                           Terms of User
                         </a>
                         <span> and </span>
-                        <a href="https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf" rel="noreferrer" target="_blank">
+                        <a href={docPP} rel="noreferrer" target="_blank">
                           Privacy Policy
                         </a>
                         <span>, to the processing of my personal data, and to receive emails</span>

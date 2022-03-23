@@ -7,7 +7,8 @@ const initialState = {
   error: false,
   forgotPswresponse: null,
   resetPswRes: null,
-  resetPswError: null
+  resetPswError: null,
+  errorSignIn: false,
   //loading: false
 };
 
@@ -36,11 +37,8 @@ const signInSuccess = (state, action) => {
   return updateObject(state, updatedState);
 }
 
-const signInFail = (state) => {
-  const updatedState = {
-    error: true,
-  }
-  return updateObject(state, updatedState);
+const signInFail = (state, action) => {
+  return updateObject(state, { errorSignIn: action.payload });
 }
 
 const signUpSuccess = (state, action) => {
