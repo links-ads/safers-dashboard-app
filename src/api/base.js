@@ -18,6 +18,14 @@ export async function get(url, config = {}) {
   return await axiosApi.get(url, { ...config, headers: authHeader() }).then(response => response)
 }
 
+export async function patch(url, data, config = {}) {
+  const header = authHeader();
+  console.log('header..', header);
+  return await axiosApi.patch(url, { ...data }, { ...config, headers: authHeader() })
+    .then(response => response)
+    .catch(error => error.response);
+}
+
 export async function post(url, data, config = {}) {
   return axiosApi
     .post(url, { ...data }, { ...config, headers: authHeader() })

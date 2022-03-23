@@ -11,12 +11,12 @@ export const endpoints = {
     getAll: '/aois/',
   },
   user: {
-    setDefaultAoi: '/user/set-default-aoi',
     profile: '/users/'
   },
   myprofile: {
     getInfo: '/myprofile/view/',
     updateInfo: '/myprofile/update',
+    uploadProfImg: '/myprofile/update',
   },
   common: {
     organizations:'/organizations/',
