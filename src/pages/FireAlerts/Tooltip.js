@@ -32,7 +32,7 @@ const Tooltip = ({ object, x, y }) => {
           {object.timestamp}
         </CardSubtitle>
       </CardBody>
-      <Row className='no-gutters px-3'>
+      <Row className='no-gutters'>
         <Col xl={6}>
           <CardImg
             className="img-fluid tooltip-img"
