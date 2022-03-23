@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap';
 import { useLocation } from 'react-router-dom';
-import { getGeneralErrors }  from '../../helpers/errorHelper'
 import { generalInProgress, signInOauth2 } from '../../store/appAction';
 import { AUTH_BASE_URL, CLIENT_BASE_URL, AUTH_CLIENT_ID, REDIRECT_URL  } from '../../config'
 
@@ -17,7 +16,6 @@ which tries to exchange that code for a token from the API.
 */
 
 const OAuth2 = () => {
-  const genError = useSelector(state => state.auth.errorSignIn);
   const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
   const dispatch = useDispatch();
 
