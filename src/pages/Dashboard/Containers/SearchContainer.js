@@ -3,22 +3,18 @@ import { Row, Col, Form, Label, Input, FormGroup,  } from 'reactstrap';
 import { Formik } from 'formik';
 import DateRangeComponent from '../Components/DateRange';
 import { useSelector } from 'react-redux';
-import { getAllAreas } from '../../../api/services/aoi';
 import _ from 'lodash';
 
 const SearchContainer = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   
   const [selectedAoi, setAoi] = useState(null);
+  // eslint-disable-next-line no-unused-vars
   const [allAoi, setAllAoi] = useState([]);
   
 
   useEffect(() => {
-    const getAllAoi = async () => {
-      let aoiList = await getAllAreas();
-      setAllAoi(aoiList)
-    }
-    getAllAoi();
+    
   }, []);
 
   const selectAoi = (e) => {
@@ -41,9 +37,6 @@ const SearchContainer = () => {
           }}
         >
           {({
-            // values,
-            // handleChange,
-            // handleBlur,
             handleSubmit,
           }) => (
             <Form onSubmit={handleSubmit} noValidate>
