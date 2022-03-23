@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap';
 import { useLocation } from 'react-router-dom';
@@ -43,11 +43,14 @@ const OAuth2 = () => {
   const queryString = location.search;
   const params = new URLSearchParams(queryString);
   const authCode = params.get('code');
-  if (!isLoggedIn && authCode) {
-    console.log(authCode)
-    dispatch(generalInProgress('You have successfully signed in. Please wait.'));
-    dispatch(signInOauth2({authCode}));
-  }
+  useEffect(() => {
+    if (!isLoggedIn && authCode) {
+      console.log(authCode)
+      dispatch(generalInProgress('You have successfully signed in. Please wait.'));
+      dispatch(signInOauth2({authCode}));
+    }
+  }, []);
+
   
   return (
     <div className='text-center'>
