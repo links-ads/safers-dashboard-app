@@ -10,7 +10,9 @@
       "alerts:success",
       "aois:success",
       "aoi-set:success",
-      "myprofile:success"
+      "myprofile-update:success",
+      "myprofile-view:success",
+      "myprofile-upload:success"
     ]
   },
   {
