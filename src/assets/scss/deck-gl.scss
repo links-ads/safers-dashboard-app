@@ -10,11 +10,7 @@
 
 .map-tooltip {
   pointer-events: all;
-  overflow-y: auto;
-  position: absolute;
-  z-index: 9;
   width: 300px;
-  //overflow-y: hidden;
   .tooltip-img {
     width: 130px;
     height: 115px;
@@ -22,4 +18,14 @@
   textarea {
     width: 210px;
   }
+}
+
+.mapboxgl-popup-anchor-left {
+  .mapboxgl-popup-tip {
+    border-right-color: $gray-100 !important;
+  }
+}
+
+.mapboxgl-popup-content {
+  background: $gray-100 !important;
 }

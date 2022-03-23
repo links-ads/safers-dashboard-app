@@ -12,16 +12,6 @@ const INITIAL_VIEW_STATE = {
   pitch: 0
 };
 // const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/positron-nolabels-gl-style/style.json';
-const SCREEN_CONTROL_STYLE = {
-  position: 'absolute',
-  top: 10,
-  left: 10
-};
-const NAV_CONTROL_STYLE = {
-  position: 'absolute',
-  bottom: 10,
-  left: 10
-}
 
 const BaseMap = ({
   layers = null,
@@ -29,7 +19,9 @@ const BaseMap = ({
   hoverInfo = null,
   renderTooltip = () => { },
   onClick = () => { },
-  onViewStateChange = () => { }
+  onViewStateChange = () => { },
+  screenControlPosition = 'top-left',
+  navControlPosition = 'bottom-left'
 }) => {
 
   const tileLayer = new TileLayer({
@@ -72,6 +64,15 @@ const BaseMap = ({
     ...layers ? layers : null
   ];
 
+  const getPosition = (position) => {
+    const props = position.split('-');
+    return {
+      position: 'absolute',
+      [props[0]]: 10,
+      [props[1]]: 10
+    };
+  }
+
   return (
     <>
       <DeckGL
@@ -90,8 +91,8 @@ const BaseMap = ({
         initialViewState={initialViewState}
         mapStyle={MAP_STYLE}
       /> */}
-        <FullscreenControl style={SCREEN_CONTROL_STYLE} />
-        <NavigationControl style={NAV_CONTROL_STYLE} showCompass={false} />
+        <FullscreenControl style={getPosition(screenControlPosition)} />
+        <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
         {renderTooltip(hoverInfo)}
       </DeckGL>
     </>

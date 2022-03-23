@@ -18,11 +18,13 @@ const Tooltip = ({ object, coordinate }) => {
   const [editToggle, setEditToggle] = useState(false);
   const [description, setDescription] = useState(object.description);
   return (
-    <Popup longitude={coordinate[0]} latitude={coordinate[1]}
+    <Popup
+      longitude={coordinate[0]}
+      latitude={coordinate[1]}
       dynamicPosition={true}
       anchor='top-left'
     >
-      <Card className="map-tooltip" >
+      <Card className="map-tooltip mb-0" >
         <CardBody>
           <button
             type="button"

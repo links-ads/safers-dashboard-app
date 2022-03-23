@@ -234,6 +234,8 @@ const FireAlerts = () => {
                     renderTooltip={renderTooltip}
                     onClick={showTooltip}
                     onViewStateChange={hideTooltip}
+                    screenControlPosition='top-right'
+                    navControlPosition='bottom-right'
                   />
                 </Row>
               </Col>
