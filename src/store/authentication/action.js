@@ -1,23 +1,25 @@
 import * as actionTypes from './types';
+import { CM_WIP } from '../common/types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import { setSession, deleteSession, getSession } from '../../helpers/authHelper';
 import _ from 'lodash';
 
-export const signInOauth2 = ({authCode}) => async (dispatch) => {
 
-  const API_BASE_URL = 'http://localhost:8000'
-  const response = await fetch(`${API_BASE_URL}/api/oauth2/login`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      code: authCode,
-    })
-  })
-  const content = await response.json()
+const InProgress = (status, msg='') => {
+  return {
+    type: CM_WIP,
+    payload: msg,
+    isLoading: status
+  };
+};
+
+export const signInOauth2 = ({authCode}) => async (dispatch) => {
+  const response = await api.post(endpoints.authentication.oAuth2SignIn, {
+    code: authCode,
+  });
+  const content = response.data;
+  dispatch(InProgress(false));
   if (response.status === 200) {
     const sessionData = {
       access_token: content.token, 
@@ -34,7 +36,9 @@ export const signInOauth2 = ({authCode}) => async (dispatch) => {
 }
 
 export const signIn = ({email, password, rememberMe}) => async (dispatch) => {
+  dispatch(InProgress(true, 'Please wait..'));
   const response = await api.post(endpoints.authentication.signIn, { email, password });//should be post with the backend
+  dispatch(InProgress(false));
   if (response.status === 200) {
     const sessionData = {
       access_token: response.data.access_token, 

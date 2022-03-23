@@ -1,11 +1,10 @@
-import React, { useEffect } from 'react';
-import { isRemembered } from '../../store/appAction';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Formik } from 'formik';
-import { Button, Col, Form, Row, } from 'reactstrap';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Button } from 'reactstrap';
+import { useLocation } from 'react-router-dom';
 import { getGeneralErrors }  from '../../helpers/errorHelper'
-import { signInOauth2 } from '../../store/authentication/action';
+import { generalInProgress, signInOauth2 } from '../../store/appAction';
+import { AUTH_BASE_URL, CLIENT_BASE_URL, AUTH_CLIENT_ID, REDIRECT_URL  } from '../../config'
 
 
 /* 
@@ -17,33 +16,26 @@ The `OAuth2` component looks for a code; if it finds one it calls `signInOauth2`
 which tries to exchange that code for a token from the API.
 */
 
-const DEFAULT_PAGE = 'sign-in';
-
-const authorize = () => {
-
-  // TODO: get these from config...
-  const CLIENT_BASE_URL = 'http://localhost:3000'
-  const AUTH_BASE_URL = 'http://localhost:9011'
-  const AUTH_CLIENT_ID = '24c3750b-088a-43d0-af23-781258e6e78c'
-
-  const params = {
-    response_type: 'code',
-    client_id: AUTH_CLIENT_ID,
-    redirect_uri: `${CLIENT_BASE_URL}/auth/${DEFAULT_PAGE}`,
-    locale: 'en',
-    // tenant_id: 'whatever',
-    // state: 'whatever',
-    scope: 'offline_access',
-  };
-  const urlParams = new URLSearchParams(params).toString();
-  window.location = `${AUTH_BASE_URL}/oauth2/authorize?${urlParams}`;
-};
-
 const OAuth2 = () => {
-  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-  const genError = useSelector(state => state.auth.errorSignIn);
-  const navigate = useNavigate();
+  const genError = useSelector(state => state.auth.errorSignIn)
   const dispatch = useDispatch();
+
+  const authorize = () => {
+    dispatch(generalInProgress('Please wait. You are being redirected to sign in page for SSO.'));
+
+    const params = {
+      response_type: 'code',
+      client_id: AUTH_CLIENT_ID,
+      redirect_uri: `${CLIENT_BASE_URL}/${REDIRECT_URL}`,
+      locale: 'en',
+      // tenant_id: 'whatever',
+      // state: 'whatever',
+      scope: 'offline_access',
+    };
+    const urlParams = new URLSearchParams(params).toString();
+    console.log(urlParams)
+    window.location = `${AUTH_BASE_URL}/oauth2/authorize?${urlParams}`;
+  };
 
   // check if we've been passed a code
   const location = useLocation();
@@ -52,53 +44,20 @@ const OAuth2 = () => {
   const authCode = params.get('code')
   if (authCode) {
     console.log(authCode)
+    dispatch(generalInProgress('You have successfully signed in. Please wait.'));
     dispatch(signInOauth2({authCode}));
   }
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/dashboard');
-    }
-    else {
-      dispatch(isRemembered());
-    }
-  }, [isLoggedIn]);
   
   return (
-    <Formik
-      initialValues={{ }}
-      onSubmit={({ setSubmitting }) => {
-        dispatch(authorize);
-        setSubmitting(false);
-      }}
-      id="oauth2-form"
-    >
-      {({
-        
-        handleSubmit,
-        isSubmitting,
-      }) => (
-        <div className="jumbotron">
-          {getGeneralErrors(genError)}
-          <div className="container auth-form">
-            <Form onSubmit={handleSubmit} noValidate>
-              <Row form>
-                <Col>
-                  <div className="form-group center-oauth2">
-                    <Button
-                      className="outh2-btn"
-                      color="primary"
-                      disabled={isSubmitting}>
-                      SSO
-                    </Button>
-                  </div>
-                </Col>
-              </Row>            
-            </Form>
-          </div>
-        </div>
-      )}
-    </Formik>
+    <div className='text-center'>
+      {getGeneralErrors(genError)}
+      <Button
+        className="outh2-btn"
+        color="primary"
+        onClick={()=>{authorize()}}>
+        SSO
+      </Button>
+    </div>     
   );
 }
 

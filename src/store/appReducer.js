@@ -12,7 +12,6 @@ const appReducer = combineReducers({
   user: userReducer,
   myprofile: myProfileReducer,
   common: commonReducer
-
 });
 
 const rootReducer = (state, action) => {

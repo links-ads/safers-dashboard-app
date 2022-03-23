@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col } from 'reactstrap';
+import { useSelector } from 'react-redux';
 import OAuth2 from './OAuth2';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
@@ -14,6 +15,8 @@ const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';
   const { currentPage } = useParams();
   const navigate = useNavigate();
+  const isLoading = useSelector(state => state.common.isLoading);
+  const loadingMsg = useSelector(state => state.common.loadingMsg);
 
   useEffect(() => {
     if (!currentPage) {
@@ -63,6 +66,20 @@ const Authentication = () => {
 
   return (
     <div>
+      {isLoading && 
+      <div id='preloader'>
+        <div id='status'>
+          <div className='spinner-chase'>
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+          </div>
+          <p id='status-msg' className='mt-3'><i>{loadingMsg}</i></p>
+        </div>
+      </div>}
       <Container fluid className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">
