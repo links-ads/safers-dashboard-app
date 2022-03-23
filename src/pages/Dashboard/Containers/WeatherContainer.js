@@ -18,24 +18,24 @@ const WeatherContainer = () => {
       <Col md={5}>
         <MapComponent weatherStats={weatherStats}/>
       </Col>
-      <Col md={7} className='d-flex'>
+      <Col md={7} sm={12} xs={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
             <span className='weather-text'>Weather Forecast</span>
           </Row>
           <Row>
             <Col>
-              <Badge className='badge-temp px-2 temp'>
+              <Badge className='badge-temp px-2 temp my-2'>
                 <i className='fa fa-thermometer p-1'></i><span>Temperature</span>
               </Badge>
             </Col>
             <Col>
-              <Badge className='badge-temp px-2 pressure'>
+              <Badge className='badge-temp px-2 pressure my-2'>
                 <i className='fa fa-solid fa-wind p-1'></i><span>Atm.Pressure</span>
               </Badge>
             </Col>
             <Col>
-              <Badge className='badge-temp px-2 pressure'>
+              <Badge className='badge-temp px-2 pressure my-2'>
                 <i className='bx bxs-cloud-rain p-1'></i><span>Precipitation</span>
               </Badge>
             </Col>
@@ -47,21 +47,21 @@ const WeatherContainer = () => {
             </span>
           </Row>
           <Row className='h-100'>
-            <Col >
+            <Col xs={12} md={4} className="my-2">
               <Card className='card-temperature h-100 flex-column text-center '>
                 <Col className="p-2 pressure-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.temp.pressure : '-'}H</span></Col>
                 <Col className="p-2 degrees-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.temp.pressure : '-'}°</span></Col>
                 <Col className="p-2"></Col>
               </Card>
             </Col>
-            <Col>
+            <Col xs={12} md={4} className="my-2">
               <Card className='card-temperature h-100 flex-column text-center'>
                 <Col className="p-2 pressure-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.atm.pressure : '-'}H</span></Col>
                 <Col className="p-2 degrees-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.atm.pressure : '-'}°</span></Col>
                 <Col className="p-2"></Col>
               </Card>
             </Col>
-            <Col>
+            <Col xs={12} md={4} className="my-2">
               <Card className='card-temperature h-100 flex-column justify-content-between text-center'>
                 <Col className="p-2 pressure-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.precipitation.pressure : '-'}H</span></Col>
                 <Col className="p-2 degrees-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.precipitation.pressure : '-'}°</span></Col>
