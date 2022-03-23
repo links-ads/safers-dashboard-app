@@ -2,25 +2,24 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Form, Label, Input, FormGroup,  } from 'reactstrap';
 import { Formik } from 'formik';
 import DateRangeComponent from '../Components/DateRange';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
+import { getAllAreas } from '../../../store/appAction';
 
 const SearchContainer = () => {
+  const dispatch = useDispatch();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const allAoi = useSelector(state => state.user.aois);
   
   const [selectedAoi, setAoi] = useState(null);
-  // eslint-disable-next-line no-unused-vars
-  const [allAoi, setAllAoi] = useState([]);
   
-
   useEffect(() => {
-    
+    dispatch(getAllAreas)
   }, []);
 
   const selectAoi = (e) => {
     const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
     setAoi(objAoi);
-    console.log(objAoi)
   }
 
   return(
