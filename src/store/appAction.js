@@ -11,9 +11,8 @@ export {
 
 export {
   setDefaultAoi,
-  getAllAreas
 }
   from './user/action'
 
 export { getInfo, updateInfo, uploadProfImg, deleteAccount, resetProfilePsw } from './myprofile/action'
-export { getOrgList, getRoleList, generalInProgress } from './common/action'
+export { getOrgList, getRoleList, getAllAreas, generalInProgress } from './common/action'

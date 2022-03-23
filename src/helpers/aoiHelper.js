@@ -10,7 +10,7 @@ import { FlyToInterpolator } from 'deck.gl';
 
 const AoiHelper = () => {
   const uid = useSelector(state => state.auth.user.id);
-  const allAoi = useSelector(state => state.user.aois);
+  const allAoi = useSelector(state => state.common.aois);
 
   const [selectedAoi, setAoi] = useState(null);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
