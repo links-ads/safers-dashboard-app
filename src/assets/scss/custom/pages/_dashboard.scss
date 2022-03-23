@@ -112,7 +112,8 @@
   }
   
   .weather-variables-card {
-    height: 23rem;
+    @extend .card-temperature;
+    height: 20rem;
   }
 
   .dashboard-image {

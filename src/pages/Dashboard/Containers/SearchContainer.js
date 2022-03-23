@@ -48,18 +48,18 @@ const SearchContainer = () => {
           }) => (
             <Form onSubmit={handleSubmit} noValidate>
               <Row >
-                <Col md={5}  className=''>
+                <Col md={6}  xs={12}  className=''>
                   <FormGroup row>
-                    <Col sm={4}>
+                    <Col sm={4} md={3} xs={4}>
                       <Label
                         for="exampleEmail"
                         size="lg"
-                        className='text-nowrap'
+                        className='text-nowrap position-absolute e-0 '
                       >
-                            Area of interest
+                            Area of interest :
                       </Label>
                     </Col>
-                    <Col sm={8}>
+                    <Col sm={8} md={8} xs={8}>
                       <Input
                         id="exampleSelect"
                         name="select"
@@ -68,7 +68,7 @@ const SearchContainer = () => {
                         value={selectedAoi ? selectedAoi.features[0].properties.id : 
                           defaultAoi ? defaultAoi.features[0].properties.id : ''}
                       >
-                        <option value='' key={''}> ---- Select Area ------</option>
+                        <option value='' key={''}> ---------- Select Area -----------</option>
                         {allAoi.map((aoi, index) => <option key={index} value={aoi.features[0].properties.id}>
                           {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
                         </option>)}
@@ -78,7 +78,7 @@ const SearchContainer = () => {
                   </FormGroup>
                 </Col>
                 <Col></Col>
-                <Col md={3}>
+                <Col md={4}>
                   <DateRangeComponent/>
                 </Col>
               </Row>

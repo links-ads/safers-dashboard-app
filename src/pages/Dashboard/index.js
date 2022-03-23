@@ -22,7 +22,7 @@ const Dashboard = () => {
         <Row>
           <WeatherContainer/>
         </Row>
-        <Row className='weather-variables-card'>
+        <Row>
           <WeatherVariablesContainer/>
         </Row>
 

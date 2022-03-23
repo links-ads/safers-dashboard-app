@@ -13,7 +13,7 @@ const StatsContainer = () => {
   }, []);
 
   return(<>
-    <Col>
+    <Col md={3} sm={6}>
       <Card className='stats-card px-2 pb-3'>
         <CardHeader>
               Reports
@@ -25,7 +25,7 @@ const StatsContainer = () => {
         </CardFooter>
       </Card>
     </Col>
-    <Col>
+    <Col md={3} sm={6}>
       <Card className='stats-card px-2 pb-3'>
         <CardHeader>
               Alerts
@@ -37,7 +37,7 @@ const StatsContainer = () => {
         </CardFooter>
       </Card>
     </Col>
-    <Col>
+    <Col md={3} sm={6} >
       <Card className='stats-card px-2 pb-3'>
         <CardHeader>
               Events
@@ -49,7 +49,7 @@ const StatsContainer = () => {
         </CardFooter>
       </Card>
     </Col>
-    <Col>
+    <Col md={3} sm={6}>
       <Card className='stats-card px-2 pb-3'>
         <CardHeader>
               Social Engagement

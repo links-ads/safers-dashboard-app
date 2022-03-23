@@ -23,7 +23,7 @@ const InSituContainer = () => {
           <Row >
             {inSituMedia.map((media, index) => {
               return( 
-                <Col key={index} md={3} className='d-flex  dashboard-image'>
+                <Col key={index} md={3} sm={6} xs={12} className='d-flex  dashboard-image justify-content-center'>
                   <MediaComponent media={media}/>
                 </Col>)
             })}

@@ -28,7 +28,7 @@ const MediaComponent = (props) => {
           }}
         />
       ) : null}
-      <Card>
+      <Card className='w-100'>
         <div className='position-absolute top-0 start-0 m-2'>
           <h6 className='mb-1'>{props.media.time}</h6>
           <h5>{props.media.title}</h5>
