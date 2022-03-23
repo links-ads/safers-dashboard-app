@@ -1,3 +1,51 @@
 .dflt-seperator {
   border-bottom: $border-width solid $border-color;
 }
+.react-datepicker__input-container {
+  input {
+    @extend .form-control;
+  }
+}
+
+.calender-left {
+  border-top-left-radius: .3rem;
+  border-bottom-left-radius: .3rem;
+  i {
+    color: $gray-100;
+  }
+}
+.calender-right {
+  border-top-right-radius: .3rem;
+  border-bottom-right-radius: .3rem;
+  i {
+    color: $gray-100;
+  }
+}
+.flatpickr-input {
+  border : none;
+}
+
+
+.twitter-tweet-rendered {
+  height: 300px;
+  iframe {
+    height: 100% !important;
+  }
+}
+
+#twitter-widget-0::-webkit-scrollbar {
+  width: 2px;               /* width of the entire scrollbar */
+}
+.scrollbarstyle::-webkit-scrollbar {
+  width: 12px;               /* width of the entire scrollbar */
+}
+
+.scrollbarstyle::-webkit-scrollbar-track {
+  background: orange;        /* color of the tracking area */
+}
+
+.scrollbarstyle::-webkit-scrollbar-thumb {
+  background-color: blue;    /* color of the scroll thumb */
+  border-radius: 20px;       /* roundness of the scroll thumb */
+  border: 3px solid orange;  /* creates padding around scroll thumb */
+}
