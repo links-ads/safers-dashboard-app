@@ -10,6 +10,9 @@ export const endpoints = {
   aoi: {
     getAll: '/aois/',
   },
+  fireAlerts: {
+    getAll: 'mock-api-alerts-all.json',
+  },
   user: {
     setDefaultAoi: '/user/set-default-aoi',
     profile: '/users/'
@@ -19,7 +22,7 @@ export const endpoints = {
     updateInfo: '/myprofile/update',
   },
   common: {
-    organizations:'/organizations/',
+    organizations: '/organizations/',
     roles: '/roles/',
     termsNconditions: '/api/documents/terms-current',
     privacyPolicy: '/api/documents/privacy-current'
