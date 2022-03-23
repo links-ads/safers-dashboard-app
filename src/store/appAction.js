@@ -9,7 +9,8 @@ export {
   from './authentication/action';
 
 export {
-  setDefaultAoi
+  setDefaultAoi,
+  getAllAreas
 }
   from './user/action'
 export { getInfo, updateInfo, uploadProfImg, deleteAccount, resetProfilePsw } from './myprofile/action'

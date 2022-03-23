@@ -11,7 +11,6 @@ export const endpoints = {
     getAll: '/aois/',
   },
   user: {
-    setDefaultAoi: '/user/set-default-aoi',
     profile: '/users/'
   },
   myprofile: {

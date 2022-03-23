@@ -1,48 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 import { PolygonLayer } from '@deck.gl/layers';
 import BaseMap from '../layout/BaseMap/BaseMap';
-import { setDefaultAoi } from '../store/appAction';
-import { getAllAreas } from '../api/services/aoi';
+import { getAllAreas, setDefaultAoi } from '../store/appAction';
 
 const AoiHelper = () => {
-  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const uid = useSelector(state => state.auth.user.id);
+  const allAoi = useSelector(state => state.user.aois);
 
   const [selectedAoi, setAoi] = useState(null);
-  const [allAoi, setAllAoi] = useState([]);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const getAllAoi = async () => {
-      let aoiList = await getAllAreas();
-      setAllAoi(aoiList)
-    }
-    if (isLoggedIn && defaultAoi)
-      navigate('/dashboard');
-    else
-      getAllAoi();
-  }, []);
-
-  useEffect(() => {
-    if (isLoggedIn && defaultAoi)
-      navigate('/dashboard');
-  }, [defaultAoi]);
+    if (allAoi.length === 0)
+      dispatch(getAllAreas());
+  }, [allAoi]);
 
   const handleSubmit = () => {
-    dispatch(setDefaultAoi(selectedAoi))
+    dispatch(setDefaultAoi(uid, selectedAoi))
   }
 
   const selectAoi = (e) => {
     const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
-    setAoi(objAoi);
+    setAoi(parseInt(e.target.value));
     setPolygonLayer(getPolygonLayer(objAoi));
     setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel))
   }
