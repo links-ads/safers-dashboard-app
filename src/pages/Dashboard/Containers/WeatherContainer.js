@@ -1,18 +1,20 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Card, Row, Col, Badge } from 'reactstrap';
-import { getWeatherStats } from '../../../store/dashboard/action';
 import MapComponent from '../Components/Map';
 
 
 
 const WeatherContainer = () => {
-  const dispatch = useDispatch();
   const weatherStats = useSelector(state => state.dashboard.weatherStats);
+  // eslint-disable-next-line no-unused-vars
+  const [active, setActive] = useState(1)
 
-  useEffect(() => {
-    dispatch(getWeatherStats())
-  }, []);
+  const getDisplayText = (tab) => {
+    if (active == 1) return weatherStats.forecast ? `${weatherStats.forecast.temp[tab]}°` : 'N/A'
+    if (active == 2) return weatherStats.forecast ? `${weatherStats.forecast.pressure[tab]}°` : 'N/A'
+    if (active == 3) return weatherStats.forecast ? `${weatherStats.forecast.precipitation[tab]}°` : 'N/A'
+  }
   return (
     <>
       <Col md={5}>
@@ -25,17 +27,20 @@ const WeatherContainer = () => {
           </Row>
           <Row>
             <Col>
-              <Badge className='badge-temp px-2 temp my-2'>
+              <Badge className={'badge-temp px-2  my-2 ' + (active == 1 ? 'active-badge' : '')}
+                onClick={() =>{setActive(1)}}>
                 <i className='fa fa-thermometer p-1'></i><span>Temperature</span>
               </Badge>
             </Col>
             <Col>
-              <Badge className='badge-temp px-2 pressure my-2'>
-                <i className='fa fa-solid fa-wind p-1'></i><span>Atm.Pressure</span>
+              <Badge className={'badge-temp px-2  my-2 ' + (active == 2 ? 'active-badge' : '')}
+                onClick={() =>{setActive(2)}}>
+                <i className='fa fa-solid fa-lg fa-wind p-1'></i><span>Atm.Pressure</span>
               </Badge>
             </Col>
             <Col>
-              <Badge className='badge-temp px-2 pressure my-2'>
+              <Badge className={'badge-temp px-2  my-2 ' + (active == 3 ? 'active-badge' : '')}
+                onClick={() =>{setActive(3)}}>
                 <i className='bx bxs-cloud-rain p-1'></i><span>Precipitation</span>
               </Badge>
             </Col>
@@ -49,22 +54,22 @@ const WeatherContainer = () => {
           <Row className='h-100'>
             <Col xs={12} md={4} className="my-2">
               <Card className='card-temperature h-100 flex-column text-center '>
-                <Col className="p-2 pressure-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.temp.pressure : '-'}H</span></Col>
-                <Col className="p-2 degrees-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.temp.pressure : '-'}°</span></Col>
+                <Col className="p-2 pressure-text"><span>24H</span></Col>
+                <Col className="p-2 degrees-text"><span>{getDisplayText(0)}</span></Col>
                 <Col className="p-2"></Col>
               </Card>
             </Col>
             <Col xs={12} md={4} className="my-2">
               <Card className='card-temperature h-100 flex-column text-center'>
-                <Col className="p-2 pressure-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.atm.pressure : '-'}H</span></Col>
-                <Col className="p-2 degrees-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.atm.pressure : '-'}°</span></Col>
+                <Col className="p-2 pressure-text"><span>48H</span></Col>
+                <Col className="p-2 degrees-text"><span>{getDisplayText(1)}</span></Col>
                 <Col className="p-2"></Col>
               </Card>
             </Col>
             <Col xs={12} md={4} className="my-2">
               <Card className='card-temperature h-100 flex-column justify-content-between text-center'>
-                <Col className="p-2 pressure-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.precipitation.pressure : '-'}H</span></Col>
-                <Col className="p-2 degrees-text"><span>{weatherStats.tempVariables ? weatherStats.tempVariables.precipitation.pressure : '-'}°</span></Col>
+                <Col className="p-2 pressure-text"><span>72H</span></Col>
+                <Col className="p-2 degrees-text"><span>{getDisplayText(2)}</span></Col>
                 <Col className="p-2"></Col>
               </Card>
             </Col>

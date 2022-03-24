@@ -10,19 +10,10 @@ const weatherStats = {
     atm_instability_index : 27,
     fire_weather_index : 14
   },
-  tempVariables: {
-    temp : {
-      pressure : 24,
-      degrees : 17
-    },
-    atm : {
-      pressure : 48,
-      degrees : 16
-    },
-    precipitation : {
-      pressure : 72,
-      degrees : 14
-    }
+  forecast : {
+    temp: [24, 48, 72],
+    pressure: [23, 58, 92],
+    precipitation: [3, 28, 9]
   }
 }
 

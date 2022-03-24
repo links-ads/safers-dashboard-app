@@ -78,3 +78,25 @@ const getAoiFail = (error) => {
     payload: error
   };
 };
+
+//SELECT AOI
+export const setSelectedAoi = (aoi) => {
+  return {
+    type: actionTypes.SET_SELECTED_AOI,
+    payload: aoi
+  };
+};
+//SELECT VIEW STATE
+export const setViewState = (viewState) => {
+  return {
+    type: actionTypes.SET_VIEW_STATE,
+    payload: viewState
+  };
+};
+//SELECT POLYGON LAYER
+export const setPolygonLayer = (polygonLayer) => {
+  return {
+    type: actionTypes.SET_POLYGON_LAYER,
+    payload: polygonLayer
+  };
+};
