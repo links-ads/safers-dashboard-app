@@ -19,7 +19,7 @@ const StatsContainer = () => {
               Reports
         </CardHeader>
         <CardBody className='mx-auto'>
-          {stats ? formatNumber(stats.reports) : '-'}
+          {stats ? formatNumber(stats.reports) : 'N/A'}
         </CardBody>
         <CardFooter>
         </CardFooter>
@@ -31,7 +31,7 @@ const StatsContainer = () => {
               Alerts
         </CardHeader>
         <CardBody className='mx-auto'>
-          {stats ? formatNumber(stats.alerts) : '-'}
+          {stats ? formatNumber(stats.alerts) : 'N/A'}
         </CardBody>
         <CardFooter>
         </CardFooter>
@@ -43,7 +43,7 @@ const StatsContainer = () => {
               Events
         </CardHeader>
         <CardBody className='mx-auto'>
-          {stats ? formatNumber(stats.events) : '-'}
+          {stats ? formatNumber(stats.events) : 'N/A'}
         </CardBody>
         <CardFooter>
         </CardFooter>
@@ -55,7 +55,7 @@ const StatsContainer = () => {
               Social Engagement
         </CardHeader>
         <CardBody className='mx-auto'>
-          <span>{stats ? formatNumber(stats.socialEngagement) : '-'}</span>
+          <span>{stats ? formatNumber(stats.socialEngagement) : 'N/A'}</span>
         </CardBody>
         <CardFooter className='mx-auto'>
                 Total number of tweets

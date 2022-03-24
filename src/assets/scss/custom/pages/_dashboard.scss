@@ -48,7 +48,9 @@
   
       border-radius: $border-radius;
       box-shadow: $box-shadow;
-  
+      :hover{
+        cursor: pointer;
+      }
       span {
         font-family: LucidaGrande;
         font-size: .9rem;
@@ -62,7 +64,7 @@
       }
       
     }
-    .temp {
+    .active-badge {
       background: $orange !important;
     }
     .pressure {

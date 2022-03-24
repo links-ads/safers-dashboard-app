@@ -2,8 +2,8 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-export const getStats = () => async (dispatch) => {
-  const response = await api.get(endpoints.dashboard.getStats);
+export const getStats = (params) => async (dispatch) => {
+  const response = await api.get(endpoints.dashboard.getStats, params);
   if (response.status === 200) {
     return dispatch(getStatsSuccess(response.data));
   }
@@ -23,8 +23,8 @@ const getStatsFail = (error) => {
   };
 };
 
-export const getWeatherStats = () => async (dispatch) => {
-  const response = await api.get(endpoints.dashboard.getWeatherStats);
+export const getWeatherStats = (params) => async (dispatch) => {
+  const response = await api.get(endpoints.dashboard.getWeatherStats, params);
   if (response.status === 200) {
     return dispatch(getWeatherStatsSuccess(response.data));
   }
@@ -44,8 +44,8 @@ const getWeatherStatsFail = (error) => {
   };
 };
 
-export const getWeatherVariables = () => async (dispatch) => {
-  const response = await api.get(endpoints.dashboard.getWeatherVariables);
+export const getWeatherVariables = (params) => async (dispatch) => {
+  const response = await api.get(endpoints.dashboard.getWeatherVariables, params);
   if (response.status === 200) {
     return dispatch(getWeatherVariablesSuccess(response.data));
   }
@@ -65,8 +65,8 @@ const getWeatherVariablesFail = (error) => {
   };
 };
 
-export const getInSituMedia = () => async (dispatch) => {
-  const response = await api.get(endpoints.dashboard.getInSitu);
+export const getInSituMedia = (params) => async (dispatch) => {
+  const response = await api.get(endpoints.dashboard.getInSitu, params);
   if (response.status === 200) {
     return dispatch(getInSituMediaSuccess(response.data));
   }
@@ -86,8 +86,8 @@ const getInSituMediaFail = (error) => {
   };
 };
 
-export const getTweets = () => async (dispatch) => {
-  const response = await api.get(endpoints.dashboard.getTweets);
+export const getTweets = (params) => async (dispatch) => {
+  const response = await api.get(endpoints.dashboard.getTweets, params);
   if (response.status === 200) {
     return dispatch(getTweetsSuccess(response.data));
   }

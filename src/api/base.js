@@ -14,8 +14,9 @@ axiosApi.interceptors.response.use(
   error => Promise.reject(error)
 )
 
-export async function get(url, config = {}) {
-  return await axiosApi.get(url, { ...config, headers: authHeader() }).then(response => response)
+export async function get(url, params = {}, config = {}) {
+  
+  return await axiosApi.get(url, { params: params }, { ...config, headers: authHeader() }).then(response => response)
 }
 
 export async function patch(url, data, config = {}) {

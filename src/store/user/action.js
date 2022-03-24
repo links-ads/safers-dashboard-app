@@ -2,7 +2,6 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-
 export const getAllAreas = () => async (dispatch) => {
   const response = await api.get(endpoints.aoi.getAll);
   if (response.status === 200)

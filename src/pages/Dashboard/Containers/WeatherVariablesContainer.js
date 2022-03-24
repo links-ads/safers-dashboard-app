@@ -1,15 +1,10 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Card, Row, Col, Badge } from 'reactstrap';
-import { getWeatherVariables } from '../../../store/dashboard/action';
 
 const WeatherVariablesContainer = () => {
-  const dispatch = useDispatch();
   const weatherVariables = useSelector(state => state.dashboard.weatherVariables);
 
-  useEffect(() => {
-    dispatch(getWeatherVariables())
-  }, []);
   return (
     <>
       <Col md={12} className='d-flex'>
@@ -19,11 +14,11 @@ const WeatherVariablesContainer = () => {
           </Row>
           <Row>
             <div>
-              <Badge className='badge-temp px-2 pressure me-3'>
-                <i className='fa fa-solid fa-wind p-1'></i><span>Wind</span>
+              <Badge className='badge-temp px-2 pressure me-3 background-none'>
+                <i className='fa fa-solid fa-lg fa-wind p-1'></i><span>Wind</span>
               </Badge>
               <Badge className='badge-temp px-2 pressure'>
-                <i className='bx bxs-cloud-rain p-1'></i><span>Relative Humidity</span>
+                <i className='bx bxs-cloud-rain fa-lg p-1'></i><span>Relative Humidity</span>
               </Badge>
             </div>
           </Row>
