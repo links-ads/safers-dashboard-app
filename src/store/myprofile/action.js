@@ -2,8 +2,9 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-export const getInfo = () => async (dispatch) => {
-  const response = await api.get(endpoints.myprofile.getInfo);
+export const getInfo = (id='') => async (dispatch) => {
+  console.log(id);//To be used
+  const response = await api.get(`${endpoints.myprofile.user}`);
   if (response.status === 200) {
     return dispatch(getInfoSuccess(response.data?.user));
   }
@@ -24,7 +25,7 @@ const getInfoFail = (error) => {
 };
 
 export const deleteAccount = () => async (dispatch) => {
-  const response = await api.get(endpoints.myprofile.getInfo);
+  const response = await api.get(endpoints.myprofile.deleteAcc);
   if (response.status === 200) {
     return dispatch(deleteAccSuccess(response.data));
   }
@@ -91,7 +92,7 @@ export const updateInfo = (userInfo) => async (dispatch) => {
   const response = await api.post(endpoints.myprofile.updateInfo, {userInfo});
   if (response.status === 200) {
     getInfo();
-    return dispatch(updateInfoSuccess(response.data?.user));
+    return dispatch(updateInfoSuccess(response.data));
   }
   else
     return dispatch(updateInfoFail(response.data));
