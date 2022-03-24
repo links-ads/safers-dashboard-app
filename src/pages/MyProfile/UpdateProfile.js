@@ -16,14 +16,20 @@ const UpdateProfile = () => {
   toastr.options = {
     preventDuplicates: true,
   }
+  const {id} = useSelector(state => state.auth.user);
   const user = useSelector(state => state.myprofile.user);
-  const uploadFileSuccessRes = useSelector(state => state.myprofile.uploadFileSuccessRes);
-  const deleteAccSuccessRes = useSelector(state => state.myprofile.deleteAccSuccessRes);
-  const uploadFileFailRes = useSelector(state => state.myprofile.uploadFileFailRes);
-  const deleteAccFailRes = useSelector(state => state.myprofile.deleteAccFailRes);
-  const orgList = useSelector(state => state.common.orgList);
-  const roles = useSelector(state => state.common.roleList);
+  const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus } = useSelector(state => state.myprofile);
+  const { orgList = [], roleList:roles = [] } = useSelector(state => state.common);
   const [modal_backdrop, setmodal_backdrop] = useState(false);
+  const formInit =   {
+    firstname: user.firstName || '',
+    lastname: user.lastName || '',
+    organization: user.organization || '',
+    country: user.country || '',
+    city: user.city || '',
+    userRole: user.role || '',
+    address: user.address || ''
+  };
   const [error, setError] = useState(false);
   const fileUploader = useRef(null);
   const dispatch = useDispatch();
@@ -32,24 +38,22 @@ const UpdateProfile = () => {
   const countryNameArr = Object.keys(countryObj);
 
   useEffect(() => {
-    dispatch(getInfo())
+    dispatch(getInfo(id))
     if(orgList.length===0)
       dispatch(getRoleList());
     if(orgList.length===0)
       dispatch(getOrgList());
   }, []);
-
-  useEffect(() => {
-    if(uploadFileSuccessRes?.detail) {
-      toastr.success(uploadFileSuccessRes.detail, '');
-    }  
-  }, [uploadFileSuccessRes]);
-
-  useEffect(() => {
-    if(deleteAccSuccessRes){
-      dispatch(signOut());
-    }
-  }, [deleteAccSuccessRes]);
+  
+  if(uploadFileSuccessRes?.detail) {
+    toastr.success(uploadFileSuccessRes.detail, '');
+  }  
+  if(updateStatus?.detail) {
+    toastr.success(updateStatus.detail, '');
+  }  
+  if(deleteAccSuccessRes){
+    dispatch(signOut());
+  }
 
   useEffect(() => {
     const error = uploadFileFailRes ? uploadFileFailRes : (deleteAccFailRes ? deleteAccFailRes : false);
@@ -87,13 +91,7 @@ const UpdateProfile = () => {
       .required('The field cannot be empty'),
     lastname: Yup.string()
       .required('The field cannot be empty'),
-    country: Yup.string()
-      .required('The field cannot be empty'),
-    city: Yup.string()
-      .required('The field cannot be empty'),
     userRole: Yup.string()
-      .required('The field cannot be empty'),
-    address: Yup.string()
       .required('The field cannot be empty'),
   })
     .when((values, schema) => {
@@ -127,7 +125,7 @@ const UpdateProfile = () => {
                     <input type="file" id="file" ref={fileUploader} style={{display: 'none'}} onChange={(e) => {onChangeFile(e)}}/>
                   </div>
                   <Media body className="ms-4 align-self-center">
-                    <h1 className="h5">{user.name}</h1>
+                    <h1 className="h5">{user.firstName} {user.lastName}</h1>
                     <h2 className="h6">{user.title}</h2>
                   </Media>
                 </Media>
@@ -144,13 +142,13 @@ const UpdateProfile = () => {
                     <i className='bx bx-map me-2'></i><span>Location</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    {user.location}
+                    {user.address}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-shopping-bag me-2'></i><span>Company</span> 
+                    <i className='bx bx-shopping-bag me-2'></i><span>Organization</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    {user.company}
+                    {user.organization}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     <i className='bx bx-map me-2'></i><span>Area of Interest</span> 
@@ -170,15 +168,8 @@ const UpdateProfile = () => {
                 <h3 className="h5 mb-0">Personal Details</h3>
               </CardTitle>
               <Formik
-                initialValues={{
-                  firstname: '',
-                  lastname: '',
-                  organization: '',
-                  country: '',
-                  city: '',
-                  role: '',
-                  address: ''
-                }}
+                enableReinitialize={true}
+                initialValues={formInit}
                 validationSchema={myProfileSchema}
                 onSubmit={(values, { setSubmitting }) => {
                   console.log(values)
