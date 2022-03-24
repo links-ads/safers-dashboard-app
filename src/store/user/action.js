@@ -2,8 +2,6 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-
-
 export const setDefaultAoi = (uid, aoi) => async (dispatch) => {
   const endpoint = endpoints.user.profile + uid;
   const response = await api.patch(endpoint, { default_aoi: aoi });

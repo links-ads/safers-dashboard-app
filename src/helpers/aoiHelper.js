@@ -65,12 +65,9 @@ const AoiHelper = () => {
     }))
   }
 
-  const chunkMaxLength = (arr, chunkSize, maxLength) => {
-    return Array.from({ length: maxLength }, () => arr.splice(0, chunkSize));
-  }
   const renderAreasOfInterest = () => {
     let aoisToSplit = _.cloneDeep(allAoi);
-    const sortedAois = chunkMaxLength(aoisToSplit, 3, Math.ceil(aoisToSplit.length / 3));
+    const sortedAois = _.chunk(aoisToSplit, 3)
     return (<>
       {sortedAois.map((aoisChunk, i) => {
         return (
