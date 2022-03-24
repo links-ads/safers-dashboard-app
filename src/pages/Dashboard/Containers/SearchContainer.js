@@ -21,10 +21,11 @@ const SearchContainer = () => {
 
   useEffect(() => {
     dispatch(getAllAreas())
+    setMapLayers(defaultAoi)
   }, []);
 
   const getSearchData = () => {
-    const searchAoi = selectedAoi ? selectedAoi : defaultAoi ? defaultAoi.features[0].properties.id : undefined
+    const searchAoi = selectedAoi ? selectedAoi : defaultAoi.features[0].properties.id
     const params = {};
     if(dateRange.length>1){
       params.startDate = moment(dateRange[0])
@@ -47,9 +48,13 @@ const SearchContainer = () => {
   const selectAoi = (e) => {
     const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
     dispatch(setSelectedAoi(parseInt(e.target.value)));
+    setMapLayers(objAoi)
+    getSearchData()
+  }
+
+  const setMapLayers = (objAoi) => {
     dispatch(setPolygonLayer(getPolygonLayer(objAoi)));
     dispatch(setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel)))
-    getSearchData()
   }
 
   const setDates = (dates) => {

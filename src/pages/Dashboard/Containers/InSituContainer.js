@@ -3,8 +3,6 @@ import { useSelector } from 'react-redux';
 import { Card, Row, Col } from 'reactstrap';
 import MediaComponent from '../Components/MediaComponent';
 
-
-
 const InSituContainer = () => {
   const inSituMedia = useSelector(state => state.dashboard.inSituMedia);
   return (
