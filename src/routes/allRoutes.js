@@ -2,9 +2,8 @@
 //Pages
 import Authentication from '../pages/Authentication';
 import SelectArea from '../pages/Authentication/SelectArea';
-import PageOne from '../pages/PageOne';
 import MyProfile from '../pages/MyProfile';
-import PageTwo from '../pages/PageTwo';
+import FireAlerts from '../pages/FireAlerts';
 import Dashboard from '../pages/Dashboard';
 
 const publicRoutes = [
@@ -14,11 +13,10 @@ const publicRoutes = [
 ]
 
 const privateRoutes = [
-  { path: '/', component: PageOne },
+  { path: '/', component: Dashboard },
   { path: '/dashboard', component: Dashboard },
-  { path: '/fire-alerts', component: PageTwo },
-  { path: '/dashboard', component: PageTwo },
   { path: '/my-profile/:operation', component: MyProfile },
+  { path: '/fire-alerts', component: FireAlerts },
 ]
 
 export { publicRoutes, privateRoutes }

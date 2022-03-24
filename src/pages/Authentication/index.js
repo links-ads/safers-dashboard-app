@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col } from 'reactstrap';
+import { useSelector } from 'react-redux';
+import OAuth2 from './OAuth2';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
@@ -13,6 +15,8 @@ const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';
   const { currentPage } = useParams();
   const navigate = useNavigate();
+  const isLoading = useSelector(state => state.common.isLoading);
+  const loadingMsg = useSelector(state => state.common.loadingMsg);
 
   useEffect(() => {
     if (!currentPage) {
@@ -32,31 +36,50 @@ const Authentication = () => {
     case 'password':
       return <ResetPassword />;
     default:
-      return (                
-        <div className='tab-container'>
-          <Nav tabs className='nav-tabs-custom'>
-            <NavItem>
-              <NavLink className={currentPage == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
-              SIGN IN
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink className={currentPage == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
-              SIGN UP
-              </NavLink>
-            </NavItem>
-          </Nav>
-          <TabContent activeTab={currentPage}>
-            <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
-            <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
-          </TabContent>
-        </div>
+      return (       
+        <>
+          <div className='tab-container'>
+            <Nav tabs className='nav-tabs-custom'>
+              <NavItem>
+                <NavLink className={currentPage == 'sign-in' ? 'active' : ''} onClick={() => toggleTab('sign-in')}>
+                SIGN IN
+                </NavLink>
+              </NavItem>
+              <NavItem>
+                <NavLink className={currentPage == 'sign-up' ? 'active' : ''} onClick={() => toggleTab('sign-up')}>
+                SIGN UP
+                </NavLink>
+              </NavItem>
+            </Nav>
+            <TabContent activeTab={currentPage}>
+              <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
+              <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
+            </TabContent>
+          </div>
+          <div >
+            <OAuth2/>
+          </div>
+        </>         
       );
     }
   }
 
   return (
     <div>
+      {isLoading && 
+      <div id='preloader'>
+        <div id='status'>
+          <div className='spinner-chase'>
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+            <div className='chase-dot' />
+          </div>
+          <p id='status-msg' className='mt-3'><i>{loadingMsg}</i></p>
+        </div>
+      </div>}
       <Container fluid className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">

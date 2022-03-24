@@ -20,14 +20,22 @@ const commonReducer = (state = initialState, action) => {
   case actionTypes.CM_GET_ROLELIST_FAIL: return getRoleListFail(state, action);
   case actionTypes.GET_AOI_SUCCESS: return getAoiSuccess(state, action);
   case actionTypes.GET_AOI_FAIL: return getAoiFail(state, action);
-  // case actionTypes.CM_WIP: return isSiteLoading(state, action);
   case actionTypes.SET_SELECTED_AOI: return selectAoi(state, action);
   case actionTypes.SET_VIEW_STATE: return setViewState(state, action);
   case actionTypes.SET_POLYGON_LAYER: return setPolygonLayer(state, action);
+  case actionTypes.CM_WIP: return isSiteLoading(state, action);
   default:
     return state;
   }
 };
+
+const isSiteLoading = (state, action) => {
+  const updatedState = {
+    loadingMsg: action.payload,
+    isLoading: action.isLoading,
+  }
+  return updateObject(state, updatedState);
+}
 
 const getOrgListSuccess = (state, action) => {
   const updatedState = {

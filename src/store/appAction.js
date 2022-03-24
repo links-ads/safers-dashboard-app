@@ -4,14 +4,15 @@ export {
   signOut,
   reqResetPsw,
   resetPsw,
-  isRemembered
+  isRemembered,
+  signInOauth2
 }
   from './authentication/action';
 
 export {
   setDefaultAoi,
-  getAllAreas
 }
   from './user/action'
+
 export { getInfo, updateInfo, uploadProfImg, deleteAccount, resetProfilePsw } from './myprofile/action'
-export { getOrgList, getRoleList } from './common/action'
+export { getOrgList, getRoleList, getAllAreas, generalInProgress } from './common/action'

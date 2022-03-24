@@ -1,17 +1,37 @@
 [
   {
     "id": "base",
-    "routesVariants": ["add-headers:enabled", "login:success", "logout:success", "organizations:success", "roles:success", "aois:success", "myprofile-update:success", "myprofile-view:success", "myprofile-upload:success",
-      "dashboard:success", "dashboardWeather:success", "dashboardWeatherVars:success", "dashboardMedia:success", "dashboardTweets:success"]
+    "routesVariants": [
+      "add-headers:enabled",
+      "login:success",
+      "logout:success",
+      "organizations:success",
+      "roles:success",
+      "alerts:success",
+      "aois:success",
+      "aoi-set:success",
+      "myprofile-update:success",
+      "myprofile-view:success",
+      "myprofile-upload:success",
+      "dashboard:success",
+      "dashboardWeather:success",
+      "dashboardWeatherVars:success",
+      "dashboardMedia:success",
+      "dashboardTweets:success"
+    ]
   },
   {
     "id": "no-headers",
     "from": "base",
-    "routesVariants": ["add-headers:disabled"]
+    "routesVariants": [
+      "add-headers:disabled"
+    ]
   },
   {
     "id": "user-real",
     "from": "no-headers",
-    "routesVariants": ["get-user:real"]
+    "routesVariants": [
+      "get-user:real"
+    ]
   }
 ]
