@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col } from 'reactstrap';
 import { useSelector } from 'react-redux';
-import OAuth2 from './OAuth2';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
@@ -55,9 +54,6 @@ const Authentication = () => {
               <TabPane title='SIGN IN' tabId="sign-in"><SignIn /></TabPane>
               <TabPane title='SIGN UP' tabId="sign-up"><SignUp /></TabPane>
             </TabContent>
-          </div>
-          <div >
-            <OAuth2/>
           </div>
         </>         
       );
