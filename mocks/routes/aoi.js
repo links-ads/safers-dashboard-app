@@ -15647,8 +15647,8 @@ module.exports = [
     },
     {
         id: "aoi-set", // id of the route
-        url: "/api/user/set-default-aoi/", // url in express format
-        method: "GET", // HTTP method
+        url: "/api/users/150aa5c1-cd62-444d-acb1-92eee38165f5", // url in express format
+        method: "PATCH", // HTTP method
         variants: [
             {
                 id: "success", // id of the variant
