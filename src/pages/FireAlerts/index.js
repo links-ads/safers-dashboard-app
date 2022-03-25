@@ -35,7 +35,7 @@ const FireAlerts = () => {
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
-  const [filteredAlerts, setFilteredAlerts] = useState(alerts);
+  const [filteredAlerts, setFilteredAlerts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
   const dispatch = useDispatch();
@@ -48,7 +48,8 @@ const FireAlerts = () => {
     if (alerts.length > 0) {
       setIconLayer(getIconLayer(alerts));
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
+      // setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
+      setFilteredAlerts(alerts);
     }
   }, [alerts]);
 
@@ -151,6 +152,7 @@ const FireAlerts = () => {
     setHoverInfo({});
   };
   const showTooltip = info => {
+    console.log(info);
     if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
@@ -253,7 +255,7 @@ const FireAlerts = () => {
                 </Row>
               </Col>
               <Col xl={7} className='mx-auto'>
-                <Row style={{ height: 700 }} className="mb-5">
+                <Row style={{ height: 840 }}>
                   <BaseMap
                     layers={[iconLayer]}
                     initialViewState={viewState}
