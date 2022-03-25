@@ -74,18 +74,18 @@ const AoiHelper = () => {
           <div className='d-flex flex-column me-5' key={i}>{aoisChunk.map((aoi, index) => {
             return (
               <FormGroup key={index} className="form-group mb-2" check>
-                <Input
-                  id={`selectAoi${index}`}
-                  name="rememberMe"
-                  type="radio"
-                  onChange={selectAoi}
-                  value={aoi.features[0].properties.id}
-                />
                 <Label
                   check
                   id={`selectAoi${index}`}
                 >
-                  {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
+                  <Input
+                    id={`selectAoi${index}`}
+                    name={`aoi-${index}`}
+                    type="radio"
+                    onChange={selectAoi}
+                    value={aoi.features[0].properties.id}
+                  />
+                  {aoi.features[0].properties.country === aoi.features[0].properties.name ? aoi.features[0].properties.country : `${aoi.features[0].properties.country} - ${aoi.features[0].properties.name}`}
                 </Label>
               </FormGroup>
             )
