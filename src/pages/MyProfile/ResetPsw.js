@@ -71,16 +71,21 @@ const ResetPsw = () => {
                     <Col md={6}>
                       <div className="mb-3">
                         <Label htmlFor="formrow-email-Input">CURRENT PASSWORD</Label>
-                        <Input
-                          type="text"
-                          id="current_password"
-                          className={getError('current_password', errors, touched)}
-                          name="current_password"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.current_password}
-                          autoComplete="on"
-                        />
+                        <InputGroup>
+                          <Input
+                            type={passwordToggle ? 'text' : 'password'}
+                            id="current_password"
+                            className={getError('current_password', errors, touched)}
+                            name="current_password"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.current_password}
+                            autoComplete="on"
+                          />
+                          <InputGroupText>
+                            <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
+                          </InputGroupText>
+                        </InputGroup>
                         {getError('current_password', errors, touched, false)}
                       </div>
                     </Col>

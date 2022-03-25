@@ -6,10 +6,16 @@ import { PolygonLayer } from '@deck.gl/layers';
 import BaseMap from '../components/BaseMap/BaseMap';
 import { getAllAreas, setDefaultAoi } from '../store/appAction';
 import { FlyToInterpolator } from 'deck.gl';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css'
 
 const AoiHelper = () => {
+  toastr.options = {
+    preventDuplicates: true,
+  }
   const uid = useSelector(state => state.auth.user.id);
   const allAoi = useSelector(state => state.common.aois);
+  const aoiSetSuccess = useSelector(state => state.user.aoiSetSuccess);
 
   const [selectedAoi, setSelectedAoi] = useState(null);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
@@ -24,6 +30,12 @@ const AoiHelper = () => {
   const handleSubmit = () => {
     dispatch(setDefaultAoi(uid, selectedAoi))
   }
+  useEffect(() => {
+    if(aoiSetSuccess?.detail) {
+      toastr.success(aoiSetSuccess.detail, '');
+    } 
+  }, [aoiSetSuccess]);
+ 
 
   const selectAoi = (e) => {
     const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
@@ -73,18 +85,18 @@ const AoiHelper = () => {
           <div className='d-flex flex-column me-5' key={i}>{aoisChunk.map((aoi, index) => {
             return (
               <FormGroup key={index} className="form-group mb-2" check>
-                <Input
-                  id={`selectAoi${index}`}
-                  name="rememberMe"
-                  type="radio"
-                  onChange={selectAoi}
-                  value={aoi.features[0].properties.id}
-                />
                 <Label
                   check
                   id={`selectAoi${index}`}
                 >
-                  {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
+                  <Input
+                    id={`selectAoi${index}`}
+                    name={`aoi-${index}`}
+                    type="radio"
+                    onChange={selectAoi}
+                    value={aoi.features[0].properties.id}
+                  />
+                  {aoi.features[0].properties.country === aoi.features[0].properties.name ? aoi.features[0].properties.country : `${aoi.features[0].properties.country} - ${aoi.features[0].properties.name}`}
                 </Label>
               </FormGroup>
             )
