@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap';
 import { useLocation } from 'react-router-dom';
 import { generalInProgress, signInOauth2 } from '../../store/appAction';
-import { AUTH_BASE_URL, CLIENT_BASE_URL, AUTH_CLIENT_ID, REDIRECT_URL  } from '../../config'
+import { AUTH_BASE_URL, CLIENT_BASE_URL, AUTH_CLIENT_ID, AUTH_TENANT_ID, REDIRECT_URL  } from '../../config'
 
 
 /* 
@@ -27,7 +27,7 @@ const OAuth2 = () => {
       client_id: AUTH_CLIENT_ID,
       redirect_uri: `${CLIENT_BASE_URL}/${REDIRECT_URL}`,
       locale: 'en',
-      // tenant_id: 'whatever',
+      tenant_id: AUTH_TENANT_ID,
       // state: 'whatever',
       scope: 'offline_access',
     };
