@@ -31,10 +31,12 @@ const AoiHelper = () => {
   const handleSubmit = () => {
     dispatch(setDefaultAoi(uid, selectedAoi))
   }
-
-  if(aoiSetSuccess?.detail) {
-    toastr.success(aoiSetSuccess.detail, '');
-  }  
+  useEffect(() => {
+    if(aoiSetSuccess?.detail) {
+      toastr.success(aoiSetSuccess.detail, '');
+    } 
+  }, [aoiSetSuccess]);
+ 
 
   const selectAoi = (e) => {
     const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
