@@ -6,9 +6,9 @@ import {  Card, CardHeader, CardBody, CardFooter, Col } from 'reactstrap';
 const MapCards= () => {
   const weatherStats = useSelector(state => state.dashboard.weatherStats);
   return (
-    <Col md={7} className='position-absolute bottom-0 end-0 me-2'>
-      <Card className='map-overlay-card px-2 pb-1'>
-        <CardHeader>
+    <Col xs={4} className='position-absolute bottom-0 end-0 me-2'>
+      <Card className='map-overlay-card pb-1'>
+        <CardHeader className='my-3 px-1 py-0 text-center'>
               Atmosphere Instability Index
         </CardHeader>
         <CardBody className='mx-auto'>
@@ -17,8 +17,8 @@ const MapCards= () => {
         <CardFooter>
         </CardFooter>
       </Card>
-      <Card className='map-overlay-card px-2 pb-2'>
-        <CardHeader>
+      <Card className='map-overlay-card pb-2'>
+        <CardHeader className='my-3 px-1 py-0 text-center'>
               Fire Weather Index
         </CardHeader>
         <CardBody className='mx-auto'>

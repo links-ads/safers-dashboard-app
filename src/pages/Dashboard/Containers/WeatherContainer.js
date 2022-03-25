@@ -17,10 +17,10 @@ const WeatherContainer = () => {
   }
   return (
     <>
-      <Col md={5}>
+      <Col md={6}>
         <MapComponent weatherStats={weatherStats}/>
       </Col>
-      <Col md={7} sm={12} xs={12} className='d-flex'>
+      <Col md={6} sm={12} xs={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
             <span className='weather-text'>Weather Forecast</span>

@@ -65,38 +65,32 @@ const SearchContainer = () => {
   return(
     <Row className='g-0'>
       <Col >
-        <Row >
-          <Col md={6} xs={12} className=''>
-            <FormGroup row>
-              <Col sm={4} md={3} xs={4}>
-                <Label
-                  for="exampleEmail"
-                  size="lg"
-                  className='text-nowrap position-absolute e-0 '
-                >
-                      Area of interest :
-                </Label>
-              </Col>
-              <Col sm={8} md={8} xs={8}>
-                <Input
-                  id="selectAoiDashboard"
-                  name="select"
-                  type="select"
-                  onChange={(e) => selectAoi(e)}
-                  value={selectedAoi ? selectedAoi : 
-                    defaultAoi ? defaultAoi.features[0].properties.id : ''}
-                >
-                  <option value='' key={''}> ---------- Select Area -----------</option>
-                  {allAoi.map((aoi, index) => <option key={index} value={aoi.features[0].properties.id}>
-                    {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
-                  </option>)}
-                        
-                </Input>
-              </Col>
+        <Row>
+          <Col md={6} xs={12} className='' form>
+            <FormGroup className="form-group">
+              <Label
+                for="exampleEmail"
+              >
+                Area of interest :
+              </Label>
+              <Input
+                id="selectAoiDashboard"
+                className='w-50'
+                name="select"
+                type="select"
+                onChange={(e) => selectAoi(e)}
+                value={selectedAoi ? selectedAoi : 
+                  defaultAoi ? defaultAoi.features[0].properties.id : ''}
+              >
+                <option value='' key={''}> ---------- Select Area -----------</option>
+                {allAoi.map((aoi, index) => <option key={index} value={aoi.features[0].properties.id}>
+                  {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
+                </option>)}
+              </Input>
             </FormGroup>
           </Col>
           <Col></Col>
-          <Col md={4}>
+          <Col md={3}>
             <DateRangeComponent setDates={setDates}/>
           </Col>
         </Row>
