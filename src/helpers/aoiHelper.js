@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
-// import { useNavigate } from 'react-router-dom';
 import _ from 'lodash';
 import { PolygonLayer } from '@deck.gl/layers';
-import BaseMap from '../layout/BaseMap/BaseMap';
+import BaseMap from '../components/BaseMap/BaseMap';
 import { getAllAreas, setDefaultAoi } from '../store/appAction';
 import { FlyToInterpolator } from 'deck.gl';
 import toastr from 'toastr';
@@ -18,7 +17,7 @@ const AoiHelper = () => {
   const allAoi = useSelector(state => state.common.aois);
   const aoiSetSuccess = useSelector(state => state.user.aoiSetSuccess);
 
-  const [selectedAoi, setAoi] = useState(null);
+  const [selectedAoi, setSelectedAoi] = useState(null);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
 
@@ -40,7 +39,7 @@ const AoiHelper = () => {
 
   const selectAoi = (e) => {
     const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
-    setAoi(parseInt(e.target.value));
+    setSelectedAoi({ aoiId: parseInt(e.target.value), objAoi });
     setPolygonLayer(getPolygonLayer(objAoi));
     setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel))
   }

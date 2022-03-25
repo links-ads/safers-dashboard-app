@@ -1,81 +1,111 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { /*useDispatch,*/ useSelector } from 'react-redux';
-import { Row, Col, Button, Input } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Row, Col, Button, Input, Card } from 'reactstrap';
 import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
-import BaseMap from '../../layout/BaseMap/BaseMap';
-import { getAllFireAlerts } from '../../api/services/fireAlerts';
+import moment from 'moment';
+import BaseMap from '../../components/BaseMap/BaseMap';
+import { getAllFireAlerts } from '../../store/appAction';
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 
 import 'rc-pagination/assets/index.css';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
+import DateRangePicker from '../../components/DateRangePicker/DateRangePicker';
 
+const PAGE_SIZE = 4;
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
 };
-const PAGE_SIZE = 4;
+const getDefaultDateRange = () => {
+  const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
+  const to = moment(new Date()).format('DD-MM-YYYY');
+  return [from, to];
+}
 
 const FireAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const alerts = useSelector(state => state.alerts.allAlerts);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('desc');
   const [alertSource, setAlertSource] = useState('all');
-  const [alerts, setAlerts] = useState([]);
+  // const [midPoint, setMidPoint] = useState([]); // To be implemented
+  const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
-
+  const [filteredAlerts, setFilteredAlerts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const getAllAlerts = async () => {
-      let alerts = await getAllFireAlerts();
-      setAlerts(alerts)
-      setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
-      setIconLayer(getIconLayer(alerts));
-    }
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-    getAllAlerts();
+    dispatch(getAllFireAlerts());
   }, []);
 
   useEffect(() => {
-    const getAllAlerts = async () => {
-      let alerts = await getAllFireAlerts(
-        {
-          sortOrder: sortByDate,
-          source: alertSource
-        }
-      );
-      setAlerts(alerts);
+    if (alerts.length > 0) {
       setIconLayer(getIconLayer(alerts));
+      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+      // setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
+      setFilteredAlerts(alerts);
     }
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-    getAllAlerts();
-  }, [sortByDate, alertSource]);
+  }, [alerts]);
+
+  // useEffect(() => {
+  //   setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+  //   dispatch(getAllFireAlerts(
+  //     {
+  //       sortOrder: sortByDate,
+  //       source: alertSource,
+  //       from: dateRange[0],
+  //       to: dateRange[1]
+  //     }
+  //   ));
+  //   setIconLayer(getIconLayer(alerts));
+  // }, [sortByDate, alertSource]);
+
+  useEffect(() => {
+    setIconLayer(getIconLayer(filteredAlerts));
+    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+    setCurrentPage(1);
+    hideTooltip();
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
+  }, [filteredAlerts]);
+
+  useEffect(() => {
+    if (alertSource === 'all')
+      setFilteredAlerts(alerts);
+    else
+      setFilteredAlerts(_.filter(alerts, { source: alertSource }));
+  }, [alertSource]);
+
+  useEffect(() => {
+    setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
+  }, [sortByDate]);
 
   const updatePage = page => {
     setCurrentPage(page);
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
-    setPaginatedAlerts(_.cloneDeep(alerts.slice(from, to)));
+    hideTooltip();
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
-  const setSelectedAlert = (id) => {
+  const setSelectedAlert = (id, isEdit) => {
     if (id) {
       setAlertId(id);
-      let alertsToEdit = _.cloneDeep(alerts);
+      let alertsToEdit = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(alertsToEdit, { id });
       selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(alertsToEdit));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates });
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(alerts));
+      setIconLayer(getIconLayer(filteredAlerts));
     }
   }
 
@@ -108,16 +138,23 @@ const FireAlerts = () => {
     }))
   }
 
+  const handleDateRangePicker = (dates) => {
+    let from = moment(dates[0]).format('DD-MM-YYYY');
+    let to = moment(dates[1]).format('DD-MM-YYYY');
+    setDateRange([from, to]);
+  }
+
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
   const hideTooltip = (e) => {
-    console.log('hideTooltip', e)
+    console.log(e);
+    // setMidPoint([e.viewState.latitude, e.viewState.longitude])
     setHoverInfo({});
   };
   const showTooltip = info => {
-    console.log('showTooltip', info)
+    console.log(info);
     if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
@@ -127,12 +164,13 @@ const FireAlerts = () => {
   };
 
   const renderTooltip = (info) => {
-    const { object, coordinate } = info;
+    const { object, coordinate, isEdit } = info;
     if (object) {
       return <Tooltip
         key={object.id}
         object={object}
         coordinate={coordinate}
+        isEdit={isEdit}
       />
     }
     if (!object) {
@@ -152,97 +190,90 @@ const FireAlerts = () => {
 
   return (
     <div className='page-content'>
-      <Row className='g-0'>
+      <div className='mx-2 sign-up-aoi-map-bg'>
+        <Row className='mx-4 d-flex flex-row'>
+          <Col xl={4}>Alert List</Col>
+          <Col xl={4} className='text-center'>
+            <Button className='btn'
+              onClick={handleResetAOI}>Default AOI</Button>
+          </Col>
+          <Col xl={4}>
+            <DateRangePicker setDates={handleDateRangePicker} defaultDateRange={dateRange} />
+          </Col>
+        </Row>
         <Row>
-          <Col xl={11} md={10} xs={12} className='mx-auto sign-up-aoi-map-bg mb-2.5'>
-            <Row className='m-4 d-flex flex-row'>
-              <Col xl={4}>Alert List</Col>
-              <Col xl={4} className='text-center'>
-                <Button className='btn'
-                  onClick={handleResetAOI}>Default AOI</Button>
+          <Col xl={5}>
+            <hr />
+            <Row>
+              <Col className='mx-0'>
+                <Input
+                  id="sortByDate"
+                  className="btn-sm sort-select-input"
+                  name="sortByDate"
+                  placeholder="Sort By : Date"
+                  type="select"
+                  onChange={(e) => setSortByDate(e.target.value)}
+                  value={sortByDate}
+                >
+                  <option value={'desc'} >Sort By : Date desc</option>
+                  <option value={'asc'} >Sort By : Date asc</option>
+                </Input>
               </Col>
               <Col xl={4}>
-                <div className="col-md-10">
-                  <input
-                    className="form-control"
-                    type="date"
-                    defaultValue="2019-08-19"
-                    id="example-date-input"
-                  />
-                </div>
+                <Input
+                  id="alertSource"
+                  className="btn-sm sort-select-input"
+                  name="alertSource"
+                  placeholder="Source"
+                  type="select"
+                  onChange={(e) => setAlertSource(e.target.value)}
+                  value={alertSource}
+                >
+                  <option value={'all'} >Source : All</option>
+                  <option value={'web'} >Source : Web</option>
+                  <option value={'camera'} >Source : Camera</option>
+                  <option value={'satellite'} >Source : Satellite</option>
+                </Input>
               </Col>
+              <Col xl={3} className="d-flex justify-content-end">
+                <span className='my-auto alert-report-text'>Results {filteredAlerts.length}</span></Col>
             </Row>
             <Row>
-              <Col xl={5}>
+              <Col xl={12} className='p-3'>
                 <Row>
-                  <Col xl={4}>
-                    <Input
-                      id="sortByDate"
-                      className="btn-sm"
-                      name="sortByDate"
-                      placeholder="Sort By : Date"
-                      type="select"
-                      onChange={(e) => setSortByDate(e.target.value)}
-                      value={sortByDate}
-                    >
-                      <option value={'desc'} >Sort By : Date desc</option>
-                      <option value={'asc'} >Sort By : Date asc</option>
-                    </Input>
-                  </Col>
-                  <Col xl={4}>
-                    <Input
-                      id="alertSource"
-                      className="btn-sm"
-                      name="alertSource"
-                      placeholder="Source"
-                      type="select"
-                      onChange={(e) => setAlertSource(e.target.value)}
-                      value={alertSource}
-                    >
-                      <option value={'all'} >Source : All</option>
-                      <option value={'web'} >Source : Web</option>
-                      <option value={'camera'} >Source : Camera</option>
-                      <option value={'satellite'} >Source : Satellite</option>
-                    </Input>
-                  </Col>
-                  <Col xl={4}>Results {alerts.length}</Col>
+                  {
+                    paginatedAlerts.map((alert, index) => getCard(alert, index))
+                  }
                 </Row>
-                <Row>
-                  <Col xl={12} className='p-3'>
-                    <Row>
-                      {
-                        paginatedAlerts.map((alert, index) => getCard(alert, index))
-                      }
-                    </Row>
-                    <Row className='text-center'>
-                      <Pagination
-                        pageSize={PAGE_SIZE}
-                        onChange={updatePage}
-                        current={currentPage}
-                        total={alerts.length}
-                      />
-                    </Row>
-                  </Col>
-                </Row>
-              </Col>
-              <Col xl={7} className='mx-auto'>
-                <Row style={{ height: 700 }} className="mb-5">
-                  <BaseMap
-                    layers={[iconLayer]}
-                    initialViewState={viewState}
-                    hoverInfo={hoverInfo}
-                    renderTooltip={renderTooltip}
-                    onClick={showTooltip}
-                    onViewStateChange={hideTooltip}
-                    screenControlPosition='top-right'
-                    navControlPosition='bottom-right'
+                <Row className='text-center'>
+                  <Pagination
+                    pageSize={PAGE_SIZE}
+                    onChange={updatePage}
+                    current={currentPage}
+                    total={filteredAlerts.length}
                   />
                 </Row>
               </Col>
             </Row>
           </Col>
+          <Col xl={7} className='mx-auto'>
+            <Card className='map-card' style={{height : 600}}>
+              <BaseMap
+                layers={[iconLayer]}
+                initialViewState={viewState}
+                hoverInfo={hoverInfo}
+                renderTooltip={renderTooltip}
+                onClick={showTooltip}
+                onViewStateChange={hideTooltip}
+                screenControlPosition='top-right'
+                navControlPosition='bottom-right'
+              />
+            </Card>
+                
+          </Col>
         </Row>
-      </Row >
+        
+      </div>
     </div >
 
   );
