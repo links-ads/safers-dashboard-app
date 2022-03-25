@@ -7,10 +7,16 @@ import { PolygonLayer } from '@deck.gl/layers';
 import BaseMap from '../layout/BaseMap/BaseMap';
 import { getAllAreas, setDefaultAoi } from '../store/appAction';
 import { FlyToInterpolator } from 'deck.gl';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css'
 
 const AoiHelper = () => {
+  toastr.options = {
+    preventDuplicates: true,
+  }
   const uid = useSelector(state => state.auth.user.id);
   const allAoi = useSelector(state => state.common.aois);
+  const aoiSetSuccess = useSelector(state => state.user.aoiSetSuccess);
 
   const [selectedAoi, setAoi] = useState(null);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
@@ -25,6 +31,10 @@ const AoiHelper = () => {
   const handleSubmit = () => {
     dispatch(setDefaultAoi(uid, selectedAoi))
   }
+
+  if(aoiSetSuccess?.detail) {
+    toastr.success(aoiSetSuccess.detail, '');
+  }  
 
   const selectAoi = (e) => {
     const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
