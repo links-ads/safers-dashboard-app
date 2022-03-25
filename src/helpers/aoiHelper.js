@@ -91,7 +91,7 @@ const AoiHelper = () => {
                 >
                   <Input
                     id={`selectAoi${index}`}
-                    name={`aoi-${index}`}
+                    name='aoi-selection'
                     type="radio"
                     onChange={selectAoi}
                     value={aoi.features[0].properties.id}
