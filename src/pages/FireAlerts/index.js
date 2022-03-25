@@ -90,6 +90,7 @@ const FireAlerts = () => {
     setCurrentPage(page);
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
+    hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
