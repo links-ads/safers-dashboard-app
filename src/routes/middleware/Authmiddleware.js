@@ -11,10 +11,15 @@ const Authmiddleware = ({
   isAuthProtected,
   ...rest
 }) => {
-  const loggingIn = useSelector(state => state.auth.isLoggedIn);
-  if (isAuthProtected && !loggingIn) {
+  const { isLoggedIn, user } = useSelector(state => state.auth);
+  if (isAuthProtected && !isLoggedIn) {
     return (
       <Navigate state={{ from: rest.location }} to="/auth/sign-in" />
+    )
+  }
+  else if(isLoggedIn && ! user.default_aoi){
+    return (
+      <Navigate state={{ from: rest.location }} to="/user/select-aoi" />
     )
   }
 

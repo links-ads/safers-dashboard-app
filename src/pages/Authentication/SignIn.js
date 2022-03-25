@@ -4,7 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, } from 'reactstrap';
 import { Link, useNavigate } from 'react-router-dom';
-import { getGeneralErrors, getError }  from '../../helpers/errorHelper'
+import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
+import OAuth2 from './OAuth2';
 import * as Yup from 'yup'
 
 const SignIn = () => {
@@ -127,10 +128,13 @@ const SignIn = () => {
                 </Button>
 
               </div>
-              <div className="mt-1 center-sign-in">
+              <div className="mt-1 pb-3 center-sign-in dflt-seperator">
                 <Link to="/auth/forgot-password" className="text-muted">
                   Forgot password?
                 </Link>
+              </div>
+              <div className='mt-3'>
+                <OAuth2/>
               </div>
             </Form>
           </div>

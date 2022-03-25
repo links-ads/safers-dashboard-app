@@ -5,6 +5,9 @@ const initialState = {
   orgList: [],
   roleList: [],
   aois: [],
+  selectedAoi: null,
+  viewState: undefined,
+  polygonLayer: undefined,
   isLoading: false,
   loadingMsg: null
 };
@@ -17,6 +20,9 @@ const commonReducer = (state = initialState, action) => {
   case actionTypes.CM_GET_ROLELIST_FAIL: return getRoleListFail(state, action);
   case actionTypes.GET_AOI_SUCCESS: return getAoiSuccess(state, action);
   case actionTypes.GET_AOI_FAIL: return getAoiFail(state, action);
+  case actionTypes.SET_SELECTED_AOI: return selectAoi(state, action);
+  case actionTypes.SET_VIEW_STATE: return setViewState(state, action);
+  case actionTypes.SET_POLYGON_LAYER: return setPolygonLayer(state, action);
   case actionTypes.CM_WIP: return isSiteLoading(state, action);
   default:
     return state;
@@ -73,6 +79,25 @@ const getAoiSuccess = (state, action) => {
 const getAoiFail = (state, action) => {
   const updatedState = {
     getAOIerror: action.payload,
+  }
+  return updateObject(state, updatedState);
+}
+
+const selectAoi = (state, action) => {
+  const updatedState = {
+    selectedAoi: action.payload,
+  }
+  return updateObject(state, updatedState);
+}
+const setViewState = (state, action) => {
+  const updatedState = {
+    viewState: action.payload,
+  }
+  return updateObject(state, updatedState);
+}
+const setPolygonLayer = (state, action) => {
+  const updatedState = {
+    polygonLayer: action.payload,
   }
   return updateObject(state, updatedState);
 }

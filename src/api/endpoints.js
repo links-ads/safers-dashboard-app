@@ -18,9 +18,10 @@ export const endpoints = {
     profile: '/users/'
   },
   myprofile: {
-    getInfo: '/myprofile/view/',
+    user: '/myprofile/view',
     updateInfo: '/myprofile/update',
     uploadProfImg: '/myprofile/update',
+    deleteAcc: '/myprofile/view',
   },
   common: {
     organizations: '/organizations/',

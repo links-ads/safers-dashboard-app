@@ -1,18 +1,11 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector } from 'react-redux';
 import { Card, Row, Col } from 'reactstrap';
-import { getTweets } from '../../../store/dashboard/action';
 import TweetComponent from '../Components/TweetComponent';
 
-
-
 const TwitterContainer = () => {
-  const dispatch = useDispatch();
   const tweets = useSelector(state => state.dashboard.tweets);
   
-  useEffect(() => {
-    dispatch(getTweets())
-  }, []);
   return (
     <>
       <Col  className='d-flex'>
