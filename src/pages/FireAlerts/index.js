@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Button, Input } from 'reactstrap';
+import { Row, Col, Button, Input, Card } from 'reactstrap';
 import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
@@ -185,90 +185,89 @@ const FireAlerts = () => {
 
   return (
     <div className='page-content'>
-      <Row className='g-0'>
+      <div className='mx-2 sign-up-aoi-map-bg'>
+        <Row className='mx-4 d-flex flex-row'>
+          <Col xl={4}>Alert List</Col>
+          <Col xl={4} className='text-center'>
+            <Button className='btn'
+              onClick={handleResetAOI}>Default AOI</Button>
+          </Col>
+          <Col xl={4}>
+            <DateRangePicker setDates={handleDateRangePicker} defaultDateRange={dateRange} />
+          </Col>
+        </Row>
         <Row>
-          <Col xl={11} md={10} xs={12} className='mx-auto sign-up-aoi-map-bg mb-2.5'>
-            <Row className='m-4 d-flex flex-row'>
-              <Col xl={4}>Alert List</Col>
-              <Col xl={4} className='text-center'>
-                <Button className='btn'
-                  onClick={handleResetAOI}>Default AOI</Button>
+          <Col xl={5}>
+            <Row>
+              <Col className='mx-0'>
+                <Input
+                  id="sortByDate"
+                  className="btn-sm sort-select-input"
+                  name="sortByDate"
+                  placeholder="Sort By : Date"
+                  type="select"
+                  onChange={(e) => setSortByDate(e.target.value)}
+                  value={sortByDate}
+                >
+                  <option value={'desc'} >Sort By : Date desc</option>
+                  <option value={'asc'} >Sort By : Date asc</option>
+                </Input>
               </Col>
               <Col xl={4}>
-                <DateRangePicker setDates={handleDateRangePicker} defaultDateRange={dateRange} />
+                <Input
+                  id="alertSource"
+                  className="btn-sm sort-select-input"
+                  name="alertSource"
+                  placeholder="Source"
+                  type="select"
+                  onChange={(e) => setAlertSource(e.target.value)}
+                  value={alertSource}
+                >
+                  <option value={'all'} >Source : All</option>
+                  <option value={'web'} >Source : Web</option>
+                  <option value={'camera'} >Source : Camera</option>
+                  <option value={'satellite'} >Source : Satellite</option>
+                </Input>
               </Col>
+              <Col xl={3} className="d-flex justify-content-end">
+                <span className='my-auto alert-report-text'>Results {filteredAlerts.length}</span></Col>
             </Row>
             <Row>
-              <Col xl={5}>
+              <Col xl={12} className='p-3'>
                 <Row>
-                  <Col xl={4}>
-                    <Input
-                      id="sortByDate"
-                      className="btn-sm"
-                      name="sortByDate"
-                      placeholder="Sort By : Date"
-                      type="select"
-                      onChange={(e) => setSortByDate(e.target.value)}
-                      value={sortByDate}
-                    >
-                      <option value={'desc'} >Sort By : Date desc</option>
-                      <option value={'asc'} >Sort By : Date asc</option>
-                    </Input>
-                  </Col>
-                  <Col xl={4}>
-                    <Input
-                      id="alertSource"
-                      className="btn-sm"
-                      name="alertSource"
-                      placeholder="Source"
-                      type="select"
-                      onChange={(e) => setAlertSource(e.target.value)}
-                      value={alertSource}
-                    >
-                      <option value={'all'} >Source : All</option>
-                      <option value={'web'} >Source : Web</option>
-                      <option value={'camera'} >Source : Camera</option>
-                      <option value={'satellite'} >Source : Satellite</option>
-                    </Input>
-                  </Col>
-                  <Col xl={4}>Results {filteredAlerts.length}</Col>
+                  {
+                    paginatedAlerts.map((alert, index) => getCard(alert, index))
+                  }
                 </Row>
-                <Row>
-                  <Col xl={12} className='p-3'>
-                    <Row>
-                      {
-                        paginatedAlerts.map((alert, index) => getCard(alert, index))
-                      }
-                    </Row>
-                    <Row className='text-center'>
-                      <Pagination
-                        pageSize={PAGE_SIZE}
-                        onChange={updatePage}
-                        current={currentPage}
-                        total={alerts.length}
-                      />
-                    </Row>
-                  </Col>
-                </Row>
-              </Col>
-              <Col xl={7} className='mx-auto'>
-                <Row style={{ height: 700 }} className="mb-5">
-                  <BaseMap
-                    layers={[iconLayer]}
-                    initialViewState={viewState}
-                    hoverInfo={hoverInfo}
-                    renderTooltip={renderTooltip}
-                    onClick={showTooltip}
-                    onViewStateChange={hideTooltip}
-                    screenControlPosition='top-right'
-                    navControlPosition='bottom-right'
+                <Row className='text-center'>
+                  <Pagination
+                    pageSize={PAGE_SIZE}
+                    onChange={updatePage}
+                    current={currentPage}
+                    total={alerts.length}
                   />
                 </Row>
               </Col>
             </Row>
           </Col>
+          <Col xl={7} className='mx-auto'>
+            <Card className='map-card' style={{height : 600}}>
+              <BaseMap
+                layers={[iconLayer]}
+                initialViewState={viewState}
+                hoverInfo={hoverInfo}
+                renderTooltip={renderTooltip}
+                onClick={showTooltip}
+                onViewStateChange={hideTooltip}
+                screenControlPosition='top-right'
+                navControlPosition='bottom-right'
+              />
+            </Card>
+                
+          </Col>
         </Row>
-      </Row >
+        
+      </div>
     </div >
 
   );
