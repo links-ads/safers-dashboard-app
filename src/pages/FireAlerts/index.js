@@ -1,67 +1,94 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { /*useDispatch,*/ useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input } from 'reactstrap';
 import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
-import BaseMap from '../../layout/BaseMap/BaseMap';
-import { getAllFireAlerts } from '../../api/services/fireAlerts';
+import moment from 'moment';
+import BaseMap from '../../components/BaseMap/BaseMap';
+import { getAllFireAlerts } from '../../store/appAction';
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 
 import 'rc-pagination/assets/index.css';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
+import DateRangePicker from '../../components/DateRangePicker/DateRangePicker';
 
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
 };
 const PAGE_SIZE = 4;
 
+const getDefaultDateRange = () => {
+  const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
+  const to = moment(new Date()).format('DD-MM-YYYY');
+  return [from, to];
+}
+
 const FireAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const alerts = useSelector(state => state.alerts.allAlerts);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('desc');
   const [alertSource, setAlertSource] = useState('all');
-  const [alerts, setAlerts] = useState([]);
+  const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
-
+  const [filteredAlerts, setFilteredAlerts] = useState(alerts);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    const getAllAlerts = async () => {
-      let alerts = await getAllFireAlerts();
-      setAlerts(alerts)
-      setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
-      setIconLayer(getIconLayer(alerts));
-    }
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-    getAllAlerts();
+    dispatch(getAllFireAlerts());
   }, []);
 
   useEffect(() => {
-    const getAllAlerts = async () => {
-      let alerts = await getAllFireAlerts(
-        {
-          sortOrder: sortByDate,
-          source: alertSource
-        }
-      );
-      setAlerts(alerts);
+    if (alerts.length > 0) {
       setIconLayer(getIconLayer(alerts));
+      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+      setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
     }
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-    getAllAlerts();
-  }, [sortByDate, alertSource]);
+  }, [alerts]);
+
+  // useEffect(() => {
+  //   setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+  //   dispatch(getAllFireAlerts(
+  //     {
+  //       sortOrder: sortByDate,
+  //       source: alertSource,
+  //       from: dateRange[0],
+  //       to: dateRange[1]
+  //     }
+  //   ));
+  //   setIconLayer(getIconLayer(alerts));
+  // }, [sortByDate, alertSource]);
+
+  useEffect(() => {
+    setIconLayer(getIconLayer(filteredAlerts));
+    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+    setCurrentPage(1);
+    hideTooltip();
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
+  }, [filteredAlerts]);
+
+  useEffect(() => {
+    if (alertSource === 'all')
+      setFilteredAlerts(alerts);
+    else
+      setFilteredAlerts(_.filter(alerts, { source: alertSource }));
+  }, [alertSource]);
+
+  useEffect(() => {
+    setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
+  }, [sortByDate]);
 
   const updatePage = page => {
     setCurrentPage(page);
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
-    setPaginatedAlerts(_.cloneDeep(alerts.slice(from, to)));
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
   const setSelectedAlert = (id) => {
@@ -106,6 +133,13 @@ const FireAlerts = () => {
       sizeMaxPixels: 100,
       sizeScale: 0.5,
     }))
+  }
+
+  const handleDateRangePicker = (dates) => {
+    console.log(dates)
+    let from = moment(dates[0]).format('DD-MM-YYYY');
+    let to = moment(dates[1]).format('DD-MM-YYYY');
+    setDateRange([from, to]);
   }
 
   const handleResetAOI = useCallback(() => {
@@ -162,14 +196,7 @@ const FireAlerts = () => {
                   onClick={handleResetAOI}>Default AOI</Button>
               </Col>
               <Col xl={4}>
-                <div className="col-md-10">
-                  <input
-                    className="form-control"
-                    type="date"
-                    defaultValue="2019-08-19"
-                    id="example-date-input"
-                  />
-                </div>
+                <DateRangePicker setDates={handleDateRangePicker} defaultDateRange={dateRange} />
               </Col>
             </Row>
             <Row>
@@ -205,7 +232,7 @@ const FireAlerts = () => {
                       <option value={'satellite'} >Source : Satellite</option>
                     </Input>
                   </Col>
-                  <Col xl={4}>Results {alerts.length}</Col>
+                  <Col xl={4}>Results {filteredAlerts.length}</Col>
                 </Row>
                 <Row>
                   <Col xl={12} className='p-3'>

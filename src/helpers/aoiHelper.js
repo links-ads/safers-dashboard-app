@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import _ from 'lodash';
 import { PolygonLayer } from '@deck.gl/layers';
-import BaseMap from '../layout/BaseMap/BaseMap';
+import BaseMap from '../components/BaseMap/BaseMap';
 import { getAllAreas, setDefaultAoi } from '../store/appAction';
 import { FlyToInterpolator } from 'deck.gl';
 

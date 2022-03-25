@@ -1,0 +1,3 @@
+export const GET_ALERTS_SUCCESS = 'GET_ALERTS_SUCCESS'
+export const GET_ALERTS_FAIL = 'GET_ALERTS_FAIL'
+
