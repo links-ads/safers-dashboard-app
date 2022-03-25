@@ -14,11 +14,10 @@ import Alert from './Alert';
 import Tooltip from './Tooltip';
 import DateRangePicker from '../../components/DateRangePicker/DateRangePicker';
 
+const PAGE_SIZE = 4;
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
 };
-const PAGE_SIZE = 4;
-
 const getDefaultDateRange = () => {
   const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
   const to = moment(new Date()).format('DD-MM-YYYY');
@@ -32,6 +31,7 @@ const FireAlerts = () => {
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('desc');
   const [alertSource, setAlertSource] = useState('all');
+  // const [midPoint, setMidPoint] = useState([]); // To be implemented
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
@@ -136,7 +136,6 @@ const FireAlerts = () => {
   }
 
   const handleDateRangePicker = (dates) => {
-    console.log(dates)
     let from = moment(dates[0]).format('DD-MM-YYYY');
     let to = moment(dates[1]).format('DD-MM-YYYY');
     setDateRange([from, to]);
@@ -147,11 +146,11 @@ const FireAlerts = () => {
   }, []);
 
   const hideTooltip = (e) => {
-    console.log('hideTooltip', e)
+    console.log(e);
+    // setMidPoint([e.viewState.latitude, e.viewState.longitude])
     setHoverInfo({});
   };
   const showTooltip = info => {
-    console.log('showTooltip', info)
     if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
