@@ -83,6 +83,7 @@ const FireAlerts = () => {
 
   useEffect(() => {
     setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
   }, [sortByDate]);
 
   const updatePage = page => {
@@ -95,7 +96,7 @@ const FireAlerts = () => {
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
       setAlertId(id);
-      let alertsToEdit = _.cloneDeep(alerts);
+      let alertsToEdit = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(alertsToEdit, { id });
       selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(alertsToEdit));
@@ -103,7 +104,7 @@ const FireAlerts = () => {
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(alerts));
+      setIconLayer(getIconLayer(filteredAlerts));
     }
   }
 
@@ -248,7 +249,7 @@ const FireAlerts = () => {
                         pageSize={PAGE_SIZE}
                         onChange={updatePage}
                         current={currentPage}
-                        total={alerts.length}
+                        total={filteredAlerts.length}
                       />
                     </Row>
                   </Col>
