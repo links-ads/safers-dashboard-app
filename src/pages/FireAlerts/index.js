@@ -203,6 +203,7 @@ const FireAlerts = () => {
         </Row>
         <Row>
           <Col xl={5}>
+            <hr />
             <Row>
               <Col className='mx-0'>
                 <Input
