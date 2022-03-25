@@ -91,14 +91,14 @@ const FireAlerts = () => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
-  const setSelectedAlert = (id) => {
+  const setSelectedAlert = (id, isEdit) => {
     if (id) {
       setAlertId(id);
       let alertsToEdit = _.cloneDeep(alerts);
       let selectedAlert = _.find(alertsToEdit, { id });
       selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(alertsToEdit));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates });
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
@@ -160,12 +160,13 @@ const FireAlerts = () => {
   };
 
   const renderTooltip = (info) => {
-    const { object, coordinate } = info;
+    const { object, coordinate, isEdit } = info;
     if (object) {
       return <Tooltip
         key={object.id}
         object={object}
         coordinate={coordinate}
+        isEdit={isEdit}
       />
     }
     if (!object) {

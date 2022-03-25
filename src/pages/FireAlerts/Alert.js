@@ -15,6 +15,10 @@ const Alert = ({ card, setSelectedAlert, alertId }) => {
           <button
             type="button"
             className="btn float-end py-0 px-1"
+            onClick={(e) => {
+              e.stopPropagation()
+              setSelectedAlert(card.id, true);
+            }}
           >
             <i className="mdi mdi-pencil d-block font-size-16"></i>
           </button>

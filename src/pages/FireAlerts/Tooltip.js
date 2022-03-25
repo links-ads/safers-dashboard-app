@@ -14,8 +14,8 @@ import {
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
 
-const Tooltip = ({ object, coordinate }) => {
-  const [editToggle, setEditToggle] = useState(false);
+const Tooltip = ({ object, coordinate, isEdit = false }) => {
+  const [editToggle, setEditToggle] = useState(isEdit);
   const [description, setDescription] = useState(object.description);
   return (
     <Popup
@@ -98,6 +98,7 @@ const Tooltip = ({ object, coordinate }) => {
 Tooltip.propTypes = {
   object: PropTypes.any,
   coordinate: PropTypes.array,
+  isEdit: PropTypes.bool
 }
 
 export default Tooltip;
