@@ -35,7 +35,7 @@ const FireAlerts = () => {
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
-  const [filteredAlerts, setFilteredAlerts] = useState(alerts);
+  const [filteredAlerts, setFilteredAlerts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
   const dispatch = useDispatch();
@@ -48,7 +48,8 @@ const FireAlerts = () => {
     if (alerts.length > 0) {
       setIconLayer(getIconLayer(alerts));
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
+      // setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
+      setFilteredAlerts(alerts);
     }
   }, [alerts]);
 
@@ -82,27 +83,29 @@ const FireAlerts = () => {
 
   useEffect(() => {
     setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
   }, [sortByDate]);
 
   const updatePage = page => {
     setCurrentPage(page);
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
+    hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
-  const setSelectedAlert = (id) => {
+  const setSelectedAlert = (id, isEdit) => {
     if (id) {
       setAlertId(id);
-      let alertsToEdit = _.cloneDeep(alerts);
+      let alertsToEdit = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(alertsToEdit, { id });
       selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(alertsToEdit));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates });
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(alerts));
+      setIconLayer(getIconLayer(filteredAlerts));
     }
   }
 
@@ -151,6 +154,7 @@ const FireAlerts = () => {
     setHoverInfo({});
   };
   const showTooltip = info => {
+    console.log(info);
     if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
@@ -160,12 +164,13 @@ const FireAlerts = () => {
   };
 
   const renderTooltip = (info) => {
-    const { object, coordinate } = info;
+    const { object, coordinate, isEdit } = info;
     if (object) {
       return <Tooltip
         key={object.id}
         object={object}
         coordinate={coordinate}
+        isEdit={isEdit}
       />
     }
     if (!object) {
@@ -244,7 +249,7 @@ const FireAlerts = () => {
                     pageSize={PAGE_SIZE}
                     onChange={updatePage}
                     current={currentPage}
-                    total={alerts.length}
+                    total={filteredAlerts.length}
                   />
                 </Row>
               </Col>
