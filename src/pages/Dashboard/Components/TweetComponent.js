@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+import SimpleBar from 'simplebar-react'
 
 export default function TweetComponent({
   tweetID,
@@ -19,17 +20,17 @@ export default function TweetComponent({
           theme: 'dark',
         }
       ).then(() => {
-        setIsLoading(false)
-        const tweet = document.querySelector('[data-tweet-id="'+tweetID+'"]');
-        tweet.removeAttribute('scrolling')
+        setIsLoading(false);
       });
     }
   }, [tweetID]);
 
   return (
-    <div className="w-full animate-fadeIn twitter-component" id={tweetID}>
-      {isLoading && <p>LOADING .....</p>}
-    </div>
+    <SimpleBar style={{ maxHeight: '300px', margin: '5px' }}>
+      <div className="w-full animate-fadeIn twitter-component" id={tweetID}>
+        {isLoading && <p>LOADING .....</p>}
+      </div>
+    </SimpleBar>
   );
 }
 

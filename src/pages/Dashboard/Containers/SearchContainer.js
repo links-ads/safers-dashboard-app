@@ -66,7 +66,7 @@ const SearchContainer = () => {
     <Row className='g-0'>
       <Col >
         <Row>
-          <Col md={6} xs={12} className='' form>
+          <Col md={6} xs={12}>
             <FormGroup className="form-group">
               <Label
                 for="exampleEmail"
@@ -84,7 +84,7 @@ const SearchContainer = () => {
               >
                 <option value='' key={''}> ---------- Select Area -----------</option>
                 {allAoi.map((aoi, index) => <option key={index} value={aoi.features[0].properties.id}>
-                  {aoi.features[0].properties.country} - {aoi.features[0].properties.name}
+                  {aoi.features[0].properties.country === aoi.features[0].properties.name ? aoi.features[0].properties.country : `${aoi.features[0].properties.country} - ${aoi.features[0].properties.name}`}
                 </option>)}
               </Input>
             </FormGroup>

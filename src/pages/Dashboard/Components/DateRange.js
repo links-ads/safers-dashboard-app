@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import PropTypes from 'prop-types';
 
 import 'react-datepicker/dist/react-datepicker.css';
@@ -8,7 +8,7 @@ import Flatpickr from 'react-flatpickr'
 import { FormGroup, InputGroup } from 'reactstrap';
 
 const DateComponent = (props) => {
-
+  const fp = useRef(null);
   return (
 
     <FormGroup className="mb-4">
@@ -19,17 +19,18 @@ const DateComponent = (props) => {
         
         <Flatpickr
           className="form-control d-block"
-          placeholder="dd M,yyyy"
+          placeholder="dd/mm/yy"
+          ref={fp}
           onChange={(dates) => {
             dates.length > 1 && props.setDates(dates);
           }}
           options={{
             mode: 'range',
-            dateFormat: 'Y-m-d',
+            dateFormat: 'd/m/y',
           }}
         />
 
-        <div className='bg-white d-flex border-none calender-right'>
+        <div className='bg-white d-flex border-none calender-right' onClick={()=>{fp.current.flatpickr.clear();}}>
           <i className='fa fa-sync px-2 m-auto bg-white border-none'></i>
         </div>
       </InputGroup>
