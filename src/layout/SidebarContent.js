@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom';
 
 // //Import Scrollbar
 import SimpleBar from 'simplebar-react'
@@ -10,25 +11,12 @@ import MetisMenu from 'metismenujs'
 import { Link } from 'react-router-dom'
 
 const SidebarContent = () => {
-  const ref = useRef()
+  const ref = useRef();
+  const location = useLocation();
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
   useEffect(() => {
-    const pathName = '';
-
     const initMenu = () => {
       new MetisMenu('#side-menu')
-      let matchingMenuItem = null
-      const ul = document.getElementById('side-menu')
-      const items = ul.getElementsByTagName('a')
-      for (let i = 0; i < items.length; ++i) {
-        if (pathName === items[i].pathname) {
-          matchingMenuItem = items[i]
-          break
-        }
-      }
-      if (matchingMenuItem) {
-        activateParentDropdown(matchingMenuItem)
-      }
     }
     initMenu()
   }, [])
@@ -36,6 +24,21 @@ const SidebarContent = () => {
   useEffect(() => {
     ref.current.recalculate()
   })
+
+  useEffect(() => {
+    let matchingMenuItem = null;
+    const ul = document.getElementById('side-menu')
+    const items = ul.getElementsByTagName('a')
+    for (let i = 0; i < items.length; ++i) {
+      if (location.pathname == items[i].pathname) {
+        matchingMenuItem = items[i]
+        break
+      }
+    }
+    if (matchingMenuItem) {
+      activateParentDropdown(matchingMenuItem)
+    }
+  }, [location]);
 
   function scrollElement(item) {
     if (item) {
@@ -91,7 +94,7 @@ const SidebarContent = () => {
           <ul className='metismenu list-unstyled' id='side-menu'>
       
             <li>
-              <Link to='/#' className=''>
+              <Link to='/dashboard' className=''>
                 <i className='bx bx-layout'></i>
                 
                 <span>Dashboard</span>
