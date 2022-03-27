@@ -73,7 +73,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
                 {
                   editToggle ?
                     <Input type='textarea' value={description} onChange={(e) => { setDescription(e.target.value) }} />
-                    : object.description
+                    : description
                 }
               </CardText>
             </Col>
