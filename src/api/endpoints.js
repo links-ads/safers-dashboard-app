@@ -13,6 +13,9 @@ export const endpoints = {
   },
   fireAlerts: {
     getAll: '/alerts/',
+    setFavorite: '/alerts/favorite',
+    validate: '/alerts/validate',
+    edit: '/alerts/id-goes-here',
   },
   user: {
     profile: '/users/'
@@ -30,11 +33,11 @@ export const endpoints = {
     privacyPolicy: '/api/documents/privacy-current'
   },
   dashboard: {
-    getStats : '/dashboard/stats',
-    getWeatherStats : '/dashboard/weatherstats',
-    getWeatherVariables : '/dashboard/weathervariables',
-    getInSitu : '/dashboard/inSitu',
-    getTweets : '/dashboard/tweets'
+    getStats: '/dashboard/stats',
+    getWeatherStats: '/dashboard/weatherstats',
+    getWeatherVariables: '/dashboard/weathervariables',
+    getInSitu: '/dashboard/inSitu',
+    getTweets: '/dashboard/tweets'
   }
 };
 
