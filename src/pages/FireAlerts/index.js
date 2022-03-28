@@ -112,7 +112,7 @@ const FireAlerts = () => {
 
   const getAlertsByArea = () => {
 
-    const rangeFactor = parseInt(zoomLevel / 2)
+    const rangeFactor = (1 / zoomLevel) * 18;
     const left = midPoint[0] - rangeFactor; //minLong
     const right = midPoint[0] + rangeFactor; //maxLong
     const top = midPoint[1] + rangeFactor; //maxLat
@@ -124,6 +124,8 @@ const FireAlerts = () => {
       [right, bottom],
       [left, bottom]
     ];
+
+    // console.log(zoomLevel, rangeFactor, midPoint, boundaryBox);
 
     dispatch(getAllFireAlerts(
       {
