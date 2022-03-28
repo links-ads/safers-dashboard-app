@@ -21,7 +21,7 @@ const SearchContainer = () => {
 
   useEffect(() => {
     dispatch(getAllAreas())
-    setMapLayers(defaultAoi)
+    selectAoi(defaultAoi.features[0].properties.id)
   }, []);
 
   const getSearchData = () => {
@@ -45,9 +45,9 @@ const SearchContainer = () => {
     getSearchData()
   }, [dateRange, selectedAoi]);
 
-  const selectAoi = (e) => {
-    const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
-    dispatch(setSelectedAoi(parseInt(e.target.value)));
+  const selectAoi = (id) => {
+    const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(id) } }] })
+    dispatch(setSelectedAoi(parseInt(id)));
     setMapLayers(objAoi)
     getSearchData()
   }
@@ -78,7 +78,7 @@ const SearchContainer = () => {
                 className='w-50'
                 name="select"
                 type="select"
-                onChange={(e) => selectAoi(e)}
+                onChange={(e) => selectAoi(e.target.value)}
                 value={selectedAoi ? selectedAoi : 
                   defaultAoi ? defaultAoi.features[0].properties.id : ''}
               >
