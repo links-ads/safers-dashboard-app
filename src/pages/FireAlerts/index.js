@@ -15,7 +15,7 @@ import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
-import DateRangePicker from '../../components/DateRangePicker/DateRangePicker';
+import DateRangePicker from '../../components/DateRangePicker/DateRange';
 
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
@@ -310,7 +310,7 @@ const FireAlerts = () => {
               onClick={handleResetAOI}>Default AOI</Button>
           </Col>
           <Col xl={4}>
-            <DateRangePicker setDates={handleDateRangePicker} defaultDateRange={dateRange} />
+            <DateRangePicker setDates={handleDateRangePicker} />
           </Col>
         </Row>
         <Row>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Label, Input, FormGroup,  } from 'reactstrap';
 
-import DateRangeComponent from '../Components/DateRange';
+import DateRangeComponent from '../../../components/DateRangePicker/DateRange';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { getAllAreas } from '../../../store/appAction';
@@ -53,8 +53,10 @@ const SearchContainer = () => {
   }
 
   const setMapLayers = (objAoi) => {
-    dispatch(setPolygonLayer(getPolygonLayer(objAoi)));
-    dispatch(setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel)))
+    if(objAoi){
+      dispatch(setPolygonLayer(getPolygonLayer(objAoi)));
+      dispatch(setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel)))
+    }
   }
 
   const setDates = (dates) => {
