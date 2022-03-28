@@ -29,3 +29,28 @@
 .twitter-tweet-rendered {
   margin: 0 !important;
 }
+
+.rc-pagination li {
+  background-color: transparent;
+  border: none;
+  color: $gray-700;
+  vertical-align: middle;
+  button {
+    background-color: transparent !important;
+    border: none !important;
+    line-height: 5px;
+    padding-bottom: 5px;
+    font-size: 31px !important;
+    color: $gray-700;
+  }
+}
+
+.rc-pagination-disabled button {
+  color: $gray-500 !important;;
+}
+
+.rc-pagination-item-active {
+  background-color: $primary !important;
+  border-radius: 14px;
+  color: $black !important;
+}
