@@ -35,7 +35,8 @@ const FireAlerts = () => {
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('desc');
   const [alertSource, setAlertSource] = useState('all');
-  // const [midPoint, setMidPoint] = useState([]); // To be implemented
+  const [midPoint, setMidPoint] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
@@ -66,7 +67,9 @@ const FireAlerts = () => {
   useEffect(() => {
     if (alerts.length > 0) {
       setIconLayer(getIconLayer(alerts));
-      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+      if (!viewState) {
+        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+      }
       setFilteredAlerts(alerts);
     }
   }, [alerts]);
@@ -86,7 +89,9 @@ const FireAlerts = () => {
 
   useEffect(() => {
     setIconLayer(getIconLayer(filteredAlerts));
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+    if (!viewState) {
+      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+    }
     setCurrentPage(1);
     hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
@@ -104,6 +109,32 @@ const FireAlerts = () => {
     setAlertId(undefined);
     setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
   }, [sortByDate]);
+
+  const getAlertsByArea = () => {
+
+    const rangeFactor = parseInt(zoomLevel / 2)
+    const left = midPoint[0] - rangeFactor; //minLong
+    const right = midPoint[0] + rangeFactor; //maxLong
+    const top = midPoint[1] + rangeFactor; //maxLat
+    const bottom = midPoint[1] - rangeFactor; //minLat
+
+    const boundaryBox = [
+      [left, top],
+      [right, top],
+      [right, bottom],
+      [left, bottom]
+    ];
+
+    dispatch(getAllFireAlerts(
+      {
+        sortOrder: sortByDate,
+        source: alertSource,
+        from: dateRange[0],
+        to: dateRange[1],
+        boundaryBox
+      }
+    ));
+  }
 
   const setFavorite = (id) => {
     let selectedAlert = _.find(filteredAlerts, { id });
@@ -202,10 +233,13 @@ const FireAlerts = () => {
   }, []);
 
   const hideTooltip = (e) => {
-    console.log(e);
-    // setMidPoint([e.viewState.latitude, e.viewState.longitude])
+    if (e && e.viewState) {
+      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
+      setZoomLevel(e.viewState.zoom);
+    }
     setHoverInfo({});
   };
+
   const showTooltip = info => {
     console.log(info);
     if (info.picked && info.object) {
@@ -242,6 +276,25 @@ const FireAlerts = () => {
         setSelectedAlert={setSelectedAlert}
         setFavorite={setFavorite}
         alertId={alertId} />
+    )
+  }
+
+  const getSearchButton = (index) => {
+    return (
+      <Button
+        key={index}
+        className="btn-rounded alert-search-area"
+        style={{
+          position: 'absolute',
+          top: 10,
+          textAlign: 'center',
+          marginLeft: '41%'
+        }}
+        onClick={getAlertsByArea}
+      >
+        <i className="bx bx-revision"></i>{' '}
+        Search This Area
+      </Button >
     )
   }
 
@@ -322,6 +375,7 @@ const FireAlerts = () => {
                 renderTooltip={renderTooltip}
                 onClick={showTooltip}
                 onViewStateChange={hideTooltip}
+                widgets={[getSearchButton]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
               />

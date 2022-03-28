@@ -2,8 +2,8 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-export const getAllFireAlerts = () => async (dispatch) => {
-  const response = await api.get(endpoints.fireAlerts.getAll);
+export const getAllFireAlerts = (options) => async (dispatch) => {
+  const response = await api.post(endpoints.fireAlerts.getAll, options);
   if (response.status === 200) {
     return dispatch(getAlertsSuccess(response.data));
   }

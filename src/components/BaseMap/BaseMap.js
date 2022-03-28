@@ -20,6 +20,7 @@ const BaseMap = ({
   renderTooltip = () => { },
   onClick = () => { },
   onViewStateChange = () => { },
+  widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left'
 }) => {
@@ -93,6 +94,7 @@ const BaseMap = ({
       /> */}
         <FullscreenControl style={getPosition(screenControlPosition)} />
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
+        {widgets.map((widget, index) => widget(index))}
         {renderTooltip(hoverInfo)}
       </DeckGL>
     </>
