@@ -50,16 +50,16 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
           </Col>
         </Row>
         <Row className='no-gutters mx-0'>
-          <Col md={6} className='px-1'>
+          {object.media[0] && <Col md={6} className='px-1'>
             <CardImg
               className="img-fluid tooltip-img"
-              src={'https://st3.depositphotos.com/3589679/34560/i/380/depositphotos_345604100-stock-photo-blaze-fire-flame-texture-background.jpg'} alt="" />
-          </Col>
-          <Col md={6} className='px-1'>
+              src={object.media[0]} alt="" />
+          </Col>}
+          {object.media[1] && <Col md={6} className='px-1'>
             <CardImg
               className="img-fluid tooltip-img"
-              src={'https://media.istockphoto.com/photos/ring-of-fire-bailey-colorado-rocky-mountain-forest-wildfire-picture-id157384116?b=1&k=20&m=157384116&s=170667a&w=0&h=Pw_yN0VDs32EtF72o_8eosnV7KUugM4BzFBgoGapZVs='} alt="" />
-          </Col>
+              src={object.media[1]} alt="" />
+          </Col>}
         </Row>
         <Row className='mt-3 px-1 g-0'>
           <Row className='g-0'>
@@ -72,7 +72,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
               <CardText>
                 {
                   editToggle ?
-                    <Input type='textarea' value={description} onChange={(e) => { setDescription(e.target.value) }} />
+                    <Input type='textarea' rows="6" value={description} onChange={(e) => { setDescription(e.target.value) }} />
                     : description
                 }
               </CardText>
