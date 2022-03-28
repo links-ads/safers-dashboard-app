@@ -31,12 +31,12 @@ const SidebarContent = () => {
     const items = ul.getElementsByTagName('a')
     for (let i = 0; i < items.length; ++i) {
       if (location.pathname == items[i].pathname) {
-        matchingMenuItem = items[i]
-        break
+        matchingMenuItem = items[i];
       }
+      ctrlParentDropdown(false, items[i]);
     }
     if (matchingMenuItem) {
-      activateParentDropdown(matchingMenuItem)
+      ctrlParentDropdown(true, matchingMenuItem)
     }
   }, [location]);
 
@@ -49,33 +49,37 @@ const SidebarContent = () => {
     }
   }
 
-  function activateParentDropdown(item) {
-    item.classList.add('active')
+  function classCtrl (add=true, instance, clsName) {
+    add ? instance.classList.add(clsName) : instance.classList.remove(clsName);
+  }
+
+  function ctrlParentDropdown(activate=true, item) {
+    classCtrl(activate, item, 'active');
     const parent = item.parentElement
     const parent2El = parent.childNodes[1]
     if (parent2El && parent2El.id !== 'side-menu') {
-      parent2El.classList.add('mm-show')
+      classCtrl(activate, parent2El, 'mm-show');
     }
 
     if (parent) {
-      parent.classList.add('mm-active')
+      classCtrl(activate, parent, 'mm-active');
       const parent2 = parent.parentElement
 
       if (parent2) {
-        parent2.classList.add('mm-show') // ul tag
+        classCtrl(activate, parent2, 'mm-show');
 
         const parent3 = parent2.parentElement // li tag
 
         if (parent3) {
-          parent3.classList.add('mm-active') // li
-          parent3.childNodes[0].classList.add('mm-active') //a
+          classCtrl(activate, parent3, 'mm-active');
+          classCtrl(activate, parent3.childNodes[0], 'mm-active');
           const parent4 = parent3.parentElement // ul
           if (parent4) {
-            parent4.classList.add('mm-show') // ul
+            classCtrl(activate, parent4, 'mm-show');
             const parent5 = parent4.parentElement
             if (parent5) {
-              parent5.classList.add('mm-show') // li
-              parent5.childNodes[0].classList.add('mm-active') // a tag
+              classCtrl(activate, parent5, 'mm-show');
+              classCtrl(activate, parent5.childNodes[0], 'mm-active');
             }
           }
         }

@@ -5,10 +5,13 @@ import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import moment from 'moment';
+import toastr from 'toastr';
+
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllFireAlerts } from '../../store/appAction';
+import { getAllFireAlerts, setFavoriteAlert, resetAlertsResponseState, validateAlert, editAlertInfo } from '../../store/appAction';
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 
+import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
@@ -27,11 +30,13 @@ const getDefaultDateRange = () => {
 const FireAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.alerts.allAlerts);
+  const success = useSelector(state => state.alerts.success);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('desc');
   const [alertSource, setAlertSource] = useState('all');
-  // const [midPoint, setMidPoint] = useState([]); // To be implemented
+  const [midPoint, setMidPoint] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
@@ -41,14 +46,30 @@ const FireAlerts = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllFireAlerts());
+    dispatch(getAllFireAlerts(
+      {
+        sortOrder: sortByDate,
+        source: alertSource,
+        from: dateRange[0],
+        to: dateRange[1]
+      }
+    ));
   }, []);
+
+  useEffect(() => {
+    if (success?.detail) {
+      toastr.success(success.detail, '');
+    }
+    dispatch(resetAlertsResponseState());
+
+  }, [success]);
 
   useEffect(() => {
     if (alerts.length > 0) {
       setIconLayer(getIconLayer(alerts));
-      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      // setPaginatedAlerts(_.cloneDeep(alerts.slice(0, PAGE_SIZE)))
+      if (!viewState) {
+        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+      }
       setFilteredAlerts(alerts);
     }
   }, [alerts]);
@@ -68,13 +89,16 @@ const FireAlerts = () => {
 
   useEffect(() => {
     setIconLayer(getIconLayer(filteredAlerts));
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+    if (!viewState) {
+      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+    }
     setCurrentPage(1);
     hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
   }, [filteredAlerts]);
 
   useEffect(() => {
+    setAlertId(undefined);
     if (alertSource === 'all')
       setFilteredAlerts(alerts);
     else
@@ -82,11 +106,70 @@ const FireAlerts = () => {
   }, [alertSource]);
 
   useEffect(() => {
+    setAlertId(undefined);
     setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
-    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
   }, [sortByDate]);
 
+  const getAlertsByArea = () => {
+
+    const rangeFactor = (1 / zoomLevel) * 18;
+    const left = midPoint[0] - rangeFactor; //minLong
+    const right = midPoint[0] + rangeFactor; //maxLong
+    const top = midPoint[1] + rangeFactor; //maxLat
+    const bottom = midPoint[1] - rangeFactor; //minLat
+
+    const boundaryBox = [
+      [left, top],
+      [right, top],
+      [right, bottom],
+      [left, bottom]
+    ];
+
+    // console.log(zoomLevel, rangeFactor, midPoint, boundaryBox);
+
+    dispatch(getAllFireAlerts(
+      {
+        sortOrder: sortByDate,
+        source: alertSource,
+        from: dateRange[0],
+        to: dateRange[1],
+        boundaryBox
+      }
+    ));
+  }
+
+  const setFavorite = (id) => {
+    let selectedAlert = _.find(filteredAlerts, { id });
+    selectedAlert.isFavorite = !selectedAlert.isFavorite;
+    dispatch(setFavoriteAlert(id, selectedAlert.isFavorite));
+    const to = PAGE_SIZE * currentPage;
+    const from = to - PAGE_SIZE;
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
+
+    // updatePage(currentPage);
+  }
+
+  const validateEvent = (id) => {
+    let selectedAlert = _.find(filteredAlerts, { id });
+    selectedAlert.status = 'VALIDATED';
+    dispatch(validateAlert(id));
+    const to = PAGE_SIZE * currentPage;
+    const from = to - PAGE_SIZE;
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
+  }
+
+  const editInfo = (id, desc) => {
+    let selectedAlert = _.find(filteredAlerts, { id });
+    selectedAlert.description = desc;
+    dispatch(editAlertInfo(id, desc));
+    const to = PAGE_SIZE * currentPage;
+    const from = to - PAGE_SIZE;
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
+  }
+
   const updatePage = page => {
+    setAlertId(undefined);
+    setIconLayer(getIconLayer(filteredAlerts));
     setCurrentPage(page);
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
@@ -96,6 +179,9 @@ const FireAlerts = () => {
 
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
+      if (id === alertId) {
+        hideTooltip();
+      }
       setAlertId(id);
       let alertsToEdit = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(alertsToEdit, { id });
@@ -149,10 +235,13 @@ const FireAlerts = () => {
   }, []);
 
   const hideTooltip = (e) => {
-    console.log(e);
-    // setMidPoint([e.viewState.latitude, e.viewState.longitude])
+    if (e && e.viewState) {
+      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
+      setZoomLevel(e.viewState.zoom);
+    }
     setHoverInfo({});
   };
+
   const showTooltip = info => {
     console.log(info);
     if (info.picked && info.object) {
@@ -171,6 +260,9 @@ const FireAlerts = () => {
         object={object}
         coordinate={coordinate}
         isEdit={isEdit}
+        setFavorite={setFavorite}
+        validateEvent={validateEvent}
+        editInfo={editInfo}
       />
     }
     if (!object) {
@@ -184,7 +276,27 @@ const FireAlerts = () => {
         key={index}
         card={card}
         setSelectedAlert={setSelectedAlert}
+        setFavorite={setFavorite}
         alertId={alertId} />
+    )
+  }
+
+  const getSearchButton = (index) => {
+    return (
+      <Button
+        key={index}
+        className="btn-rounded alert-search-area"
+        style={{
+          position: 'absolute',
+          top: 10,
+          textAlign: 'center',
+          marginLeft: '41%'
+        }}
+        onClick={getAlertsByArea}
+      >
+        <i className="bx bx-revision"></i>{' '}
+        Search This Area
+      </Button >
     )
   }
 
@@ -194,7 +306,7 @@ const FireAlerts = () => {
         <Row className='mx-4 d-flex flex-row'>
           <Col xl={4}>Alert List</Col>
           <Col xl={4} className='text-center'>
-            <Button className='btn'
+            <Button color='link'
               onClick={handleResetAOI}>Default AOI</Button>
           </Col>
           <Col xl={4}>
@@ -257,7 +369,7 @@ const FireAlerts = () => {
             </Row>
           </Col>
           <Col xl={7} className='mx-auto'>
-            <Card className='map-card' style={{height : 600}}>
+            <Card className='map-card mb-0' style={{ height: 670 }}>
               <BaseMap
                 layers={[iconLayer]}
                 initialViewState={viewState}
@@ -265,14 +377,15 @@ const FireAlerts = () => {
                 renderTooltip={renderTooltip}
                 onClick={showTooltip}
                 onViewStateChange={hideTooltip}
+                widgets={[getSearchButton]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
               />
             </Card>
-                
+
           </Col>
         </Row>
-        
+
       </div>
     </div >
 
