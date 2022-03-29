@@ -305,7 +305,7 @@ const FireAlerts = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline'>Alert List</p>
+            <p className='align-self-baseline alert-title'>Alert List</p>
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
                 Default AOI</Button>
