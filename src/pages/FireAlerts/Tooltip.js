@@ -23,7 +23,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
       latitude={coordinate[1]}
       offsetTop={15}
       dynamicPosition={true}
-      anchor='top-left'
+      // anchor='top-left'
       style={{ borderRadius: '10px' }}
     >
 
