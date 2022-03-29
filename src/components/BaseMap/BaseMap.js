@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
-import React, { /*useState, useEffect */ } from 'react';
-import /*Map,*/ { FullscreenControl, NavigationControl, MapContext, StaticMap } from 'react-map-gl';
+import React from 'react';
+import { FullscreenControl, NavigationControl, MapContext, StaticMap } from 'react-map-gl';
 import { MapView } from '@deck.gl/core';
-import DeckGL/*, { TileLayer, BitmapLayer }*/ from 'deck.gl';
+import DeckGL from 'deck.gl';
+import { MAPBOX_TOKEN } from '../../config';
 
 const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
@@ -18,8 +19,6 @@ const MAP_STYLE = {
   mb_nav: 'mapbox://styles/mapbox/navigation-day-v1'
 };
 
-const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOXTOKEN
-
 const BaseMap = ({
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
@@ -33,43 +32,7 @@ const BaseMap = ({
   mapStyle = 'mb_streets'
 }) => {
 
-  // const tileLayer = new TileLayer({
-  //   // https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames#Tile_servers
-  //   data: [
-  //     'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  //     'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  //     'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
-  //   ],
-
-  //   // Since these OSM tiles support HTTP/2, we can make many concurrent requests
-  //   // and we aren't limited by the browser to a certain number per domain.
-  //   maxRequests: 20,
-  //   pickable: true,
-  //   onViewportLoad: null,
-  //   autoHighlight: false,
-  //   highlightColor: [60, 60, 60, 40],
-  //   // https://wiki.openstreetmap.org/wiki/Zoom_levels
-  //   minZoom: 0,
-  //   maxZoom: 19,
-  //   tileSize: 256,
-  //   zoomOffset: devicePixelRatio === 1 ? -1 : 0,
-  //   renderSubLayers: props => {
-  //     const {
-  //       bbox: { west, south, east, north }
-  //     } = props.tile;
-
-  //     return [
-  //       new BitmapLayer(props, {
-  //         data: null,
-  //         image: props.data,
-  //         bounds: [west, south, east, north]
-  //       }),
-  //     ];
-  //   }
-  // });
-
   const finalLayerSet = [
-    // tileLayer,
     ...layers ? layers : null
   ];
 
@@ -86,7 +49,6 @@ const BaseMap = ({
     <>
       <DeckGL
         views={new MapView({ repeat: true })}
-        //effects={theme.effects}
         onClick={onClick}
         onViewStateChange={onViewStateChange}
         onViewportLoad={(e) => { console.log(e) }}
