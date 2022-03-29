@@ -145,6 +145,9 @@
     }
     .map-overlay-card {
       @extend  .stats-card;
+      .card-body {
+        font-weight: normal;
+      }
       opacity: 0.89;
       border-radius: $border-radius-lg;
       box-shadow: $box-shadow;
