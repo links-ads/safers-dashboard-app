@@ -89,3 +89,16 @@
         color: #fff !important;
     }
 }
+
+.search-input {
+    border: none;
+    box-shadow: 0 8px 24px 0 rgb(206 197 196 / 18%);
+    background-color: #fff;
+    border-bottom-right-radius: 10px;
+    border-top-right-radius: 10px;
+}
+.search-left {
+    @extend .calender-left;
+    border-top-left-radius: 10px !important;
+    border-bottom-left-radius: 10px !important;
+}

@@ -5,6 +5,7 @@ import SelectArea from '../pages/Authentication/SelectArea';
 import MyProfile from '../pages/MyProfile';
 import FireAlerts from '../pages/FireAlerts';
 import Dashboard from '../pages/Dashboard';
+import EventAlerts from '../pages/Events';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },
@@ -17,6 +18,7 @@ const privateRoutes = [
   { path: '/dashboard', component: Dashboard },
   { path: '/my-profile/:operation', component: MyProfile },
   { path: '/fire-alerts', component: FireAlerts },
+  { path: '/event-alerts', component: EventAlerts },
 ]
 
 export { publicRoutes, privateRoutes }
