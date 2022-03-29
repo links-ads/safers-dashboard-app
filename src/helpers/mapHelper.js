@@ -32,3 +32,20 @@ export const getPolygonLayer = (aoi) => {
     getLineWidth: 100
   }))
 }
+
+export const getBoundaryBox = () => {
+  const rangeFactor = (1 / zoomLevel) * 18;
+  const left = midPoint[0] - rangeFactor; //minLong
+  const right = midPoint[0] + rangeFactor; //maxLong
+  const top = midPoint[1] + rangeFactor; //maxLat
+  const bottom = midPoint[1] - rangeFactor; //minLat
+
+  const boundaryBox = [
+    [left, top],
+    [right, top],
+    [right, bottom],
+    [left, bottom]
+  ];
+
+  return boundaryBox;
+}
