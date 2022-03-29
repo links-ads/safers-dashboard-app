@@ -11,7 +11,12 @@ const INITIAL_VIEW_STATE = {
   bearing: 0,
   pitch: 0
 };
-const MAP_STYLE = 'mapbox://styles/mapbox/streets-v11';
+const MAP_STYLE = {
+  mb_streets: 'mapbox://styles/mapbox/streets-v11',
+  mb_satellite: 'mapbox://styles/mapbox/satellite-v9',
+  mb_lite: 'mapbox://styles/mapbox/light-v10',
+  mb_nav: 'mapbox://styles/mapbox/navigation-day-v1'
+};
 
 const BaseMap = ({
   layers = null,
@@ -22,7 +27,8 @@ const BaseMap = ({
   onViewStateChange = () => { },
   widgets = [],
   screenControlPosition = 'top-left',
-  navControlPosition = 'bottom-left'
+  navControlPosition = 'bottom-left',
+  mapStyle = 'mb_streets'
 }) => {
 
   // const tileLayer = new TileLayer({
@@ -90,7 +96,7 @@ const BaseMap = ({
         <StaticMap
           mapboxApiAccessToken='pk.eyJ1IjoidGlsYW5wZXJ1bWEiLCJhIjoiY2wwamF1aGZ0MGF4MTNlb2EwcDBpNGR6YSJ9.ay3qveZBddbe4zVS78iM3w'// this should move to env vars
           initialViewState={initialViewState}
-          mapStyle={MAP_STYLE}
+          mapStyle={MAP_STYLE[mapStyle]}
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
