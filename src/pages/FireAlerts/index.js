@@ -303,16 +303,12 @@ const FireAlerts = () => {
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
-        <Row className='mx-4 d-flex flex-row'>
-          <Col xl={4}>Alert List</Col>
-          <Col xl={4} className='text-center'>
-            <Button color='link'
-              onClick={handleResetAOI}>Default AOI</Button>
-          </Col>
-          <Col xl={4}>
-            <DateRangePicker setDates={handleDateRangePicker} />
-          </Col>
-        </Row>
+        <div className='d-flex justify-content-between'>
+          <p className='align-self-baseline'>Alert List</p>
+          <Button color='link'
+            onClick={handleResetAOI} className='align-self-baseline'>Default AOI</Button>
+          <DateRangePicker setDates={handleDateRangePicker} />
+        </div>
         <Row>
           <Col xl={5}>
             <hr />
