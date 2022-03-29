@@ -21,8 +21,10 @@ const SearchContainer = () => {
 
   useEffect(() => {
     dispatch(getAllAreas())
+  },[]);
+  useEffect(() => {
     selectAoi(defaultAoi.features[0].properties.id)
-  }, []);
+  }, [allAoi])
 
   const getSearchData = () => {
     const searchAoi = selectedAoi ? selectedAoi : defaultAoi.features[0].properties.id
