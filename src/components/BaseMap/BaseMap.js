@@ -18,6 +18,8 @@ const MAP_STYLE = {
   mb_nav: 'mapbox://styles/mapbox/navigation-day-v1'
 };
 
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOXTOKEN
+
 const BaseMap = ({
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
@@ -94,7 +96,7 @@ const BaseMap = ({
         ContextProvider={MapContext.Provider}
       >
         <StaticMap
-          mapboxApiAccessToken='pk.eyJ1IjoidGlsYW5wZXJ1bWEiLCJhIjoiY2wwamF1aGZ0MGF4MTNlb2EwcDBpNGR6YSJ9.ay3qveZBddbe4zVS78iM3w'// this should move to env vars
+          mapboxApiAccessToken={MAPBOX_TOKEN}
           initialViewState={initialViewState}
           mapStyle={MAP_STYLE[mapStyle]}
         />
