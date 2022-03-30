@@ -64,7 +64,7 @@ const UpdateProfile = () => {
   }, [uploadFileFailRes, deleteAccFailRes]);
 
   useEffect(() => {
-    if(orgList.length){
+    if(orgList.length && user){
       const organization = _.find(orgList, { id: user.organization });
       setorgName(organization.name.split('-')[0])
     }
@@ -86,7 +86,7 @@ const UpdateProfile = () => {
 
 
   const confirmAccDelete = () => {
-    dispatch(deleteAccount());
+    dispatch(deleteAccount(id));
     setmodal_backdrop(false);
   }
 

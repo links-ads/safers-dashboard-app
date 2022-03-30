@@ -1,6 +1,8 @@
 import * as actionTypes from './types';
+import { SIGN_OUT } from '../authentication/types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
+import { deleteSession } from '../../helpers/authHelper';
 
 
 export const setDefaultAoi = (uid, objAoi) => async (dispatch) => {
@@ -50,20 +52,23 @@ const getInfoFail = (error) => {
   };
 };
 
-export const deleteAccount = () => async (dispatch) => {
-  const response = await api.get(endpoints.myprofile.deleteAcc);
-  if (response.status === 200) {
-    return dispatch(deleteAccSuccess(response.data));
+export const deleteAccount = (id) => async (dispatch) => {
+  const url = endpoints.user.profile + id;
+  const response = await api.del(url);
+  if (api.isSuccessResp(response.status)) {
+    deleteSession();
+    return dispatch(deleteAccSuccess());
   }
   else
     return dispatch(deleteAccFail(response.error));
 };
-const deleteAccSuccess = (user) => {
+
+const deleteAccSuccess = () => {
   return {
-    type: actionTypes.MP_DELETE_SUCCESS,
-    payload: user
+    type: SIGN_OUT,
   };
 };
+
 const deleteAccFail = (error) => {
   return {
     type: actionTypes.MP_DELETE_FAIL,
