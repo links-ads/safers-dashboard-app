@@ -119,6 +119,10 @@ const UpdateProfile = () => {
       }
     });  
 
+  if(!user) {
+    return null;
+  }
+
   return (
     <>
       <Row>
