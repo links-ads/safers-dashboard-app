@@ -19,8 +19,6 @@ export async function get(url, params = {}, config = {}) {
 }
 
 export async function patch(url, data, config = {}) {
-  const header = authHeader();
-  console.log('header..', header);
   return await axiosApi.patch(url, { ...data }, { ...config, headers: authHeader() })
     .then(response => response)
     .catch(error => error.response);

@@ -1,11 +1,27 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
 import AoiHelper from '../../helpers/aoiHelper';
 
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
 
 const SelectArea = () => {
+  const navigate = useNavigate();
+  const { isLoggedIn } = useSelector(state => state.auth);
+  const aoiSetSuccess = useSelector(state => state.user.aoiSetSuccess);
+
+  if(!isLoggedIn){
+    navigate('/auth/sign-in');
+  }
+
+  useEffect(() => {
+    if (aoiSetSuccess) {
+      navigate('/dashboard');
+    }
+  }, [aoiSetSuccess]);
+
   return (
     <div className="jumbotron">
       <Row>

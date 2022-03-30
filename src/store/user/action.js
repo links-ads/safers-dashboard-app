@@ -3,16 +3,16 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 
-export const setDefaultAoi = (uid, { aoiId, objAoi }) => async (dispatch) => {
+export const setDefaultAoi = (uid, objAoi) => async (dispatch) => {
   const endpoint = endpoints.user.profile + uid;
-  const response = await api.patch(endpoint, { default_aoi: aoiId });
+  const response = await api.patch(endpoint, { default_aoi: objAoi.features[0].properties.id });
   if (response.status === 200) {
     return dispatch(setAoiSuccess(objAoi, response.data));
   }
   else
     return dispatch(setAoiFail(response.error));
 };
-const setAoiSuccess = (aoi, msg) => {
+export const setAoiSuccess = (aoi, msg='') => {
   return {
     type: actionTypes.SET_AOI_SUCCESS,
     msg,
