@@ -68,7 +68,7 @@ const UpdateProfile = () => {
       const organization = _.find(orgList, { id: user.organization });
       setorgName(organization.name.split('-')[0])
     }
-  }, [orgList]);
+  }, [orgList, user]);
 
   useEffect(() => {
     if(roles.length){
