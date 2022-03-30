@@ -20,12 +20,6 @@ export const endpoints = {
   user: {
     profile: '/users/'
   },
-  myprofile: {
-    user: '/myprofile/view',
-    updateInfo: '/myprofile/update',
-    uploadProfImg: '/myprofile/update',
-    deleteAcc: '/myprofile/view',
-  },
   common: {
     organizations: '/organizations/',
     roles: '/roles/',

@@ -11,8 +11,8 @@ import 'toastr/build/toastr.min.css'
 
 
 const ResetPsw = () => {
-  const resetPswSuccessRes = useSelector(state => state.myprofile.resetPswSuccessRes);
-  const error = useSelector(state => state.myprofile.resetPswFailRes);
+  const resetPswSuccessRes = useSelector(state => state.user.resetPswSuccessRes);
+  const error = useSelector(state => state.user.resetPswFailRes);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const dispatch = useDispatch();
 
