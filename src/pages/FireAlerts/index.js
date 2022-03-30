@@ -15,7 +15,7 @@ import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
-import DateRangePicker from '../../components/DateRangePicker/DateRangePicker';
+import DateRangePicker from '../../components/DateRangePicker/DateRange';
 
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
@@ -303,16 +303,19 @@ const FireAlerts = () => {
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
-        <Row className='mx-4 d-flex flex-row'>
-          <Col xl={4}>Alert List</Col>
-          <Col xl={4} className='text-center'>
+        <Row>
+          <Col xl={5} className='d-flex justify-content-between'>
+            <p className='align-self-baseline alert-title'>Alert List</p>
             <Button color='link'
-              onClick={handleResetAOI}>Default AOI</Button>
+              onClick={handleResetAOI} className='align-self-baseline pe-0'>
+                Default AOI</Button>
           </Col>
-          <Col xl={4}>
-            <DateRangePicker setDates={handleDateRangePicker} defaultDateRange={dateRange} />
+          <Col xl={7} className='d-flex justify-content-end'>
+            <DateRangePicker setDates={handleDateRangePicker} />
           </Col>
-        </Row>
+        </Row>  
+          
+        
         <Row>
           <Col xl={5}>
             <hr />

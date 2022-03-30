@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Label, Input, FormGroup,  } from 'reactstrap';
 
-import DateRangeComponent from '../Components/DateRange';
+import DateRangeComponent from '../../../components/DateRangePicker/DateRange';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { getAllAreas } from '../../../store/appAction';
@@ -21,8 +21,10 @@ const SearchContainer = () => {
 
   useEffect(() => {
     dispatch(getAllAreas())
-    setMapLayers(defaultAoi)
-  }, []);
+  },[]);
+  useEffect(() => {
+    selectAoi(defaultAoi.features[0].properties.id)
+  }, [allAoi])
 
   const getSearchData = () => {
     const searchAoi = selectedAoi ? selectedAoi : defaultAoi.features[0].properties.id
@@ -45,16 +47,18 @@ const SearchContainer = () => {
     getSearchData()
   }, [dateRange, selectedAoi]);
 
-  const selectAoi = (e) => {
-    const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
-    dispatch(setSelectedAoi(parseInt(e.target.value)));
+  const selectAoi = (id) => {
+    const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(id) } }] })
+    dispatch(setSelectedAoi(parseInt(id)));
     setMapLayers(objAoi)
     getSearchData()
   }
 
   const setMapLayers = (objAoi) => {
-    dispatch(setPolygonLayer(getPolygonLayer(objAoi)));
-    dispatch(setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel)))
+    if(objAoi){
+      dispatch(setPolygonLayer(getPolygonLayer(objAoi)));
+      dispatch(setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel)))
+    }
   }
 
   const setDates = (dates) => {
@@ -78,7 +82,7 @@ const SearchContainer = () => {
                 className='w-50'
                 name="select"
                 type="select"
-                onChange={(e) => selectAoi(e)}
+                onChange={(e) => selectAoi(e.target.value)}
                 value={selectedAoi ? selectedAoi : 
                   defaultAoi ? defaultAoi.features[0].properties.id : ''}
               >
