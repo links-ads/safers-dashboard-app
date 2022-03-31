@@ -1,19 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Button, Input, Card } from 'reactstrap';
+import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
 import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import moment from 'moment';
 import toastr from 'toastr';
-import Tree from 'rsuite/Tree';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllFireAlerts, resetAlertsResponseState } from '../../store/appAction';
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 
 import 'toastr/build/toastr.min.css';
-import 'rsuite/dist/rsuite.min.css';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
+import TreeView from './TreeView';
 
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
@@ -280,35 +279,52 @@ const DataLayer = () => {
             </Row>
             <hr />
             <Row>
-              <DateRangePicker setDates={handleDateRangePicker} />
+              <Col xl={7}>
+                <InputGroup>
+                  <InputGroupText>
+                    <i className='bx bx-search-alt' />
+                  </InputGroupText>
+                  <Input
+                    id="searchEvent"
+                    name="searchEvent"
+                    placeholder="Search by relation to an event"
+                    autoComplete="on"
+                  />
+                </InputGroup>
+              </Col>
+              <Col xl={5}>
+                <DateRangePicker setDates={handleDateRangePicker} />
+              </Col>
             </Row>
             <Row>
-              <Tree
-                data={[
-                  {
-                    'label': 'Fire',
-                    'value': 1,
-                    'children':
-                      [
-                        {
-                          'label': 'Links',
-                          'value': 11,
-                          'children':
-                            [
-                              {
-                                'label': 'Soil Burn Severity',
-                                'value': 111,
-                              },
-                              {
-                                'label': 'Wid Forecast',
-                                'value': 111,
-                              },
-                            ]
-                        }
-                      ]
-                  }
-                ]}
-                defaultExpandAll showIndentLine />
+              <Col>
+                <TreeView
+                  data={[
+                    {
+                      text: 'Fire',
+                      id: 1,
+                      children:
+                        [
+                          {
+                            text: 'Links',
+                            id: 11,
+                            children:
+                              [
+                                {
+                                  text: 'Soil Burn Severity',
+                                  id: 111,
+                                },
+                                {
+                                  text: 'Wid Forecast',
+                                  id: 112,
+                                },
+                              ]
+                          }
+                        ]
+                    }
+                  ]}
+                />
+              </Col>
             </Row>
           </Col>
           <Col xl={7} className='mx-auto'>
