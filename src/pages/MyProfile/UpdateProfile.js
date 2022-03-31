@@ -75,7 +75,7 @@ const UpdateProfile = () => {
   }, [uploadFileFailRes, deleteAccFailRes]);
 
   useEffect(() => {
-    if(orgList.length && user){
+    if(orgList.length && user?.organization){
       const organization = _.find(orgList, { id: user.organization });
       setorgName(organization.name.split('-')[0])
     }
