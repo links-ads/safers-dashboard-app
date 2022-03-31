@@ -115,7 +115,7 @@ const SidebarContent = () => {
             </li>
 
             <li>
-              <Link to='/chat' className=''>
+              <Link to='/data-layer' className=''>
                 <i className='bx bx-copy'></i>
                 <span>Data Layers</span>
               </Link>
