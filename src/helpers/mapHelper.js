@@ -1,5 +1,10 @@
-import { FlyToInterpolator } from 'deck.gl';
+import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import { PolygonLayer } from '@deck.gl/layers';
+import firePin from '../assets/images/atoms-general-icon-fire-drop.png'
+
+const ICON_MAPPING = {
+  marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
+};
 
 export const getViewState = (midPoint, zoomLevel = 4) => {
   return {
@@ -33,19 +38,19 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getBoundaryBox = () => {
-  const rangeFactor = (1 / zoomLevel) * 18;
-  const left = midPoint[0] - rangeFactor; //minLong
-  const right = midPoint[0] + rangeFactor; //maxLong
-  const top = midPoint[1] + rangeFactor; //maxLat
-  const bottom = midPoint[1] - rangeFactor; //minLat
-
-  const boundaryBox = [
-    [left, top],
-    [right, top],
-    [right, bottom],
-    [left, bottom]
-  ];
-
-  return boundaryBox;
+export const getIconLayer = (alerts) => {
+  return (new IconLayer({
+    data: alerts,
+    pickable: true,
+    getPosition: d => d.geometry.coordinates,
+    iconAtlas: firePin,
+    iconMapping: ICON_MAPPING,
+    // onHover: !hoverInfo.objects && setHoverInfo,
+    id: 'icon',
+    getIcon: () => 'marker',
+    getColor: d => { return (d.isSelected ? [226, 123, 29] : [230, 51, 79]) },
+    sizeMinPixels: 80,
+    sizeMaxPixels: 100,
+    sizeScale: 0.5,
+  }))
 }

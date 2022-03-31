@@ -15,8 +15,8 @@ import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
-import DateRangePicker from '../../components/DateRangePicker/DateRangePicker';
 import SortSection from '../../components/SortSection';
+import DateComponent from '../../components/DateRangePicker/DateRange';
 
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
@@ -74,19 +74,6 @@ const EventAlerts = () => {
       setFilteredAlerts(alerts);
     }
   }, [alerts]);
-
-  // useEffect(() => {
-  //   setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-  //   dispatch(getAllFireAlerts(
-  //     {
-  //       sortOrder: sortByDate,
-  //       source: alertSource,
-  //       from: dateRange[0],
-  //       to: dateRange[1]
-  //     }
-  //   ));
-  //   setIconLayer(getIconLayer(alerts));
-  // }, [sortByDate, alertSource]);
 
   useEffect(() => {
     setIconLayer(getIconLayer(filteredAlerts));
@@ -311,7 +298,7 @@ const EventAlerts = () => {
               onClick={handleResetAOI}>Default AOI</Button>
           </Col>
           <Col xl={4} className='d-flex justify-content-end'>
-            <DateRangePicker setDates={handleDateRangePicker} defaultDateRange={dateRange} />
+            <DateComponent setDates={handleDateRangePicker} defaultDateRange={dateRange} />
           </Col>
         </Row>
         <Row>

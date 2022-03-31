@@ -2,43 +2,34 @@ import { Tooltip } from 'bootstrap';
 import React from 'react';
 import { Button, Card } from 'reactstrap';
 import BaseMap from '../../components/BaseMap/BaseMap';
+import SearchButton from './Components/SearchButton';
 
 const MapSection = () => {
-    
-  const getSearchButton = (index) => {
-    return (
-      <Button
-        key={index}
-        className="btn-rounded alert-search-area"
-        style={{
-          position: 'absolute',
-          top: 10,
-          textAlign: 'center',
-          marginLeft: '41%'
-        }}
-        onClick={getAlertsByArea}
-      >
-        <i className="bx bx-revision"></i>{' '}
-            Search This Area
-      </Button >
-    )
-  }
-  const getAlertsByArea = () => {
+  const [midPoint, setMidPoint] = useState([]);
+  const [zoomLevel, setZoomLevel] = useState(undefined);
+  const [iconLayer, setIconLayer] = useState(undefined);
+  const [viewState, setViewState] = useState(undefined);
 
-    
+  const [hoverInfo, setHoverInfo] = useState({});
 
-    // console.log(zoomLevel, rangeFactor, midPoint, boundaryBox);
+  const hideTooltip = (e) => {
+    if (e && e.viewState) {
+      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
+      setZoomLevel(e.viewState.zoom);
+    }
+    setHoverInfo({});
+  };
 
-    dispatch(getAllFireAlerts(
-      {
-        sortOrder: sortByDate,
-        source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1],
-        boundaryBox
-      }
-    ));
-  }
+  const showTooltip = info => {
+    console.log(info);
+    if (info.picked && info.object) {
+      setSelectedAlert(info.object.id);
+      setHoverInfo(info);
+    } else {
+      setHoverInfo({});
+    }
+  };
+
   const renderTooltip = (info) => {
     const { object, coordinate, isEdit } = info;
     if (object) {
@@ -65,7 +56,7 @@ const MapSection = () => {
         renderTooltip={renderTooltip}
         onClick={showTooltip}
         onViewStateChange={hideTooltip}
-        widgets={[getSearchButton]}
+        widgets={[SearchButton]}
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
       />

@@ -10,11 +10,13 @@ import {
   Row
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
+import { useNavigate } from 'react-router-dom';
 
-const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEvent, editInfo }) => {
+const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) => {
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState(object.isFavorite);
   const [description, setDescription] = useState(object.description);
+  const navigate = useNavigate();
   return (
     <Popup
       longitude={coordinate[0]}
@@ -148,7 +150,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
             </>
             : <>
               <Row className='g-0'>
-                <Button color="secondary" className='create-event-button' onClick={() => validateEvent(object.id)}>
+                <Button color="secondary" className='create-event-button' onClick={()=>{navigate(`/event-dashboard/${object.id}`);}}>
                   SHOW INFO
                 </Button>
               </Row>
