@@ -18,13 +18,8 @@ export const endpoints = {
     edit: '/alerts/id-goes-here',
   },
   user: {
-    profile: '/users/'
-  },
-  myprofile: {
-    user: '/myprofile/view',
-    updateInfo: '/myprofile/update',
-    uploadProfImg: '/myprofile/update',
-    deleteAcc: '/myprofile/view',
+    profile: '/users/',
+    resetPsw: '/auth/password/change/',
   },
   common: {
     organizations: '/organizations/',

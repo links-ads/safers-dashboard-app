@@ -1,27 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { signIn, isRemembered } from '../../store/appAction';
+import React, { useState } from 'react';
+import { signIn } from '../../store/appAction';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row, } from 'reactstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import OAuth2 from './OAuth2';
 import * as Yup from 'yup'
 
 const SignIn = () => {
-  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-  const genError = useSelector(state => state.auth.errorSignIn);
+  const { errorSignIn:genError  } = useSelector(state => state.auth);
   const [passwordToggle, setPasswordToggle] = useState(false);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
-  useEffect(() => {
-    if (isLoggedIn) {
-      navigate('/dashboard');
-    }
-    else {
-      dispatch(isRemembered());
-    }
-  }, [isLoggedIn]);
 
   const signInSchema = Yup.object().shape({
     email: Yup.string()

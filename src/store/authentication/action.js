@@ -14,6 +14,25 @@ const InProgress = (status, msg='') => {
   };
 };
 
+export const setAoiBySignInSuccess = (aoi) => {
+  return {
+    type: actionTypes.SET_AOI_SUCCESS,
+    payload: aoi
+  };
+};
+
+const setSessionData = (token, refreshToken, user, dispatch, rememberMe=false) => {
+  const sessionData = {
+    access_token: token, 
+    refresh_token: refreshToken, 
+    userId: user.id
+  };
+  setSession(sessionData, rememberMe);
+  return dispatch(signInSuccess(user));
+}
+
+/* Sign In */
+
 export const signInOauth2 = ({authCode}) => async (dispatch) => {
   const response = await api.post(endpoints.authentication.oAuth2SignIn, {
     code: authCode,
@@ -21,44 +40,20 @@ export const signInOauth2 = ({authCode}) => async (dispatch) => {
   const content = response.data;
   dispatch(InProgress(false));
   if (response.status === 200) {
-    const sessionData = {
-      access_token: content.token, 
-      // refresh_token: response.data.refresh_token, 
-      userId: content.user.id
-    };
-    setSession(sessionData, false);
-    if (content.user?.default_aoi) {
-      dispatch(setAoiBySignInSuccess(content.user?.default_aoi));
-    }
-    return dispatch(signInSuccess(content.user));
+    return setSessionData(content.token, null, content.user, dispatch)
   }
   return dispatch(signInFail(content.detail));
 }
 
 export const signIn = ({email, password, rememberMe}) => async (dispatch) => {
   dispatch(InProgress(true, 'Please wait..'));
-  const response = await api.post(endpoints.authentication.signIn, { email, password });//should be post with the backend
-  dispatch(InProgress(false));
+  const response = await api.post(endpoints.authentication.signIn, { email, password });
   if (response.status === 200) {
-    const sessionData = {
-      access_token: response.data.access_token, 
-      refresh_token: response.data.refresh_token, 
-      userId: response.data.user.id
-    };
-    setSession(sessionData, rememberMe);
-    if (response.data?.user.default_aoi) {
-      dispatch(setAoiBySignInSuccess(response.data?.user.default_aoi));
-    }
-    return dispatch(signInSuccess(response.data.user));
+    const {access_token, refresh_token, user} = response.data;
+    return setSessionData(access_token, refresh_token, user, dispatch, rememberMe)
   }
+  dispatch(InProgress(false));
   return dispatch(signInFail(response.data));
-};
-
-const setAoiBySignInSuccess = (aoi) => {
-  return {
-    type: actionTypes.SET_AOI_SUCCESS,
-    payload: aoi
-  };
 };
 
 export const isRemembered = () => async (dispatch) => {
@@ -89,19 +84,16 @@ const signInFail = (error) => {
   };
 };
 
+/* Sign Up */
+
 export const signUp = (userInfo) => async (dispatch) => {
   const response = await api.post(endpoints.authentication.signUp, { ...userInfo });
   if (api.isSuccessResp(response.status)) {
-    return dispatch(signUpSuccess(response.data));
+    const {access_token, user} = response.data;
+    return setSessionData(access_token, null, user, dispatch);
   }
   
   return dispatch(signUpFail(response.data));
-};
-const signUpSuccess = (user) => {
-  return {
-    type: actionTypes.SIGN_UP_SUCCESS,
-    payload: user
-  };
 };
 const signUpFail = (error) => {
   return {
@@ -109,6 +101,8 @@ const signUpFail = (error) => {
     payload: error
   };
 };
+
+/* Reset Password */
 
 export const reqResetPsw = (email) => async (dispatch) => {
   const response = await api.post(endpoints.authentication.forgotPswReset, email);// To Do: change to post when API ready

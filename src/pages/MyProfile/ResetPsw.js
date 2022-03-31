@@ -11,8 +11,8 @@ import 'toastr/build/toastr.min.css'
 
 
 const ResetPsw = () => {
-  const resetPswSuccessRes = useSelector(state => state.myprofile.resetPswSuccessRes);
-  const error = useSelector(state => state.myprofile.resetPswFailRes);
+  const resetPswSuccessRes = useSelector(state => state.user.resetPswSuccessRes);
+  const error = useSelector(state => state.user.resetPswFailRes);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const dispatch = useDispatch();
 
@@ -23,7 +23,7 @@ const ResetPsw = () => {
   }, [resetPswSuccessRes]);
 
   const pswResetSchema = Yup.object().shape({
-    current_password: Yup.string()
+    old_password: Yup.string()
       .required('The field cannot be empty'),
     new_password1: Yup.string()
       .matches(
@@ -45,7 +45,7 @@ const ResetPsw = () => {
             </CardTitle>
             <Formik
               initialValues={{
-                current_password: '',
+                old_password: '',
                 new_password1: '',
                 new_password2: '',
               }}
@@ -74,19 +74,19 @@ const ResetPsw = () => {
                         <InputGroup>
                           <Input
                             type={passwordToggle ? 'text' : 'password'}
-                            id="current_password"
-                            className={getError('current_password', errors, touched)}
-                            name="current_password"
+                            id="old_password"
+                            className={getError('old_password', errors, touched)}
+                            name="old_password"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.current_password}
+                            value={values.old_password}
                             autoComplete="on"
                           />
                           <InputGroupText>
                             <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
                           </InputGroupText>
                         </InputGroup>
-                        {getError('current_password', errors, touched, false)}
+                        {getError('old_password', errors, touched, false)}
                       </div>
                     </Col>
                   </Row>
