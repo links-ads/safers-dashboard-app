@@ -224,7 +224,7 @@ const SignUp = () => {
                       data-testid="sign-up-org"
                     >
                       <option value={''} >--Select organisation--</option>
-                      {orgList.map((org, index) => { return (<option key={index} value={org.name}>{org.name}</option>) })}
+                      {orgList.map((org, index) => { return (<option key={index} value={org.id}>{org.name}</option>) })}
                     </Input>
                     {getError('organization', errors, touched, false)}
                   </FormGroup>
