@@ -19,7 +19,7 @@ export const endpoints = {
   },
   user: {
     profile: '/users/',
-    resetPsw: '/auth/password/change',
+    resetPsw: '/auth/password/change/',
   },
   common: {
     organizations: '/organizations/',
