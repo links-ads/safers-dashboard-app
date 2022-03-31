@@ -18,20 +18,21 @@ const UpdateProfile = () => {
     preventDuplicates: true,
   }
   const {id} = useSelector(state => state.auth.user);
-  const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus, info:user } = useSelector(state => state.user);
+  const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus, info:user, defaultAoi } = useSelector(state => state.user);
   const { orgList = [], roleList:roles = [] } = useSelector(state => state.common);
   const [modal_backdrop, setmodal_backdrop] = useState(false);
   const [orgName, setorgName] = useState('');
   const [citizenId, setcitizenId] = useState('');
+  const [currentRole, setCurrentRole] = useState(null);
 
   const formInit =   {
-    first_name: user?.profile?.first_name || '',
-    last_name: user?.profile?.last_name || '',
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
     organization: user?.organization || '',
-    country: user?.profile?.country || '',
-    city: user?.profile?.city || '',
+    country: user?.country || '',
+    city: user?.city || '',
     role: user?.role || '',
-    address: user?.profile?.address || ''
+    address: user?.address || ''
   };
   const [error, setError] = useState(false);
   const fileUploader = useRef(null);
@@ -42,7 +43,7 @@ const UpdateProfile = () => {
 
   useEffect(() => {
     dispatch(getInfo(id))
-    if(orgList.length===0)
+    if(roles.length===0)
       dispatch(getRoleList());
     if(orgList.length===0)
       dispatch(getOrgList());
@@ -51,9 +52,19 @@ const UpdateProfile = () => {
   if(uploadFileSuccessRes?.detail) {
     toastr.success(uploadFileSuccessRes.detail, '');
   }  
-  if(updateStatus?.detail) {
-    toastr.success(updateStatus.detail, '');
-  }  
+  useEffect(() => {
+    if(user && roles.length) {
+      const role = _.find(roles, { id: user.role });
+      setCurrentRole(role.name);
+    }  
+  }, [user, roles]);
+
+  useEffect(() => {
+    if(updateStatus) {
+      toastr.success('Updated your infomation.', '');
+    }  
+  }, [updateStatus]);
+
   if(deleteAccSuccessRes){
     dispatch(signOut());
   }
@@ -142,12 +153,12 @@ const UpdateProfile = () => {
                       alt=""
                       className="avatar-md rounded-circle img-thumbnail"
                     />
-                    <div className='text-center mt-2'><a className='lnk-edit' onClick={(e)=>{handleClick(e)}}>Edit Image</a></div>
+                    <div className='text-center mt-2 d-none'><a className='lnk-edit' onClick={(e)=>{handleClick(e)}}>Edit Image</a></div>
                     <input type="file" id="file" ref={fileUploader} style={{display: 'none'}} onChange={(e) => {onChangeFile(e)}}/>
                   </div>
                   <Media body className="ms-4 align-self-center">
-                    <h1 className="h5">{user.firstName} {user.lastName}</h1>
-                    <h2 className="h6">{user.title}</h2>
+                    <h1 className="h5">{user.first_name} {user.last_name}</h1>
+                    <h2 className="h6">{currentRole}</h2>
                   </Media>
                 </Media>
               </CardTitle>
@@ -175,7 +186,7 @@ const UpdateProfile = () => {
                     <i className='bx bx-map me-2'></i><span>Area of Interest</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    {user.aoi}
+                    {defaultAoi?.features[0].properties.name}
                   </Col>
                 </Row>
               </div>

@@ -4,7 +4,7 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import { deleteSession } from '../../helpers/authHelper';
 
-
+/* Set Default AOI */
 export const setDefaultAoi = (uid, objAoi) => async (dispatch) => {
   const endpoint = endpoints.user.profile + uid;
   const response = await api.patch(endpoint, { default_aoi: objAoi.features[0].properties.id });
@@ -30,7 +30,8 @@ const setAoiFail = (error) => {
 };
 
 
-export const getInfo = (id='') => async (dispatch) => {
+/* Get user info */
+export const getInfo = (id) => async (dispatch) => {
   const url = endpoints.user.profile + id;
   const response = await api.get(url);
   if (response.status === 200) {
@@ -52,6 +53,7 @@ const getInfoFail = (error) => {
   };
 };
 
+/* Delete Account */
 export const deleteAccount = (id) => async (dispatch) => {
   const url = endpoints.user.profile + id;
   const response = await api.del(url);
@@ -76,14 +78,16 @@ const deleteAccFail = (error) => {
   };
 };
 
-export const resetProfilePsw = () => async (dispatch) => {
-  const response = await api.get(endpoints.myprofile.getInfo);
-  if (response.status === 200) {
+/* Reset Current password */
+export const resetProfilePsw = (data) => async (dispatch) => {
+  const response = await api.post(endpoints.user.resetPsw, { ...data });
+  if (api.isSuccessResp(response.status)) {
     return dispatch(resetPswSuccess(response.data));
   }
   else
-    return dispatch(resetPswFail(response.error));
+    return dispatch(resetPswFail(response.data));
 };
+
 const resetPswSuccess = (res) => {
   return {
     type: actionTypes.MP_RESETPSW_SUCCESS,
@@ -97,6 +101,7 @@ const resetPswFail = (error) => {
   };
 };
 
+/* Upload Profile Img */
 export const uploadProfImg = (file) => async (dispatch) => {
   const response = await api.post(endpoints.myprofile.uploadProfImg, {file});
   if (response.status === 200) {
@@ -119,29 +124,29 @@ const uploadFileFailed = (error) => {
   };
 };
 
+/* Update user Info */
 export const updateInfo = (id, userInfo) => async (dispatch) => {
   const url = endpoints.user.profile + id;
   const response = await api.patch(url, {
     organization: userInfo.organization, 
     role: userInfo.role, 
-    profile:{
-      first_name: userInfo.first_name,
-      last_name: userInfo.last_name,
-      country: userInfo.country,
-      city: userInfo.city,
-      address: userInfo.address
-    }});
+    first_name: userInfo.first_name,
+    last_name: userInfo.last_name,
+    country: userInfo.country,
+    city: userInfo.city,
+    address: userInfo.address
+  });
   if (response.status === 200) {
-    getInfo();
-    return dispatch(updateInfoSuccess(response.data));
+    dispatch(getInfoSuccess(response.data))
+    return dispatch(updateInfoSuccess());
   }
   else
     return dispatch(updateInfoFail(response.data));
 };
-const updateInfoSuccess = (user) => {
+const updateInfoSuccess = () => {
   return {
     type: actionTypes.MP_UPDATE_SUCCESS,
-    payload: user
+    payload: 'Successfully updated'
   };
 };
 const updateInfoFail = (error) => {
