@@ -151,7 +151,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
             </>
             : <>
               <Row className='g-0'>
-                <Button color="secondary" className='create-event-button' onClick={()=>{navigate(`/event-dashboard/${object.id}`);}}>
+                <Button color="secondary" className='create-event-button' onClick={()=>{navigate('/event-dashboard');}}>
                   SHOW INFO
                 </Button>
               </Row>
