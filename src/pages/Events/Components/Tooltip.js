@@ -11,6 +11,7 @@ import {
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
 import { useNavigate } from 'react-router-dom';
+import { formatDate } from '../../../store/utility';
 
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) => {
   const [editToggle, setEditToggle] = useState(isEdit);
@@ -52,7 +53,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
           </Col>
           <Col md={10}>
             <CardSubtitle className="my-auto">
-              Filoktiti Oikonomidou, Athens 114 76, Greece
+              {object.location}
             </CardSubtitle>
           </Col>
         </Row>
@@ -62,8 +63,8 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
           </Col>
           <Col md={10}>
             <CardSubtitle className="my-auto">
-              Start: Dec 11, 2021, 16:00 <br></br>
-              End: not set
+              Start: {formatDate(object.start)} <br></br>
+              End: {formatDate(object.end)}
             </CardSubtitle>
           </Col>
         </Row>
@@ -73,7 +74,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
           </Col>
           <Col md={10}>
             <CardSubtitle className="my-auto">
-              People Affected : 120
+              People Affected : {object.people_affected}
             </CardSubtitle>
           </Col>
         </Row>
@@ -83,7 +84,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
           </Col>
           <Col md={10}>
             <CardSubtitle className="my-auto">
-              Casualties: not recorded
+              Casualties:  { object.casualties ? object.casualties : 'not recorded'}
             </CardSubtitle>
           </Col>
         </Row>
@@ -93,7 +94,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
           </Col>
           <Col md={10}>
             <CardSubtitle className="my-auto text-muted">
-              Estimated damage: not registered
+              Estimated damage: { object.damage ? object.damage : 'not recorded'}
             </CardSubtitle>
           </Col>
         </Row>

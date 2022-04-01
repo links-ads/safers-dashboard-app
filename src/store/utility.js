@@ -17,3 +17,7 @@ export const getDefaultDateRange = () => {
   const to = moment(new Date()).format('DD-MM-YYYY');
   return [from, to];
 }
+
+export const formatDate = (date) => {
+  return moment(date).format('lll') 
+}

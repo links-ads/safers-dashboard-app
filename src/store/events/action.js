@@ -3,7 +3,7 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 export const getAllEventAlerts = (options) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.getAll, options);
+  const response = await api.post(endpoints.eventAlerts.getAll, options);
   if (response.status === 200) {
     return dispatch(getEventAlertsSuccess(response.data));
   }
@@ -24,7 +24,7 @@ const getEventAlertsFail = (error) => {
 };
 
 export const setEventFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
+  const response = await api.post(endpoints.eventAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
   if (response.status === 200) {
     return dispatch(setEventFavoriteAlertSuccess(response.data));
   }
@@ -45,7 +45,7 @@ const setEventFavoriteAlertFail = (error) => {
 }
 
 export const validateEventAlert = (alertId) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.validate, { alert_id: alertId });
+  const response = await api.post(endpoints.eventAlerts.validate, { alert_id: alertId });
   if (response.status === 200) {
     return dispatch(validateEventAlertSuccess(response.data));
   }
@@ -66,7 +66,7 @@ const validateEventAlertFail = (error) => {
 };
 
 export const editEventAlertInfo = (alertId, desc) => async (dispatch) => {
-  const response = await api.patch(endpoints.fireAlerts.edit, { alert_id: alertId, description: desc });
+  const response = await api.patch(endpoints.eventAlerts.edit, { alert_id: alertId, description: desc });
   if (response.status === 200) {
     return dispatch(editEventAlertInfoSuccess(response.data));
   }
@@ -158,7 +158,3 @@ export const setDateRange = (payload) => {
     payload,
   };
 };
-
-
-
-

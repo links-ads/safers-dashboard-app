@@ -17,6 +17,12 @@ export const endpoints = {
     validate: '/alerts/validate',
     edit: '/alerts/id-goes-here',
   },
+  eventAlerts: {
+    getAll: '/event-alerts/',
+    setFavorite: '/event-alerts/favorite',
+    validate: '/event-alerts/validate',
+    edit: '/event-alerts/id-goes-here',
+  },
   user: {
     profile: '/users/'
   },

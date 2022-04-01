@@ -26,7 +26,6 @@ const MapSection = ({viewState, setViewState}) => {
   };
 
   const showTooltip = info => {
-    console.log(info);
     if (info.picked && info.object) {
       dispatch(setEventFavoriteAlert(info.object.id));
       dispatch(setHoverInfo(info));
@@ -81,7 +80,7 @@ const MapSection = ({viewState, setViewState}) => {
   }
   console.log(viewState)
   return (
-    <Card className='map-card mb-0' style={{ height: 750 }}>
+    <Card className='map-card mb-0' style={{ height: 730 }}>
       <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
