@@ -5,22 +5,20 @@ import _ from 'lodash';
 import moment from 'moment';
 import toastr from 'toastr';
 
-import { getAllFireAlerts, resetAlertsResponseState } from '../../store/appAction';
-
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import SortSection from '../../components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
-import { setAlertId, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../store/events/action';
+import { getAllEventAlerts, resetEventAlertsResponseState, setAlertId, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../store/events/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
 const EventAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const alerts = useSelector(state => state.eve.allAlerts);
-  const success = useSelector(state => state.alerts.success);
+  const alerts = useSelector(state => state.eventAlerts.allAlerts);
+  const success = useSelector(state => state.eventAlerts.success);
   const { filteredAlerts, sortByDate, alertSource, dateRange } = useSelector(state => state.eventAlerts);
 
   const [viewState, setViewState] = useState(undefined);
@@ -28,7 +26,7 @@ const EventAlerts = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllFireAlerts(
+    dispatch(getAllEventAlerts(
       {
         sortOrder: sortByDate,
         source: alertSource,
@@ -42,7 +40,7 @@ const EventAlerts = () => {
     if (success?.detail) {
       toastr.success(success.detail, '');
     }
-    dispatch(resetAlertsResponseState());
+    dispatch(resetEventAlertsResponseState());
 
   }, [success]);
 

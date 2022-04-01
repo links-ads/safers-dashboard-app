@@ -36,6 +36,7 @@ const MapSection = ({viewState, setViewState}) => {
   };
 
   const renderTooltip = (info) => {
+    if(!info) return null
     const { object, coordinate, isEdit } = info;
     if (object) {
       return <ToolTip
@@ -78,13 +79,13 @@ const MapSection = ({viewState, setViewState}) => {
     const from = to - PAGE_SIZE;
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
   }
-
+  console.log(viewState)
   return (
-    <Card className='map-card mb-0' style={{ height: 670 }}>
+    <Card className='map-card mb-0' style={{ height: 750 }}>
       <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
-        hoverInfo={hoverInfo}
+        hoverInfo={hoverInfo} 
         renderTooltip={renderTooltip}
         onClick={showTooltip}
         onViewStateChange={hideTooltip}

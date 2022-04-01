@@ -142,7 +142,7 @@ const setHoverInfo = (state, action) => {
 }
 const setAlertId = (state, action) => {
   const updatedState = {
-    currentPage: action.payload,
+    alertId: action.payload,
   }
   return updateObject(state, updatedState);
 }

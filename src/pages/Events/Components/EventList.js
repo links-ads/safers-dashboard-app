@@ -32,6 +32,7 @@ const EventList = () => {
   };
 
   const setSelectedAlert = (id, isEdit) => {
+    console.log(id, alertId)
     if (id) {
       if (id === alertId) {
         hideTooltip();
