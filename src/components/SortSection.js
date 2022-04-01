@@ -1,8 +1,12 @@
 import React from 'react';
 import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { setAlertSource, setSortByDate } from '../store/events/action';
 
-const SortSection = ({sortByDate, setSortByDate, alertSource, setAlertSource }) => {
+const SortSection = () => {
+  const { sortByDate, alertSource } = useSelector(state => state.eventAlerts);
+  const dispatch = useDispatch();
   return(
     <Row className='my-2'>
       <Col className='mx-0'>
@@ -12,7 +16,7 @@ const SortSection = ({sortByDate, setSortByDate, alertSource, setAlertSource }) 
           name="sortByDate"
           placeholder="Sort By : Date"
           type="select"
-          onChange={(e) => setSortByDate(e.target.value)}
+          onChange={(e) => dispatch(setSortByDate(e.target.value))}
           value={sortByDate}
         >
           <option value={'desc'} >Sort By : Date desc</option>
@@ -26,7 +30,7 @@ const SortSection = ({sortByDate, setSortByDate, alertSource, setAlertSource }) 
           name="alertSource"
           placeholder="Source"
           type="select"
-          onChange={(e) => setAlertSource(e.target.value)}
+          onChange={(e) => dispatch(setAlertSource(e.target.value))}
           value={alertSource}
         >
           <option value={'all'} >Source : All</option>

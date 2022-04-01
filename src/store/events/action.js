@@ -92,6 +92,72 @@ export const resetEventAlertsResponseState = () => {
   }
 };
 
+export const setFilterdAlerts = (payload) => {
+  return {
+    type: actionTypes.SET_FILTERED_ALERTS,
+    payload,
+  };
+};
+export const setPaginatedAlerts = (payload) => {
+  return {
+    type: actionTypes.SET_PAGINATED_ALERTS,
+    payload,
+  };
+};
+export const setCurrentPage = (page) => {
+  return {
+    type: actionTypes.SET_CURRENT_PAGE,
+    page,
+  };
+};
+export const setAlertId = (payload) => {
+  return {
+    type: actionTypes.SET_ALERT_ID,
+    payload,
+  };
+};
+export const setHoverInfo = (payload) => {
+  return {
+    type: actionTypes.SET_HOVER_INFO,
+    payload,
+  };
+};
+export const setIconLayer = (payload) => {
+  return {
+    type: actionTypes.SET_ICON_LAYER,
+    payload,
+  };
+};
+export const setMidpoint = (payload) => {
+  return {
+    type: actionTypes.SET_MIDPOINT,
+    payload,
+  };
+};
+export const setZoomLevel = (payload) => {
+  return {
+    type: actionTypes.SET_ZOOM_LEVEL,
+    payload,
+  };
+};
+export const setSortByDate = (payload) => {
+  return {
+    type: actionTypes.SET_SORT_BY_DATE,
+    payload,
+  };
+};
+export const setAlertSource = (payload) => {
+  return {
+    type: actionTypes.SET_ALERT_SOURCE,
+    payload,
+  };
+};
+export const setDateRange = (payload) => {
+  return {
+    type: actionTypes.SET_DATE_RANGE,
+    payload,
+  };
+};
 
 
 

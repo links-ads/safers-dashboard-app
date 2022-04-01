@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap'
+import { getAllFireAlerts } from '../../../store/appAction';
 
 const SearchButton = (index) => {
-  const [midPoint, setMidPoint] = useState([]);
-  const [zoomLevel, setZoomLevel] = useState(undefined);
+  const { midPoint, zoomLevel, sortByDate, alertSource, dateRange } = useSelector(state => state.eventAlerts);
+
+  const dispatch = useDispatch();
+  
 
   const getAlertsByArea = () => {
 
@@ -12,17 +16,16 @@ const SearchButton = (index) => {
     const right = midPoint[0] + rangeFactor; //maxLong
     const top = midPoint[1] + rangeFactor; //maxLat
     const bottom = midPoint[1] - rangeFactor; //minLat
-    
+
     const boundaryBox = [
       [left, top],
       [right, top],
       [right, bottom],
       [left, bottom]
     ];
-    
-    // console.log(zoomLevel, rangeFactor, midPoint, boundaryBox);
-    
-    dispatch(getAllF(
+
+
+    dispatch(getAllFireAlerts(
       {
         sortOrder: sortByDate,
         source: alertSource,
@@ -32,6 +35,7 @@ const SearchButton = (index) => {
       }
     ));
   }
+
   return (
     <Button
       key={index}
