@@ -13,35 +13,49 @@ const AoiHelper = () => {
   toastr.options = {
     preventDuplicates: true,
   }
-  const uid = useSelector(state => state.auth.user.id);
+  const { id:uid }= useSelector(state => state.auth.user);
   const allAoi = useSelector(state => state.common.aois);
-  const aoiSetSuccess = useSelector(state => state.user.aoiSetSuccess);
+  const { aoiSetSuccess, defaultAoi } = useSelector(state => state.user);
 
-  const [selectedAoi, setSelectedAoi] = useState(null);
+  const [selectedAoi, setSelectedAoi] = useState(defaultAoi);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllAreas());
+    if(!allAoi.length){
+      dispatch(getAllAreas());
+    }
   }, []);
+
+  useEffect(() => {
+    if(defaultAoi){
+      setMap(defaultAoi);
+    }
+  }, [defaultAoi]);
+
+  useEffect(() => {
+    if(aoiSetSuccess) {
+      toastr.success('Area of interest set successfully', '');
+    } 
+  }, [aoiSetSuccess]);
 
   const handleSubmit = () => {
     dispatch(setDefaultAoi(uid, selectedAoi))
   }
-  useEffect(() => {
-    if(aoiSetSuccess?.detail) {
-      toastr.success(aoiSetSuccess.detail, '');
-    } 
-  }, [aoiSetSuccess]);
- 
+
+  const setMap = (defaultAoi) => {
+    setSelectedAoi(defaultAoi);
+    setPolygonLayer(getPolygonLayer(defaultAoi));
+    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+  }
 
   const selectAoi = (e) => {
-    const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(e.target.value) } }] })
-    setSelectedAoi({ aoiId: parseInt(e.target.value), objAoi });
-    setPolygonLayer(getPolygonLayer(objAoi));
-    setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel))
+    const aoiID = e.target.value;
+    const objAoi = _.find(allAoi, { features: [{ properties: { id: parseInt(aoiID) } }] });
+    setMap(objAoi);
+
   }
 
   const getViewState = (midPoint, zoomLevel = 4) => {
@@ -79,6 +93,8 @@ const AoiHelper = () => {
   const renderAreasOfInterest = () => {
     let aoisToSplit = _.cloneDeep(allAoi);
     const sortedAois = _.chunk(aoisToSplit, 3)
+
+    const selVal =  selectedAoi ? selectedAoi.features[0].properties.id : null;
     return (<>
       {sortedAois.map((aoisChunk, i) => {
         return (
@@ -94,6 +110,7 @@ const AoiHelper = () => {
                     name='aoi-selection'
                     type="radio"
                     onChange={selectAoi}
+                    checked={ aoi.features[0].properties.id === selVal }
                     value={aoi.features[0].properties.id}
                   />
                   {aoi.features[0].properties.country === aoi.features[0].properties.name ? aoi.features[0].properties.country : `${aoi.features[0].properties.country} - ${aoi.features[0].properties.name}`}

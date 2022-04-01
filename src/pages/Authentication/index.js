@@ -1,11 +1,13 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col } from 'reactstrap';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
+import { isRemembered, setAoiSuccess, getAllAreas } from '../../store/appAction';
+import _ from 'lodash';
 
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
@@ -14,14 +16,40 @@ const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';
   const { currentPage } = useParams();
   const navigate = useNavigate();
-  const isLoading = useSelector(state => state.common.isLoading);
-  const loadingMsg = useSelector(state => state.common.loadingMsg);
+  const dispatch = useDispatch();
+  const { isLoading, loadingMsg } = useSelector(state => state.common);
+  const { isLoggedIn, user } = useSelector(state => state.auth);
+  const allAoi = useSelector(state => state.common.aois);
+  const defaultAoi = useSelector(state => state.user.defaultAoi);
 
   useEffect(() => {
     if (!currentPage) {
       navigate(`/auth/${DEFAULT_PAGE}`);
     }
+    dispatch(getAllAreas());
   }, []);
+
+  // AOI ID is filetered and complete object is stored in user store.
+  useEffect(() => {
+    if (isLoggedIn) {
+      if(user.default_aoi){
+        const objAoi = _.find(allAoi, { features: [{ properties: { id: user.default_aoi } }] });
+        dispatch(setAoiSuccess(objAoi));
+      }
+      else {
+        navigate('/user/select-aoi');
+      }
+    }
+    else {
+      dispatch(isRemembered());
+    }
+  }, [isLoggedIn, user]);
+
+  useEffect(() => {
+    if (defaultAoi) {
+      navigate('/dashboard');
+    } 
+  }, [defaultAoi]);
 
   const toggleTab = tab => {
     if (currentPage !== tab) {
