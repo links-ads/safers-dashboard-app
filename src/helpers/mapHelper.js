@@ -48,7 +48,9 @@ export const getIconLayer = (alerts) => {
     // onHover: !hoverInfo.objects && setHoverInfo,
     id: 'icon',
     getIcon: () => 'marker',
-    getColor: d => { return (d.isSelected ? [226, 123, 29] : [230, 51, 79]) },
+    getColor: d => {
+      return (d.isSelected ? [226, 123, 29] : d.status == 'CLOSED'? [128,128,128] : [230, 51, 79]) 
+    },
     sizeMinPixels: 80,
     sizeMaxPixels: 100,
     sizeScale: 0.5,

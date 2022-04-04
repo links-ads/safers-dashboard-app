@@ -7,7 +7,7 @@ import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
-import SortSection from '../../components/SortSection';
+import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
