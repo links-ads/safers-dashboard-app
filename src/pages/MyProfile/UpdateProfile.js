@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef }  from 'react';
 import { Row, Col, Card, CardBody, CardTitle, Media, Form, Label, Input,   Modal } from 'reactstrap';
-import avatar from '../../assets/images/users/avatar-1.jpg';
+import avatar from '../../assets/images/users/profile.png';
 import { Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 import { getInfo, updateInfo, uploadProfImg, getRoleList, getOrgList, deleteAccount, signOut } from '../../store/appAction';
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import _ from 'lodash';
 
-import countryList  from 'country-list';
+import countryList,{ getName }  from 'country-list';
 import * as Yup from 'yup';
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css'
@@ -174,7 +174,7 @@ const UpdateProfile = () => {
                     <i className='bx bx-map me-2'></i><span>Location</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    {user.address}
+                    {user.address && user.address.length>0 ? `${user.address}, ` : ''}{user.city  && user.city.length>0 ? `${user.city}, ` : ''}{user.country && user.country.length>0 ? `${getName(user.country)}` : ''}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     <i className='bx bx-shopping-bag me-2'></i><span>Organization</span> 
