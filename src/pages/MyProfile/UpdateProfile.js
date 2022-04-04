@@ -5,6 +5,7 @@ import { Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 import { getInfo, updateInfo, uploadProfImg, getRoleList, getOrgList, deleteAccount, signOut } from '../../store/appAction';
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
+import _ from 'lodash';
 
 import countryList  from 'country-list';
 import * as Yup from 'yup';
@@ -17,18 +18,21 @@ const UpdateProfile = () => {
     preventDuplicates: true,
   }
   const {id} = useSelector(state => state.auth.user);
-  const user = useSelector(state => state.myprofile.user);
-  const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus } = useSelector(state => state.myprofile);
+  const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus, info:user, defaultAoi } = useSelector(state => state.user);
   const { orgList = [], roleList:roles = [] } = useSelector(state => state.common);
   const [modal_backdrop, setmodal_backdrop] = useState(false);
+  const [orgName, setorgName] = useState('');
+  const [citizenId, setcitizenId] = useState('');
+  const [currentRole, setCurrentRole] = useState(null);
+
   const formInit =   {
-    firstname: user.firstName || '',
-    lastname: user.lastName || '',
-    organization: user.organization || '',
-    country: user.country || '',
-    city: user.city || '',
-    userRole: user.role || '',
-    address: user.address || ''
+    first_name: user?.first_name || '',
+    last_name: user?.last_name || '',
+    organization: user?.organization || '',
+    country: user?.country || '',
+    city: user?.city || '',
+    role: user?.role || '',
+    address: user?.address || ''
   };
   const [error, setError] = useState(false);
   const fileUploader = useRef(null);
@@ -39,7 +43,7 @@ const UpdateProfile = () => {
 
   useEffect(() => {
     dispatch(getInfo(id))
-    if(orgList.length===0)
+    if(roles.length===0)
       dispatch(getRoleList());
     if(orgList.length===0)
       dispatch(getOrgList());
@@ -48,9 +52,19 @@ const UpdateProfile = () => {
   if(uploadFileSuccessRes?.detail) {
     toastr.success(uploadFileSuccessRes.detail, '');
   }  
-  if(updateStatus?.detail) {
-    toastr.success(updateStatus.detail, '');
-  }  
+  useEffect(() => {
+    if(user && roles.length) {
+      const role = _.find(roles, { id: user.role });
+      setCurrentRole(role.name);
+    }  
+  }, [user, roles]);
+
+  useEffect(() => {
+    if(updateStatus) {
+      toastr.success('Updated your infomation.', '');
+    }  
+  }, [updateStatus]);
+
   if(deleteAccSuccessRes){
     dispatch(signOut());
   }
@@ -59,6 +73,20 @@ const UpdateProfile = () => {
     const error = uploadFileFailRes ? uploadFileFailRes : (deleteAccFailRes ? deleteAccFailRes : false);
     setError(error);
   }, [uploadFileFailRes, deleteAccFailRes]);
+
+  useEffect(() => {
+    if(orgList.length && user?.organization){
+      const organization = _.find(orgList, { id: user.organization });
+      setorgName(organization.name.split('-')[0])
+    }
+  }, [orgList, user]);
+
+  useEffect(() => {
+    if(roles.length){
+      const role = _.find(roles, { name: 'Citizen' });
+      setcitizenId(role.id)
+    }
+  }, [roles]);
 
   const onChangeFile = (event) => {
     event.stopPropagation();
@@ -69,7 +97,7 @@ const UpdateProfile = () => {
 
 
   const confirmAccDelete = () => {
-    dispatch(deleteAccount());
+    dispatch(deleteAccount(id));
     setmodal_backdrop(false);
   }
 
@@ -87,20 +115,24 @@ const UpdateProfile = () => {
   }
 
   const myProfileSchema = Yup.object().shape({
-    firstname: Yup.string()
+    first_name: Yup.string()
       .required('The field cannot be empty'),
-    lastname: Yup.string()
+    last_name: Yup.string()
       .required('The field cannot be empty'),
-    userRole: Yup.string()
+    role: Yup.string()
       .required('The field cannot be empty'),
   })
     .when((values, schema) => {
-      if (values.userRole !== 'Citizen') {
+      if (values.role !== citizenId) {
         return schema.shape({
           organization: Yup.string().required('The field cannot be empty'),
         });
       }
-    });
+    });  
+
+  if(!user) {
+    return null;
+  }
 
   return (
     <>
@@ -121,12 +153,12 @@ const UpdateProfile = () => {
                       alt=""
                       className="avatar-md rounded-circle img-thumbnail"
                     />
-                    <div className='text-center mt-2'><a className='lnk-edit' onClick={(e)=>{handleClick(e)}}>Edit Image</a></div>
+                    <div className='text-center mt-2 d-none'><a className='lnk-edit' onClick={(e)=>{handleClick(e)}}>Edit Image</a></div>
                     <input type="file" id="file" ref={fileUploader} style={{display: 'none'}} onChange={(e) => {onChangeFile(e)}}/>
                   </div>
                   <Media body className="ms-4 align-self-center">
-                    <h1 className="h5">{user.firstName} {user.lastName}</h1>
-                    <h2 className="h6">{user.title}</h2>
+                    <h1 className="h5">{user.first_name} {user.last_name}</h1>
+                    <h2 className="h6">{currentRole}</h2>
                   </Media>
                 </Media>
               </CardTitle>
@@ -148,13 +180,13 @@ const UpdateProfile = () => {
                     <i className='bx bx-shopping-bag me-2'></i><span>Organization</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    {user.organization}
+                    {orgName}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     <i className='bx bx-map me-2'></i><span>Area of Interest</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    {user.aoi}
+                    {defaultAoi?.features[0].properties.name}
                   </Col>
                 </Row>
               </div>
@@ -173,7 +205,7 @@ const UpdateProfile = () => {
                 validationSchema={myProfileSchema}
                 onSubmit={(values, { setSubmitting }) => {
                   console.log(values)
-                  dispatch(updateInfo(values));
+                  dispatch(updateInfo(id, values));
                   setSubmitting(false);
                 }}
               >
@@ -193,16 +225,16 @@ const UpdateProfile = () => {
                           <Label htmlFor="formrow-email-Input">First Name</Label>
                           <Input
                             type="text"
-                            id="firstname"
-                            className={getError('firstname', errors, touched)}
-                            name="firstname"
+                            id="first_name"
+                            className={getError('first_name', errors, touched)}
+                            name="first_name"
                             placeholder="First name"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.firstname}
+                            value={values.first_name}
                             autoComplete="on"
                           />
-                          {getError('firstname', errors, touched, false)}
+                          {getError('first_name', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>
@@ -210,16 +242,16 @@ const UpdateProfile = () => {
                           <Label htmlFor="formrow-password-Input">Last Name</Label>
                           <Input
                             type="text"
-                            id="lastname"
-                            className={getError('lastname', errors, touched)}
-                            name="lastname"
+                            id="last_name"
+                            className={getError('last_name', errors, touched)}
+                            name="last_name"
                             placeholder="Last name"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.lastname}
+                            value={values.last_name}
                             autoComplete="on"
                           />
-                          {getError('lastname', errors, touched, false)}
+                          {getError('last_name', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>
@@ -233,12 +265,12 @@ const UpdateProfile = () => {
                             placeholder="organization"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            disabled={values.userRole === 'Citizen'}
-                            value={values.userRole === 'Citizen' ? '' : values.organization}
+                            disabled={values.role === citizenId}
+                            value={values.role === citizenId ? '' : values.organization}
                             autoComplete="on"
                           >
-                            <option value={''} >{values.userRole === 'Citizen' ? 'N/A' : '--Select organisation--'}</option>
-                            {orgList.map((org, index) => { return (<option key={index} value={org.name}>{org.name}</option>) })}
+                            <option value={''} >{values.role === citizenId ? 'N/A' : '--Select organisation--'}</option>
+                            {orgList.map((org, index) => { return (<option key={index} value={org.id}>{org.name}</option>) })}
                           </Input>
                           {getError('organization', errors, touched, false)}
                         </div>
@@ -283,19 +315,19 @@ const UpdateProfile = () => {
                         <div className="mb-3">
                           <Label htmlFor="formrow-password-Input">Role</Label>
                           <Input
-                            id="userRole"
-                            className={getError('userRole', errors, touched)}
-                            name="userRole"
+                            id="role"
+                            className={getError('role', errors, touched)}
+                            name="role"
                             placeholder="select role"
                             type="select"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.userRole}
+                            value={values.role}
                           >
                             <option value={''} >--Select your role--</option>
-                            {roles.map((role, index) => { return (<option key={index} value={role.name}>{role.name}</option>) })}
+                            {roles.map((roleObj, index) => { return (<option key={index} value={roleObj.id}>{roleObj.name}</option>) })}
                           </Input>
-                          {getError('userRole', errors, touched, false)}
+                          {getError('role', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>

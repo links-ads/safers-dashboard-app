@@ -8,12 +8,14 @@ import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { passwordHelper, pwdRegEx, pwdValidationTxt }  from '../../helpers/passwordHelper';
 import { endpoints } from '../../api/endpoints';
 import { BASE_URL } from '../../config';
+import _ from 'lodash';
 
 const SignUp = () => {
   const [passwordToggle, setPasswordToggle] = useState(false);
   const orgList = useSelector(state => state.common.orgList);
   const roles = useSelector(state => state.common.roleList);
   const error = useSelector(state => state.auth.error);
+  const [citizenId, setcitizenId] = useState('');
   const docTNM = BASE_URL +  endpoints.common.termsNconditions;
   const docPP = BASE_URL +  endpoints.common.privacyPolicy;
 
@@ -30,6 +32,12 @@ const SignUp = () => {
       dispatch(getRoleList());
   }, []);
 
+  useEffect(() => {
+    if(roles.length){
+      const role = _.find(roles, { name: 'Citizen' });
+      setcitizenId(role.id)
+    }
+  }, [roles]);
 
   const signUpSchema = Yup.object().shape({
     email: Yup.string()
@@ -50,7 +58,7 @@ const SignUp = () => {
     accepted_terms: Yup.bool()
       .oneOf([true], 'Please accept the terms and conditions')
   }).when((values, schema) => {
-    if (values.role !== 'Citizen') {
+    if (values.role !== citizenId) {
       return schema.shape({
         organization: Yup.string().required('The field cannot be empty'),
       });
@@ -194,12 +202,12 @@ const SignUp = () => {
                       data-testid="sign-up-role"
                     >
                       <option value={''} >--Select your role--</option>
-                      {roles.map((role, index) => { return (<option key={index} value={role.name}>{role.name}</option>) })}
+                      {roles.map((role, index) => { return (<option key={index} value={role.id}>{role.name}</option>) })}
                     </Input>
                     {getError('role', errors, touched, false)}
                   </FormGroup>
                 </Col>
-                <Col className={values.role == 'Citizen' ? 'd-none': ''}>
+                <Col className={values.role == citizenId ? 'd-none': ''}>
                   <FormGroup className="form-group">
                     <Label for="organization">
                       SELECT ORGANISATION:
@@ -216,7 +224,7 @@ const SignUp = () => {
                       data-testid="sign-up-org"
                     >
                       <option value={''} >--Select organisation--</option>
-                      {orgList.map((org, index) => { return (<option key={index} value={org.name}>{org.name}</option>) })}
+                      {orgList.map((org, index) => { return (<option key={index} value={org.id}>{org.name}</option>) })}
                     </Input>
                     {getError('organization', errors, touched, false)}
                   </FormGroup>

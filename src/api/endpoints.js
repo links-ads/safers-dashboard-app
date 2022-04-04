@@ -17,14 +17,15 @@ export const endpoints = {
     validate: '/alerts/validate',
     edit: '/alerts/id-goes-here',
   },
-  user: {
-    profile: '/users/'
+  eventAlerts: {
+    getAll: '/event-alerts/',
+    setFavorite: '/event-alerts/favorite',
+    validate: '/event-alerts/validate',
+    edit: '/event-alerts/id-goes-here',
   },
-  myprofile: {
-    user: '/myprofile/view',
-    updateInfo: '/myprofile/update',
-    uploadProfImg: '/myprofile/update',
-    deleteAcc: '/myprofile/view',
+  user: {
+    profile: '/users/',
+    resetPsw: '/auth/password/change/',
   },
   common: {
     organizations: '/organizations/',

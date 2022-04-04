@@ -8,7 +8,6 @@ export {
   signInOauth2
 }
   from './authentication/action';
-export { setDefaultAoi, } from './user/action'
-export { getInfo, updateInfo, uploadProfImg, deleteAccount, resetProfilePsw } from './myprofile/action'
+export { setDefaultAoi, setAoiSuccess, getInfo, updateInfo, uploadProfImg, deleteAccount, resetProfilePsw } from './user/action'
 export { getOrgList, getRoleList, getAllAreas, generalInProgress } from './common/action'
 export { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, resetAlertsResponseState } from './alerts/action'
