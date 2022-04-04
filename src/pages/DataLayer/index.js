@@ -164,7 +164,7 @@ const DataLayer = () => {
               </Col>
             </Row>
             <hr />
-            <Row>
+            <Row className='mb-3'>
               <Col xl={7}>
                 <InputGroup>
                   <InputGroupText className='border-end-0'>

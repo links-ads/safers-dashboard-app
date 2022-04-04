@@ -36,6 +36,7 @@ const TreeView = ({ data }) => {
           {
             node.children && id &&
             <Collapse
+              key={id + '-' + lvl}
               isOpen={itemState[id] || false}
               style={{ marginLeft: `${50 * (lvl || 1)}px` }}
               className='dl-tree-collapse'
