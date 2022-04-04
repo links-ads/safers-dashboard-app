@@ -16,7 +16,7 @@ const SortSection = () => {
   const dispatch = useDispatch();
 
   const filterByAlertSource = (alertSource) => {
-    dispatch(setAlertId(null));
+    dispatch(setAlertId(undefined));
     dispatch(setAlertSource(alertSource));
     if (alertSource === 'all')
       dispatch(setFilterdAlerts(alerts));
@@ -30,15 +30,16 @@ const SortSection = () => {
   };
 
   const filterBySearchText = (query) => {
-    console.log(query);
     dispatch(setAlertId(undefined));
-    dispatch(setSortByDate(sortByDate))
-    dispatch(setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate])));
+    if (query === '')
+      dispatch(setFilterdAlerts(alerts));
+    else
+      dispatch(setFilterdAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase()))));
   };
 
   const handleChecked = (value) => {
     if(checkedStatus.includes(value)){
-      setCheckedStatus(_.remove(checkedStatus, (status) => status==value))
+      setCheckedStatus(_.remove(checkedStatus, (status) => status!=value))
     }else{
       setCheckedStatus([...checkedStatus, value])
     }
@@ -46,6 +47,7 @@ const SortSection = () => {
 
   useEffect(() => {
     dispatch(setAlertId(undefined));
+    console.log(checkedStatus)
     if(checkedStatus.length == 0){
       dispatch(setFilterdAlerts(alerts))
     }else{
@@ -98,7 +100,7 @@ const SortSection = () => {
       </Row>
       <hr />
       <Row className='my-2'>
-        <Col className='mx-0'>
+        <Col className='mx-0 my-1'>
           <Input
             id="sortByDate"
             className="btn-sm sort-select-input"
@@ -112,7 +114,7 @@ const SortSection = () => {
             <option value={'asc'} >Sort By : Date asc</option>
           </Input>
         </Col>
-        <Col xl={4}>
+        <Col xl={4} className='my-1'>
           <Input
             id="alertSource"
             className="btn-sm sort-select-input"
