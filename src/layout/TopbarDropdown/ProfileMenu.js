@@ -14,7 +14,7 @@ import { signOut } from '../../store/appAction';
 import { getSession } from '../../helpers/authHelper';
 
 // users
-import user1 from '../../assets/images/users/avatar-1.jpg'
+import user1 from '../../assets/images/users/profile.png'
 
 const ProfileMenu = props => {
   // Declare a new state variable, which we'll call 'menu'
