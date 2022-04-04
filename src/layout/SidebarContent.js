@@ -121,7 +121,7 @@ const SidebarContent = () => {
               </Link>
             </li>
             <li>
-              <Link to='/apps-filemanager' className=''>
+              <Link to='/event-alerts' className=''>
                 <i className='bx bx-calendar-event'></i>
                 <span>Events</span>
               </Link>

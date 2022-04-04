@@ -1,16 +1,10 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
-import { useDispatch, useSelector } from 'react-redux';
-import { getStats } from '../../../store/dashboard/action';
+import { useSelector } from 'react-redux';
 import { formatNumber } from '../../../store/utility';
 
 const StatsContainer = () => {
-  const dispatch = useDispatch();
   const stats = useSelector(state => state.dashboard.stats);
-
-  useEffect(() => {
-    dispatch(getStats())
-  }, []);
 
   return(<>
     <Col md={3} sm={6}>

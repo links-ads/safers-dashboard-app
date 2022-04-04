@@ -1,13 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
+import { formatDate } from '../../../store/utility';
 
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
 
   const getBadge = () => {
-    let status = card.status == 'VALIDATED' ? 'validated' : 'to-verify';
+    let iconColor = card.status == 'ONGOING' ? 'text-danger' : '';
+    
     return (
-      <Badge className={`me-1 rounded-pill alert-badge ${status} py-0 px-2 pb-0 mb-0`}>
+      <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
+        <i className={`bx bxs-hot ${iconColor} fa-lg me-1' color='danger'`}></i> 
         <span>{card.status}</span>
       </Badge>
     )
@@ -61,13 +64,13 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             </Row>
             <Row className='mt-2'>
               <Col>
-                <small className="text-muted card-desc">
-                  {card.timestamp}
+                <small className="text-muted card-desc date no-wrap">
+                  Start: {formatDate(card.start)} - End: {formatDate(card.end)}
                 </small>
               </Col>
-              <Col>
+              <Col md={2}>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>{card.source}</span>
+                  <span className='float-end alert-source-text me-2'>{(card.source).join(', ')}</span>
                 </CardText>
               </Col>
             </Row>

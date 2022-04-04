@@ -5,13 +5,13 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 import 'flatpickr/dist/themes/material_blue.css'
 import Flatpickr from 'react-flatpickr'
-import { FormGroup, InputGroup } from 'reactstrap';
+import { InputGroup } from 'reactstrap';
 
 const DateComponent = ({ setDates }) => {
   const fp = useRef(null);
   return (
 
-    <FormGroup className="mb-4">
+    <div className='mb-0'>
       <InputGroup>
         <div className='bg-white d-flex border-none calender-left'>
           <i className='fa fa-calendar px-2 m-auto calender-icon '></i>
@@ -34,7 +34,7 @@ const DateComponent = ({ setDates }) => {
           <i className='fa fa-sync px-2 m-auto bg-white border-none'></i>
         </div>
       </InputGroup>
-    </FormGroup>
+    </div>
   );
 };
 

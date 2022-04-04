@@ -67,3 +67,7 @@
 .mapboxgl-popup-anchor-top .mapboxgl-popup-tip {
   border-bottom-color: $gray-100 !important;
 }
+.mapboxgl-map {
+  border-radius: $border-radius;
+  box-shadow: $box-shadow;
+}
