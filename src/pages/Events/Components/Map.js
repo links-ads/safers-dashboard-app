@@ -3,7 +3,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import { editEventAlertInfo, setEventFavoriteAlert, setHoverInfo, setMidpoint, setPaginatedAlerts, setZoomLevel, validateEventAlert } from '../../../store/events/action';
+import { editEventAlertInfo, setAlertId, setEventFavoriteAlert, setHoverInfo, setMidpoint, setPaginatedAlerts, setZoomLevel, validateEventAlert } from '../../../store/events/action';
 import { PAGE_SIZE } from '../../../store/events/types';
 import SearchButton from './SearchButton';
 import PropTypes from 'prop-types';
@@ -11,9 +11,7 @@ import ToolTip from './Tooltip';
 
 // eslint-disable-next-line no-unused-vars
 const MapSection = ({viewState, setViewState}) => {
-  const { filteredAlerts } = useSelector(state => state.eventAlerts.filteredAlerts);
-  const { currentPage, iconLayer, hoverInfo } = useSelector(state => state.eventAlerts);
-
+  const { currentPage, iconLayer, hoverInfo, filteredAlerts } = useSelector(state => state.eventAlerts);
   
   const dispatch = useDispatch();
 
@@ -27,7 +25,7 @@ const MapSection = ({viewState, setViewState}) => {
 
   const showTooltip = info => {
     if (info.picked && info.object) {
-      dispatch(setEventFavoriteAlert(info.object.id));
+      dispatch(setAlertId(info.object.id));
       dispatch(setHoverInfo(info));
     } else {
       dispatch(setHoverInfo({}));
@@ -78,7 +76,7 @@ const MapSection = ({viewState, setViewState}) => {
     const from = to - PAGE_SIZE;
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
   }
-  console.log(viewState)
+  
   return (
     <Card className='map-card mb-0' style={{ height: 730 }}>
       <BaseMap

@@ -9,8 +9,9 @@ import { PAGE_SIZE } from '../../../store/events/types';
 import Alert from './Alert';
 
 const EventList = () => {
-  const { paginatedAlerts, currentPage, filteredAlerts, alertId } = useSelector(state => state.eventAlerts);
-
+  const { paginatedAlerts, filteredAlerts, alertId } = useSelector(state => state.eventAlerts);
+  const currentPage = useSelector(state => state.eventAlerts.currentPage);
+  
   const dispatch = useDispatch();
   
   const setFavorite = (id) => {
@@ -32,7 +33,6 @@ const EventList = () => {
   };
 
   const setSelectedAlert = (id, isEdit) => {
-    console.log(id, alertId)
     if (id) {
       if (id === alertId) {
         hideTooltip();
@@ -70,7 +70,8 @@ const EventList = () => {
             alertId={alertId} />)
         }
       </Row>
-      <Row className='text-center'>
+      
+      <Row className='text-center my-1'> 
         <Pagination
           pageSize={PAGE_SIZE}
           onChange={updatePage}
