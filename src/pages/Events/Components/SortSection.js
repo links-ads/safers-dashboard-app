@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../store/events/action';
+import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/events/action';
 import _ from 'lodash';
 
 const SortSection = () => {
@@ -47,7 +47,6 @@ const SortSection = () => {
 
   useEffect(() => {
     dispatch(setAlertId(undefined));
-    console.log(checkedStatus)
     if(checkedStatus.length == 0){
       dispatch(setFilterdAlerts(alerts))
     }else{

@@ -12,6 +12,7 @@ import {
 import { Popup } from 'react-map-gl';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../../../store/utility';
+import classnames from 'classnames';
 
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) => {
   
@@ -70,9 +71,9 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
             </Col>
             <Col>
               <CardSubtitle className="my-auto">
-              Start: {formatDate(object.start)} <br></br>
-                <div className='d-flex'>
-              End:
+                Start :&nbsp;{formatDate(object.start)} <br></br>
+                <div className='d-flex text-nowrap'>
+                  End : &nbsp;
                   {
                     editToggle ?
                       <Input type='text' className='tootip-input ms-2' value={formatDate(endDate)} onChange={(e) => { setEndDate(e.target.value) }} />
@@ -82,13 +83,15 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
               </CardSubtitle>
             </Col>
           </Row>
-          <Row className='my-2'>
+          <Row className={['my-2', classnames({
+            'opacity-50': !peopleAffected,
+          })]}>
             <Col md={1} className=''>
               <i className='fa fa-user my-auto'></i>
             </Col>
             <Col>
               <CardSubtitle className="my-auto d-flex text-nowrap">
-              People Affected :
+              People Affected : &nbsp;
                 {
                   editToggle ?
                     <Input type='text' value={peopleAffected} className='tootip-input ms-2' onChange={(e) => { setPeoppleAffected(e.target.value) }} />
@@ -97,13 +100,15 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
               </CardSubtitle>
             </Col>
           </Row>
-          <Row className='my-2'>
+          <Row className={['my-2', classnames({
+            'opacity-50': !casualties,
+          })]}>
             <Col md={1} className=''>
               <i className='fa fa-ambulance my-auto'></i>
             </Col>
             <Col >
               <CardSubtitle className="my-auto d-flex text-nowrap">
-              Casualties:  
+              Casualties: &nbsp; 
                 {
                   editToggle ?
                     <Input type='text' className='tootip-input ms-2' value={casualties} onChange={(e) => { setCasualties(e.target.value) }} />
@@ -112,13 +117,15 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
               </CardSubtitle>
             </Col>
           </Row>
-          <Row className='my-2'>
+          <Row className={['my-2', classnames({
+            'opacity-50': !damage,
+          })]}>
             <Col md={1} className=''>
               <i className='fas fa-euro-sign my-auto'></i>
             </Col>
             <Col >
               <CardSubtitle className="my-auto text-muted d-flex text-nowrap">
-                Estimated damage :
+                Estimated damage : &nbsp;
                 {
                   editToggle ?
                     <Input type='text' className='tootip-input ms-2' value={damage} onChange={(e) => { setDamage(e.target.value) }} />
