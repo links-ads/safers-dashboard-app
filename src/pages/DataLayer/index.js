@@ -1,22 +1,18 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
-import { FlyToInterpolator, IconLayer } from 'deck.gl';
+import { FlyToInterpolator } from 'deck.gl';
 import _ from 'lodash';
 import moment from 'moment';
 import toastr from 'toastr';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllFireAlerts, resetAlertsResponseState } from '../../store/appAction';
-import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 
 import 'toastr/build/toastr.min.css';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TreeView from './TreeView';
 
-const ICON_MAPPING = {
-  marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
-};
 const getDefaultDateRange = () => {
   const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
   const to = moment(new Date()).format('DD-MM-YYYY');
@@ -27,15 +23,10 @@ const DataLayer = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.alerts.allAlerts);
   const success = useSelector(state => state.alerts.success);
-  const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('desc');
   const [alertSource, setAlertSource] = useState('all');
-  const [midPoint, setMidPoint] = useState([]);
-  const [zoomLevel, setZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
-  const [alertId, setAlertId] = useState(undefined);
-  const [hoverInfo, setHoverInfo] = useState({});
   const [filteredAlerts, setFilteredAlerts] = useState([]);
   const dispatch = useDispatch();
 
@@ -60,7 +51,6 @@ const DataLayer = () => {
 
   useEffect(() => {
     if (alerts.length > 0) {
-      setIconLayer(getIconLayer(alerts));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
@@ -69,15 +59,12 @@ const DataLayer = () => {
   }, [alerts]);
 
   useEffect(() => {
-    setIconLayer(getIconLayer(filteredAlerts));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }
-    hideTooltip();
   }, [filteredAlerts]);
 
   useEffect(() => {
-    setAlertId(undefined);
     if (alertSource === 'all')
       setFilteredAlerts(alerts);
     else
@@ -85,55 +72,8 @@ const DataLayer = () => {
   }, [alertSource]);
 
   useEffect(() => {
-    setAlertId(undefined);
     setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
   }, [sortByDate]);
-
-  const getInfoByArea = () => {
-
-    const rangeFactor = (1 / zoomLevel) * 18;
-    const left = midPoint[0] - rangeFactor; //minLong
-    const right = midPoint[0] + rangeFactor; //maxLong
-    const top = midPoint[1] + rangeFactor; //maxLat
-    const bottom = midPoint[1] - rangeFactor; //minLat
-
-    const boundaryBox = [
-      [left, top],
-      [right, top],
-      [right, bottom],
-      [left, bottom]
-    ];
-
-    // console.log(zoomLevel, rangeFactor, midPoint, boundaryBox);
-
-    dispatch(getAllFireAlerts(
-      {
-        sortOrder: sortByDate,
-        source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1],
-        boundaryBox
-      }
-    ));
-  }
-
-  const setSelectedAlert = (id, isEdit) => {
-    if (id) {
-      if (id === alertId) {
-        hideTooltip();
-      }
-      setAlertId(id);
-      let alertsToEdit = _.cloneDeep(filteredAlerts);
-      let selectedAlert = _.find(alertsToEdit, { id });
-      selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(alertsToEdit));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
-      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-    } else {
-      setAlertId(undefined);
-      setIconLayer(getIconLayer(filteredAlerts));
-    }
-  }
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -147,23 +87,6 @@ const DataLayer = () => {
     };
   }
 
-  const getIconLayer = (alerts) => {
-    return (new IconLayer({
-      data: alerts,
-      pickable: true,
-      getPosition: d => d.geometry.coordinates,
-      iconAtlas: firePin,
-      iconMapping: ICON_MAPPING,
-      // onHover: !hoverInfo.objects && setHoverInfo,
-      id: 'icon',
-      getIcon: () => 'marker',
-      getColor: d => { return (d.isSelected ? [226, 123, 29] : [230, 51, 79]) },
-      sizeMinPixels: 80,
-      sizeMaxPixels: 100,
-      sizeScale: 0.5,
-    }))
-  }
-
   const handleDateRangePicker = (dates) => {
     let from = moment(dates[0]).format('DD-MM-YYYY');
     let to = moment(dates[1]).format('DD-MM-YYYY');
@@ -173,43 +96,6 @@ const DataLayer = () => {
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
-
-  const hideTooltip = (e) => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setZoomLevel(e.viewState.zoom);
-    }
-    setHoverInfo({});
-  };
-
-  const showTooltip = info => {
-    console.log(info);
-    if (info.picked && info.object) {
-      setSelectedAlert(info.object.id);
-      setHoverInfo(info);
-    } else {
-      setHoverInfo({});
-    }
-  };
-
-  const getSearchButton = (index) => {
-    return (
-      <Button
-        key={index}
-        className="btn-rounded alert-search-area"
-        style={{
-          position: 'absolute',
-          top: 10,
-          textAlign: 'center',
-          marginLeft: '41%'
-        }}
-        onClick={getInfoByArea}
-      >
-        <i className="bx bx-revision"></i>{' '}
-        Search This Area
-      </Button >
-    )
-  }
 
   return (
     <div className='page-content'>
@@ -272,7 +158,7 @@ const DataLayer = () => {
               </Col>
               <Col xl={2} className="d-flex justify-content-end">
                 <Button color='link'
-                  onClick={handleResetAOI} className='align-self-baseline pe-0'>
+                  onClick={handleResetAOI} className='align-self-baseline p-0'>
                   Default AOI
                 </Button>
               </Col>
@@ -281,8 +167,8 @@ const DataLayer = () => {
             <Row>
               <Col xl={7}>
                 <InputGroup>
-                  <InputGroupText>
-                    <i className='bx bx-search-alt' />
+                  <InputGroupText className='border-end-0'>
+                    <i className='fa fa-search' />
                   </InputGroupText>
                   <Input
                     id="searchEvent"
@@ -330,12 +216,9 @@ const DataLayer = () => {
           <Col xl={7} className='mx-auto'>
             <Card className='map-card mb-0' style={{ height: 670 }}>
               <BaseMap
-                layers={[iconLayer]}
+                layers={[]}
                 initialViewState={viewState}
-                hoverInfo={hoverInfo}
-                onClick={showTooltip}
-                onViewStateChange={hideTooltip}
-                widgets={[getSearchButton]}
+                widgets={[/*search button or any widget*/]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
               />
@@ -344,7 +227,6 @@ const DataLayer = () => {
         </Row>
       </div>
     </div >
-
   );
 }
 
