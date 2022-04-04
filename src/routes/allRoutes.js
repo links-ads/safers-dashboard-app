@@ -20,7 +20,7 @@ const privateRoutes = [
   { path: '/my-profile/:operation', component: MyProfile },
   { path: '/fire-alerts', component: FireAlerts },
   { path: '/event-alerts', component: EventAlerts },
-  { path: '/event-dashboard', component: EventDashboard },
+  { path: '/event-dashboard/:id', component: EventDashboard },
 ]
 
 export { publicRoutes, privateRoutes }

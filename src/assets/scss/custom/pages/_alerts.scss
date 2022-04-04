@@ -113,3 +113,18 @@
     font-size: $font-size-lg * 1.1;
     letter-spacing: 0.55px;
 }
+.back-arrow {
+    background: none;
+    border: none;
+    color: #d8d8d8 !important;
+    &:hover {
+    background: none;
+    border: none;
+    color: #d8d8d8 !important;
+    }
+}
+.event-alert-title {
+    font-size: $font-size-lg;
+    font-weight: 600;
+    color: #fff;
+}

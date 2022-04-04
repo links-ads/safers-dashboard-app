@@ -1,30 +1,41 @@
-import React, { useState } from 'react';
+import _ from 'lodash';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle } from 'reactstrap';
+import { formatDate } from '../../../../store/utility';
 import MapComponent from '../Components/Map';
-
-
 
 const InfoContainer = () => {
   const weatherStats = useSelector(state => state.dashboard.weatherStats);
-  // eslint-disable-next-line no-unused-vars
-  const [active, setActive] = useState(1)
+  const { id } = useParams();
+  const { allAlerts }  = useSelector(state => state.eventAlerts);
+  let event = null
+  useEffect(() => {
+    event = _.find(allAlerts, { id: id })
+  }, [allAlerts])
+  
+  
   return (
     <>
+      
+      <Col md={12} className='mb-2'>
+        <span className='event-alert-title '> Events &gt;</span> <span className='event-alert-title'> {event ? event.title : '' }</span>
+      </Col>
+      
       <Col md={7}>
         <MapComponent weatherStats={weatherStats}/>
       </Col>
-      <Col md={5} sm={12} xs={12} className='d-flex'>
+      <Col md={5} sm={12} xs={12} >
         <Card className='card-weather px-0' >
-          <Col className='mx-auto mt-3' md={11}>
+          <Col className='mx-auto mt-1' md={11}>
             <Row className='mb-2 '>
-              <span className='weather-text'>Important Info</span>
+              <span className='weather-text font-size-22'>Important Info</span>
             </Row>
           </Col>
-          <Col className='mx-auto mt-3 mb-0' md={10}>
+          <Col className='mx-auto mt-2 mb-0' md={10}>
             <Row>
-              <Col className='my-2'>Location</Col>
-              
+              <Col className='my-2 font-size-16'>Location</Col>
             </Row>
             <Row>
               <Col md={1} className='d-flex'>
@@ -32,7 +43,7 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-                  Filoktiti Oikonomidou, Athens 114 76, Greece
+                  {event ? event.location : 'N/A'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -40,7 +51,7 @@ const InfoContainer = () => {
           <hr></hr>
           <Col className='mx-auto' md={10}>
             <Row>
-              <Col className='my-2'>Date of Event</Col>
+              <Col className='my-2 font-size-16'>Date of Event</Col>
             </Row>
             <Row >
               <Col md={1} className='d-flex'>
@@ -48,8 +59,8 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-              Start: Dec 11, 2021, 16:00 <br></br>
-              End: not set
+              Start: { event && event.start ? formatDate(event.start) :  'not set'} <br></br>
+              End: {  event && event.end ? formatDate(event.end) :  'not set'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -57,7 +68,7 @@ const InfoContainer = () => {
           <hr></hr>
           <Col className='mx-auto' md={10}>
             <Row>
-              <Col className='my-2'>Damages</Col>
+              <Col className='my-2 font-size-16'>Damages</Col>
             </Row>
             <Row >
               <Col md={1} className='d-flex'>
@@ -65,7 +76,7 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-                  People Affected : 120
+                  People Affected : {event && event.people_affected ? event.people_affected :  'not recorded'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -78,7 +89,7 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-                  Casualties: not recorded
+                  Casualties: {event && event.casualties ? event.casualties :  'not recorded'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -91,7 +102,7 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-                Estimated damage: not registered
+                Estimated damage: {event && event.casualties ? event.casualties :  'not recorded'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -99,14 +110,16 @@ const InfoContainer = () => {
 
           <Col className='mx-auto my-2' md={10}>
             <Row className='mt-1'>
-              <Col md={2} >
-                <CardText className='mb-2 px-0'>
-                  <span className='mb-5'>Info: </span>
+              <Col >
+                <CardText className='mb-2'>
+                  <span className='mb-5 font-size-16'>Info </span>
                 </CardText>
               </Col>
+            </Row>
+            <Row>
               <Col>
                 <CardText>
-                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry&#39;s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled
+                  {event && event.description ? event.description : 'not recorded'}
                 </CardText>
               </Col>
             </Row>
@@ -114,20 +127,21 @@ const InfoContainer = () => {
               <Col md={2}>
                 <CardText className='mb-2'>
                   <small className="font-italic">
-                  Source:
+                  Source: 
                   </small>
                 </CardText>
               </Col>
               <Col>
                 <CardText className='mb-2'>
                   <small className="font-italic">
-                  source 1</small>
+                    {event ? (event.source).join(', ') : 'not set'}</small>
                 </CardText>
               </Col>
             </Row>
           </Col>
         </Card>
       </Col>
+      
     </>     
   );
 }

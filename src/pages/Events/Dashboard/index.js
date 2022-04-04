@@ -10,7 +10,7 @@ const EventDashboard = () => {
 
   return (
     <div className="page-content">
-      <Container fluid className='p-0'>
+      <Container fluid >
         
         <SearchContainer/>
 

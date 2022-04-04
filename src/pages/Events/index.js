@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Button, Input, FormGroup, Label, InputGroup } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
 import _ from 'lodash';
 import moment from 'moment';
 import toastr from 'toastr';
@@ -11,7 +11,7 @@ import SortSection from '../../components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
-import { getAllEventAlerts, resetEventAlertsResponseState, setAlertId, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../store/events/action';
+import { getAllEventAlerts, resetEventAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../store/events/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
@@ -64,18 +64,7 @@ const EventAlerts = () => {
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
   }, [filteredAlerts]);
 
-  useEffect(() => {
-    dispatch(setAlertId(undefined));
-    if (alertSource === 'all')
-      dispatch(setFilterdAlerts(alerts));
-    else
-      dispatch(setFilterdAlerts(_.filter(alerts, { source: alertSource })));
-  }, [alertSource]);
-
-  useEffect(() => {
-    dispatch(setAlertId(undefined));
-    dispatch(setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate])));
-  }, [sortByDate]);
+  
 
 
   const handleDateRangePicker = (dates) => {
@@ -100,79 +89,20 @@ const EventAlerts = () => {
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
-        <Row className='d-flex flex-row'>
-          <Col xl={4}>Events</Col>
-          <Col xl={4} className='text-center'>
+        <Row>
+          <Col xl={5} className='d-flex justify-content-between'>
+            <p className='align-self-baseline alert-title'>Events</p>
             <Button color='link'
-              onClick={handleResetAOI}>Default AOI</Button>
+              onClick={handleResetAOI} className='align-self-baseline pe-0'>
+                Default AOI</Button>
           </Col>
-          <Col xl={4} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} defaultDateRange={dateRange} />
+          <Col xl={7} className='d-flex justify-content-end'>
+            <DateComponent setDates={handleDateRangePicker} />
           </Col>
         </Row>
         <Row>
           <Col xl={5}>
-            <div>
-              <FormGroup className="form-group d-inline-block" check>
-                <Input
-                  id="onGoing"
-                  data-testid="onGoing"
-                  name="onGoing"
-                  type="checkbox"
-                  
-                />
-                <Label
-                  check
-                  for="onGoing"
-                >
-                  Ongoing (5)
-                </Label>
-              </FormGroup>
-              <FormGroup className="form-group d-inline-block ms-4" check>
-                <Input
-                  id="closedEvents"
-                  data-testid="closedEvents"
-                  name="closedEvents"
-                  type="checkbox"
-                  
-                />
-                <Label
-                  check
-                  for="closedEvents"
-                >
-                  Closed (10)
-                </Label>
-              </FormGroup>
-            </div>
-            
-            <Row>
-              <Col></Col>
-              <Col xl={3} className="d-flex justify-content-end">
-                <span className='my-auto alert-report-text'>Results {filteredAlerts.length}</span>
-              </Col>
-            </Row>
-            <hr />
-            
             <SortSection />
-
-            <Row className='mt-3'>
-              <Col xs={12}>
-                <FormGroup >
-                  <InputGroup>
-                    <div className='bg-white d-flex border-none search-left'>
-                      <i className='fa fa-search px-2 m-auto calender-icon'></i>
-                    </div>
-                    <Input
-                      id="closedEvents"
-                      data-testid="closedEvents"
-                      name="closedEvents"
-                      className='search-input'
-                      placeholder='Search for an event'
-                    />
-                  </InputGroup>
-                </FormGroup>
-              </Col>
-            </Row>
             <Row>
               <Col xl={12} className='px-3'>
                 <EventList/>

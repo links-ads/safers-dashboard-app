@@ -126,7 +126,8 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
             <Col>
               <CardText className='mb-2'>
                 <small className="font-italic">
-                  {object.source}</small>
+                  {(object.source).join(', ')}
+                </small>
               </CardText>
             </Col>
           </Row>
@@ -151,7 +152,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
             </>
             : <>
               <Row className='g-0'>
-                <Button color="secondary" className='create-event-button' onClick={()=>{navigate('/event-dashboard');}}>
+                <Button color="secondary" className='create-event-button' onClick={()=>{navigate(`/event-dashboard/${object.id}`);}}>
                   SHOW INFO
                 </Button>
               </Row>

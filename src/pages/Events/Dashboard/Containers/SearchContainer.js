@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col,  } from 'reactstrap';
+import { Col, Button, Row,  } from 'reactstrap';
 
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -10,9 +10,11 @@ import { getInSituMedia, getStats, getTweets, getWeatherStats, getWeatherVariabl
 import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
 import moment from 'moment';
 import DateComponent from '../../../../components/DateRangePicker/DateRange';
+import { useNavigate } from 'react-router-dom';
 
 const SearchContainer = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const selectedAoi = useSelector(state => state.common.selectedAoi);
   
@@ -55,15 +57,15 @@ const SearchContainer = () => {
   }
 
   return(
-    <Row className='g-0'>
+    <Row className='d-flex'>
       <Col >
-        <Row>
-          <Col></Col>
-          <Col md={3}>
-            <DateComponent setDates={setDates}/>
-          </Col>
-        </Row>
+        <Button onClick={() => navigate(-1)} className='back-arrow px-0 py-0'>
+          <i className='bx bx-arrow-back fa-2x'></i>
+        </Button>
       </Col>
+      <Col md={3}>
+        <DateComponent setDates={setDates} />
+      </Col> 
     </Row>
   )}
 
