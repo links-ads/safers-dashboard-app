@@ -13,6 +13,7 @@ import { Popup } from 'react-map-gl';
 import { useNavigate } from 'react-router-dom';
 import { formatDate } from '../../../store/utility';
 import classnames from 'classnames';
+import DatePicker from '../../../components/DateRangePicker/DatePicker';
 
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) => {
   
@@ -25,6 +26,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
   const [description, setDescription] = useState(object.description);
   
   const navigate = useNavigate();
+
   return (
     <Popup
       longitude={coordinate[0]}
@@ -76,16 +78,21 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
                   End : &nbsp;
                   {
                     editToggle ?
-                      <Input type='text' className='tootip-input ms-2' value={formatDate(endDate)} onChange={(e) => { setEndDate(e.target.value) }} />
+                      <DatePicker 
+                        type='text'  
+                        setDate={setEndDate}
+                        isTooltipInput={true}
+                        date={endDate} 
+                      />
                       :  endDate ? formatDate(endDate) : 'not set'
                   }
                 </div>
               </CardSubtitle>
             </Col>
           </Row>
-          <Row className={['my-2', classnames({
+          <Row className={classnames({
             'opacity-50': !peopleAffected,
-          })]}>
+          }, 'my-2')}>
             <Col md={1} className=''>
               <i className='fa fa-user my-auto'></i>
             </Col>
@@ -94,15 +101,15 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
               People Affected : &nbsp;
                 {
                   editToggle ?
-                    <Input type='text' value={peopleAffected} className='tootip-input ms-2' onChange={(e) => { setPeoppleAffected(e.target.value) }} />
+                    <Input type='text' value={peopleAffected ? peopleAffected: '' } className='tootip-input ms-2' onChange={(e) => { setPeoppleAffected(e.target.value) }} />
                     :  peopleAffected ? peopleAffected : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
           </Row>
-          <Row className={['my-2', classnames({
+          <Row className={classnames({
             'opacity-50': !casualties,
-          })]}>
+          }, 'my-2')}>
             <Col md={1} className=''>
               <i className='fa fa-ambulance my-auto'></i>
             </Col>
@@ -111,15 +118,15 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
               Casualties: &nbsp; 
                 {
                   editToggle ?
-                    <Input type='text' className='tootip-input ms-2' value={casualties} onChange={(e) => { setCasualties(e.target.value) }} />
+                    <Input type='text' className='tootip-input ms-2' value={casualties? casualties: ''} onChange={(e) => { setCasualties(e.target.value) }} />
                     :  casualties ? casualties : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
           </Row>
-          <Row className={['my-2', classnames({
+          <Row className={classnames({
             'opacity-50': !damage,
-          })]}>
+          }, 'my-2')}>
             <Col md={1} className=''>
               <i className='fas fa-euro-sign my-auto'></i>
             </Col>
@@ -128,7 +135,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
                 Estimated damage : &nbsp;
                 {
                   editToggle ?
-                    <Input type='text' className='tootip-input ms-2' value={damage} onChange={(e) => { setDamage(e.target.value) }} />
+                    <Input type='text' className='tootip-input ms-2' value={damage ? damage : ''} onChange={(e) => { setDamage(e.target.value) }} />
                     :  damage ? damage : 'not recorded'
                 }
               </CardSubtitle>

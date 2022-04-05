@@ -129,8 +129,9 @@
     color: #fff;
 }
 .tootip-input {
-    color: #fff;
-    background: none;
+    color: #fff !important;
+    background: none !important;
     padding: 0 0.75rem;
     border-radius: unset;
+    border: 1px solid;
 }
