@@ -91,7 +91,7 @@ const SocialMonitoring = () => {
             </Card>
           </Col>
         </Row>
-        <Row className='mb-3'>
+        <Row className='mb-3 px-3'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
             <BaseMap
               layers={[]}
