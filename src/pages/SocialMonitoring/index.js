@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Row, Col, Card } from 'reactstrap';
+import { Row, Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
 import { FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
 
@@ -8,6 +8,7 @@ import BaseMap from '../../components/BaseMap/BaseMap';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TwitterContainer from './TwitterContainer';
 import { getStats, getTweets, } from '../../store/appAction';
+import { formatNumber } from '../../store/utility';
 
 const getDefaultDateRange = () => {
   const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
@@ -17,6 +18,8 @@ const getDefaultDateRange = () => {
 
 const SocialMonitoring = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const stats = useSelector(state => state.dashboard.stats);
+  const tweetsTrend = 23;
   const [viewState, setViewState] = useState(undefined);
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const dispatch = useDispatch();
@@ -65,18 +68,30 @@ const SocialMonitoring = () => {
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
-        <Row>
-          <Col xl={10}>
+        <Row className='mb-3'>
+          <Col xl={9}>
             <p className='align-self-baseline alert-title'>Social Monitor</p>
           </Col>
-          <Col xl={2}>
+          <Col xl={3}>
             <DateRangePicker setDates={handleDateRangePicker} />
           </Col>
         </Row>
-        <Row>
-          <span>Total Tweets</span>
+        <Row className='mb-3'>
+          <Col md={3} sm={6}>
+            <Card className='tweets-card px-2 pb-3'>
+              <CardHeader>
+                Total Tweets
+              </CardHeader>
+              <CardBody className='pb-0'>
+                <span className='float-start total-tweets'>{stats ? formatNumber(stats.socialEngagement) : 'N/A'}</span>
+              </CardBody>
+              <CardFooter className='py-0'>
+                <span className='float-end tweets-trend'>{`${tweetsTrend > 0 ? '+' : '-'}${tweetsTrend}%`}</span>
+              </CardFooter>
+            </Card>
+          </Col>
         </Row>
-        <Row>
+        <Row className='mb-3'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
             <BaseMap
               layers={[]}
