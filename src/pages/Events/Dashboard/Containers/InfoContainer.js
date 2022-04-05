@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle } from 'reactstrap';
@@ -10,11 +10,12 @@ const InfoContainer = () => {
   const weatherStats = useSelector(state => state.dashboard.weatherStats);
   const { id } = useParams();
   const { allAlerts }  = useSelector(state => state.eventAlerts);
-  let event = null
+  const [event, setEvent] = useState(null);
+
   useEffect(() => {
-    event = _.find(allAlerts, { id: id })
+    const event = _.find(allAlerts, { id: id })
+    setEvent(event)
   }, [allAlerts])
-  
   
   return (
     <>
