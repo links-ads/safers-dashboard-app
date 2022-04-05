@@ -49,11 +49,11 @@ const SidebarContent = () => {
     }
   }
 
-  function classCtrl (add=true, instance, clsName) {
+  function classCtrl(add = true, instance, clsName) {
     add ? instance.classList.add(clsName) : instance.classList.remove(clsName);
   }
 
-  function ctrlParentDropdown(activate=true, item) {
+  function ctrlParentDropdown(activate = true, item) {
     classCtrl(activate, item, 'active');
     const parent = item.parentElement
     const parent2El = parent.childNodes[1]
@@ -96,14 +96,14 @@ const SidebarContent = () => {
       <SimpleBar style={{ maxHeight: '100%' }} ref={ref}>
         <div id='sidebar-menu'>
           <ul className='metismenu list-unstyled' id='side-menu'>
-      
+
             <li>
               <Link to='/dashboard' className=''>
                 <i className='bx bx-layout'></i>
-                
+
                 <span>Dashboard</span>
               </Link>
-              
+
             </li>
 
 
@@ -142,9 +142,9 @@ const SidebarContent = () => {
             </li>
 
             <li>
-              <Link to='/#'>
+              <Link to='/social-monitoring'>
                 <i className='bx bxl-twitter'></i>
-                <span>Social Monitor</span>
+                <span>Social Monitoring</span>
               </Link>
             </li>
 
@@ -154,7 +154,7 @@ const SidebarContent = () => {
                 <span>In-Situ Cameras</span>
               </Link>
             </li>
-  
+
           </ul>
         </div>
       </SimpleBar>
