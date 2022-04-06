@@ -40,7 +40,7 @@ export const signInOauth2 = ({authCode}) => async (dispatch) => {
   const content = response.data;
   dispatch(InProgress(false));
   if (response.status === 200) {
-    return setSessionData(content.token, null, content.user, dispatch)
+    return setSessionData(content.access_token, null, content.user, dispatch)
   }
   return dispatch(signInFail(content.detail));
 }
