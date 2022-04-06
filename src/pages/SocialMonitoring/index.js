@@ -9,6 +9,12 @@ import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TwitterContainer from './TwitterContainer';
 import { getStats, getTweets, } from '../../store/appAction';
 import { formatNumber } from '../../store/utility';
+import IconClusterLayer from './IconClusterLayer';
+import iconMapping from '../../constants/location-icon-mapping.json';
+import iconAtlas from '../../assets/images/location-icon-atlas.png';
+
+const DATA_URL =
+  'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json'; // eslint-disable-line
 
 const getDefaultDateRange = () => {
   const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
@@ -19,7 +25,9 @@ const getDefaultDateRange = () => {
 const SocialMonitoring = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const stats = useSelector(state => state.dashboard.stats);
-  const tweetsTrend = 23;
+  const tweetsTrend = 23;//hard coded text until API available
+  const socialStats = DATA_URL;
+  const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const dispatch = useDispatch();
@@ -31,7 +39,8 @@ const SocialMonitoring = () => {
   }, []);
 
   useEffect(() => {
-    getSearchData()
+    getSearchData();
+    setIconLayer(getIconLayer(socialStats))
   }, [dateRange, defaultAoi]);
 
   const getSearchData = () => {
@@ -59,6 +68,17 @@ const SocialMonitoring = () => {
     };
   }
 
+  const getIconLayer = (data) => {
+    return (new IconClusterLayer({
+      id: 'icon-cluster',
+      sizeScale: 40,
+      data,
+      pickable: true,
+      getPosition: d => d.coordinates,
+      iconAtlas,
+      iconMapping,
+    }))
+  }
   const handleDateRangePicker = (dates) => {
     let from = moment(dates[0]).format('DD-MM-YYYY');
     let to = moment(dates[1]).format('DD-MM-YYYY');
@@ -77,7 +97,7 @@ const SocialMonitoring = () => {
           </Col>
         </Row>
         <Row className='mb-3'>
-          <Col md={3} sm={6}>
+          <Col xl={3} md={6} sm={6}>
             <Card className='tweets-card px-2 pb-3'>
               <CardHeader>
                 Total Tweets
@@ -94,7 +114,7 @@ const SocialMonitoring = () => {
         <Row className='mb-3 px-3'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
             <BaseMap
-              layers={[]}
+              layers={[iconLayer]}
               initialViewState={viewState}
               widgets={[/*search button or any widget*/]}
               screenControlPosition='top-right'
