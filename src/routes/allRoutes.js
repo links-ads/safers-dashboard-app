@@ -8,6 +8,7 @@ import DataLayer from '../pages/DataLayer';
 import Dashboard from '../pages/Dashboard';
 import EventAlerts from '../pages/Events';
 import EventDashboard from '../pages/Events/Dashboard';
+import Notifications from '../pages/Notifications';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },
@@ -23,6 +24,7 @@ const privateRoutes = [
   { path: '/data-layer', component: DataLayer },
   { path: '/event-alerts', component: EventAlerts },
   { path: '/event-dashboard/:id', component: EventDashboard },
+  { path: '/notifications', component: Notifications },
 ]
 
 export { publicRoutes, privateRoutes }
