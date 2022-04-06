@@ -135,7 +135,7 @@ const SidebarContent = () => {
             </li>
 
             <li>
-              <Link to='/#'>
+              <Link to='/notifications'>
                 <i className='bx bx-bell'></i>
                 <span>Notifications</span>
               </Link>
