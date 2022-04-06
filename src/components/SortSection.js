@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
+import { Row, Col, Input, Label, FormGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../store/events/action';
@@ -24,13 +24,6 @@ const SortSection = () => {
       dispatch(setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource ))));
   }
   const filterByDate = (sortByDate) => {
-    dispatch(setAlertId(undefined));
-    dispatch(setSortByDate(sortByDate))
-    dispatch(setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate])));
-  };
-
-  const filterBySearchText = (query) => {
-    console.log(query);
     dispatch(setAlertId(undefined));
     dispatch(setSortByDate(sortByDate))
     dispatch(setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate])));
@@ -69,7 +62,7 @@ const SortSection = () => {
             check
             for="onGoing"
           >
-                  Ongoing ({ongoing})
+                  Photos ({ongoing})
           </Label>
         </FormGroup>
         <FormGroup className="form-group d-inline-block ms-4" check>
@@ -85,7 +78,7 @@ const SortSection = () => {
             check
             for="closedEvents"
           >
-                  Closed ({closed})
+                  Videos ({closed})
           </Label>
         </FormGroup>
       </div>
@@ -130,25 +123,6 @@ const SortSection = () => {
         </Col>
         <Col xl={3}>
                 
-        </Col>
-      </Row>
-      <Row className='mt-3'>
-        <Col xs={12}>
-          <FormGroup >
-            <InputGroup>
-              <div className='bg-white d-flex border-none search-left'>
-                <i className='fa fa-search px-2 m-auto calender-icon'></i>
-              </div>
-              <Input
-                id="closedEvents"
-                data-testid="closedEvents"
-                name="closedEvents"
-                className='search-input'
-                placeholder='Search for an event'
-                onChange={(e) => filterBySearchText(e.target.value)}
-              />
-            </InputGroup>
-          </FormGroup>
         </Col>
       </Row>
     </>

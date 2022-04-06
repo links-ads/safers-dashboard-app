@@ -7,6 +7,8 @@ import FireAlerts from '../pages/FireAlerts';
 import Dashboard from '../pages/Dashboard';
 import EventAlerts from '../pages/Events';
 import EventDashboard from '../pages/Events/Dashboard';
+import InSituAlerts from '../pages/In-situ';
+import InSituDashboard from '../pages/Events/Dashboard';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },
@@ -21,6 +23,8 @@ const privateRoutes = [
   { path: '/fire-alerts', component: FireAlerts },
   { path: '/event-alerts', component: EventAlerts },
   { path: '/event-dashboard/:id', component: EventDashboard },
+  { path: '/insitu-alerts', component: InSituAlerts },
+  { path: '/insitu-dashboard/:id', component: InSituDashboard },
 ]
 
 export { publicRoutes, privateRoutes }

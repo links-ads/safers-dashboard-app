@@ -8,23 +8,22 @@
 }
 
 .calender-left {
-  border-top-left-radius: .3rem;
-  border-bottom-left-radius: .3rem;
+  border-top-left-radius: 0.3rem;
+  border-bottom-left-radius: 0.3rem;
   i {
     color: $gray-100;
   }
 }
 .calender-right {
-  border-top-right-radius: .3rem;
-  border-bottom-right-radius: .3rem;
+  border-top-right-radius: 0.3rem;
+  border-bottom-right-radius: 0.3rem;
   i {
     color: $gray-100;
   }
 }
 .flatpickr-input {
-  border : none;
+  border: none;
 }
-
 
 .twitter-tweet-rendered {
   margin: 0 !important;
@@ -46,11 +45,22 @@
 }
 
 .rc-pagination-disabled button {
-  color: $gray-500 !important;;
+  color: $gray-500 !important;
 }
 
 .rc-pagination-item-active {
   background-color: $primary !important;
   border-radius: 14px;
   color: $black !important;
+}
+
+.alert-tooltip {
+  background: $primary !important;
+  ::after {
+    border-right-color: $primary !important;
+  }
+}
+
+.alert-tooltip.place-right::after {
+    border-right-color: $primary !important;
 }
