@@ -149,7 +149,7 @@ const SidebarContent = () => {
             </li>
 
             <li>
-              <Link to='/#'>
+              <Link to='/insitu-alerts'>
                 <i className='bx bx-image'></i>
                 <span>In-Situ Cameras</span>
               </Link>

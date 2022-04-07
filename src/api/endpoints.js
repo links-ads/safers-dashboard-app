@@ -43,5 +43,8 @@ export const endpoints = {
   notifications: {
     getAll: '/notifications/',
   },
+  insitu: {
+    getAlerts: '/insitu-alerts/'
+  }
 };
 

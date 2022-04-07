@@ -7,6 +7,7 @@ import dashboardReducer from './dashboard/reducer';
 import alertReducer from './alerts/reducer';
 import eventAlertReducer from './events/reducer';
 import notificationsReducer from './notifications/reducer';
+import inSituAlertReducer from './insitu/reducer';
 
 import storage from 'redux-persist/lib/storage/session';//or session
 
@@ -17,6 +18,7 @@ const appReducer = combineReducers({
   dashboard: dashboardReducer,
   alerts: alertReducer,
   eventAlerts: eventAlertReducer,
+  inSituAlerts: inSituAlertReducer,
   notifications: notificationsReducer
 });
 
