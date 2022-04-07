@@ -51,9 +51,6 @@ const SortSection = () => {
             value={notificationSource}
           >
             <option value={'all'} >Source : All</option>
-            <option value={'web'} >Source : Web</option>
-            <option value={'camera'} >Source : Camera</option>
-            <option value={'satellite'} >Source : Satellite</option>
           </Input>
         </Col>
         <Col>
