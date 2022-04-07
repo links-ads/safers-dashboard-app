@@ -17,7 +17,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
     return (
       <Badge key={index} className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
         <i className='fa-lg me-1'></i> 
-        <span>{tag}</span>
+        <span>{tag.toUpperCase()}</span>
       </Badge>
     )
   }
@@ -87,7 +87,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
                 <Col md={8}>
                   <p>{formatDate(card.date)}</p>
                   <p className='mb-1'><i data-tip data-for="smoke-column" className='bx bx-info-circle float-start fs-5 me-2'></i><span >Smoke Column Class: {card.sourceInfo.SmokeColumn}</span></p>
-                  <p><i  data-tip data-for="geo-direction" className='bx bx-info-circle float-start fs-5 me-2'></i><span>Geographical Direction: {card.sourceInfo.GeoInfo}&deg;</span></p>
+                  <p className='mb-1'><i  data-tip data-for="geo-direction" className='bx bx-info-circle float-start fs-5 me-2'></i><span>Geographical Direction: {card.sourceInfo.GeoInfo}&deg;</span></p>
                 </Col>
                 <Col  md={4} className='text-end'>
                   <Button className="btn btn-primary px-5 py-2" onClick={()=>{setisOpen(true)}}>VIEW</Button>
