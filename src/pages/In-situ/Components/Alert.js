@@ -22,7 +22,8 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
     )
   }
 
-  const getMedia = (media) => {
+  const getMedia = (card) => {
+    const { media } = card;
     if(!media) return null;
     if(media.type == 'Video'){
       return <ModalVideo
@@ -40,8 +41,8 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
         enableZoom={true}
         imageCaption={
           <div className='position-fixed top-0 start-0 m-2'>
-            <h5 className='mb-1'>{media.time}</h5>
-            <h4>{media.title}</h4>
+            <h5 className='mb-1'>{formatDate(card.date, 'YYYY-MM-DD HH:mm')}</h5>
+            <h5>{card.source}</h5>
           </div>
         }
         onCloseRequest={() => {
@@ -122,7 +123,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
           </Row>
         </ReactTooltip>
       </Card>
-      {getMedia(card.media)}
+      {getMedia(card)}
     </>
   )
 }
