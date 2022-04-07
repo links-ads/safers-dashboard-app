@@ -42,7 +42,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
         imageCaption={
           <div className='position-fixed top-0 start-0 m-2'>
             <h5 className='mb-1'>{formatDate(card.date, 'YYYY-MM-DD HH:mm')}</h5>
-            <h5>{card.source}</h5>
+            <h5>{card.source.join(', ')}</h5>
           </div>
         }
         onCloseRequest={() => {
