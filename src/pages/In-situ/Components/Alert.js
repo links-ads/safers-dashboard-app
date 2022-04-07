@@ -24,7 +24,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
 
   const getMedia = (media) => {
     if(!media) return null;
-    if(media.type == 'video'){
+    if(media.type == 'Video'){
       return <ModalVideo
         videoId={media.videoId}
         channel={media.channel}
