@@ -10,7 +10,7 @@ import 'rc-pagination/assets/index.css';
 import SortSection from '../../components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
-import EventList from './Components/EventList';
+import AlertList from './Components/AlertList';
 import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../store/insitu/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
@@ -107,7 +107,7 @@ const InSituAlerts = () => {
             <SortSection />
             <Row>
               <Col xl={12} className='px-3'>
-                <EventList/>
+                <AlertList />
               </Col>
             </Row>
           </Col>

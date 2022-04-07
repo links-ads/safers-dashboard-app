@@ -8,7 +8,7 @@ import { setAlertId, setCurrentPage, setInSituFavoriteAlert, setHoverInfo, setIc
 import { PAGE_SIZE } from '../../../store/insitu/types';
 import Alert from './Alert';
 
-const EventList = () => {
+const AlertList = () => {
   const { paginatedAlerts, currentPage, filteredAlerts, alertId } = useSelector(state => state.inSituAlerts);
 
   const dispatch = useDispatch();
@@ -78,4 +78,4 @@ const EventList = () => {
     </>)
 }
 
-export default EventList;
+export default AlertList;

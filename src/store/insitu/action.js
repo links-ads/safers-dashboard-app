@@ -3,8 +3,7 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 export const getAllInSituAlerts = (options) => async (dispatch) => {
-  console.log('called ac');
-  const response = await api.post(endpoints.eventAlerts.getAll, options);
+  const response = await api.get(endpoints.insitu.getAlerts, options);
   if (response.status === 200) {
     return dispatch(getInSitutAlertsSuccess(response.data));
   }
@@ -102,6 +101,12 @@ export const setZoomLevel = (payload) => {
 export const setSortByDate = (payload) => {
   return {
     type: actionTypes.SET_INSITU_SORT_BY_DATE,
+    payload,
+  };
+};
+export const setAlertSource = (payload) => {
+  return {
+    type: actionTypes.SET_INSITU_ALERT_SOURCE,
     payload,
   };
 };

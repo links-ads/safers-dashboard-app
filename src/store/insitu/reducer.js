@@ -91,7 +91,7 @@ const setPaginatedAlerts = (state, action) => {
 }
 const setCurrentPage = (state, action) => {
   const updatedState = {
-    currentPage: action.payload,
+    currentPage: action.page,
   }
   return updateObject(state, updatedState);
 }

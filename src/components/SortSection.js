@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Input, Label, FormGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../store/events/action';
-import _ from 'lodash';
+import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../store/insitu/action';
+import _, { isArray } from 'lodash';
 
 const SortSection = () => {
-  const { sortByDate, alertSource, filteredAlerts } = useSelector(state => state.eventAlerts);
+  const { sortByDate, alertSource, filteredAlerts, allAlerts:alerts } = useSelector(state => state.inSituAlerts);
 
-  const alerts = useSelector(state => state.eventAlerts.allAlerts);
-  const ongoing  = _.sumBy(alerts, ({ status }) => status == 'ONGOING');
-  const closed  = _.sumBy(alerts, ({ status }) => status == 'CLOSED');
+  const photo  = _.sumBy(alerts, ({ tags }) => isArray(tags) && tags.includes('Photo'));
+  const video  = _.sumBy(alerts, ({ tags }) => isArray(tags) && tags.includes('Video'));
   const [checkedStatus, setCheckedStatus] = useState([])
 
   const dispatch = useDispatch();
+
 
   const filterByAlertSource = (alertSource) => {
     dispatch(setAlertId(null));
@@ -31,7 +31,7 @@ const SortSection = () => {
 
   const handleChecked = (value) => {
     if(checkedStatus.includes(value)){
-      setCheckedStatus(_.remove(checkedStatus, (status) => status==value))
+      setCheckedStatus(_.remove(checkedStatus, (tags) => isArray(tags) && tags.includes(value)))
     }else{
       setCheckedStatus([...checkedStatus, value])
     }
@@ -42,7 +42,7 @@ const SortSection = () => {
     if(checkedStatus.length == 0){
       dispatch(setFilterdAlerts(alerts))
     }else{
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.status))));
+      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.media.type))));
     }
   }, [checkedStatus]);
 
@@ -51,34 +51,34 @@ const SortSection = () => {
       <div>
         <FormGroup className="form-group d-inline-block" check>
           <Input
-            id="onGoing"
-            data-testid="onGoing"
+            id="photo"
+            data-testid="photo"
             name="status"
             type="checkbox"
-            value="ONGOING"
+            value="Photo"
             onChange={(e) => handleChecked(e.target.value)}     
           />
           <Label
             check
-            for="onGoing"
+            for="photo"
           >
-                  Photos ({ongoing})
+                  Photos ({photo})
           </Label>
         </FormGroup>
         <FormGroup className="form-group d-inline-block ms-4" check>
           <Input
-            id="closedEvents"
-            data-testid="closedEvents"
+            id="video"
+            data-testid="video"
             name="status"
             type="checkbox"
-            value="CLOSED"
+            value="Video"
             onChange={(e) => handleChecked(e.target.value)}      
           />
           <Label
             check
-            for="closedEvents"
+            for="video"
           >
-                  Videos ({closed})
+                  Videos ({video})
           </Label>
         </FormGroup>
       </div>

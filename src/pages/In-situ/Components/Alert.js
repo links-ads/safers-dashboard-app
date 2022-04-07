@@ -11,19 +11,13 @@ import 'react-modal-video/scss/modal-video.scss'
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
 
   const [isOpen, setisOpen] = useState(false);
-  const media = {
-    time: '2021 - 11 - 23 20:47:38',
-    title: 'In Situ Camera',
-    type: 'photo',
-    url: 'https://media.gettyimages.com/photos/forest-fire-wildfire-at-night-time-on-the-mountain-with-big-smoke-picture-id1266552048?s=2048x2048'
-  }
 
-  const getBadge = () => {
+  const getBadge = (tag, index) => {
     
     return (
-      <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
+      <Badge key={index} className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
         <i className='fa-lg me-1'></i> 
-        <span>{card.status}</span>
+        <span>{tag}</span>
       </Badge>
     )
   }
@@ -33,7 +27,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
     if(media.type == 'video'){
       return <ModalVideo
         videoId={media.videoId}
-        channel="youtube"
+        channel={media.channel}
         isOpen={isOpen}
         onClose={() => {
           setisOpen(!isOpen)
@@ -62,15 +56,17 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
     <>
       <Card
         onClick={() => setSelectedAlert(card.id)}
-        className={'alerts-card mb-2 ' + (card.id == alertId ? 'alert-card-active' : '')}>
+        className={'alerts-card mb-2 pt-1 ' + (card.id == alertId ? 'alert-card-active' : '')}>
         <CardBody className='p-0 m-2'>
           <Row>
             <Col md={1}>
             </Col>
             <Col>
-              <CardText className='mb-2'>
-                {getBadge()}
-              </CardText>
+              {card.tags && <CardText className='mb-2'>
+                {card.tags.map((tag, idx) => (
+                  getBadge(tag, idx)
+                ))}
+              </CardText>}
             </Col>
           </Row>
           <Row>
@@ -89,9 +85,9 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Col>
               <Row>
                 <Col md={8}>
-                  <p>{formatDate(card.start)}</p>
-                  <p className='mb-1' data-tip data-for="global"><i className='bx bx-info-circle float-start fs-5 me-2'></i><span >Lorem posum</span></p>
-                  <p data-tip data-for="global"><i className='bx bx-info-circle float-start fs-5 me-2'></i><span>Lorem posum</span></p>
+                  <p>{formatDate(card.date)}</p>
+                  <p className='mb-1'><i data-tip data-for="smoke-column" className='bx bx-info-circle float-start fs-5 me-2'></i><span >Smoke Column Class: {card.sourceInfo.SmokeColumn}</span></p>
+                  <p><i  data-tip data-for="geo-direction" className='bx bx-info-circle float-start fs-5 me-2'></i><span>Geographical Direction: {card.sourceInfo.GeoInfo}&deg;</span></p>
                 </Col>
                 <Col  md={4} className='text-end'>
                   <Button className="btn btn-primary px-5 py-2" onClick={()=>{setisOpen(true)}}>VIEW</Button>
@@ -107,12 +103,26 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             </Col>
           </Row>
         </CardBody>
-        <ReactTooltip id="global" aria-haspopup="true" role="example" place='right' class="alert-tooltip">
-          <p>This is a global react component tooltip</p>
-          <p>You can put every thing here</p>
+        <ReactTooltip id="smoke-column" aria-haspopup="true" role="example" place='right' class="alert-tooltip text-light">
+          <h5>Smoke Column Class</h5>
+          <p className='mb-2'>CL1 - fires invloving wood/plants</p>
+          <p className='mb-2'>CL2 - fires invloving flammable materials / liquids</p>
+          <p>CL3 - fires invloving gases</p>
+        </ReactTooltip>
+        <ReactTooltip id="geo-direction" aria-haspopup="true" role="example" place='right' class="alert-tooltip text-light">
+          <h5>Geographical Direction</h5>
+          <p className='tooltip-desc'>Geographical direction  of the fire respect to the position of the camera</p>
+          <Row>
+            <Col md={6}><span className='me-5'>0&deg; = North</span></Col>
+            <Col md={6} className="float-start"><span>90&deg; = East</span></Col>
+          </Row>
+          <Row>
+            <Col md={6}><span className='me-5'>180&deg; = South</span></Col>
+            <Col md={6} className="float-start"><span>270&deg; = West</span></Col>
+          </Row>
         </ReactTooltip>
       </Card>
-      {getMedia(media)}
+      {getMedia(card.media)}
     </>
   )
 }

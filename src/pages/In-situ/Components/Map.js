@@ -1,18 +1,15 @@
-import _ from 'lodash';
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import { setHoverInfo, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../../store/insitu/action';
-import { PAGE_SIZE } from '../../../store/insitu/types';
+import { setHoverInfo, setMidpoint, setZoomLevel } from '../../../store/insitu/action';
 import SearchButton from './SearchButton';
 import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
 
 
 const MapSection = ({viewState}) => {
-  const { filteredAlerts } = useSelector(state => state.inSituAlerts.filteredAlerts);
-  const { currentPage, iconLayer, hoverInfo } = useSelector(state => state.inSituAlerts);
+  const { iconLayer, hoverInfo } = useSelector(state => state.inSituAlerts);
 
   
   const dispatch = useDispatch();
@@ -35,26 +32,17 @@ const MapSection = ({viewState}) => {
 
   const renderTooltip = (info) => {
     if(!info) return null
-    const { object, coordinate, isEdit } = info;
+    const { object, coordinate } = info;
     if (object) {
       return <ToolTip
         key={object.id}
         object={object}
         coordinate={coordinate}
-        isEdit={isEdit}
-        setFavorite={setFavorite}
       />
     }
     if (!object) {
       return null;
     }
-  }
-  const setFavorite = (id) => {
-    let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.isFavorite = !selectedAlert.isFavorite;
-    const to = PAGE_SIZE * currentPage;
-    const from = to - PAGE_SIZE;
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
   }
 
   return (

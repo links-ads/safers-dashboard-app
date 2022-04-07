@@ -39,6 +39,9 @@ export const endpoints = {
     getWeatherVariables: '/dashboard/weathervariables',
     getInSitu: '/dashboard/inSitu',
     getTweets: '/dashboard/tweets'
+  },
+  insitu: {
+    getAlerts: '/insitu-alerts/'
   }
 };
 

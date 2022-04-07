@@ -59,8 +59,25 @@
   ::after {
     border-right-color: $primary !important;
   }
+  border-radius: 10px !important;
 }
 
 .alert-tooltip.place-right::after {
-    border-right-color: $primary !important;
+  border-right-color: $primary !important;
+}
+
+.tooltip-desc {
+  width: 300px;
+}
+
+.modal-video {
+  position: fixed !important;
+}
+
+.alert-badge {
+  min-width: 60px;
+}
+
+.sort-select-input {
+  padding: 10px;
 }
