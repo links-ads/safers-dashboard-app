@@ -7,7 +7,7 @@ import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
-import SortSection from '../../components/SortSection';
+import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import AlertList from './Components/AlertList';
@@ -107,7 +107,7 @@ const InSituAlerts = () => {
             <SortSection />
             <Row>
               <Col xl={12} className='px-3'>
-                <AlertList />
+                <AlertList/>
               </Col>
             </Row>
           </Col>

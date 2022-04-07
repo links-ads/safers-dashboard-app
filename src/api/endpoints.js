@@ -40,6 +40,9 @@ export const endpoints = {
     getInSitu: '/dashboard/inSitu',
     getTweets: '/dashboard/tweets'
   },
+  notifications: {
+    getAll: '/notifications/',
+  },
   insitu: {
     getAlerts: '/insitu-alerts/'
   }

@@ -44,7 +44,6 @@ const BaseMap = ({
       [props[1]]: 10
     };
   }
-
   return (
     <>
       <DeckGL

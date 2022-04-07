@@ -24,6 +24,7 @@ const getEventAlertsFail = (error) => {
 };
 
 export const setEventFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
+  console.log('set favorite')
   const response = await api.post(endpoints.eventAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
   if (response.status === 200) {
     return dispatch(setEventFavoriteAlertSuccess(response.data));
@@ -104,10 +105,10 @@ export const setPaginatedAlerts = (payload) => {
     payload,
   };
 };
-export const setCurrentPage = (page) => {
+export const setCurrentPage = (payload) => {
   return {
     type: actionTypes.SET_CURRENT_PAGE,
-    page,
+    payload,
   };
 };
 export const setAlertId = (payload) => {

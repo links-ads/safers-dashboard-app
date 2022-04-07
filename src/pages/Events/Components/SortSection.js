@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Input, Label, FormGroup } from 'reactstrap';
+import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../store/insitu/action';
-import _, { isArray } from 'lodash';
+import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/events/action';
+import _ from 'lodash';
 
 const SortSection = () => {
-  const { sortByDate, alertSource, filteredAlerts, allAlerts:alerts } = useSelector(state => state.inSituAlerts);
+  const { sortByDate, alertSource, filteredAlerts } = useSelector(state => state.eventAlerts);
 
-  const photo  = _.sumBy(alerts, ({ tags }) => isArray(tags) && tags.includes('Photo'));
-  const video  = _.sumBy(alerts, ({ tags }) => isArray(tags) && tags.includes('Video'));
+  const alerts = useSelector(state => state.eventAlerts.allAlerts);
+  const ongoing  = _.sumBy(alerts, ({ status }) => status == 'ONGOING');
+  const closed  = _.sumBy(alerts, ({ status }) => status == 'CLOSED');
   const [checkedStatus, setCheckedStatus] = useState([])
 
   const dispatch = useDispatch();
 
-
   const filterByAlertSource = (alertSource) => {
-    dispatch(setAlertId(null));
+    dispatch(setAlertId(undefined));
     dispatch(setAlertSource(alertSource));
     if (alertSource === 'all')
       dispatch(setFilterdAlerts(alerts));
@@ -29,9 +29,17 @@ const SortSection = () => {
     dispatch(setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate])));
   };
 
+  const filterBySearchText = (query) => {
+    dispatch(setAlertId(undefined));
+    if (query === '')
+      dispatch(setFilterdAlerts(alerts));
+    else
+      dispatch(setFilterdAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase()))));
+  };
+
   const handleChecked = (value) => {
     if(checkedStatus.includes(value)){
-      setCheckedStatus(_.remove(checkedStatus, (tags) => isArray(tags) && tags.includes(value)))
+      setCheckedStatus(_.remove(checkedStatus, (status) => status!=value))
     }else{
       setCheckedStatus([...checkedStatus, value])
     }
@@ -42,7 +50,7 @@ const SortSection = () => {
     if(checkedStatus.length == 0){
       dispatch(setFilterdAlerts(alerts))
     }else{
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.media.type))));
+      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.status))));
     }
   }, [checkedStatus]);
 
@@ -51,34 +59,34 @@ const SortSection = () => {
       <div>
         <FormGroup className="form-group d-inline-block" check>
           <Input
-            id="photo"
-            data-testid="photo"
+            id="onGoing"
+            data-testid="onGoing"
             name="status"
             type="checkbox"
-            value="Photo"
+            value="ONGOING"
             onChange={(e) => handleChecked(e.target.value)}     
           />
           <Label
             check
-            for="photo"
+            for="onGoing"
           >
-                  Photos ({photo})
+                  Ongoing ({ongoing})
           </Label>
         </FormGroup>
         <FormGroup className="form-group d-inline-block ms-4" check>
           <Input
-            id="video"
-            data-testid="video"
+            id="closedEvents"
+            data-testid="closedEvents"
             name="status"
             type="checkbox"
-            value="Video"
+            value="CLOSED"
             onChange={(e) => handleChecked(e.target.value)}      
           />
           <Label
             check
-            for="video"
+            for="closedEvents"
           >
-                  Videos ({video})
+                  Closed ({closed})
           </Label>
         </FormGroup>
       </div>
@@ -91,7 +99,7 @@ const SortSection = () => {
       </Row>
       <hr />
       <Row className='my-2'>
-        <Col className='mx-0'>
+        <Col className='mx-0 my-1'>
           <Input
             id="sortByDate"
             className="btn-sm sort-select-input"
@@ -105,7 +113,7 @@ const SortSection = () => {
             <option value={'asc'} >Sort By : Date asc</option>
           </Input>
         </Col>
-        <Col xl={4}>
+        <Col xl={4} className='my-1'>
           <Input
             id="alertSource"
             className="btn-sm sort-select-input"
@@ -123,6 +131,25 @@ const SortSection = () => {
         </Col>
         <Col xl={3}>
                 
+        </Col>
+      </Row>
+      <Row className='mt-3'>
+        <Col xs={12}>
+          <FormGroup >
+            <InputGroup>
+              <div className='bg-white d-flex border-none search-left'>
+                <i className='fa fa-search px-2 m-auto calender-icon'></i>
+              </div>
+              <Input
+                id="closedEvents"
+                data-testid="closedEvents"
+                name="closedEvents"
+                className='search-input'
+                placeholder='Search for an event'
+                onChange={(e) => filterBySearchText(e.target.value)}
+              />
+            </InputGroup>
+          </FormGroup>
         </Col>
       </Row>
     </>
