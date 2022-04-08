@@ -15,6 +15,8 @@ import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, set
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
+const MAP_TYPE = 'reports';
+
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.inSituAlerts.allAlerts);
@@ -48,7 +50,7 @@ const Reports = () => {
 
   useEffect(() => {
     if (alerts.length > 0) {
-      dispatch(setIconLayer(getIconLayer(alerts)));
+      dispatch(setIconLayer(getIconLayer(alerts, MAP_TYPE)));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
@@ -57,7 +59,7 @@ const Reports = () => {
   }, [alerts]);
 
   useEffect(() => {
-    dispatch(setIconLayer(getIconLayer(filteredAlerts)));
+    dispatch(setIconLayer(getIconLayer(filteredAlerts, MAP_TYPE)));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }

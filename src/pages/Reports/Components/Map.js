@@ -7,7 +7,6 @@ import SearchButton from './SearchButton';
 import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
 
-
 const MapSection = ({viewState}) => {
   const { iconLayer, hoverInfo } = useSelector(state => state.inSituAlerts);
 

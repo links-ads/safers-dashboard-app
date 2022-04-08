@@ -1,10 +1,16 @@
 import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import { PolygonLayer } from '@deck.gl/layers';
 import firePin from '../assets/images/atoms-general-icon-fire-drop.png'
+import locationPin from '../assets/images/map/map.png';
 
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
 };
+
+const ORANGE = [226, 123, 29];
+const GRAY = [128,128,128];
+const RED = [230, 51, 79];
+const DARK_GRAY = [57,58,58];
 
 export const getViewState = (midPoint, zoomLevel = 4) => {
   return {
@@ -38,18 +44,21 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconLayer = (alerts) => {
+export const getIconLayer = (alerts, mapType = 'alerts') => {
+  const icon  = mapType == 'reports' ? locationPin : firePin
+  console.log(icon)
   return (new IconLayer({
     data: alerts,
     pickable: true,
     getPosition: d => d.geometry.coordinates,
-    iconAtlas: firePin,
+    iconAtlas: icon,
     iconMapping: ICON_MAPPING,
     // onHover: !hoverInfo.objects && setHoverInfo,
     id: 'icon',
     getIcon: () => 'marker',
     getColor: d => {
-      return (d.isSelected ? [226, 123, 29] : d.status == 'CLOSED'? [128,128,128] : [230, 51, 79]) 
+      if(mapType == 'reports') return (d.isSelected ? ORANGE : DARK_GRAY)
+      return (d.isSelected ? ORANGE : d.status == 'CLOSED'? RED : GRAY)
     },
     sizeMinPixels: 80,
     sizeMaxPixels: 100,

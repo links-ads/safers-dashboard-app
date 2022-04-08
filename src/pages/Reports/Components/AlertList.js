@@ -8,6 +8,8 @@ import { setAlertId, setCurrentPage, setInSituFavoriteAlert, setHoverInfo, setIc
 import { PAGE_SIZE } from '../../../store/insitu/types';
 import Alert from './Alert';
 
+const MAP_TYPE = 'reports';
+
 const AlertList = () => {
   const { paginatedAlerts, currentPage, filteredAlerts, alertId } = useSelector(state => state.inSituAlerts);
 
@@ -38,16 +40,16 @@ const AlertList = () => {
       let alertsToEdit = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(alertsToEdit, { id });
       selectedAlert.isSelected = true;
-      dispatch(setIconLayer(getIconLayer(alertsToEdit)));
+      dispatch(setIconLayer(getIconLayer(alertsToEdit, MAP_TYPE)));
       dispatch(setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit }));
     } else {
       dispatch(setAlertId(undefined));
-      dispatch(setIconLayer(getIconLayer(filteredAlerts)));
+      dispatch(setIconLayer(getIconLayer(filteredAlerts, MAP_TYPE)));
     }
   }
   const updatePage = page => {
     dispatch(setAlertId(undefined));
-    dispatch(setIconLayer(getIconLayer(filteredAlerts)));
+    dispatch(setIconLayer(getIconLayer(filteredAlerts, MAP_TYPE)));
     dispatch(setCurrentPage(page));
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
