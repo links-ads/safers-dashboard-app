@@ -7,7 +7,6 @@ const SearchButton = (index) => {
   const { midPoint, zoomLevel, sortByDate, alertSource, dateRange } = useSelector(state => state.eventAlerts);
 
   const dispatch = useDispatch();
-  
 
   const getAlertsByArea = () => {
 

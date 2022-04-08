@@ -27,13 +27,13 @@ const SortSection = () => {
   return(
     <>
             
-      <Row>
+      <Row className='mt-5'>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
           <span className='my-auto alert-report-text'>Results {filteredAlerts.length}</span>
         </Col>
       </Row>
-      <hr />
+      <hr/>
       <Row className='my-2'>
         <Col className='mx-0 my-1'>
           <Input
