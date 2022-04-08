@@ -13,11 +13,25 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
   const [isOpen, setisOpen] = useState(false);
 
   const getBadge = (tag, index) => {
+    let icon = '';
+    let bgColor = '';
+    if(tag === 'Fire'|| tag === 'Smoke' ){
+      icon = <i className={`fa-lg ${tag === 'Fire' ? 'text-danger' : ''} mdi mdi-fire`}></i>;
+      bgColor = 'alert-badge event-alert-badge';
+    }
     
+    if(tag === 'Photo') {
+      bgColor = 'to-verify';
+    }
+
+    if(tag === 'Video') {
+      bgColor = 'validated'
+    }
+
     return (
-      <Badge key={index} className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
-        <i className='fa-lg me-1'></i> 
-        <span>{tag.toUpperCase()}</span>
+      <Badge key={index} className={`me-1 rounded-pill alert-badge ${bgColor} py-0 px-2 pb-0 mb-0 badge`}>
+        {icon}
+        <span className={tag === 'Fire' ? 'text-danger' : ''}>{tag.toUpperCase()}</span>
       </Badge>
     )
   }
