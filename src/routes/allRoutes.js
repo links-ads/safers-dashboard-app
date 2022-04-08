@@ -8,6 +8,7 @@ import DataLayer from '../pages/DataLayer';
 import Dashboard from '../pages/Dashboard';
 import EventAlerts from '../pages/Events';
 import EventDashboard from '../pages/Events/Dashboard';
+import SocialMonitoring from '../pages/SocialMonitoring';
 import Notifications from '../pages/Notifications';
 import InSituAlerts from '../pages/In-situ';
 
@@ -25,6 +26,7 @@ const privateRoutes = [
   { path: '/data-layer', component: DataLayer },
   { path: '/event-alerts', component: EventAlerts },
   { path: '/event-dashboard/:id', component: EventDashboard },
+  { path: '/social-monitoring', component: SocialMonitoring },
   { path: '/notifications', component: Notifications },
   { path: '/insitu-alerts', component: InSituAlerts },
 ]
