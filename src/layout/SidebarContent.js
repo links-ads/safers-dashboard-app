@@ -128,7 +128,7 @@ const SidebarContent = () => {
             </li>
 
             <li>
-              <Link to='/#'>
+              <Link to='/reports'>
                 <i className='bx bx-clipboard'></i>
                 <span>Reports</span>
               </Link>

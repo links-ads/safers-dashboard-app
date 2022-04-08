@@ -10,6 +10,7 @@ import EventAlerts from '../pages/Events';
 import EventDashboard from '../pages/Events/Dashboard';
 import Notifications from '../pages/Notifications';
 import InSituAlerts from '../pages/In-situ';
+import Reports from '../pages/Reports';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },
@@ -27,6 +28,7 @@ const privateRoutes = [
   { path: '/event-dashboard/:id', component: EventDashboard },
   { path: '/notifications', component: Notifications },
   { path: '/insitu-alerts', component: InSituAlerts },
+  { path: '/reports', component: Reports },
 ]
 
 export { publicRoutes, privateRoutes }
