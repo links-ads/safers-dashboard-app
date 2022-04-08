@@ -58,7 +58,7 @@ export const getIconLayer = (alerts, mapType = 'alerts') => {
     getIcon: () => 'marker',
     getColor: d => {
       if(mapType == 'reports') return (d.isSelected ? ORANGE : DARK_GRAY)
-      return (d.isSelected ? ORANGE : d.status == 'CLOSED'? RED : GRAY)
+      return (d.isSelected ? ORANGE : d.status == 'CLOSED'? GRAY : RED)
     },
     sizeMinPixels: 80,
     sizeMaxPixels: 100,
