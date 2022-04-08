@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
+import ReactTooltip from 'react-tooltip';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 
 const TreeView = ({ data }) => {
@@ -14,7 +15,7 @@ const TreeView = ({ data }) => {
   }
 
   const mapper = (nodes, parentId, lvl) => {
-    return nodes.map((node) => {
+    return nodes.map((node,  index) => {
       const id = node.id;
       const item =
         <>
@@ -25,7 +26,7 @@ const TreeView = ({ data }) => {
             onClick={() => toggle(id)}
           >
             <>
-              <i className='bx bx-info-circle font-size-16 me-1' />
+              <i data-tip data-for={`${parentId}-${index}-tooltip`}  className='bx bx-info-circle font-size-16 me-1' />
               {
                 node.children &&
                 <i className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
@@ -44,6 +45,9 @@ const TreeView = ({ data }) => {
               {mapper(node.children, id, (lvl || 0) + 1)}
             </Collapse>
           }
+          <ReactTooltip id={`${parentId}-${index}-tooltip`} aria-haspopup="true" role={node.text} place='right' class="alert-tooltip text-light">
+            <p className='mb-2'>{node.text}</p>
+          </ReactTooltip>
         </>
       return item;
     });
