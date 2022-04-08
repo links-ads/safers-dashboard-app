@@ -135,7 +135,7 @@ const SidebarContent = () => {
             </li>
 
             <li>
-              <Link to='/#'>
+              <Link to='/notifications'>
                 <i className='bx bx-bell'></i>
                 <span>Notifications</span>
               </Link>
@@ -149,7 +149,7 @@ const SidebarContent = () => {
             </li>
 
             <li>
-              <Link to='/#'>
+              <Link to='/insitu-alerts'>
                 <i className='bx bx-image'></i>
                 <span>In-Situ Cameras</span>
               </Link>
