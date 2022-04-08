@@ -13,8 +13,8 @@ import IconClusterLayer from './IconClusterLayer';
 import iconMapping from '../../constants/location-icon-mapping.json';
 import iconAtlas from '../../assets/images/location-icon-atlas.png';
 
-const DATA_URL =
-  'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json'; // eslint-disable-line
+const MOCK_DATA =
+  'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json';//using this mock data until the tweets API ready with coordinates.
 
 const getDefaultDateRange = () => {
   const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
@@ -26,7 +26,7 @@ const SocialMonitoring = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const stats = useSelector(state => state.dashboard.stats);
   const tweetsTrend = 23;//hard coded text until API available
-  const socialStats = DATA_URL;
+  const socialStats = MOCK_DATA;
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
