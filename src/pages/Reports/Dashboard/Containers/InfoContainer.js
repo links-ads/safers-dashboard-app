@@ -20,14 +20,14 @@ const InfoContainer = () => {
   return (
     <>
       <Row>
-        <Col >
+        <Col className='g-0'>
           <Button onClick={() => navigate(-1)} className='back-arrow px-0 py-0'>
             <i className='bx bx-arrow-back fa-2x'></i>
           </Button>
         </Col> 
       </Row>
       
-      <Col md={12} className='mb-3'>
+      <Col md={12} className='mb-3 g-0'>
         <span className='event-alert-title opacity-75'> Reports &gt;</span> <span className='event-alert-title'> Report Name A</span>
       </Col>
     
