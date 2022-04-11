@@ -10,7 +10,7 @@ const InSituContainer = () => {
       <Col md={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
-            <span className='weather-text'>In-situ Photos & Videos</span>
+            <span className='weather-text'>Media Files Attached</span>
           </Row>
           <Row >
             {inSituMedia.map((media, index) => {
