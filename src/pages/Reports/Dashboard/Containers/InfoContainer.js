@@ -62,6 +62,7 @@ const InfoContainer = () => {
               <Col className='text-end'><span className='opacity-75 d-inline-block'>Organization : </span><h5 className='d-inline-block'>Test Organization</h5></Col>
             </Row>
           </Col>
+          <hr></hr>
           <Col className='mx-auto mb-0' md={10}>
             <Row>
               <Col className='mb-2 font-size-16'>Location</Col>
@@ -80,7 +81,7 @@ const InfoContainer = () => {
           <hr></hr>
           <Col className='mx-auto' md={10}>
             <Row>
-              <Col className='my-2 font-size-16'>Date of Report</Col>
+              <Col className=' font-size-16'>Date of Report</Col>
             </Row>
             <Row >
               <Col md={1} className='d-flex'>
@@ -94,7 +95,7 @@ const InfoContainer = () => {
             </Row>
           </Col>
           <hr></hr>
-          <Col className='mx-auto my-2' md={10}>
+          <Col className='mx-auto' md={10}>
             <Row>
               <Col>
                 <CardText >
