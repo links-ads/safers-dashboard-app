@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
-import _ from 'lodash';
 import moment from 'moment';
 import toastr from 'toastr';
 
@@ -10,27 +9,26 @@ import 'rc-pagination/assets/index.css';
 import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
-import AlertList from './Components/AlertList';
-import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../store/insitu/action';
+import ReportList from './Components/ReportList';
+import { getAllReports, resetReportResponseState, setDateRange} from '../../store/reports/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
-import { PAGE_SIZE } from '../../store/events/types';
 
 const MAP_TYPE = 'reports';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const alerts = useSelector(state => state.inSituAlerts.allAlerts);
-  const success = useSelector(state => state.inSituAlerts.success);
-  const { filteredAlerts, sortByDate, alertSource, dateRange } = useSelector(state => state.inSituAlerts);
-
-  console.log('state.inSituAlerts..', alerts);
+  const {allReports: OrgReportList, success, filteredReports} = useSelector(state => state.reports);
+  const { sortByDate, alertSource, dateRange } = useSelector(state => state.inSituAlerts);
 
   const [viewState, setViewState] = useState(undefined);
+  const [iconLayer, setIconLayer] = useState(undefined);
 
   const dispatch = useDispatch();
 
+  const allReports = filteredReports || OrgReportList;
+
   useEffect(() => {
-    dispatch(getAllInSituAlerts(
+    dispatch(getAllReports(
       {
         sortOrder: sortByDate,
         source: alertSource,
@@ -44,29 +42,18 @@ const Reports = () => {
     if (success?.detail) {
       toastr.success(success.detail, '');
     }
-    dispatch(resetInSituAlertsResponseState());
+    dispatch(resetReportResponseState());
 
   }, [success]);
 
   useEffect(() => {
-    if (alerts.length > 0) {
-      dispatch(setIconLayer(getIconLayer(alerts, MAP_TYPE)));
+    if (allReports.length > 0) {
+      setIconLayer(getIconLayer(allReports, MAP_TYPE));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
-      dispatch(setFilterdAlerts(alerts));
     }
-  }, [alerts]);
-
-  useEffect(() => {
-    dispatch(setIconLayer(getIconLayer(filteredAlerts, MAP_TYPE)));
-    if (!viewState) {
-      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-    }
-    dispatch(setCurrentPage(1));
-    hideTooltip();
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
-  }, [filteredAlerts]);
+  }, [allReports]);
 
   
 
@@ -80,15 +67,6 @@ const Reports = () => {
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
-
-  const hideTooltip = (e) => {
-    if (e && e.viewState) {
-      dispatch(setMidpoint([e.viewState.longitude, e.viewState.latitude]));
-      dispatch(setZoomLevel(e.viewState.zoom));
-    }
-    dispatch(setHoverInfo({}));
-  };
-
 
   return (
     <div className='page-content'>
@@ -109,12 +87,12 @@ const Reports = () => {
             <SortSection />
             <Row>
               <Col xl={12} className='px-3'>
-                <AlertList/>
+                <ReportList setIconLayer={setIconLayer} />
               </Col>
             </Row>
           </Col>
           <Col xl={7} className='mx-auto'>
-            <MapSection viewState={viewState} setViewState={setViewState}/>
+            <MapSection viewState={viewState} setViewState={setViewState} iconLayer={iconLayer}/>
           </Col>
         </Row>
 

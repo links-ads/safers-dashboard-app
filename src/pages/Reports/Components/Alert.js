@@ -1,14 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Card, CardBody, CardText, CardTitle, Col, Row, Button } from 'reactstrap';
-import { formatDate } from '../../../store/utility';
 
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
 
   return (
     <Card
       onClick={() => setSelectedAlert(card.id)}
-      className={'alerts-card mb-2 ' + (card.id == alertId ? 'alert-card-active' : '')}>
+      className={'reports-card mb-2 ' + (card.id == alertId ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
         
         <Row className='mt-4'>
@@ -28,7 +27,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Row>
               <Col>
                 <CardTitle>
-                  <span className='card-title'>Report Name A</span>
+                  <span className='card-title font-size-18'>Report Name A</span>
                 </CardTitle>
                 <CardText className='card-desc'>
                   {card.description}
@@ -40,21 +39,21 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             </Row>
             <Row className='mt-2'>
               <Col>
-                <small className="text-muted card-desc date no-wrap">
-                  Start: {formatDate(card.start)} - End: {formatDate(card.end)}
+                <small className="card-desc no-wrap">
+                  Sep 3, 2021, 17:11
                 </small>
               </Col>
               
             </Row>
             <Row className='mt-0'>
               <Col>
-                <small className="text-muted card-desc date no-wrap">
+                <small className="card-desc no-wrap">
                   Location: lat 45.065466 long 7.659904
                 </small>
               </Col>
               <Col md={2}>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>Chatbot</span>
+                  <span className='float-end card-desc me-2'>Chatbot</span>
                 </CardText>
               </Col>
             </Row>

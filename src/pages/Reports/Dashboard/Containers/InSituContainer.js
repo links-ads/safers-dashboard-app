@@ -7,7 +7,7 @@ const InSituContainer = () => {
   const inSituMedia = useSelector(state => state.dashboard.inSituMedia);
   return (
     <>
-      <Col md={12} className='d-flex'>
+      <Col md={12} className='d-flex mt-3'>
         <Card className='card-weather' >
           <Row className='mb-2'>
             <span className='weather-text'>Media Files Attached</span>
