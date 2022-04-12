@@ -25,3 +25,13 @@
       letter-spacing: 0.45px;
     }
   }
+
+  .reports-card {
+    @extend .alerts-card;
+    .card-desc {
+      font-size: .9rem;
+      line-height: 1.43;
+      letter-spacing: 0.01px;
+      color: #d8d8d8;
+    }
+}
