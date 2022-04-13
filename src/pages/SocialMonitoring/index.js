@@ -92,7 +92,7 @@ const SocialMonitoring = () => {
           <Col xl={9}>
             <p className='align-self-baseline alert-title'>Social Monitor</p>
           </Col>
-          <Col xl={3}>
+          <Col xl={3} className="d-flex justify-content-end">
             <DateRangePicker setDates={handleDateRangePicker} />
           </Col>
         </Row>
