@@ -32,7 +32,7 @@ const privateRoutes = [
   { path: '/notifications', component: Notifications },
   { path: '/insitu-alerts', component: InSituAlerts },
   { path: '/reports', component: Reports },
-  { path: '/reports-dashboard', component: ReportsDashboard },
+  { path: '/reports-dashboard/:id', component: ReportsDashboard },
 ]
 
 export { publicRoutes, privateRoutes }
