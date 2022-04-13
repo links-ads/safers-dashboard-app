@@ -1,10 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import PropTypes from 'prop-types'
 import { Card, Row, Col } from 'reactstrap';
 import MediaComponent from '../../../../components/MediaComponent';
 
-const InSituContainer = () => {
-  const inSituMedia = useSelector(state => state.dashboard.inSituMedia);
+const MediaContainer = ({ reportDetail }) => {
+  if(!reportDetail)
+    return null;
+
   return (
     <>
       <Col md={12} className='d-flex mt-3'>
@@ -13,7 +15,7 @@ const InSituContainer = () => {
             <span className='weather-text'>Media Files Attached</span>
           </Row>
           <Row >
-            {inSituMedia.map((media, index) => {
+            {reportDetail.media.map((media, index) => {
               return( 
                 <Col key={index} md={3} sm={6} xs={12} className='d-flex dashboard-image justify-content-center'>
                   <MediaComponent media={media}/>
@@ -26,4 +28,8 @@ const InSituContainer = () => {
   );
 }
 
-export default InSituContainer;
+MediaContainer.propTypes = {
+  reportDetail: PropTypes.object,
+}
+
+export default MediaContainer;

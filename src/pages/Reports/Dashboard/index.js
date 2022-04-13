@@ -1,28 +1,30 @@
 import React, { useEffect }  from 'react';
 import { Container, Row  } from 'reactstrap';
-import InSituContainer from './Containers/InSituContainer';
-import InfoContainer from './Containers/InfoContainer';
-import { useDispatch } from 'react-redux';
-import { getAllEventAlerts } from '../../../store/events/action';
+import MediaContainer from './Containers/MediaContainer';
+import SummaryContainer from './Containers/SummaryContainer';
+import { useDispatch, useSelector } from 'react-redux';
+import { getReportDetail } from '../../../store/reports/action';
+// import { useParams } from 'react-router-dom';
 
 const ReportsDashboard = () => {
   const dispatch = useDispatch();
+  const { reportDetail } = useSelector(state => state.reports);
+  // const { id } = useParams();
+  const id = '1234';
   useEffect(() => {
-    dispatch(getAllEventAlerts(
-      
-    ));
-  }, []);
+    dispatch(getReportDetail(id))
+  }, [])
 
   return (
     <div className="page-content">
       <Container fluid >
 
         <Row>
-          <InfoContainer/>
+          <SummaryContainer reportDetail={reportDetail} />
         </Row>
       
         <Row>
-          <InSituContainer/>
+          <MediaContainer reportDetail={reportDetail}/>
         </Row>
 
       </Container>

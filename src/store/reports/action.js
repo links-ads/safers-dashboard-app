@@ -66,3 +66,26 @@ export const setDateRange = (payload) => {
     payload,
   };
 };
+
+export const getReportDetail = (id) => async (dispatch) => {
+  console.log('getReportDetail..', getReportDetail);
+  const response = await api.get(`${endpoints.reports.getReportInfo}/${id}`);
+  if (response.status === 200) {
+    return dispatch(getReportDetailSuccess(response.data));
+  }
+  else
+    return dispatch(getReportDetailFail(response.error));
+}
+
+const getReportDetailSuccess = (alerts) => {
+  return {
+    type: actionTypes.GET_REPORT_DETAIL_SUCCESS,
+    payload: alerts
+  };
+};
+const getReportDetailFail = (error) => {
+  return {
+    type: actionTypes.GET_REPORT_DETAIL_FAIL,
+    payload: error
+  };
+};

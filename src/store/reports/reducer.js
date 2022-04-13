@@ -8,7 +8,8 @@ const initialState = {
   dateRange : getDefaultDateRange(),
   error: false,
   success: null,
-  filteredReports: null
+  filteredReports: null,
+  reportDetail: null
 };
 
 const reportReducer = (state = initialState, action) => {
@@ -20,10 +21,27 @@ const reportReducer = (state = initialState, action) => {
   case actionTypes.RESET_REPORT_STATE: return resetReportResponseState(state, action);
   case actionTypes.SET_REPORT_DATE_RANGE: return setDateRange(state, action);
   case actionTypes.SET_REPORT_FILTERS: return setFilters(state, action);
+  case actionTypes.GET_REPORT_DETAIL_SUCCESS: return getReportDetailSuccess(state, action);
+  case actionTypes.GET_REPORT_DETAIL_FAIL: return getReportDetailFail(state, action);
   default:
     return state;
   }
 };
+
+const getReportDetailSuccess = (state, action) => {
+  const updatedState = {
+    reportDetail: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const getReportDetailFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
 
 const getReportsSuccess = (state, action) => {
   const updatedState = {

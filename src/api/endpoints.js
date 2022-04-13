@@ -47,7 +47,8 @@ export const endpoints = {
     getAlerts: '/insitu-alerts/'
   },
   reports: {
-    getReports: '/reports'
+    getReports: '/reports',
+    getReportInfo: '/reportinfo',
   }
 };
 
