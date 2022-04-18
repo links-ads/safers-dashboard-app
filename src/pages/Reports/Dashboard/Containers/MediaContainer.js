@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, {useState} from 'react';
+import PropTypes from 'prop-types'
 import { Card, Row, Col } from 'reactstrap';
-import MediaComponent from '../Components/MediaComponent';
-import PaginationWrapper from '../../../components/Pagination';
+import MediaComponent from '../../../../components/MediaComponent';
+import PaginationWrapper from '../../../../components/Pagination';
 
-const InSituContainer = () => {
-  const inSituMedia = useSelector(state => state.dashboard.inSituMedia);
+const MediaContainer = ({ reportDetail }) => {
+
   const [pageData, setPageData] = useState([]);
+
+  if(!reportDetail)
+    return null;
+
   return (
     <>
-      <Col md={12} className='d-flex'>
+      <Col md={12} className='d-flex mt-3'>
         <Card className='card-weather' >
           <Row className='mb-2'>
-            <span className='weather-text'>In-situ Photos & Videos</span>
+            <span className='weather-text'>Media Files Attached</span>
           </Row>
           <Row >
             {pageData.map((media, index) => {
@@ -23,7 +27,7 @@ const InSituContainer = () => {
             })}
           </Row>
           <Row className='text-center'>
-            <PaginationWrapper pageSize={8} list={inSituMedia} setPageData={setPageData} />
+            <PaginationWrapper pageSize={8} list={reportDetail.media} setPageData={setPageData} />
           </Row>
         </Card>
       </Col>
@@ -31,4 +35,8 @@ const InSituContainer = () => {
   );
 }
 
-export default InSituContainer;
+MediaContainer.propTypes = {
+  reportDetail: PropTypes.object,
+}
+
+export default MediaContainer;

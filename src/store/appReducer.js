@@ -8,6 +8,7 @@ import alertReducer from './alerts/reducer';
 import eventAlertReducer from './events/reducer';
 import notificationsReducer from './notifications/reducer';
 import inSituAlertReducer from './insitu/reducer';
+import reportReducer from './reports/reducer';
 
 import storage from 'redux-persist/lib/storage/session';//or session
 
@@ -19,7 +20,8 @@ const appReducer = combineReducers({
   alerts: alertReducer,
   eventAlerts: eventAlertReducer,
   inSituAlerts: inSituAlertReducer,
-  notifications: notificationsReducer
+  notifications: notificationsReducer,
+  reports: reportReducer
 });
 
 const rootReducer = (state, action) => {
