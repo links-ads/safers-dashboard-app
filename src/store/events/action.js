@@ -161,7 +161,7 @@ export const setDateRange = (payload) => {
 };
 
 export const getInSituMedia = (params) => async (dispatch) => {
-  const response = await api.get(endpoints.dashboard.getInSitu, params);
+  const response = await api.get(endpoints.eventAlerts.getInSitu, params);
   if (response.status === 200) {
     return dispatch(getInSituMediaSuccess(response.data));
   }
@@ -182,7 +182,7 @@ const getInSituMediaFail = (error) => {
 };
 
 export const getTweets = (params) => async (dispatch) => {
-  const response = await api.get(endpoints.dashboard.getTweets, params);
+  const response = await api.get(endpoints.eventAlerts.getTweets, params);
   if (response.status === 200) {
     return dispatch(getTweetsSuccess(response.data));
   }
