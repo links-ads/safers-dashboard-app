@@ -3,15 +3,16 @@
 exports[`Authentication Component Renders Should match snapshot 1`] = `
 <Formik
   data-test="signUpComponent"
+  enableReinitialize={true}
   initialValues={
     Object {
-      "agreeTermsConditions": false,
+      "accepted_terms": false,
       "email": "",
-      "firstName": "",
-      "lastName": "",
+      "first_name": "",
+      "last_name": "",
+      "organization": "",
       "password": "",
-      "userOrg": "",
-      "userRole": "",
+      "role": "",
     }
   }
   onSubmit={[Function]}
@@ -24,10 +25,10 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
       "_blacklistError": undefined,
       "_excludedEdges": Array [],
       "_nodes": Array [
-        "agreeTermsConditions",
-        "userRole",
-        "lastName",
-        "firstName",
+        "accepted_terms",
+        "role",
+        "last_name",
+        "first_name",
         "password",
         "email",
       ],
@@ -57,7 +58,7 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
       "deps": Array [],
       "exclusiveTests": Object {},
       "fields": Object {
-        "agreeTermsConditions": BooleanSchema {
+        "accepted_terms": BooleanSchema {
           "_blacklist": ReferenceSet {
             "list": Set {},
             "refs": Map {},
@@ -124,7 +125,7 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
           ],
           "type": "string",
         },
-        "firstName": StringSchema {
+        "first_name": StringSchema {
           "_blacklist": ReferenceSet {
             "list": Set {},
             "refs": Map {},
@@ -158,7 +159,7 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
           ],
           "type": "string",
         },
-        "lastName": StringSchema {
+        "last_name": StringSchema {
           "_blacklist": ReferenceSet {
             "list": Set {},
             "refs": Map {},
@@ -228,7 +229,7 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
           ],
           "type": "string",
         },
-        "userRole": StringSchema {
+        "role": StringSchema {
           "_blacklist": ReferenceSet {
             "list": Set {},
             "refs": Map {},
