@@ -1,6 +1,7 @@
 # safers-dashboard
 
-web frontend for SAFERS
+Web frontend for SAFERS
+
 ## Available Scripts
 
 In the project directory, you can run:
