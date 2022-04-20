@@ -23,8 +23,8 @@ const getDataLayersFail = (error) => {
   };
 };
 
-export const getDataLayerInfo = (alertId, desc) => async (dispatch) => {
-  const response = await api.patch(endpoints.fireDataLayers.edit, { alert_id: alertId, description: desc });
+export const getDataLayerInfo = (dataLayerId) => async (dispatch) => {
+  const response = await api.patch(endpoints.dataLayers.getAll, { metadata_id: dataLayerId});
   if (response.status === 200) {
     return dispatch(getDataLayerInfoSuccess(response.data));
   }

@@ -5,6 +5,7 @@ import * as actionTypes from './authentication/types';
 import commonReducer from './common/reducer';
 import dashboardReducer from './dashboard/reducer';
 import alertReducer from './alerts/reducer';
+import dataLayerReducer from './datalayer/reducer';
 import eventAlertReducer from './events/reducer';
 import notificationsReducer from './notifications/reducer';
 import inSituAlertReducer from './insitu/reducer';
@@ -18,6 +19,7 @@ const appReducer = combineReducers({
   common: commonReducer,
   dashboard: dashboardReducer,
   alerts: alertReducer,
+  dataLayer: dataLayerReducer,
   eventAlerts: eventAlertReducer,
   inSituAlerts: inSituAlertReducer,
   notifications: notificationsReducer,

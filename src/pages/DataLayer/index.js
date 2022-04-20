@@ -2,14 +2,11 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
 import { FlyToInterpolator } from 'deck.gl';
-import _ from 'lodash';
 import moment from 'moment';
-import toastr from 'toastr';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllFireAlerts, resetAlertsResponseState } from '../../store/appAction';
+import { getAllDataLayers } from '../../store/appAction';
 
-import 'toastr/build/toastr.min.css';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TreeView from './TreeView';
 
@@ -21,20 +18,19 @@ const getDefaultDateRange = () => {
 
 const DataLayer = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const alerts = useSelector(state => state.alerts.allAlerts);
-  const success = useSelector(state => state.alerts.success);
+  const dataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const currentLayer = useSelector(state => state.dataLayer.currentLayer);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('desc');
-  const [alertSource, setAlertSource] = useState('all');
+  const [layerSource, setLayerSource] = useState('all');
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
-  const [filteredAlerts, setFilteredAlerts] = useState([]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllFireAlerts(
+    dispatch(getAllDataLayers(
       {
         sortOrder: sortByDate,
-        source: alertSource,
+        source: layerSource,
         from: dateRange[0],
         to: dateRange[1]
       }
@@ -42,38 +38,28 @@ const DataLayer = () => {
   }, []);
 
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
-    }
-    dispatch(resetAlertsResponseState());
-
-  }, [success]);
+    //TODO: when single layer selected
+  }, [currentLayer]);
 
   useEffect(() => {
-    if (alerts.length > 0) {
+    if (dataLayers.length > 0) {
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
-      setFilteredAlerts(alerts);
     }
-  }, [alerts]);
+  }, [dataLayers]);
 
   useEffect(() => {
-    if (!viewState) {
-      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-    }
-  }, [filteredAlerts]);
-
-  useEffect(() => {
-    if (alertSource === 'all')
-      setFilteredAlerts(alerts);
-    else
-      setFilteredAlerts(_.filter(alerts, { source: alertSource }));
-  }, [alertSource]);
-
-  useEffect(() => {
-    setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
-  }, [sortByDate]);
+    //TODO: filter and sort UI logics
+    dispatch(getAllDataLayers(
+      {
+        sortOrder: sortByDate,
+        source: layerSource,
+        from: dateRange[0],
+        to: dateRange[1]
+      }
+    ));
+  }, [layerSource, sortByDate]);
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -124,13 +110,13 @@ const DataLayer = () => {
                   </Col>
                   <Col xl={4}>
                     <Input
-                      id="alertSource"
+                      id="layerSource"
                       className="btn-sm sort-select-input"
-                      name="alertSource"
-                      placeholder="Source"
+                      name="layerSource"
+                      placeholder="layerSource"
                       type="select"
-                      onChange={(e) => setAlertSource(e.target.value)}
-                      value={alertSource}
+                      onChange={(e) => setLayerSource(e.target.value)}
+                      value={layerSource}
                     >
                       <option value={'all'} >Source : All</option>
                       <option value={'web'} >Source : Web</option>
@@ -145,8 +131,8 @@ const DataLayer = () => {
                       name="dataDomain"
                       placeholder="Domain"
                       type="select"
-                      onChange={(e) => setAlertSource(e.target.value)}
-                      value={alertSource}
+                      onChange={(e) => setLayerSource(e.target.value)}
+                      value={layerSource}
                     >
                       <option value={'all'} >Data Domain : All</option>
                       <option value={'fire'} >Data Domain : Fire</option>
@@ -185,30 +171,7 @@ const DataLayer = () => {
             <Row>
               <Col>
                 <TreeView
-                  data={[
-                    {
-                      text: 'Fire',
-                      id: 1,
-                      children:
-                        [
-                          {
-                            text: 'Links',
-                            id: 11,
-                            children:
-                              [
-                                {
-                                  text: 'Soil Burn Severity',
-                                  id: 111,
-                                },
-                                {
-                                  text: 'Wid Forecast',
-                                  id: 112,
-                                },
-                              ]
-                          }
-                        ]
-                    }
-                  ]}
+                  data={dataLayers}
                 />
               </Col>
             </Row>

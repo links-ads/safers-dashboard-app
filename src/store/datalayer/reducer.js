@@ -8,13 +8,13 @@ const initialState = {
   success: null
 };
 
-const alertReducer = (state = initialState, action) => {
+const dataLayerReducer = (state = initialState, action) => {
   switch (action.type) {
   case actionTypes.GET_DATA_LAYERS_SUCCESS: return getDataLayersSuccess(state, action);
   case actionTypes.GET_DATA_LAYERS_FAIL: return getDataLayersFail(state, action);
-  case actionTypes.EDIT_ALERT_INFO_SUCCESS: return getDataLayerInfoSuccess(state, action);
-  case actionTypes.EDIT_ALERT_INFO_FAIL: return getDataLayerInfoFail(state, action);
-  case actionTypes.RESET_ALERT_STATE: return resetDataLayersResponseState(state, action);
+  case actionTypes.GET_DATA_LAYER_INFO_SUCCESS: return getDataLayerInfoSuccess(state, action);
+  case actionTypes.GET_DATA_LAYER_INFO_FAIL: return getDataLayerInfoFail(state, action);
+  case actionTypes.RESET_DATA_LAYER_STATE: return resetDataLayersResponseState(state, action);
   default:
     return state;
   }
@@ -22,7 +22,7 @@ const alertReducer = (state = initialState, action) => {
 
 const getDataLayersSuccess = (state, action) => {
   const updatedState = {
-    allDataLayers: action.payload,
+    dataLayers: action.payload,
     error: false,
   }
   return updateObject(state, updatedState);
@@ -57,4 +57,4 @@ const resetDataLayersResponseState = (state) => {
   return updateObject(state, updatedState);
 }
 
-export default alertReducer;
+export default dataLayerReducer;
