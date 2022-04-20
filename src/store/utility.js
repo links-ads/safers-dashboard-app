@@ -18,10 +18,10 @@ export const getDefaultDateRange = () => {
   return [from, to];
 }
 
-export const formatDefaultDate = (date) => {
-  return moment(date).format('L');
+export const formatDefaultDate = (date, format='L') => {
+  return moment(date).format(format);
 }
 
-export const formatDate = (date) => {
-  return moment(date).format('ll') 
+export const formatDate = (date, format='ll') => {
+  return moment(date).format(format) 
 }

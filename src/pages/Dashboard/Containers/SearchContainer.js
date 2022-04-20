@@ -94,7 +94,7 @@ const SearchContainer = () => {
             </FormGroup>
           </Col>
           <Col></Col>
-          <Col md={3}>
+          <Col md={3} className="d-flex justify-content-end">
             <DateRangeComponent setDates={setDates}/>
           </Col>
         </Row>
