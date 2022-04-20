@@ -1,0 +1,56 @@
+import * as actionTypes from './types';
+import { endpoints } from '../../api/endpoints';
+import * as api from '../../api/base';
+
+export const getAllDataLayers = (options) => async (dispatch) => {
+  const response = await api.post(endpoints.dataLayers.getAll, options);
+  if (response.status === 200) {
+    return dispatch(getDataLayersSuccess(response.data));
+  }
+  else
+    return dispatch(getDataLayersFail(response.error));
+};
+const getDataLayersSuccess = (DataLayers) => {
+  return {
+    type: actionTypes.GET_DATA_LAYERS_SUCCESS,
+    payload: DataLayers
+  };
+};
+const getDataLayersFail = (error) => {
+  return {
+    type: actionTypes.GET_DATA_LAYERS_FAIL,
+    payload: error
+  };
+};
+
+export const getDataLayerInfo = (alertId, desc) => async (dispatch) => {
+  const response = await api.patch(endpoints.fireDataLayers.edit, { alert_id: alertId, description: desc });
+  if (response.status === 200) {
+    return dispatch(getDataLayerInfoSuccess(response.data));
+  }
+  else
+    return dispatch(getDataLayerInfoFail(response.error));
+};
+const getDataLayerInfoSuccess = (dataLayer) => {
+  return {
+    type: actionTypes.GET_DATA_LAYER_INFO_SUCCESS,
+    dataLayer,
+  };
+};
+const getDataLayerInfoFail = (error) => {
+  return {
+    type: actionTypes.GET_DATA_LAYER_INFO_FAIL,
+    payload: error
+  };
+};
+
+export const resetDataLayersResponseState = () => {
+  return {
+    type: actionTypes.RESET_DATA_LAYER_STATE,
+  }
+};
+
+
+
+
+
