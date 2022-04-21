@@ -2,7 +2,10 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom';
 
-// //Import Scrollbar
+//i18n
+import { withTranslation } from 'react-i18next'
+
+// Import Scrollbar
 import SimpleBar from 'simplebar-react'
 
 // MetisMenu
@@ -10,7 +13,7 @@ import MetisMenu from 'metismenujs'
 // import { withRouter } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
-const SidebarContent = () => {
+const SidebarContent = (props) => {
   const ref = useRef();
   const location = useLocation();
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
@@ -101,7 +104,7 @@ const SidebarContent = () => {
               <Link to='/dashboard' className=''>
                 <i className='bx bx-layout'></i>
 
-                <span>Dashboard</span>
+                <span>{props.t('Dashboard')}</span>
               </Link>
 
             </li>
@@ -110,48 +113,48 @@ const SidebarContent = () => {
             <li>
               <Link to='/fire-alerts' className=' '>
                 <i className='bx bxs-hot'></i>
-                <span>Fire Alerts</span>
+                <span>{props.t('Fire Alerts')}</span>
               </Link>
             </li>
 
             <li>
               <Link to='/data-layer' className=''>
                 <i className='bx bx-copy'></i>
-                <span>Data Layers</span>
+                <span>{props.t('Data Layers')}</span>
               </Link>
             </li>
             <li>
               <Link to='/event-alerts' className=''>
                 <i className='bx bx-calendar-event'></i>
-                <span>Events</span>
+                <span>{props.t('Events')}</span>
               </Link>
             </li>
 
             <li>
               <Link to='/reports'>
                 <i className='bx bx-clipboard'></i>
-                <span>Reports</span>
+                <span>{props.t('Reports')}</span>
               </Link>
             </li>
 
             <li>
               <Link to='/notifications'>
                 <i className='bx bx-bell'></i>
-                <span>Notifications</span>
+                <span>{props.t('Notifications')}</span>
               </Link>
             </li>
 
             <li>
               <Link to='/social-monitoring'>
                 <i className='bx bxl-twitter'></i>
-                <span>Social Monitoring</span>
+                <span>{props.t('Social Monitoring')}</span>
               </Link>
             </li>
 
             <li>
               <Link to='/insitu-alerts'>
                 <i className='bx bx-image'></i>
-                <span>In-Situ Cameras</span>
+                <span>{props.t('In-Situ Cameras')}</span>
               </Link>
             </li>
 
@@ -167,4 +170,4 @@ SidebarContent.propTypes = {
   t: PropTypes.any,
 }
 
-export default SidebarContent
+export default withTranslation()(SidebarContent)
