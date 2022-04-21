@@ -1,4 +1,4 @@
-import usFlag from '../assets/images/flags/us.jpg'
+import ukFlag from '../assets/images/flags/uk.png'
 import spain from '../assets/images/flags/spain.jpg'
 import germany from '../assets/images/flags/germany.jpg'
 import italy from '../assets/images/flags/italy.jpg'
@@ -23,7 +23,7 @@ const languages = {
   },
   en: {
     label: 'English',
-    flag: usFlag,
+    flag: ukFlag,
   },
 }
 
