@@ -13,6 +13,9 @@ import { Link } from 'react-router-dom'
 import { signOut } from '../../store/appAction';
 import { getSession } from '../../helpers/authHelper';
 
+//i18n
+import { withTranslation } from 'react-i18next';
+
 // users
 import user1 from '../../assets/images/users/profile.png'
 
@@ -56,19 +59,19 @@ const ProfileMenu = props => {
             src={user1}
             alt='Header Avatar'
           />
-          <span className='d-none d-xl-inline-block ms-2 me-1'>{username}</span>
+          <span className='d-none d-xl-inline-block ms-2 me-1'>{props.t(username)}</span>
           <i className='mdi mdi-chevron-down d-none d-xl-inline-block' />
         </DropdownToggle>
         <DropdownMenu className='dropdown-menu-end'>
           <DropdownItem tag='a' href='/my-profile/view'>
             {' '}
             <i className='bx bx-user font-size-16 align-middle me-1' />
-            Profile{' '}
+            {props.t('Profile')}{' '}
           </DropdownItem>
           <div className='dropdown-divider' />
           <Link to='/auth/sign-in' onClick={() => { dispatch(signOut()) }} className='dropdown-item'>
             <i className='bx bx-power-off font-size-16 align-middle me-1 text-danger' />
-            <span>Logout</span>
+            <span>{props.t('Logout')}</span>
           </Link>
         </DropdownMenu>
       </Dropdown>
@@ -82,4 +85,4 @@ ProfileMenu.propTypes = {
 }
 
 
-export default ProfileMenu
+export default withTranslation()(ProfileMenu)
