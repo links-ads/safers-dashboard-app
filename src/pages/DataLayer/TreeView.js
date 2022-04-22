@@ -39,7 +39,7 @@ const TreeView = ({ data }) => {
             <Collapse
               key={id + '-' + lvl}
               isOpen={itemState[id] || false}
-              style={{ marginLeft: `${50 * (lvl || 1)}px` }}
+              style={{ marginLeft: '50px' }}
               className='dl-tree-collapse'
             >
               {mapper(node.children, id, (lvl || 0) + 1)}
