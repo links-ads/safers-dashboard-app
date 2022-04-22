@@ -1,0 +1,148 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Authentication Component Renders Should match snapshot 1`] = `
+<div>
+  <PreLoader />
+  <Container
+    className="p-0"
+    data-test="containerComponent"
+    fluid={true}
+    tag="div"
+  >
+    <Row
+      className="g-0"
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+          "xxl",
+        ]
+      }
+    >
+      <Col
+        className="bg-overlay"
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "xxl",
+          ]
+        }
+        xl={7}
+      >
+        <p
+          data-test="overlay-text"
+        >
+           Structured Approaches for
+          <br />
+          Forest fire Emergencies
+          <br />
+           in Resilient Societies
+        </p>
+      </Col>
+      <Col
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "xxl",
+          ]
+        }
+        xl={5}
+      >
+        <div
+          className="auth-full-page-content"
+        >
+          <div
+            className="w-100"
+          >
+            <div
+              className="mb-4 mb-md-5"
+            >
+              <div
+                className="d-block auth-logo"
+              >
+                <img
+                  alt=""
+                  className="auth-logo-dark"
+                  src="background-light-logo.png"
+                />
+                <img
+                  alt=""
+                  className="auth-logo-light"
+                  src="background-light-logo.png"
+                />
+              </div>
+            </div>
+            <React.Fragment>
+              <div
+                className="tab-container"
+              >
+                <Nav
+                  className="nav-tabs-custom"
+                  tabs={true}
+                  tag="ul"
+                  vertical={false}
+                >
+                  <NavItem
+                    tag="li"
+                  >
+                    <NavLink
+                      className=""
+                      onClick={[Function]}
+                      tag="a"
+                    >
+                      SIGN IN
+                    </NavLink>
+                  </NavItem>
+                  <NavItem
+                    tag="li"
+                  >
+                    <NavLink
+                      className=""
+                      onClick={[Function]}
+                      tag="a"
+                    >
+                      SIGN UP
+                    </NavLink>
+                  </NavItem>
+                </Nav>
+                <TabContent
+                  tag="div"
+                >
+                  <TabPane
+                    tabId="sign-in"
+                    tag="div"
+                    title="SIGN IN"
+                  >
+                    <SignIn />
+                  </TabPane>
+                  <TabPane
+                    tabId="sign-up"
+                    tag="div"
+                    title="SIGN UP"
+                  >
+                    <SignUp />
+                  </TabPane>
+                </TabContent>
+              </div>
+            </React.Fragment>
+          </div>
+        </div>
+      </Col>
+    </Row>
+  </Container>
+</div>
+`;

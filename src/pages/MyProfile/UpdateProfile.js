@@ -233,6 +233,7 @@ const UpdateProfile = () => {
                             onBlur={handleBlur}
                             value={values.first_name}
                             autoComplete="on"
+                            data-testid="update-profile-firstName"
                           />
                           {getError('first_name', errors, touched, false)}
                         </div>
@@ -250,6 +251,7 @@ const UpdateProfile = () => {
                             onBlur={handleBlur}
                             value={values.last_name}
                             autoComplete="on"
+                            data-testid="update-profile-lastName"
                           />
                           {getError('last_name', errors, touched, false)}
                         </div>
@@ -268,6 +270,7 @@ const UpdateProfile = () => {
                             disabled={values.role === citizenId}
                             value={values.role === citizenId ? '' : values.organization}
                             autoComplete="on"
+                            data-testid="update-profile-org"
                           >
                             <option value={''} >{values.role === citizenId ? 'N/A' : '--Select organisation--'}</option>
                             {orgList.map((org, index) => { return (<option key={index} value={org.id}>{org.name}</option>) })}
@@ -287,6 +290,7 @@ const UpdateProfile = () => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.country}
+                            data-testid="update-profile-country"
                           >
                             <option value={''} >--Select your country--</option>
                             {countryNameArr.map((value) => { return (<option key={countryObj[value]} value={countryObj[value]}>{value}</option>) })}
@@ -307,6 +311,7 @@ const UpdateProfile = () => {
                             onBlur={handleBlur}
                             value={values.city}
                             autoComplete="on"
+                            data-testid="update-profile-city"
                           />
                           {getError('city', errors, touched, false)}
                         </div>
@@ -323,6 +328,7 @@ const UpdateProfile = () => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.role}
+                            data-testid="update-profile-role"
                           >
                             <option value={''} >--Select your role--</option>
                             {roles.map((roleObj, index) => { return (<option key={index} value={roleObj.id}>{roleObj.name}</option>) })}
@@ -343,13 +349,14 @@ const UpdateProfile = () => {
                             onBlur={handleBlur}
                             value={values.address}
                             autoComplete="on"
+                            data-testid="update-profile-address"
                           />
                           {getError('address', errors, touched, false)}
                         </div>
                       </Col>
                     </Row>
                     <div className='text-center'>
-                      <button type="submit" className="btn btn-primary w-md me-2" disabled={isSubmitting}>
+                      <button type="submit" data-testid="updateProfileButton" className="btn btn-primary w-md me-2" disabled={isSubmitting}>
                       UPDATE DETAILS
                       </button>
                       <button type="button" className="btn btn-secondary w-md"

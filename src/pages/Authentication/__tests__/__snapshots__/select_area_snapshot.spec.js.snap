@@ -1,0 +1,125 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Select Area Component Renders Should match snapshot 1`] = `
+<div
+  className="jumbotron"
+>
+  <Row
+    tag="div"
+    widths={
+      Array [
+        "xs",
+        "sm",
+        "md",
+        "lg",
+        "xl",
+        "xxl",
+      ]
+    }
+  >
+    <Col
+      className="bg-overlay"
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+          "xxl",
+        ]
+      }
+      xl={2}
+    />
+    <Col
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+          "xxl",
+        ]
+      }
+      xl={10}
+    >
+      <Row
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "xxl",
+          ]
+        }
+      >
+        <div
+          className="p-2"
+        >
+          <div
+            className="d-block auth-logo"
+          >
+            <img
+              alt=""
+              className="auth-logo-dark"
+              src="background-light-logo.png"
+            />
+            <img
+              alt=""
+              className="auth-logo-light"
+              src="background-light-logo.png"
+            />
+          </div>
+        </div>
+        <Row
+          tag="div"
+          widths={
+            Array [
+              "xs",
+              "sm",
+              "md",
+              "lg",
+              "xl",
+              "xxl",
+            ]
+          }
+        >
+          <Col
+            className="mx-auto sign-up-aoi-map-bg mb-2.5"
+            md={10}
+            tag="div"
+            widths={
+              Array [
+                "xs",
+                "sm",
+                "md",
+                "lg",
+                "xl",
+                "xxl",
+              ]
+            }
+            xl={11}
+            xs={12}
+          >
+            <div
+              className="d-flex justify-content-center"
+            >
+              <h5>
+                Choose your area of interest
+              </h5>
+            </div>
+            <hr />
+            <AoiHelper />
+          </Col>
+        </Row>
+      </Row>
+    </Col>
+  </Row>
+</div>
+`;

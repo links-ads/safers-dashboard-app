@@ -1,0 +1,208 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Authentication Component Renders Should match snapshot 1`] = `
+<div
+  className="page-content"
+>
+  <Container
+    className="p-0"
+    fluid={true}
+    tag="div"
+  >
+    <Row
+      className="g-0"
+      tag="div"
+      widths={
+        Array [
+          "xs",
+          "sm",
+          "md",
+          "lg",
+          "xl",
+          "xxl",
+        ]
+      }
+    >
+      <Col
+        tag="div"
+        widths={
+          Array [
+            "xs",
+            "sm",
+            "md",
+            "lg",
+            "xl",
+            "xxl",
+          ]
+        }
+      >
+        <div
+          className="tab-container p-3"
+        >
+          <Nav
+            className="nav-default nav-tabs-custom nav-justified"
+            tabs={true}
+            tag="ul"
+            vertical={false}
+          >
+            <NavItem
+              tag="li"
+            >
+              <NavLink
+                className="active"
+                onClick={[Function]}
+                style={
+                  Object {
+                    "cursor": "pointer",
+                  }
+                }
+                tag="a"
+              >
+                <span
+                  className="d-none d-sm-block me-2"
+                >
+                  <i
+                    className="fas fa-user-alt"
+                  />
+                </span>
+                <span
+                  className="d-block"
+                >
+                  My Profile
+                </span>
+              </NavLink>
+            </NavItem>
+            <NavItem
+              tag="li"
+            >
+              <NavLink
+                className=""
+                data-testid="updateProfilePasswordBtn"
+                onClick={[Function]}
+                style={
+                  Object {
+                    "cursor": "pointer",
+                  }
+                }
+                tag="a"
+              >
+                <span
+                  className="d-none d-sm-block me-2"
+                >
+                  <i
+                    className="fas fa-lock"
+                  />
+                </span>
+                <span
+                  className="d-block"
+                >
+                  Change Password
+                </span>
+              </NavLink>
+            </NavItem>
+            <NavItem
+              tag="li"
+            >
+              <NavLink
+                className=""
+                onClick={[Function]}
+                style={
+                  Object {
+                    "cursor": "pointer",
+                  }
+                }
+                tag="a"
+              >
+                <span
+                  className="d-none d-sm-block me-2"
+                >
+                  <i
+                    className="fas fa-flag-checkered"
+                  />
+                </span>
+                <span
+                  className="d-block"
+                >
+                  Area of Interest
+                </span>
+              </NavLink>
+            </NavItem>
+          </Nav>
+          <TabContent
+            activeTab="1"
+            className="p-3"
+            tag="div"
+          >
+            <TabPane
+              tabId="1"
+              tag="div"
+            >
+              <UpdateProfile />
+            </TabPane>
+            <TabPane
+              tabId="2"
+              tag="div"
+            >
+              <ResetPsw />
+            </TabPane>
+            <TabPane
+              tabId="3"
+              tag="div"
+            >
+              <Row
+                tag="div"
+                widths={
+                  Array [
+                    "xs",
+                    "sm",
+                    "md",
+                    "lg",
+                    "xl",
+                    "xxl",
+                  ]
+                }
+              >
+                <Col
+                  lg={12}
+                  tag="div"
+                  widths={
+                    Array [
+                      "xs",
+                      "sm",
+                      "md",
+                      "lg",
+                      "xl",
+                      "xxl",
+                    ]
+                  }
+                >
+                  <Card
+                    color="dark default-panel"
+                    tag="div"
+                  >
+                    <CardBody
+                      tag="div"
+                    >
+                      <CardTitle
+                        className="mb-2 dflt-seperator"
+                        tag="div"
+                      >
+                        <h3
+                          className="h5 mb-0"
+                        >
+                          Selected Area of Interest
+                        </h3>
+                      </CardTitle>
+                      <AoiHelper />
+                    </CardBody>
+                  </Card>
+                </Col>
+              </Row>
+            </TabPane>
+          </TabContent>
+        </div>
+      </Col>
+    </Row>
+  </Container>
+</div>
+`;

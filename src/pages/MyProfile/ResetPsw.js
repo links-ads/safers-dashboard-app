@@ -81,6 +81,7 @@ const ResetPsw = () => {
                             onBlur={handleBlur}
                             value={values.old_password}
                             autoComplete="on"
+                            data-test-id="old_password"
                           />
                           <InputGroupText>
                             <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
@@ -105,6 +106,7 @@ const ResetPsw = () => {
                             onBlur={handleBlur}
                             value={values.new_password1}
                             autoComplete="on"
+                            data-test-id="new_password"
                           />
                           <InputGroupText>
                             <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
@@ -128,6 +130,7 @@ const ResetPsw = () => {
                             onBlur={handleBlur}
                             value={values.new_password2}
                             autoComplete="on"
+                            data-test-id="confirm_password"
                           />
                           <InputGroupText>
                             <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
@@ -138,7 +141,7 @@ const ResetPsw = () => {
                     </Col>
                   </Row>
                   <div className='mt-2 text-end'>
-                    <button type="submit" className="btn btn-primary w-md me-2" disabled={isSubmitting}>
+                    <button type="submit" data-test-id="changePasswordUpdateBtn" className="btn btn-primary w-md me-2" disabled={isSubmitting}>
                     CHANGE PASSWORD
                     </button>
                     <button type="button" onClick={handleReset} className="btn btn-secondary w-md">
