@@ -1,12 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
+import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 
 const TreeView = ({ data }) => {
   const [itemState, setItemState] = useState({});
+  const [selectedLayer, setSelectedLayer] = useState({});
 
-  const toggle = id => {
+  useEffect(() => {
+    //TODO: when single layer selected
+    console.log(selectedLayer);
+  }, [selectedLayer]);
+
+  const toggleExpandCollapse = id => {
     //const id = e.target.id;
     setItemState(prevState => ({
       ...prevState,
@@ -15,23 +22,26 @@ const TreeView = ({ data }) => {
   }
 
   const mapper = (nodes, parentId, lvl) => {
-    return nodes.map((node,  index) => {
+    return nodes.map((node, index) => {
       const id = node.id;
       const item =
         <>
           <ListGroupItem
             key={id}
-            style={{ width: '350px' }}
-            className='dl-item mb-2'
-            onClick={() => toggle(id)}
+            className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? 'selected' : ''} mb-2`}
+            onClick={() => { node.children ? toggleExpandCollapse(id) : setSelectedLayer(node) }}
           >
             <>
-              <i data-tip data-for={`${parentId}-${index}-tooltip`}  className='bx bx-info-circle font-size-16 me-1' />
+              <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
               {
-                node.children &&
-                <i className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
+                node.children ?
+                  <>
+                    <i className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
+                    {node.text}
+                  </>
+                  :
+                  moment(node.text).format('LLL')
               }
-              {node.text}
             </>
           </ListGroupItem>
           {
@@ -39,7 +49,6 @@ const TreeView = ({ data }) => {
             <Collapse
               key={id + '-' + lvl}
               isOpen={itemState[id] || false}
-              style={{ marginLeft: '50px' }}
               className='dl-tree-collapse'
             >
               {mapper(node.children, id, (lvl || 0) + 1)}
