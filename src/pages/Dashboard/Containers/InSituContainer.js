@@ -12,7 +12,7 @@ const InSituContainer = () => {
           <Row className='mb-2'>
             <span className='weather-text'>In-situ Photos & Videos</span>
           </Row>
-          <Row >
+          <Row role='in-situ-media'>
             {inSituMedia.map((media, index) => {
               return( 
                 <Col key={index} md={3} sm={6} xs={12} className='d-flex dashboard-image justify-content-center'>

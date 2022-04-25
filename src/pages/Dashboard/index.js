@@ -15,17 +15,15 @@ const Dashboard = () => {
         
         <SearchContainer/>
         
-        <Row>
-          <StatsContainer/>
-        </Row>
-
-        <Row>
-          <WeatherContainer/>
-        </Row>
-        <Row>
-          <WeatherVariablesContainer/>
-        </Row>
-
+        
+        <StatsContainer/>
+        
+       
+        <WeatherContainer/>
+       
+        
+        <WeatherVariablesContainer/>
+        
         <Row>
           <InSituContainer/>
         </Row>

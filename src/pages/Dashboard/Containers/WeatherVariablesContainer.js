@@ -6,7 +6,7 @@ const WeatherVariablesContainer = () => {
   const weatherVariables = useSelector(state => state.dashboard.weatherVariables);
 
   return (
-    <>
+    <Row role='weather-variables'>
       <Col md={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
@@ -23,9 +23,9 @@ const WeatherVariablesContainer = () => {
             </div>
           </Row>
           <Row >
-            {weatherVariables.map((weatherVariable) => {
+            {weatherVariables.map((weatherVariable, index) => {
               return( 
-                <Col className="my-2 col-lg" sm={3} xs={6} md={3} key={weatherVariable.id}>
+                <Col className="my-2 col-lg" sm={3} xs={6} md={3} key={index}>
                   <Card className='weather-variables-card flex-column text-center '>
                     <Col className="p-2 time-text"><span>{weatherVariable.time}</span></Col>
                     <Col className="p-2 body-text"><span>{weatherVariable.wind}m/s</span></Col>
@@ -37,7 +37,7 @@ const WeatherVariablesContainer = () => {
           </Row>
         </Card>
       </Col>
-    </>     
+    </Row>     
   );
 }
 
