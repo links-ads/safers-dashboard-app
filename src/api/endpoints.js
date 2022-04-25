@@ -45,6 +45,10 @@ export const endpoints = {
   },
   insitu: {
     getAlerts: '/insitu-alerts/'
+  },
+  reports: {
+    getReports: '/reports',
+    getReportInfo: '/reportinfo',
   }
 };
 

@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
-// import { connect } from 'react-redux'
+import LanguageDropdown from '../components/LanguageDropdown'
 
 // Import menuDropdown
 import ProfileMenu from './TopbarDropdown/ProfileMenu'
@@ -77,6 +77,7 @@ const Header = () => {
                 <i className='bx bx-fullscreen' />
               </button>
             </div>
+            <LanguageDropdown />
             <ProfileMenu />
           </div>
         </div>
