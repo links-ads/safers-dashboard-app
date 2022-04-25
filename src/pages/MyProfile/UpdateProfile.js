@@ -204,7 +204,6 @@ const UpdateProfile = () => {
                 initialValues={formInit}
                 validationSchema={myProfileSchema}
                 onSubmit={(values, { setSubmitting }) => {
-                  console.log(values)
                   dispatch(updateInfo(id, values));
                   setSubmitting(false);
                 }}

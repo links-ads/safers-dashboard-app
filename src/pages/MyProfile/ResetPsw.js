@@ -36,7 +36,7 @@ const ResetPsw = () => {
   });
 
   return (
-    <Row>
+    <Row data-testid='change-password'>
       <Col lg={12}>
         <Card color="dark default-panel">
           <CardBody>
@@ -81,7 +81,7 @@ const ResetPsw = () => {
                             onBlur={handleBlur}
                             value={values.old_password}
                             autoComplete="on"
-                            data-test-id="old_password"
+                            data-testid="old_password"
                           />
                           <InputGroupText>
                             <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
@@ -106,7 +106,7 @@ const ResetPsw = () => {
                             onBlur={handleBlur}
                             value={values.new_password1}
                             autoComplete="on"
-                            data-test-id="new_password"
+                            data-testid="new_password"
                           />
                           <InputGroupText>
                             <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
@@ -130,7 +130,7 @@ const ResetPsw = () => {
                             onBlur={handleBlur}
                             value={values.new_password2}
                             autoComplete="on"
-                            data-test-id="confirm_password"
+                            data-testid="confirm_password"
                           />
                           <InputGroupText>
                             <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />

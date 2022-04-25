@@ -24,8 +24,6 @@ describe('Test Authentication Component', () => {
     );
   }
 
- 
-
   let mock;
   //mock all requests on page
   beforeAll(() => {

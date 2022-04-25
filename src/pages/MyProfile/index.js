@@ -5,7 +5,6 @@ import UpdateProfile from './UpdateProfile';
 import ResetPsw from './ResetPsw';
 import AoiHelper from '../../helpers/aoiHelper';
 
-
 const MyProfile = () => {
 
   const [customActiveTab, setCustomActiveTab] = useState('1');
