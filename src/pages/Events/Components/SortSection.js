@@ -141,9 +141,9 @@ const SortSection = () => {
                 <i className='fa fa-search px-2 m-auto calender-icon'></i>
               </div>
               <Input
-                id="closedEvents"
-                data-testid="closedEvents"
-                name="closedEvents"
+                id="searchEvents"
+                data-testid="searchEvents"
+                name="searchEvents"
                 className='search-input'
                 placeholder='Search for an event'
                 onChange={(e) => filterBySearchText(e.target.value)}

@@ -24,9 +24,8 @@ const Dashboard = () => {
         
         <WeatherVariablesContainer/>
         
-        <Row>
-          <InSituContainer/>
-        </Row>
+        
+        <InSituContainer/>
 
         <Row>
           <TwitterContainer/>

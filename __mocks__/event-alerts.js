@@ -167,7 +167,7 @@ export const EVENT_ALERTS = [
     'start': '2022-03-11T10:01:04Z',
     'end': '2022-03-11T10:01:04Z',
     'status': 'ONGOING',
-    'title': 'EMSR192: Fires in Athens, Greece',
+    'title': 'EMSR192: Fires in Athens, Greece Page 2',
     'description': 'This is another card with title and supporting text below.This card has some additional content to make it slightly taller overall.',
     'source': ['web'],
     'location' : 'Filoktiti Oikonomidou, Athens 114 76, Greece',

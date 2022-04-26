@@ -60,14 +60,15 @@ const EventList = () => {
   
   return(
     <>
-      <Row>
+      <Row role='event-list'>
         {
           paginatedAlerts.map((alert, index) => <Alert
             key={index}
             card={alert}
             setSelectedAlert={setSelectedAlert}
             setFavorite={setFavorite}
-            alertId={alertId} />)
+            alertId={alertId}
+          />)
         }
       </Row>
       

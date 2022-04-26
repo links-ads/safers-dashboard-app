@@ -60,17 +60,14 @@ describe('Sign In Component', () => {
       expect(passwordToggleInput).toHaveClass('fa-eye-slash')
     })
     test('Click Remember me to should set remember me to checked', async () => {
-      let rememberMe = screen.getByTestId('rememberMe');
-      const checked = rememberMe.checked;
-      
       act(() => {
         fireEvent.click(screen.getByTestId('rememberMe'))
       });
       
-      await waitFor(() => {
-        checked ? expect(rememberMe).not.toBeChecked() : expect(rememberMe).toBeChecked()
-        
-      }) 
+      await waitFor(() =>  expect(screen.getByTestId('rememberMe')).toBeChecked())
+      act(() => {
+        fireEvent.click(screen.getByTestId('rememberMe'))
+      }); 
     })
     
   })
