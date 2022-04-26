@@ -1,21 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Button, ButtonGroup, Card, Row, Col } from 'reactstrap';
+import classnames from 'classnames';
 
 import BaseMap from '../../../../components/BaseMap/BaseMap';
 
 const MapDataLayer = () => {
   const { polygonLayer, viewState } = useSelector(state => state.common);
+  //to update when data layers ready
+  const [ dataLayer, setDataLayer ] = useState(1);
   return (
     <Col md={12}>
       <Row>
         <Col md={5}>
           <ButtonGroup>
-            <Button className='switch-data-layer-btn active'>
+            <Button onClick={() => setDataLayer(1)}
+              className={classnames({
+                'active': dataLayer === 1,
+              }, 'switch-data-layer-btn left')}
+            >
             Burned Area Delineation
             </Button>
           
-            <Button className='switch-data-layer-btn'>
+            <Button className={classnames({
+              'active': dataLayer === 2,
+            }, 'switch-data-layer-btn right')} onClick={() => setDataLayer(2)}>
             Fire Propagation
             </Button>
           </ButtonGroup>
