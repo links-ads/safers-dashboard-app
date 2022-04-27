@@ -267,7 +267,7 @@ export const inSituMedia = [
   }
 ]
 
-export const tweets = [
+export const TWEETS = [
   {
     tweetID : '1495718988952838147'
   },

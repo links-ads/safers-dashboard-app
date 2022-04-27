@@ -9,18 +9,25 @@ import { BrowserRouter } from 'react-router-dom';
 import store from '../../../../store';
 import axiosMock from '../../../../../__mocks__/axios';
 import { endpoints } from '../../../../api/endpoints';
-import { inSituMedia, STATS, tweets, weatherVariables, WEATHER_STATS } from '../../../../../__mocks__/dashboard';
+import { inSituMedia, } from '../../../../../__mocks__/dashboard';
 import { AOIS } from '../../../../../__mocks__/aoi';
-import { getAllAreas, setAoiSuccess } from '../../../../store/appAction';
-import { formatNumber } from '../../../../store/utility';
+import { setAoiSuccess } from '../../../../store/appAction';
+import { EVENT_ALERTS, TWEETS } from '../../../../../__mocks__/event-alerts';
 
 afterEach(cleanup);
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: () => ({
+    id: '9953b183-5f18-41b1-ac96-23121ac33de7',
+  }),
+}));
 
 describe('Test Dashboard Component', () => {
   function renderApp(props = {}) {
     return render(
       <Provider store={store}>
-        <BrowserRouter>
+        <BrowserRouter path='/event-dashboard/1234444'>
           <Dashboard {...props} />
         </BrowserRouter>
       </Provider>,
@@ -32,12 +39,11 @@ describe('Test Dashboard Component', () => {
   beforeAll(() => {
     mock = axiosMock;
     mock.onGet(`${baseURL}${endpoints.aoi.getAll}`).reply(200, AOIS);
-    mock.onGet(`${baseURL}${endpoints.dashboard.getStats}`).reply(200, STATS);
-    mock.onGet(`${baseURL}${endpoints.dashboard.getWeatherStats}`).reply(200, WEATHER_STATS);
-    mock.onGet(`${baseURL}${endpoints.dashboard.getWeatherVariables}`).reply(200, weatherVariables);
+    mock.onPost(`${baseURL}${endpoints.eventAlerts.getAll}`).reply(() => {
+      return[200, EVENT_ALERTS]
+    });
     mock.onGet(`${baseURL}${endpoints.dashboard.getInSitu}`).reply(200, inSituMedia);
-    mock.onGet(`${baseURL}${endpoints.dashboard.getTweets}`).reply(200, tweets);
-    store.dispatch(getAllAreas())
+    mock.onGet(`${baseURL}${endpoints.dashboard.getTweets}`).reply(200, TWEETS);
     act(() => {
       const objAoi = AOIS[0]
       store.dispatch(setAoiSuccess(objAoi))
@@ -52,48 +58,27 @@ describe('Test Dashboard Component', () => {
       expect(screen).not.toBeNull();
     })
 
-    it('displays dashboard stats', () => {
-      const statsScreen = screen.getByRole('stats')
-      expect(statsScreen).toHaveTextContent(formatNumber(STATS.alerts))
-      expect(statsScreen).toHaveTextContent(formatNumber(STATS.events))
-      expect(statsScreen).toHaveTextContent(formatNumber(STATS.socialEngagement))
-      expect(statsScreen).toHaveTextContent(formatNumber(STATS.reports))
-    })
-
-    it('displays weather stats', () => {
-      const weatherStatsScreen = screen.getByRole('weather-stats')
-      expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.temp[0])
-      expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.temp[1])
-      expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.temp[2])
-    })
-
-    it('switches text displayed in weather stats when clicked', async() => {
-      const weatherStatsScreen = screen.getByRole('weather-stats')
-      act(() => {
-        fireEvent.click(screen.getByTestId('show-precipitation'))
-      })
-      await waitFor(() => {
-        expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.precipitation[0])
-        expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.precipitation[1])
-        expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.precipitation[2])
-      })
-    })
-
-    it('displays weather variables on an hourly basis', () => {
-      const weatherVariablesScreen = screen.getByRole('weather-variables')
-      
-      weatherVariables.map((weatherVariable) => {
-        expect(weatherVariablesScreen).toHaveTextContent(weatherVariable.wind)
-        expect(weatherVariablesScreen).toHaveTextContent(weatherVariable.humidity)
-        expect(weatherVariablesScreen).toHaveTextContent(weatherVariable.time)
-      })
+    it('displays event info', () => {
+      const infoScreen = screen.getByRole('info-container')
+      const event = EVENT_ALERTS[0]
+      expect(infoScreen).toHaveTextContent(event.location)
+      expect(infoScreen).toHaveTextContent(event.title)
+      expect(infoScreen).toHaveTextContent(event.damage)
+      expect(infoScreen).toHaveTextContent(event.people_affected)
+      expect(infoScreen).toHaveTextContent(event.description)
+      expect(infoScreen).toHaveTextContent((event.source).join(', '))
     })
     
     it('displays in situ media', () => {
-      const inSituMediaScreen = screen.getByRole('in-situ-media')
-      inSituMedia.map((media) => {
+      const inSituMediaScreen = screen.getByRole('in-situ-container')
+      const inSituMediaPage1 = inSituMedia.slice(0,3)
+      inSituMediaPage1.map((media) => {
         expect(inSituMediaScreen).toHaveTextContent(media.title)
       })
+    })
+
+    it('gets tweets from the api', () => {
+      expect(store.getState().dashboard.tweets).toEqual(TWEETS)
     })
     
   });

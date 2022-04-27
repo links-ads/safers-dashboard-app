@@ -18,7 +18,7 @@ const InfoContainer = () => {
   }, [allAlerts])
   
   return (
-    <>
+    <Row role='info-container'>
       
       <Col md={12} className='mb-2'>
         <span className='event-alert-title '> Events &gt;</span> <span className='event-alert-title'> {event ? event.title : '' }</span>
@@ -103,7 +103,7 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-                Estimated damage: {event && event.casualties ? event.casualties :  'not recorded'}
+                Estimated damage: {event && event.damage ? event.damage :  'not recorded'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -136,7 +136,7 @@ const InfoContainer = () => {
         </Card>
       </Col>
       
-    </>     
+    </Row>     
   );
 }
 
