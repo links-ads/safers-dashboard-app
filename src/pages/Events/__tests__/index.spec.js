@@ -13,6 +13,7 @@ import EventAlerts from '../index';
 import { EVENT_ALERTS } from '../../../../__mocks__/event-alerts';
 import { AOIS } from '../../../../__mocks__/aoi';
 import { setAoiSuccess } from '../../../store/appAction';
+import userEvent from '@testing-library/user-event';
 
 describe('Test Events Screen', () => {
   function renderApp(props = {}) {
@@ -32,34 +33,39 @@ describe('Test Events Screen', () => {
     mock.onPost(`${baseURL}${endpoints.eventAlerts.getAll}`).reply(() => {
       return[200, EVENT_ALERTS]
     });
-    act(() => {
-      const objAoi = AOIS[0]
-      store.dispatch(setAoiSuccess(objAoi))
-    })
+    
+    const objAoi = AOIS[0]
+    store.dispatch(setAoiSuccess(objAoi))
+    
   })
-  beforeEach(() => {
-    renderApp(store);
-  })
+  
   afterEach(() => {
     jest.resetAllMocks();
   });
   afterAll(() => {
     jest.clearAllMocks();
   });
-  describe('displays events list', () => {  
+  describe('displays events list', () => {
+    beforeEach(() => {
+      renderApp(store);
+    })  
     it('lists events list when loaded', async () => {
       const eventAlertsPage1 = EVENT_ALERTS.slice(0, 3)
+      
+      await waitFor(() => expect(screen.getAllByText(`${EVENT_ALERTS[0].title}`, { exact :false}).length).toBeGreaterThan(0))
+      //verify other elements
       eventAlertsPage1.map(async(event) => {
-        await waitFor(() => {
-          expect(screen.getAllByText(`${event.title}`, { exact :false}).length).toBeGreaterThan(0)
-          expect(screen.getAllByText(`${event.description}`, { exact :false}).length).toBeGreaterThan(0)
-          expect(screen.getAllByText(`${event.status}`, { exact :false}).length).toBeGreaterThan(0)
+        
+        expect(screen.getAllByText(`${event.title}`, { exact :false}).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(`${event.description}`, { exact :false}).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(`${event.status}`, { exact :false}).length).toBeGreaterThan(0)
           
-        })
-        event.source.map(async(eventSource) => {
+        
+        event.source.map((eventSource) => {
           expect(screen.getAllByText(`${eventSource}`, { exact :false}).length).toBeGreaterThan(0)
-        })   
+        })
       })
+      
       
     });
     it('sorts by ongoing when ongoing selected', async () => {
@@ -68,33 +74,40 @@ describe('Test Events Screen', () => {
         fireEvent.click(screen.getByTestId('onGoing'))
       })
 
-      await waitFor(() => {
-        expect(store.getState().eventAlerts.paginatedAlerts.length == 4)
-      })
+
 
       await waitFor(()=>expect(screen.queryAllByText('ONGOING').length).toEqual(4))
-      //reset
-      act(() => {
-        fireEvent.click(screen.getByTestId('onGoing'))
-      })     
+      //reset   
     });
+    
     it('sorts by closed when closed selected', async () => {
       //wait for data to be displayed
       act(() => {
-        fireEvent.click(screen.getByTestId('closedEvents'))
+        userEvent.click(screen.getByTestId('closedEvents'))
       })
-  
-      await waitFor(() => {
-        console.log(store.getState().eventAlerts.paginatedAlerts.length)
-        expect(store.getState().eventAlerts.paginatedAlerts.length == 2)
-      })
-  
-      await waitFor(async()=>expect(screen.queryAllByText('CLOSED').length).toEqual(2))
-      //reset
-      act(() => {
-        fireEvent.click(screen.getByTestId('closedEvents'))
-      })     
+    
+      await waitFor(() => expect(screen.getByRole('results-section')).toHaveTextContent(/Results 2/i))
+      expect(screen.findByText('Ongoing (0)')).not.toBeNull()
+      expect(screen.queryAllByText('CLOSED').length).toEqual(2)
+     
     });
+
+    
   });
+  describe('displays events list', () => {
+    beforeEach(() => {
+      renderApp(store);
+    })
+    it('sorts by event source', async () => {
+     
+      act(() => {
+        userEvent.selectOptions(screen.getByTestId('eventAlertSource'), 'satellite')
+      })
+      await(() => {
+        //only one item rendered
+        expect(screen.getAllByText(/EMSR192: Fires in Athens, Greece/i).length).toEqual(1)
+      })    
+    });
+  })
+});
   
-})
