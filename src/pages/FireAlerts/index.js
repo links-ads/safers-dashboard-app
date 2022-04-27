@@ -8,7 +8,7 @@ import moment from 'moment';
 import toastr from 'toastr';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllFireAlerts, setFavoriteAlert, setAlertApiParams, resetAlertsResponseState, validateAlert, editAlertInfo } from '../../store/appAction';
+import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState } from '../../store/appAction';
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 
 import 'toastr/build/toastr.min.css'
@@ -22,6 +22,9 @@ const PAGE_SIZE = 4;
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
 };
+const DEFAULT_SORT_ORDER = 'desc';
+const DEFAULT_SOURCE = 'all';
+
 const getDefaultDateRange = () => {
   const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
   const to = moment(new Date()).format('DD-MM-YYYY');
@@ -34,8 +37,8 @@ const FireAlerts = () => {
   const success = useSelector(state => state.alerts.success);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState('desc');
-  const [alertSource, setAlertSource] = useState('all');
+  const [sortByDate, setSortByDate] = useState(DEFAULT_SORT_ORDER);
+  const [alertSource, setAlertSource] = useState(DEFAULT_SOURCE);
   const [midPoint, setMidPoint] = useState([]);
   const [boundaryBox, setBoundaryBox] = useState(undefined);
   const [zoomLevel, setZoomLevel] = useState(undefined);
@@ -47,13 +50,22 @@ const FireAlerts = () => {
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
   const dispatch = useDispatch();
 
+
+  useEffect(() => {
+    dispatch(setNewAlertState(false, true));
+    return () => {
+      dispatch(setAlertApiParams({}));
+      dispatch(setNewAlertState(false, false));
+    }
+  }, []);
+
   useEffect(() => {
     setBoundaryBox(
       getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   }, [defaultAoi]);
 
   useEffect(() => {
-    getALerts();
+    getAlerts();
   }, [sortByDate, alertSource, dateRange, boundaryBox]);
 
   useEffect(() => {
@@ -128,7 +140,7 @@ const FireAlerts = () => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
-  const getALerts = () => {
+  const getAlerts = () => {
     if (sortByDate && alertSource && dateRange && boundaryBox) {
       setAlertId(undefined);
       const alertParams = {
@@ -218,7 +230,6 @@ const FireAlerts = () => {
   };
 
   const showTooltip = info => {
-    console.log(info);
     if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);

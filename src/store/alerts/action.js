@@ -99,6 +99,14 @@ export const setAlertApiParams = (params) => {
   }
 };
 
+export const setNewAlertState = (alertState, pageState) => {
+  return {
+    type: actionTypes.SET_NEW_ALERT_STATE,
+    isNewAlert: alertState,
+    isPageActive: pageState
+  }
+};
+
 
 
 

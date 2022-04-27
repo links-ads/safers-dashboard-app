@@ -8,15 +8,15 @@ const ICON_MAPPING = {
 };
 
 const ORANGE = [226, 123, 29];
-const GRAY = [128,128,128];
+const GRAY = [128, 128, 128];
 const RED = [230, 51, 79];
-const DARK_GRAY = [57,58,58];
+const DARK_GRAY = [57, 58, 58];
 
 export const getViewState = (midPoint, zoomLevel = 4) => {
   return {
     longitude: midPoint[0],
     latitude: midPoint[1],
-    zoom: zoomLevel,
+    zoom: zoomLevel + 1.25,
     bearing: 0,
     pitch: 0,
     transitionDuration: 1000,
@@ -45,7 +45,7 @@ export const getPolygonLayer = (aoi) => {
 }
 
 export const getIconLayer = (alerts, mapType = 'alerts') => {
-  const icon  = mapType == 'reports' ? locationPin : firePin
+  const icon = mapType == 'reports' ? locationPin : firePin
   console.log(icon)
   return (new IconLayer({
     data: alerts,
@@ -57,8 +57,8 @@ export const getIconLayer = (alerts, mapType = 'alerts') => {
     id: 'icon',
     getIcon: () => 'marker',
     getColor: d => {
-      if(mapType == 'reports') return (d.isSelected ? ORANGE : DARK_GRAY)
-      return (d.isSelected ? ORANGE : d.status == 'CLOSED'? GRAY : RED)
+      if (mapType == 'reports') return (d.isSelected ? ORANGE : DARK_GRAY)
+      return (d.isSelected ? ORANGE : d.status == 'CLOSED' ? GRAY : RED)
     },
     sizeMinPixels: 80,
     sizeMaxPixels: 100,

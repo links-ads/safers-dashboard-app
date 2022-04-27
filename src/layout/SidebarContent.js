@@ -12,8 +12,10 @@ import SimpleBar from 'simplebar-react'
 import MetisMenu from 'metismenujs'
 // import { withRouter } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import { useSelector } from 'react-redux';
 
 const SidebarContent = (props) => {
+  const isNewAlert = useSelector(state => state.alerts.isNewAlert);
   const ref = useRef();
   const location = useLocation();
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
@@ -111,9 +113,10 @@ const SidebarContent = (props) => {
 
 
             <li>
-              <Link to='/fire-alerts' className=' '>
+              <Link to='/fire-alerts' className=''>
                 <i className='bx bxs-hot'></i>
                 <span>{props.t('Fire Alerts')}</span>
+                {isNewAlert && <span className='new-info-indicator float-end'></span>}
               </Link>
             </li>
 

@@ -81,3 +81,16 @@
 .sort-select-input {
   padding: 10px;
 }
+
+.new-info-indicator {
+	width: 14px;
+	height: 14px;
+	background: $red-500;
+	-moz-border-radius: 50px;
+	-webkit-border-radius: 50px;
+	border-radius: 50px;
+  display: block;
+  margin-top: 0.25rem;
+  margin-right: 0.45rem;
+
+}
