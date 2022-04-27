@@ -92,6 +92,13 @@ export const resetAlertsResponseState = () => {
   }
 };
 
+export const setAlertApiParams = (params) => {
+  return {
+    type: actionTypes.SET_ALERT_API_PARAMS,
+    payload: params
+  }
+};
+
 
 
 

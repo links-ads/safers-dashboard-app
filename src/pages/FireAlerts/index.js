@@ -8,7 +8,7 @@ import moment from 'moment';
 import toastr from 'toastr';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllFireAlerts, setFavoriteAlert, resetAlertsResponseState, validateAlert, editAlertInfo } from '../../store/appAction';
+import { getAllFireAlerts, setFavoriteAlert, setAlertApiParams, resetAlertsResponseState, validateAlert, editAlertInfo } from '../../store/appAction';
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 
 import 'toastr/build/toastr.min.css'
@@ -17,6 +17,7 @@ import Alert from './Alert';
 import Tooltip from './Tooltip';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 
+const RANGE_BASE_POINT = 18;
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
@@ -36,6 +37,7 @@ const FireAlerts = () => {
   const [sortByDate, setSortByDate] = useState('desc');
   const [alertSource, setAlertSource] = useState('all');
   const [midPoint, setMidPoint] = useState([]);
+  const [boundaryBox, setBoundaryBox] = useState(undefined);
   const [zoomLevel, setZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const [alertId, setAlertId] = useState(undefined);
@@ -46,46 +48,34 @@ const FireAlerts = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllFireAlerts(
-      {
-        sortOrder: sortByDate,
-        source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1]
-      }
-    ));
-  }, []);
+    setBoundaryBox(
+      getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+  }, [defaultAoi]);
+
+  useEffect(() => {
+    getALerts();
+  }, [sortByDate, alertSource, dateRange, boundaryBox]);
 
   useEffect(() => {
     if (success?.detail) {
       toastr.success(success.detail, '');
     }
     dispatch(resetAlertsResponseState());
-
   }, [success]);
 
   useEffect(() => {
-    if (alerts.length > 0) {
+    var randomBoolean = Math.random() < 0.5;//to simulate new alerts
+    if (alerts.length > 0 && filteredAlerts.length === 0) {
       setIconLayer(getIconLayer(alerts));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
       setFilteredAlerts(alerts);
     }
+    else if (alerts.length > filteredAlerts.length || randomBoolean/*to simulate new alerts*/) {
+      toastr.success('New alerts are received. Please refresh the list.', '', { preventDuplicates: true, });
+    }
   }, [alerts]);
-
-  // useEffect(() => {
-  //   setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-  //   dispatch(getAllFireAlerts(
-  //     {
-  //       sortOrder: sortByDate,
-  //       source: alertSource,
-  //       from: dateRange[0],
-  //       to: dateRange[1]
-  //     }
-  //   ));
-  //   setIconLayer(getIconLayer(alerts));
-  // }, [sortByDate, alertSource]);
 
   useEffect(() => {
     setIconLayer(getIconLayer(filteredAlerts));
@@ -94,48 +84,11 @@ const FireAlerts = () => {
     }
     setCurrentPage(1);
     hideTooltip();
-    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)));
   }, [filteredAlerts]);
 
-  useEffect(() => {
-    setAlertId(undefined);
-    if (alertSource === 'all')
-      setFilteredAlerts(alerts);
-    else
-      setFilteredAlerts(_.filter(alerts, { source: alertSource }));
-  }, [alertSource]);
-
-  useEffect(() => {
-    setAlertId(undefined);
-    setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
-  }, [sortByDate]);
-
   const getAlertsByArea = () => {
-
-    const rangeFactor = (1 / zoomLevel) * 18;
-    const left = midPoint[0] - rangeFactor; //minLong
-    const right = midPoint[0] + rangeFactor; //maxLong
-    const top = midPoint[1] + rangeFactor; //maxLat
-    const bottom = midPoint[1] - rangeFactor; //minLat
-
-    const boundaryBox = [
-      [left, top],
-      [right, top],
-      [right, bottom],
-      [left, bottom]
-    ];
-
-    // console.log(zoomLevel, rangeFactor, midPoint, boundaryBox);
-
-    dispatch(getAllFireAlerts(
-      {
-        sortOrder: sortByDate,
-        source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1],
-        boundaryBox
-      }
-    ));
+    setBoundaryBox(getBoundaryBox(midPoint, zoomLevel));
   }
 
   const setFavorite = (id) => {
@@ -145,8 +98,6 @@ const FireAlerts = () => {
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
-
-    // updatePage(currentPage);
   }
 
   const validateEvent = (id) => {
@@ -177,16 +128,31 @@ const FireAlerts = () => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
+  const getALerts = () => {
+    if (sortByDate && alertSource && dateRange && boundaryBox) {
+      setAlertId(undefined);
+      const alertParams = {
+        sortOrder: sortByDate,
+        source: alertSource,
+        from: dateRange[0],
+        to: dateRange[1],
+        bbox: boundaryBox
+      };
+      dispatch(setAlertApiParams(alertParams));
+      dispatch(getAllFireAlerts(alertParams));
+    }
+  }
+
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
       if (id === alertId) {
         hideTooltip();
       }
       setAlertId(id);
-      let alertsToEdit = _.cloneDeep(filteredAlerts);
-      let selectedAlert = _.find(alertsToEdit, { id });
+      let clonedAlerts = _.cloneDeep(filteredAlerts);
+      let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(alertsToEdit));
+      setIconLayer(getIconLayer(clonedAlerts));
       setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
@@ -222,6 +188,15 @@ const FireAlerts = () => {
       sizeMaxPixels: 100,
       sizeScale: 0.5,
     }))
+  }
+
+  const getBoundaryBox = (midPoint, zoomLevel) => {
+    const rangeFactor = (1 / zoomLevel) * RANGE_BASE_POINT;
+    const left = midPoint[0] - rangeFactor; //minLongX
+    const right = midPoint[0] + rangeFactor; //maxLongX
+    const top = midPoint[1] + rangeFactor; //maxLatY
+    const bottom = midPoint[1] - rangeFactor; //minLatY
+    return [left, bottom, right, top];
   }
 
   const handleDateRangePicker = (dates) => {
@@ -305,17 +280,27 @@ const FireAlerts = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>Alert List</p>
+            <p className='align-self-baseline alert-title'>
+              Alert List
+              <button
+                type="button"
+                className="btn float-end mt-1 py-0 px-1"
+                onClick={() => {
+                  setAlertId(undefined);
+                  setFilteredAlerts(alerts);
+                }}
+              >
+                <i className="mdi mdi-sync"></i>
+              </button>
+            </p>
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
-                Default AOI</Button>
+              Default AOI</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
             <DateRangePicker setDates={handleDateRangePicker} />
           </Col>
-        </Row>  
-          
-        
+        </Row>
         <Row>
           <Col xl={5}>
             <hr />

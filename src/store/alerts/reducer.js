@@ -3,6 +3,7 @@ import { updateObject } from '../utility';
 
 const initialState = {
   allAlerts: [],
+  params: {},
   error: false,
   success: null
 };
@@ -17,6 +18,7 @@ const alertReducer = (state = initialState, action) => {
   case actionTypes.CREATE_EVENT_ALERT_FAIL: return validateAlertFail(state, action);
   case actionTypes.EDIT_ALERT_INFO_SUCCESS: return editAlertInfoSuccess(state, action);
   case actionTypes.EDIT_ALERT_INFO_FAIL: return editAlertInfoFail(state, action);
+  case actionTypes.SET_ALERT_API_PARAMS: return setAlertApiParams(state, action);
   case actionTypes.RESET_ALERT_STATE: return resetAlertsResponseState(state, action);
   default:
     return state;
@@ -78,6 +80,13 @@ const editAlertInfoFail = (state) => {
   }
   return updateObject(state, updatedState);
 }
+
+export const setAlertApiParams = (state, action) => {
+  const updatedState = {
+    params: action.payload
+  }
+  return updateObject(state, updatedState);
+};
 
 const resetAlertsResponseState = (state) => {
   const updatedState = {
