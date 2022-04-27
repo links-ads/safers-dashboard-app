@@ -22,7 +22,7 @@ describe('Test Events Screen', () => {
         <BrowserRouter>
           <EventAlerts {...props} />
         </BrowserRouter>
-      </Provider>,
+      </Provider>, 
     );
   }
 
