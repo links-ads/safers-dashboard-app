@@ -3,6 +3,8 @@ import { mockedDispatch, mockedHref, mockedNavigator, mockedSelector } from '../
 import ShallowRenderer from 'react-test-renderer/shallow';
 import React from 'react';
 import Sidebar from '../Sidebar';
+import { Provider } from 'react-redux';
+import store from '../../store';
 
 jest.mock('react-router-dom', () => ({
   ...(jest.requireActual('react-router-dom')), // technically it passes without this too, but I'm not sure if its there for other tests to use the real thing so I left it in
@@ -23,7 +25,10 @@ describe('SideBar Component', () => {
       
     it('Should match snapshot', () => {
       const renderer = new ShallowRenderer()
-      const result = renderer.render(<Sidebar />)
+      const result = renderer.render(
+        <Provider store={store}>
+          <Sidebar />
+        </Provider>)
       expect(result).toMatchSnapshot()
     })
         

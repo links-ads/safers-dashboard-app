@@ -12,15 +12,16 @@ import axiosMock from '../../../../__mocks__/axios';
 import { AOIS } from '../../../../__mocks__/aoi';
 import { setAoiSuccess } from '../../../store/appAction';
 import userEvent from '@testing-library/user-event';
-import FireAlerts from '../index';
 import { FIRE_ALERTS } from '../../../../__mocks__/alerts';
+import Reports from '../index';
+import { REPORTS } from '../../../../__mocks__/reports';
 
 describe('Test Events Screen', () => {
   function renderApp(props = {}) {
     return render(
       <Provider store={store}> 
         <BrowserRouter>
-          <FireAlerts {...props} />
+          <Reports {...props} />
         </BrowserRouter>
       </Provider>, 
     );
@@ -30,8 +31,8 @@ describe('Test Events Screen', () => {
   //mock all requests on page
   beforeAll(() => {
     mock = axiosMock;
-    mock.onPost(`${baseURL}${endpoints.fireAlerts.getAll}`).reply(() => {
-      return[200, FIRE_ALERTS]
+    mock.onGet(`${baseURL}${endpoints.reports.getReports}`).reply(() => {
+      return[200, REPORTS]
     });
     
     const objAoi = AOIS[0]
@@ -49,17 +50,18 @@ describe('Test Events Screen', () => {
     beforeEach(() => {
       renderApp(store);
     })  
-    it('lists alerts list when loaded', async () => {
-      const alertsPage1 = FIRE_ALERTS.slice(0, 3)
+    it('lists reports list when loaded', async () => {
+     
+      const reportsPage1 = REPORTS.slice(0, 3)
       
-      await waitFor(() => expect(screen.getAllByText(`${FIRE_ALERTS[0].title}`, { exact :false}).length).toBeGreaterThan(0))
+      await waitFor(() => expect(screen.getAllByText(`${REPORTS[0].name}`, { exact :false}).length).toBeGreaterThan(0))
       //verify other elements
-      alertsPage1.map(async(alert) => {
+      reportsPage1.map(async(report) => {
         
-        expect(screen.getAllByText(`${alert.title}`, { exact :false}).length).toBeGreaterThan(0)
-        expect(screen.getAllByText(`${alert.description}`, { exact :false}).length).toBeGreaterThan(0)
-        expect(screen.getAllByText(`${alert.status}`, { exact :false}).length).toBeGreaterThan(0)
-        expect(screen.getAllByText(`${alert.source}`, { exact :false}).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(`${report.name}`, { exact :false}).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(`${report.description}`, { exact :false}).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(`${report.location}`, { exact :false}).length).toBeGreaterThan(0)
+        expect(screen.getAllByText(`${(report.source).join(', ')}`, { exact :false}).length).toBeGreaterThan(0)
       
       })
       
@@ -67,18 +69,6 @@ describe('Test Events Screen', () => {
     });
   
   });
-  describe('alerts list sort', () => {
-    beforeEach(() => {
-      renderApp(store);
-    })
-    it('sorts by alert source', async () => {
-      await waitFor(() => screen.getByTestId('fireAlertSource'))
-      act(() => {
-        userEvent.selectOptions(screen.getByTestId('fireAlertSource'), 'satellite')
-      })
-      await waitFor(() => expect(screen.getByRole('results-section')).toHaveTextContent(/Results 1/i)) 
-    });
-  })
   
 })
   
