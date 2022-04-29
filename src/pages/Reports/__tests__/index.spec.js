@@ -3,7 +3,7 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 import store from '../../../store'
 import { Provider } from 'react-redux';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import {  render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { endpoints } from '../../../api/endpoints';
 
@@ -11,8 +11,6 @@ import { baseURL } from '../../../TestUtils';
 import axiosMock from '../../../../__mocks__/axios';
 import { AOIS } from '../../../../__mocks__/aoi';
 import { setAoiSuccess } from '../../../store/appAction';
-import userEvent from '@testing-library/user-event';
-import { FIRE_ALERTS } from '../../../../__mocks__/alerts';
 import Reports from '../index';
 import { REPORTS } from '../../../../__mocks__/reports';
 
