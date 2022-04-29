@@ -12,7 +12,7 @@ const pollingHelper = (props) => {
   const allAlerts = useSelector(state => state.alerts.allAlerts);
   const alertParams = useSelector(state => state.alerts.params);
   const isAlertPageActive = useSelector(state => state.alerts.isPageActive);
-  const [currentAlertCount, setCurrentAlertCount] = useState(allAlerts.count);
+  const [currentAlertCount, setCurrentAlertCount] = useState(undefined);
 
   const callAPIs = () => {
     dispatch(getAllFireAlerts(alertParams));
@@ -29,12 +29,13 @@ const pollingHelper = (props) => {
   }, [alertParams]);
 
   useEffect(() => {
-    var randomBoolean = Math.random() < 0.5;//to simulate new alerts
-    if (allAlerts.count > currentAlertCount || randomBoolean) {
+    var newAlertsCount = /*allAlerts.length*/ Math.floor(Math.random() * 90 + 10);//to simulate new alerts
+    if (currentAlertCount && newAlertsCount > currentAlertCount) {
+      let difference = newAlertsCount - currentAlertCount;
       if (!isAlertPageActive)
-        dispatch(setNewAlertState(true));
+        dispatch(setNewAlertState(true, false, difference));
     }
-    setCurrentAlertCount(allAlerts.count);
+    setCurrentAlertCount(newAlertsCount);
   }, [allAlerts]);
 
   return (

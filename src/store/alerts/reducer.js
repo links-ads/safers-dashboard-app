@@ -6,6 +6,7 @@ const initialState = {
   params: {},
   isNewAlert: false,
   isPageActive: false,
+  newItemsCount: 0,
   error: false,
   success: null
 };
@@ -102,7 +103,8 @@ const resetAlertsResponseState = (state) => {
 const setNewAlertState = (state, action) => {
   const updatedState = {
     isNewAlert: action.isNewAlert,
-    isPageActive: action.isPageActive
+    isPageActive: action.isPageActive,
+    newItemsCount: action.newItemsCount
   }
   return updateObject(state, updatedState);
 }
