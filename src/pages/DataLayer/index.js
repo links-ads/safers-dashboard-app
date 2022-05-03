@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
-import { FlyToInterpolator } from 'deck.gl';
+import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
@@ -9,6 +9,9 @@ import { getAllDataLayers } from '../../store/appAction';
 
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TreeView from './TreeView';
+
+const LON_BASE_POINT = 16;
+const LAT_BASE_POINT = 12;
 
 const getDefaultDateRange = () => {
   const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
@@ -19,7 +22,9 @@ const getDefaultDateRange = () => {
 const DataLayer = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
-  const currentLayer = useSelector(state => state.dataLayer.currentLayer);
+  const [currentLayer, setCurrentLayer] = useState(undefined);
+  const [bitmapLayer, setBitmapLayer] = useState(undefined);
+  const [boundaryBox, setBoundaryBox] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('desc');
   const [layerSource, setLayerSource] = useState('all');
@@ -38,7 +43,16 @@ const DataLayer = () => {
   }, []);
 
   useEffect(() => {
-    //TODO: when single layer selected
+    setBoundaryBox(
+      getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+  }, [defaultAoi]);
+
+  useEffect(() => {
+    console.log('boundaryBox', boundaryBox, viewState);
+    if (currentLayer && currentLayer.url) {
+      const imageUrl = currentLayer.url.replace('{bbox}', boundaryBox);
+      setBitmapLayer(getBitmapLayer(imageUrl));
+    }
   }, [currentLayer]);
 
   useEffect(() => {
@@ -59,7 +73,7 @@ const DataLayer = () => {
         to: dateRange[1]
       }
     ));
-  }, [layerSource, sortByDate]);
+  }, [layerSource, sortByDate, dateRange]);
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -71,6 +85,24 @@ const DataLayer = () => {
       transitionDuration: 1000,
       transitionInterpolator: new FlyToInterpolator()
     };
+  }
+
+  const getBitmapLayer = (url) => {
+    return (new BitmapLayer({
+      id: 'bitmap-layer',
+      bounds: boundaryBox,
+      image: url
+    }))
+  }
+
+  const getBoundaryBox = (midPoint, zoomLevel) => {
+    const lonRangeFactor = (1 / zoomLevel) * LON_BASE_POINT;
+    const latRangeFactor = (1 / zoomLevel) * LAT_BASE_POINT;
+    const left = midPoint[0] - lonRangeFactor; //minLongX
+    const right = midPoint[0] + lonRangeFactor; //maxLongX
+    const top = midPoint[1] + latRangeFactor; //maxLatY
+    const bottom = midPoint[1] - latRangeFactor; //minLatY
+    return [left, bottom, right, top];
   }
 
   const handleDateRangePicker = (dates) => {
@@ -172,6 +204,7 @@ const DataLayer = () => {
               <Col>
                 <TreeView
                   data={dataLayers}
+                  setCurrentLayer={setCurrentLayer}
                 />
               </Col>
             </Row>
@@ -179,7 +212,8 @@ const DataLayer = () => {
           <Col xl={7} className='mx-auto'>
             <Card className='map-card mb-0' style={{ height: 670 }}>
               <BaseMap
-                layers={[]}
+                onClick={(e) => { console.log(e.coordinate) }}
+                layers={[bitmapLayer]}
                 initialViewState={viewState}
                 widgets={[/*search button or any widget*/]}
                 screenControlPosition='top-right'

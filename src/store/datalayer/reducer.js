@@ -12,8 +12,6 @@ const dataLayerReducer = (state = initialState, action) => {
   switch (action.type) {
   case actionTypes.GET_DATA_LAYERS_SUCCESS: return getDataLayersSuccess(state, action);
   case actionTypes.GET_DATA_LAYERS_FAIL: return getDataLayersFail(state, action);
-  case actionTypes.GET_DATA_LAYER_INFO_SUCCESS: return getDataLayerInfoSuccess(state, action);
-  case actionTypes.GET_DATA_LAYER_INFO_FAIL: return getDataLayerInfoFail(state, action);
   case actionTypes.RESET_DATA_LAYER_STATE: return resetDataLayersResponseState(state, action);
   default:
     return state;
@@ -28,21 +26,6 @@ const getDataLayersSuccess = (state, action) => {
   return updateObject(state, updatedState);
 }
 const getDataLayersFail = (state) => {
-  const updatedState = {
-    error: true,
-  }
-  return updateObject(state, updatedState);
-}
-
-
-const getDataLayerInfoSuccess = (state, action) => {
-  const updatedState = {
-    success: action.msg,
-    error: false,
-  }
-  return updateObject(state, updatedState);
-}
-const getDataLayerInfoFail = (state) => {
   const updatedState = {
     error: true,
   }

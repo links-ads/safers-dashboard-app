@@ -23,27 +23,6 @@ const getDataLayersFail = (error) => {
   };
 };
 
-export const getDataLayerInfo = (dataLayerId) => async (dispatch) => {
-  const response = await api.patch(endpoints.dataLayers.getAll, { metadata_id: dataLayerId});
-  if (response.status === 200) {
-    return dispatch(getDataLayerInfoSuccess(response.data));
-  }
-  else
-    return dispatch(getDataLayerInfoFail(response.error));
-};
-const getDataLayerInfoSuccess = (dataLayer) => {
-  return {
-    type: actionTypes.GET_DATA_LAYER_INFO_SUCCESS,
-    dataLayer,
-  };
-};
-const getDataLayerInfoFail = (error) => {
-  return {
-    type: actionTypes.GET_DATA_LAYER_INFO_FAIL,
-    payload: error
-  };
-};
-
 export const resetDataLayersResponseState = () => {
   return {
     type: actionTypes.RESET_DATA_LAYER_STATE,

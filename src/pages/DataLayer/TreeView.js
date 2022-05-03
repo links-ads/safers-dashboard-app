@@ -4,13 +4,13 @@ import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 
-const TreeView = ({ data }) => {
+const TreeView = ({ data, setCurrentLayer }) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
 
   useEffect(() => {
     //TODO: when single layer selected
-    console.log(selectedLayer);
+    setCurrentLayer(selectedLayer);
   }, [selectedLayer]);
 
   const toggleExpandCollapse = id => {
@@ -70,6 +70,7 @@ const TreeView = ({ data }) => {
 
 TreeView.propTypes = {
   data: PropTypes.any,
+  setCurrentLayer: PropTypes.func
 }
 
 
