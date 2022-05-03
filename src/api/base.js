@@ -1,6 +1,8 @@
 import axios from 'axios'
-import { authHeader } from '../helpers/authHelper';
+import { authHeader, deleteSession } from '../helpers/authHelper';
 import { BASE_URL } from '../config';
+import store from '../store'
+import { signOut } from '../store/authentication/action';
 
 const API_PREFIX = 'api';
 
@@ -9,7 +11,7 @@ const axiosApi = axios.create({
 })
 
 axiosApi.interceptors.response.use(
-  response => response,
+  response => handleResponse(response),
   error => Promise.reject(error)
 )
 
@@ -42,6 +44,21 @@ export async function del(url, config = {}) {
     .then(response => response)
 }
 
+const handleResponse = (response) => {
+  switch(response.status){
+  case 401:
+    deleteSession();
+    store.dispatch(signOut())
+    break;
+  case 404:
+    break;
+  case 500:
+    break;
+  
+  default:
+    return response
+  }
+}
 export function isSuccessResp(status) {
   //2xx Status Codes [Success]
   if(status >= 200 && status <= 299){

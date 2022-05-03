@@ -13,11 +13,15 @@ import Notifications from '../pages/Notifications';
 import InSituAlerts from '../pages/In-situ';
 import Reports from '../pages/Reports';
 import ReportsDashboard from '../pages/Reports/Dashboard';
+import Pages404 from '../Utility/pages-404';
+import Pages500 from '../Utility/pages-500';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },
   { path: 'auth/:currentPage/:operation/:otp/:uid', component: Authentication },
   { path: 'user/select-aoi', component: SelectArea },
+  { path: '/pages-404', component: Pages404 },
+  { path: '/pages-500', component: Pages500 },
 ]
 
 const privateRoutes = [
