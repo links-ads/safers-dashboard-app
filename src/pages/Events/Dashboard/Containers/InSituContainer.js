@@ -5,12 +5,12 @@ import MediaComponent from '../../../../components/MediaComponent';
 import PaginationWrapper from '../../../../components/Pagination';
 
 const InSituContainer = () => {
-  const inSituMedia = useSelector(state => state.dashboard.inSituMedia);
+  const inSituMedia = useSelector(state => state.eventAlerts.inSituMedia);
   const [pageData, setPageData] = useState([]);
   return (
     <Row role='in-situ-container'>
       <Col md={12} className='d-flex'>
-        <Card className='card-weather' >
+        <Card className='card-weather'>
           <Row className='mb-2'>
             <span className='weather-text'>In-situ Photos & Videos</span>
           </Row>
