@@ -11,6 +11,7 @@ import _ from 'lodash';
 
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
+import PreLoader from '../../components/PreLoader';
 
 const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';
@@ -90,20 +91,7 @@ const Authentication = () => {
 
   return (
     <div>
-      {isLoading && 
-      <div id='preloader'>
-        <div id='status'>
-          <div className='spinner-chase'>
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-          </div>
-          <p id='status-msg' className='mt-3'><i>{loadingMsg}</i></p>
-        </div>
-      </div>}
+      <PreLoader isLoading={isLoading} loadingMsg={loadingMsg}/>
       <Container fluid className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">

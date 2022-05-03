@@ -12,10 +12,12 @@ const SelectArea = () => {
   const { isLoggedIn } = useSelector(state => state.auth);
   const aoiSetSuccess = useSelector(state => state.user.aoiSetSuccess);
 
-  if(!isLoggedIn){
-    navigate('/auth/sign-in');
-  }
-
+  useEffect(() => {
+    if(!isLoggedIn){
+      navigate('/auth/sign-in');
+    }
+  }, [isLoggedIn])
+  
   useEffect(() => {
     if (aoiSetSuccess) {
       navigate('/dashboard');

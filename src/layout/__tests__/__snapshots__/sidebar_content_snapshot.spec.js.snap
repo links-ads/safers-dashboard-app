@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer Component Renders Should match snapshot 1`] = `
+<SidebarContent
+  i18n={Object {}}
+  t={[Function]}
+  tReady={false}
+/>
+`;

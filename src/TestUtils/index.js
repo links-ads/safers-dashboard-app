@@ -1,12 +1,14 @@
-import checkPropTypes from 'check-prop-types';
-import {  } from 'redux';
+import configureMockStore from 'redux-mock-store';
+import thunk from 'redux-thunk';
+import { API_PREFIX } from '../api/base';
+import { BASE_URL } from '../config';
 
-export const findByTestAttr = (component, attr) => {
-  const wrapper = component.find(`[data-test='${attr}']`);
-  return wrapper;
-}
+const middlewares = [thunk];
+export const mockStore = configureMockStore(middlewares);
 
-export const checkProps = (component, expectedProps) => {
-  const propsErr = checkPropTypes(component.propTypes, expectedProps, 'props', component.name);
-  return propsErr;
-}
+export const baseURL = `${BASE_URL}/${API_PREFIX}`
+
+export const mockedNavigator = jest.fn();
+export const mockedHref = jest.fn();
+export const mockedSelector = jest.fn();
+export const mockedDispatch = jest.fn();

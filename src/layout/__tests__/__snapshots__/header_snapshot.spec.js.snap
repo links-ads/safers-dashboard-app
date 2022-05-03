@@ -1,0 +1,48 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Footer Component Renders Should match snapshot 1`] = `
+<React.Fragment>
+  <header
+    id="page-topbar"
+  >
+    <div
+      className="navbar-header"
+    >
+      <div
+        className="d-flex"
+      >
+        <button
+          className="btn btn-sm px-3 font-size-16 header-item "
+          id="vertical-menu-btn"
+          onClick={[Function]}
+          type="button"
+        >
+          <i
+            className="fa fa-fw fa-bars"
+          />
+        </button>
+      </div>
+      <div
+        className="d-flex"
+      >
+        <div
+          className="dropdown d-none d-lg-inline-block ms-1"
+        >
+          <button
+            className="btn header-item noti-icon "
+            data-toggle="fullscreen"
+            onClick={[Function]}
+            type="button"
+          >
+            <i
+              className="bx bx-fullscreen"
+            />
+          </button>
+        </div>
+        <withI18nextTranslation(LanguageDropdown) />
+        <withI18nextTranslation(ProfileMenu) />
+      </div>
+    </div>
+  </header>
+</React.Fragment>
+`;

@@ -22,17 +22,16 @@ const EventDashboard = () => {
         
         <SearchContainer/>
 
-        <Row>
-          <InfoContainer/>
-        </Row>
+        
+        <InfoContainer/>
+        
 
         <Row>
           <MapDataLayer/>
         </Row>
       
-        <Row>
-          <InSituContainer/>
-        </Row>
+       
+        <InSituContainer/>
 
         <Row>
           <TwitterContainer/>
