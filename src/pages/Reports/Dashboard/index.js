@@ -23,9 +23,9 @@ const ReportsDashboard = () => {
           <SummaryContainer reportDetail={reportDetail} />
         </Row>
       
-        <Row>
-          <MediaContainer reportDetail={reportDetail}/>
-        </Row>
+        
+        <MediaContainer reportDetail={reportDetail}/>
+        
 
       </Container>
     </div>

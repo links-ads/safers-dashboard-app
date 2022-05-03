@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import * as mockUser from '../../../mockData/mock_user';
 import authReducer from '../reducer';
 import { signInSuccess } from '../action';
+import { SIGN_IN_SUCCESS } from '../types';
 
 describe('fetchUser Success ', () => {
   let action;
@@ -30,7 +31,7 @@ describe('fetchUser Success ', () => {
     };
 
     store = mockStore(initialState);
-    action = signInSuccess(mockUser.SUCCESS_FETCH_USER);
+    action = signInSuccess(SIGN_IN_SUCCESS);
     
     newState = await authReducer(store.getState(), action);
     expect(newState).toEqual(mockUser.SUCCESS_FETCH_USER_STATE);

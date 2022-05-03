@@ -8,7 +8,7 @@ const InSituContainer = () => {
   const inSituMedia = useSelector(state => state.dashboard.inSituMedia);
   const [pageData, setPageData] = useState([]);
   return (
-    <>
+    <Row role='in-situ-media'>
       <Col md={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
@@ -27,7 +27,7 @@ const InSituContainer = () => {
           </Row>
         </Card>
       </Col>
-    </>     
+    </Row>     
   );
 }
 

@@ -56,7 +56,7 @@ const SortSection = () => {
 
   return(
     <>
-      <div>
+      <div role='status-section'>
         <FormGroup className="form-group d-inline-block" check>
           <Input
             id="onGoing"
@@ -91,7 +91,7 @@ const SortSection = () => {
         </FormGroup>
       </div>
             
-      <Row>
+      <Row role='results-section'>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
           <span className='my-auto alert-report-text'>Results {filteredAlerts.length}</span>
@@ -122,6 +122,7 @@ const SortSection = () => {
             type="select"
             onChange={(e) =>filterByAlertSource(e.target.value)}
             value={alertSource}
+            data-testid='eventAlertSource'
           >
             <option value={'all'} >Source : All</option>
             <option value={'web'} >Source : Web</option>
@@ -141,9 +142,9 @@ const SortSection = () => {
                 <i className='fa fa-search px-2 m-auto calender-icon'></i>
               </div>
               <Input
-                id="closedEvents"
-                data-testid="closedEvents"
-                name="closedEvents"
+                id="searchEvents"
+                data-testid="searchEvents"
+                name="searchEvents"
                 className='search-input'
                 placeholder='Search for an event'
                 onChange={(e) => filterBySearchText(e.target.value)}

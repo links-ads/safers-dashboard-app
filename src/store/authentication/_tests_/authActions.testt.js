@@ -1,21 +1,27 @@
 /* eslint-disable init-declarations */
-import configureMockStore from 'redux-mock-store';
-import thunk from 'redux-thunk';
+
 
 import * as mockUser from '../../../mockData/mock_user';
+import { mockStore } from '../../../TestUtils';
 import { signIn } from '../action';
+import { SIGN_IN_SUCCESS } from '../types';
 
 global.fetch = require('jest-fetch-mock');
 
+
 describe('Sign in user', () => {
-  let newStore;
+  let store;
   let actions
   let request = {
     username : 'mmb.221177@gmail.com',
     password : '1234', 
-    rememberMe : false};
+    rememberMe : false
+  };
 
   beforeEach(() => {
+    store = mockStore({
+      users: {}
+    });
     request = {
       username : 'mmb.221177@gmail.com',
       password : '1234', 
@@ -23,28 +29,19 @@ describe('Sign in user', () => {
     fetch.resetMocks();
   });
 
-  afterEach(() => {
-    request = null;
-    actions = null;
-    newStore = null;
-  });
-
   it('check action for sign in user - Success Scenario', () => {
     fetch.mockResponse(JSON.stringify(mockUser.SUCCESS_FETCH_USER));
 
     const authInitialState = {};
-
-    const middlewares = [thunk];
-    const mockStore = configureMockStore(middlewares);
     const initialState = { authInitialState };
-    newStore = mockStore(initialState);
+    store = mockStore(initialState);
 
     const expectedActions = [
-      mockUser.FETCH_USER_SUCCESS_ACTION,
+      SIGN_IN_SUCCESS,
     ];
 
-    return newStore.dispatch(signIn(request)).then(() => {
-      actions = newStore.getActions();
+    store.dispatch(signIn(request)).then(() => {
+      actions = store.getActions();
       expect(actions).toEqual(expectedActions);
     });
   });
