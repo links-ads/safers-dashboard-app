@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { authHeader, deleteSession } from '../helpers/authHelper';
+import { authHeader } from '../helpers/authHelper';
 import { BASE_URL } from '../config';
 import store from '../store'
 import { signOut } from '../store/authentication/action';
@@ -11,8 +11,8 @@ const axiosApi = axios.create({
 })
 
 axiosApi.interceptors.response.use(
-  response => handleResponse(response),
-  error => Promise.reject(error)
+  response => response,
+  error => handleError(error)
 )
 
 export async function get(url, config = {}) {
@@ -44,19 +44,20 @@ export async function del(url, config = {}) {
     .then(response => response)
 }
 
-const handleResponse = (response) => {
-  switch(response.status){
+const handleError = (error) => {
+  switch(error.response.status){
   case 401:
-    deleteSession();
     store.dispatch(signOut())
-    break;
+    return Promise.reject(error)
   case 404:
-    break;
+    window.location.href = '/pages-404'
+    return Promise.reject(error)
   case 500:
-    break;
+    window.location.href = '/pages-500'
+    return Promise.reject(error)
   
   default:
-    return response
+    return Promise.reject(error)
   }
 }
 export function isSuccessResp(status) {
