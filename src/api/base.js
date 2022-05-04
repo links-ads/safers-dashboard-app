@@ -9,9 +9,12 @@ export const API_PREFIX = 'api';
 const axiosApi = axios.create({
   baseURL: `${BASE_URL}/${API_PREFIX}`,
 })
+
 axiosApi.interceptors.request.use(async(config) => {
   // spinning start to show
-  store.dispatch(InProgress(true, 'Please wait..'));
+  if(!config.url.includes('alerts')){
+    store.dispatch(InProgress(true, 'Please wait..'));
+  }
   await new Promise(r => setTimeout(r, 2000));
   return config
 }, (error) => {
@@ -25,6 +28,7 @@ axiosApi.interceptors.response.use(
   },
   error => handleError(error)
 )
+
 export const axiosInstance = axiosApi;
 
 export async function get(url, config = {}) {
