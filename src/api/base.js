@@ -15,7 +15,6 @@ axiosApi.interceptors.request.use(async(config) => {
   if(!config.url.includes('alerts')){
     store.dispatch(InProgress(true, 'Please wait..'));
   }
-  await new Promise(r => setTimeout(r, 2000));
   return config
 }, (error) => {
   return Promise.reject(error);
