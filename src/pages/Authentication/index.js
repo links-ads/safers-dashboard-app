@@ -11,14 +11,12 @@ import _ from 'lodash';
 
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
-import PreLoader from '../../components/PreLoader';
 
 const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';
   const { currentPage } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLoading, loadingMsg } = useSelector(state => state.common);
   const { isLoggedIn, user } = useSelector(state => state.auth);
   const allAoi = useSelector(state => state.common.aois);
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -91,7 +89,6 @@ const Authentication = () => {
 
   return (
     <div>
-      <PreLoader isLoading={isLoading} loadingMsg={loadingMsg}/>
       <Container fluid className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">

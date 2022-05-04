@@ -2,16 +2,27 @@ import axios from 'axios'
 import { authHeader } from '../helpers/authHelper';
 import { BASE_URL } from '../config';
 import store from '../store'
-import { signOut } from '../store/authentication/action';
+import { InProgress, signOut } from '../store/authentication/action';
 
 export const API_PREFIX = 'api';
 
 const axiosApi = axios.create({
   baseURL: `${BASE_URL}/${API_PREFIX}`,
 })
+axiosApi.interceptors.request.use(async(config) => {
+  // spinning start to show
+  store.dispatch(InProgress(true, 'Please wait..'));
+  await new Promise(r => setTimeout(r, 2000));
+  return config
+}, (error) => {
+  return Promise.reject(error);
+});
 
 axiosApi.interceptors.response.use(
-  response => response,
+  (response) => {
+    store.dispatch(InProgress(false));
+    return response
+  },
   error => handleError(error)
 )
 export const axiosInstance = axiosApi;
