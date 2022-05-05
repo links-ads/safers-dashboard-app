@@ -25,7 +25,7 @@ describe('Sign user up', () => {
     cy.get('[data-testid="sign-up-role"]')
       .select('Decision Maker');
     cy.get('[data-testid="sign-up-org"]')
-      .select('HRT');
+      .select('HRT - Hellenic Rescue Team');
     cy.get('[data-testid="sign-up-agreeTermsConditions"]')
       .check();
     

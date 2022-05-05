@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Row, Col, Badge } from 'reactstrap';
 import MapComponent from '../Components/Map';
+import PropTypes from 'prop-types';
 
+//i18n
+import { withTranslation } from 'react-i18next'
 
-
-const WeatherContainer = () => {
+const WeatherContainer = (props) => {
   const weatherStats = useSelector(state => state.dashboard.weatherStats);
   // eslint-disable-next-line no-unused-vars
   const [active, setActive] = useState(1)
@@ -16,32 +18,32 @@ const WeatherContainer = () => {
     if (active == 3) return weatherStats.forecast ? `${weatherStats.forecast.precipitation[tab]}°` : 'N/A'
   }
   return (
-    <>
+    <Row role='weather-stats'>
       <Col md={6}>
         <MapComponent weatherStats={weatherStats}/>
       </Col>
       <Col md={6} sm={12} xs={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
-            <span className='weather-text'>Weather Forecast</span>
+            <span className='weather-text'>{props.t('weather forecast')}</span>
           </Row>
           <Row>
             <Col>
               <Badge className={'badge-temp px-2  my-2 ' + (active == 1 ? 'active-badge' : '')}
                 onClick={() =>{setActive(1)}}>
-                <i className='fa fa-thermometer p-1'></i><span>Temperature</span>
+                <i className='fa fa-thermometer p-1'></i><span>{props.t('temperature')}</span>
               </Badge>
             </Col>
             <Col>
               <Badge className={'badge-temp px-2  my-2 ' + (active == 2 ? 'active-badge' : '')}
                 onClick={() =>{setActive(2)}}>
-                <i className='fa fa-solid fa-lg fa-wind p-1'></i><span>Atm.Pressure</span>
+                <i className='fa fa-solid fa-lg fa-wind p-1'></i><span>{props.t('atm.pressure')}</span>
               </Badge>
             </Col>
             <Col>
-              <Badge className={'badge-temp px-2  my-2 ' + (active == 3 ? 'active-badge' : '')}
+              <Badge data-testid='show-precipitation' className={'badge-temp px-2  my-2 ' + (active == 3 ? 'active-badge' : '')}
                 onClick={() =>{setActive(3)}}>
-                <i className='bx bxs-cloud-rain p-1'></i><span>Precipitation</span>
+                <i className='bx bxs-cloud-rain p-1'></i><span>{props.t('precipitation')}</span>
               </Badge>
             </Col>
             <Col></Col>
@@ -76,8 +78,12 @@ const WeatherContainer = () => {
           </Row>
         </Card>
       </Col>
-    </>     
+    </Row>     
   );
 }
 
-export default WeatherContainer;
+WeatherContainer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['dashboard'])(WeatherContainer);

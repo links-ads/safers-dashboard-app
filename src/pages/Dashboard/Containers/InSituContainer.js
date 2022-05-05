@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row, Col } from 'reactstrap';
 import MediaComponent from '../Components/MediaComponent';
 import PaginationWrapper from '../../../components/Pagination';
 
-const InSituContainer = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+
+const InSituContainer = (props) => {
   const inSituMedia = useSelector(state => state.dashboard.inSituMedia);
   const [pageData, setPageData] = useState([]);
   return (
-    <>
+    <Row role='in-situ-media'>
       <Col md={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
-            <span className='weather-text'>In-situ Photos & Videos</span>
+            <span className='weather-text'>{props.t('In-situ Photos & Videos')}</span>
           </Row>
           <Row >
             {pageData.map((media, index) => {
@@ -27,8 +32,12 @@ const InSituContainer = () => {
           </Row>
         </Card>
       </Col>
-    </>     
+    </Row>     
   );
 }
 
-export default InSituContainer;
+InSituContainer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['dashboard'])(InSituContainer);

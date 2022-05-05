@@ -112,6 +112,7 @@ const AoiHelper = () => {
                     onChange={selectAoi}
                     checked={ aoi.features[0].properties.id === selVal }
                     value={aoi.features[0].properties.id}
+                    data-test-id={`select-default-aoi-on-helper${index}`}
                   />
                   {aoi.features[0].properties.country === aoi.features[0].properties.name ? aoi.features[0].properties.country : `${aoi.features[0].properties.country} - ${aoi.features[0].properties.name}`}
                 </Label>
@@ -142,7 +143,8 @@ const AoiHelper = () => {
               <Button
                 className="my-4 sign-in-btn"
                 color="primary"
-                onClick={handleSubmit}>
+                onClick={handleSubmit}
+                data-test-id='save-default-aoi-btn'>
                 SAVE AREA OF INTEREST
               </Button>
             </div>

@@ -3,10 +3,6 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 
-import Enzyme from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-
-Enzyme.configure({ 
-  adapter: new Adapter(),
-  disableLifecycleMethods : true
-}); 
+window.scrollTo = (x, y) => {
+  document.documentElement.scrollTop = y;
+}

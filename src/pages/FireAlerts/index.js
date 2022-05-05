@@ -338,6 +338,7 @@ const FireAlerts = () => {
                   type="select"
                   onChange={(e) => setAlertSource(e.target.value)}
                   value={alertSource}
+                  data-testid='fireAlertSource'
                 >
                   <option value={'all'} >Source : All</option>
                   <option value={'web'} >Source : Web</option>
@@ -345,7 +346,7 @@ const FireAlerts = () => {
                   <option value={'satellite'} >Source : Satellite</option>
                 </Input>
               </Col>
-              <Col xl={3} className="d-flex justify-content-end">
+              <Col xl={3} className="d-flex justify-content-end" role='results-section'>
                 <span className='my-auto alert-report-text'>Results {filteredAlerts.length}</span></Col>
             </Row>
             <Row>

@@ -1,15 +1,19 @@
 // import BaseMap from '../../layout/BaseMap/BaseMap';
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import {  Card, CardHeader, CardBody, Col } from 'reactstrap';
 
-const MapCards= () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const MapCards= (props) => {
   const weatherStats = useSelector(state => state.dashboard.weatherStats);
   return (
     <Col xs={5} className='position-absolute bottom-0 end-0 me-2'>
       <Card className='map-overlay-card pb-1'>
         <CardHeader className='my-2 px-1 py-0 text-center'>
-              Atmosphere Instability Index
+          {props.t('Atmosphere Instability Index')}
         </CardHeader>
         <CardBody className='mx-auto mb-3'>
           <span>{weatherStats.mapData ? weatherStats.mapData.atm_instability_index : '-'}</span>
@@ -18,7 +22,7 @@ const MapCards= () => {
       </Card>
       <Card className='map-overlay-card pb-1'>
         <CardHeader className='my-2 px-1 py-0 text-center'>
-              Fire Weather Index
+          {props.t('Fire Weather Index')}
         </CardHeader>
         <CardBody className='mx-auto mb-3 font-weight-normal'>
           {weatherStats.mapData ? weatherStats.mapData.fire_weather_index : '-'}
@@ -29,4 +33,8 @@ const MapCards= () => {
   )
 }
 
-export default MapCards;
+MapCards.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['dashboard'])(MapCards);

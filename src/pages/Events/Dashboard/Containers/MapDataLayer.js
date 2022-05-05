@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Button, ButtonGroup, Card, Row, Col } from 'reactstrap';
 import classnames from 'classnames';
 
 import BaseMap from '../../../../components/BaseMap/BaseMap';
 
 const MapDataLayer = () => {
-  const { polygonLayer, viewState } = useSelector(state => state.common);
+  // eslint-disable-next-line no-unused-vars
+  const [viewState, setViewState] = useState(undefined);
+  // eslint-disable-next-line no-unused-vars
+  const [ polygonLayer, setPolygonLayer ] = useState(undefined);
   //to update when data layers ready
   const [ dataLayer, setDataLayer ] = useState(1);
   return (
