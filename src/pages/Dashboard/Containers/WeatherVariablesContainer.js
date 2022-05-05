@@ -1,8 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row, Col, Badge } from 'reactstrap';
 
-const WeatherVariablesContainer = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const WeatherVariablesContainer = (props) => {
   const weatherVariables = useSelector(state => state.dashboard.weatherVariables);
 
   return (
@@ -10,15 +14,15 @@ const WeatherVariablesContainer = () => {
       <Col md={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
-            <span className='weather-text'>Weather Variables on an hourly basis</span>
+            <span className='weather-text'>{props.t('weather var per hr')}</span>
           </Row>
           <Row>
             <div>
               <Badge className='badge-temp px-2 pressure me-3 background-none'>
-                <i className='fa fa-solid fa-lg fa-wind p-1'></i><span>Wind</span>
+                <i className='fa fa-solid fa-lg fa-wind p-1'></i><span>{props.t('Wind')}</span>
               </Badge>
               <Badge className='badge-temp px-2 pressure'>
-                <i className='bx bxs-cloud-rain fa-lg p-1'></i><span>Relative Humidity</span>
+                <i className='bx bxs-cloud-rain fa-lg p-1'></i><span>{props.t('Relative Humidity')}</span>
               </Badge>
             </div>
           </Row>
@@ -41,4 +45,8 @@ const WeatherVariablesContainer = () => {
   );
 }
 
-export default WeatherVariablesContainer;
+WeatherVariablesContainer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['dashboard'])(WeatherVariablesContainer);

@@ -1,16 +1,21 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import { formatNumber } from '../../../store/utility';
 
-const StatsContainer = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const StatsContainer = (props) => {
   const stats = useSelector(state => state.dashboard.stats);
 
   return(<>
     <Col md={3} sm={6}>
       <Card className='stats-card px-2 pb-3'>
         <CardHeader>
-              Reports
+          {props.t('reports')}
         </CardHeader>
         <CardBody className='mx-auto'>
           {stats ? formatNumber(stats.reports) : 'N/A'}
@@ -22,7 +27,7 @@ const StatsContainer = () => {
     <Col md={3} sm={6}>
       <Card className='stats-card px-2 pb-3'>
         <CardHeader>
-              Alerts
+          {props.t('alerts')}
         </CardHeader>
         <CardBody className='mx-auto'>
           {stats ? formatNumber(stats.alerts) : 'N/A'}
@@ -34,7 +39,7 @@ const StatsContainer = () => {
     <Col md={3} sm={6} >
       <Card className='stats-card px-2 pb-3'>
         <CardHeader>
-              Events
+          {props.t('events')}
         </CardHeader>
         <CardBody className='mx-auto'>
           {stats ? formatNumber(stats.events) : 'N/A'}
@@ -46,16 +51,21 @@ const StatsContainer = () => {
     <Col md={3} sm={6}>
       <Card className='stats-card px-2 pb-3'>
         <CardHeader>
-              Social Engagement
+          {props.t('social engagement')}
         </CardHeader>
         <CardBody className='mx-auto'>
           <span>{stats ? formatNumber(stats.socialEngagement) : 'N/A'}</span>
         </CardBody>
         <CardFooter className='mx-auto'>
-                Total number of tweets
+          {props.t('tot tweets')}
         </CardFooter>
       </Card>
     </Col>
   </>)
 }
-export default StatsContainer;
+
+StatsContainer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['dashboard'])(StatsContainer);

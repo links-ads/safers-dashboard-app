@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Label, Input, FormGroup,  } from 'reactstrap';
+import PropTypes from 'prop-types';
 
 import DateRangeComponent from '../../../components/DateRangePicker/DateRange';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,7 +12,10 @@ import { getInSituMedia, getStats, getTweets, getWeatherStats, getWeatherVariabl
 import { getPolygonLayer, getViewState } from '../../../helpers/mapHelper';
 import moment from 'moment';
 
-const SearchContainer = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const SearchContainer = (props) => {
   const dispatch = useDispatch()
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const allAoi = useSelector(state => state.common.aois);
@@ -75,7 +79,7 @@ const SearchContainer = () => {
               <Label
                 for="exampleEmail"
               >
-                Area of interest :
+                {props.t('Area of interest')}:
               </Label>
               <Input
                 id="selectAoiDashboard"
@@ -86,7 +90,7 @@ const SearchContainer = () => {
                 value={selectedAoi ? selectedAoi : 
                   defaultAoi ? defaultAoi.features[0].properties.id : ''}
               >
-                <option value='' key={''}> ---------- Select Area -----------</option>
+                <option value='' key={''}> ---------- {props.t('Select Area')} -----------</option>
                 {allAoi.map((aoi, index) => <option key={index} value={aoi.features[0].properties.id}>
                   {aoi.features[0].properties.country === aoi.features[0].properties.name ? aoi.features[0].properties.country : `${aoi.features[0].properties.country} - ${aoi.features[0].properties.name}`}
                 </option>)}
@@ -102,4 +106,8 @@ const SearchContainer = () => {
     </Row>
   )}
 
-export default SearchContainer;
+SearchContainer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation()(SearchContainer);

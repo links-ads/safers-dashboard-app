@@ -1,6 +1,6 @@
 # safers-dashboard
 
-Web frontend for SAFERS
+Web frontend for SAFERS 
 
 ## Available Scripts 
 

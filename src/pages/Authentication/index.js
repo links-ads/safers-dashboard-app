@@ -92,7 +92,7 @@ const Authentication = () => {
     <div>
       {isLoading && 
       <div id='preloader'>
-        <div id='status'>
+        <div className='status'>
           <div className='spinner-chase'>
             <div className='chase-dot' />
             <div className='chase-dot' />
