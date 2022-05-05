@@ -50,7 +50,6 @@ const FireAlerts = () => {
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     dispatch(setNewAlertState(false, true));
     return () => {

@@ -16,7 +16,9 @@ import { useSelector } from 'react-redux';
 
 const SidebarContent = (props) => {
   const isNewAlert = useSelector(state => state.alerts.isNewAlert);
-  const newItemsCount = useSelector(state => state.alerts.newItemsCount);
+  const newAlertsCount = useSelector(state => state.alerts.newItemsCount);
+  const isNewEvent = useSelector(state => state.eventAlerts.isNewEvent);
+  const newEventsCount = useSelector(state => state.eventAlerts.newItemsCount);
   const ref = useRef();
   const location = useLocation();
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
@@ -117,7 +119,7 @@ const SidebarContent = (props) => {
               <Link to='/fire-alerts' className=''>
                 <i className='bx bxs-hot'></i>
                 <span>{props.t('Fire Alerts')}</span>
-                {isNewAlert && <span className='new-info-indicator float-end'>{newItemsCount}</span>}
+                {isNewAlert && <span className='new-info-indicator float-end'>{newAlertsCount}</span>}
               </Link>
             </li>
 
@@ -131,6 +133,7 @@ const SidebarContent = (props) => {
               <Link to='/event-alerts' className=''>
                 <i className='bx bx-calendar-event'></i>
                 <span>{props.t('Events')}</span>
+                {isNewEvent && <span className='new-info-indicator float-end'>{newEventsCount}</span>}
               </Link>
             </li>
 

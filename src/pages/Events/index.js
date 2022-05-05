@@ -11,7 +11,7 @@ import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
-import { getAllEventAlerts, resetEventAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../store/events/action';
+import { getAllEventAlerts, resetEventAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, resetEventApiParams, setNewEventState, } from '../../store/appAction';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
@@ -34,6 +34,11 @@ const EventAlerts = () => {
         to: dateRange[1]
       }
     ));
+    dispatch(setNewEventState(false, true));
+    return () => {
+      dispatch(resetEventApiParams());
+      dispatch(setNewEventState(false, false));
+    }
   }, []);
 
   useEffect(() => {
@@ -45,12 +50,16 @@ const EventAlerts = () => {
   }, [success]);
 
   useEffect(() => {
-    if (alerts.length > 0) {
+    var randomBoolean = Math.random() < 0.5;//to simulate new alerts
+    if (alerts.length > 0 && filteredAlerts.length === 0) {
       dispatch(setIconLayer(getIconLayer(alerts)));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
       dispatch(setFilterdAlerts(alerts));
+    }
+    else if (alerts.length > filteredAlerts.length || randomBoolean/*to simulate new alerts*/) {
+      toastr.success('New events are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
   }, [alerts]);
 
@@ -64,7 +73,7 @@ const EventAlerts = () => {
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
   }, [filteredAlerts]);
 
-  
+
 
 
   const handleDateRangePicker = (dates) => {
@@ -91,10 +100,20 @@ const EventAlerts = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>Events</p>
-            <Button color='link'
+            <p className='align-self-baseline alert-title'>
+              Events
+              <button
+                type="button"
+                className="btn float-end mt-1 py-0 px-1"
+                onClick={() => {
+                  dispatch(setFilterdAlerts(alerts));
+                }}
+              >
+                <i className="mdi mdi-sync"></i>
+              </button>
+            </p>            <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
-                Default AOI</Button>
+              Default AOI</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
             <DateComponent setDates={handleDateRangePicker} />
@@ -105,12 +124,12 @@ const EventAlerts = () => {
             <SortSection />
             <Row>
               <Col xl={12} className='px-3'>
-                <EventList/>
+                <EventList />
               </Col>
             </Row>
           </Col>
           <Col xl={7} className='mx-auto'>
-            <MapSection viewState={viewState} setViewState={setViewState}/>
+            <MapSection viewState={viewState} setViewState={setViewState} />
           </Col>
         </Row>
 

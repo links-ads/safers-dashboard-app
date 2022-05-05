@@ -1,7 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap'
-import { getAllFireAlerts } from '../../../store/appAction';
+import { getAllEventAlerts } from '../../../store/appAction';
 
 const SearchButton = (index) => {
   const { midPoint, zoomLevel, sortByDate, alertSource, dateRange } = useSelector(state => state.eventAlerts);
@@ -24,7 +24,7 @@ const SearchButton = (index) => {
     ];
 
 
-    dispatch(getAllFireAlerts(
+    dispatch(getAllEventAlerts(
       {
         sortOrder: sortByDate,
         source: alertSource,

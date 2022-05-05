@@ -8,14 +8,22 @@ const initialState = {
   midPoint: [],
   zoomLevel: undefined,
   iconLayer: undefined,
-  alertId : null,
+  alertId: null,
   hoverInfo: undefined,
   sortByDate: 'desc',
   alertSource: 'all',
-  dateRange : getDefaultDateRange(),
+  dateRange: getDefaultDateRange(),
   currentPage: 1,
   error: false,
-  success: null
+  success: null,
+  params: {
+    sortByDate: 'desc',
+    alertSource: 'all',
+    dateRange: getDefaultDateRange(),
+  },
+  isNewEvent: false,
+  isPageActive: false,
+  newItemsCount: 0,
 };
 
 const eventAlertReducer = (state = initialState, action) => {
@@ -40,6 +48,9 @@ const eventAlertReducer = (state = initialState, action) => {
   case actionTypes.SET_SORT_BY_DATE: return setSortByDate(state, action);
   case actionTypes.SET_ALERT_SOURCE: return setAlertSource(state, action);
   case actionTypes.SET_DATE_RANGE: return setDateRange(state, action);
+  case actionTypes.SET_NEW_EVENT_STATE: return setNewEventState(state, action);
+  case actionTypes.RESET_EVENT_API_PARAMS: return resetEventApiParams(state, action);
+
 
   default:
     return state;
@@ -177,5 +188,21 @@ const setDateRange = (state, action) => {
   return updateObject(state, updatedState);
 }
 
+const resetEventApiParams = (state) => {
+  const updatedState = {
+    error: false,
+    success: null
+  }
+  return updateObject(state, updatedState);
+}
+
+const setNewEventState = (state, action) => {
+  const updatedState = {
+    isNewEvent: action.isNewEvent,
+    isPageActive: action.isPageActive,
+    newItemsCount: action.newItemsCount
+  }
+  return updateObject(state, updatedState);
+}
 
 export default eventAlertReducer;
