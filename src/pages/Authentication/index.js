@@ -17,7 +17,6 @@ const Authentication = () => {
   const { currentPage } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLoading, loadingMsg } = useSelector(state => state.common);
   const { isLoggedIn, user } = useSelector(state => state.auth);
   const allAoi = useSelector(state => state.common.aois);
   const defaultAoi = useSelector(state => state.user.defaultAoi);

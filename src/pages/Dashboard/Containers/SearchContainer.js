@@ -19,13 +19,17 @@ const SearchContainer = (props) => {
   const dispatch = useDispatch()
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const allAoi = useSelector(state => state.common.aois);
+  
   const selectedAoi = useSelector(state => state.common.selectedAoi);
   
   const [dateRange, setDateRange] = useState([]);
 
   useEffect(() => {
-    dispatch(getAllAreas())
-  },[]);
+    if(!allAoi.length){
+      dispatch(getAllAreas());
+    }
+  }, []);
+  
   useEffect(() => {
     selectAoi(defaultAoi.features[0].properties.id)
   }, [allAoi])

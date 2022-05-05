@@ -18,7 +18,7 @@ const WeatherContainer = (props) => {
     if (active == 3) return weatherStats.forecast ? `${weatherStats.forecast.precipitation[tab]}°` : 'N/A'
   }
   return (
-    <>
+    <Row role='weather-stats'>
       <Col md={6}>
         <MapComponent weatherStats={weatherStats}/>
       </Col>
@@ -41,7 +41,7 @@ const WeatherContainer = (props) => {
               </Badge>
             </Col>
             <Col>
-              <Badge className={'badge-temp px-2  my-2 ' + (active == 3 ? 'active-badge' : '')}
+              <Badge data-testid='show-precipitation' className={'badge-temp px-2  my-2 ' + (active == 3 ? 'active-badge' : '')}
                 onClick={() =>{setActive(3)}}>
                 <i className='bx bxs-cloud-rain p-1'></i><span>{props.t('precipitation')}</span>
               </Badge>
@@ -78,7 +78,7 @@ const WeatherContainer = (props) => {
           </Row>
         </Card>
       </Col>
-    </>     
+    </Row>     
   );
 }
 

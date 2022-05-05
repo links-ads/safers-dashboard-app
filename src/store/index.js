@@ -4,6 +4,7 @@ import storage from 'redux-persist/lib/storage/session';//or session
 import thunk from 'redux-thunk';
 
 import reducers from './appReducer';
+// eslint-disable-next-line no-unused-vars
 import logger from './middleware/logger';
 
 const persistConfig = {
@@ -20,7 +21,7 @@ const store = createStore(
   persistedReducer,
   composeEnhancers(applyMiddleware(
     thunk,
-    logger
+    // logger
   ))
 );
 

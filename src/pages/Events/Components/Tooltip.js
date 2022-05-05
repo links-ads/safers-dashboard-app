@@ -37,7 +37,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo }) 
       style={{ borderRadius: '10px' }}
     >
 
-      <div className='my-2 mx-4 map-tooltip'>
+      <div className='my-2 mx-4 map-tooltip' role='event-tooltip'>
         <Col>
           <Row className='mb-2'>
             <Col md={1} className='d-flex'>

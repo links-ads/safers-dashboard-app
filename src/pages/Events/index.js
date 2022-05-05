@@ -64,9 +64,6 @@ const EventAlerts = () => {
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
   }, [filteredAlerts]);
 
-  
-
-
   const handleDateRangePicker = (dates) => {
     let from = moment(dates[0]).format('DD-MM-YYYY');
     let to = moment(dates[1]).format('DD-MM-YYYY');
