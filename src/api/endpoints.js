@@ -25,6 +25,8 @@ export const endpoints = {
     setFavorite: '/event-alerts/favorite',
     validate: '/event-alerts/validate',
     edit: '/event-alerts/id-goes-here',
+    getInSitu: '/event-alerts/inSitu',
+    getTweets: '/event-alerts/tweets'
   },
   user: {
     profile: '/users/',

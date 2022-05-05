@@ -79,7 +79,6 @@ const SignUp = () => {
       enableReinitialize={true}
       validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
-        console.log(values)
         dispatch(registration(values));
         setSubmitting(false);
       }}

@@ -2,6 +2,7 @@
 
 exports[`Authentication Component Renders Should match snapshot 1`] = `
 <div>
+  <PreLoader />
   <Container
     className="p-0"
     data-test="containerComponent"
@@ -85,57 +86,59 @@ exports[`Authentication Component Renders Should match snapshot 1`] = `
                 />
               </div>
             </div>
-            <div
-              className="tab-container"
-            >
-              <Nav
-                className="nav-tabs-custom"
-                tabs={true}
-                tag="ul"
-                vertical={false}
+            <React.Fragment>
+              <div
+                className="tab-container"
               >
-                <NavItem
-                  tag="li"
+                <Nav
+                  className="nav-tabs-custom"
+                  tabs={true}
+                  tag="ul"
+                  vertical={false}
                 >
-                  <NavLink
-                    className=""
-                    onClick={[Function]}
-                    tag="a"
+                  <NavItem
+                    tag="li"
                   >
-                    SIGN IN
-                  </NavLink>
-                </NavItem>
-                <NavItem
-                  tag="li"
-                >
-                  <NavLink
-                    className=""
-                    onClick={[Function]}
-                    tag="a"
+                    <NavLink
+                      className=""
+                      onClick={[Function]}
+                      tag="a"
+                    >
+                      SIGN IN
+                    </NavLink>
+                  </NavItem>
+                  <NavItem
+                    tag="li"
                   >
-                    SIGN UP
-                  </NavLink>
-                </NavItem>
-              </Nav>
-              <TabContent
-                tag="div"
-              >
-                <TabPane
-                  tabId="sign-in"
+                    <NavLink
+                      className=""
+                      onClick={[Function]}
+                      tag="a"
+                    >
+                      SIGN UP
+                    </NavLink>
+                  </NavItem>
+                </Nav>
+                <TabContent
                   tag="div"
-                  title="SIGN IN"
                 >
-                  <SignIn />
-                </TabPane>
-                <TabPane
-                  tabId="sign-up"
-                  tag="div"
-                  title="SIGN UP"
-                >
-                  <SignUp />
-                </TabPane>
-              </TabContent>
-            </div>
+                  <TabPane
+                    tabId="sign-in"
+                    tag="div"
+                    title="SIGN IN"
+                  >
+                    <SignIn />
+                  </TabPane>
+                  <TabPane
+                    tabId="sign-up"
+                    tag="div"
+                    title="SIGN UP"
+                  >
+                    <SignUp />
+                  </TabPane>
+                </TabContent>
+              </div>
+            </React.Fragment>
           </div>
         </div>
       </Col>

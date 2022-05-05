@@ -12,7 +12,7 @@ const MediaContainer = ({ reportDetail }) => {
     return null;
 
   return (
-    <>
+    <Row role='in-situ-reports-media'>
       <Col md={12} className='d-flex mt-3'>
         <Card className='card-weather' >
           <Row className='mb-2'>
@@ -31,7 +31,7 @@ const MediaContainer = ({ reportDetail }) => {
           </Row>
         </Card>
       </Col>
-    </>     
+    </Row>     
   );
 }
 

@@ -5,7 +5,7 @@ import PaginationWrapper from '../../../../components/Pagination';
 import TweetComponent from '../../../../components/TweetComponent';
 
 const TwitterContainer = () => {
-  const tweets = useSelector(state => state.dashboard.tweets);
+  const tweets = useSelector(state => state.eventAlerts.tweets);
   const [pageData, setPageData] = useState([]);
   return (
     <>

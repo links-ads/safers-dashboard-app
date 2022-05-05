@@ -5,7 +5,6 @@ import UpdateProfile from './UpdateProfile';
 import ResetPsw from './ResetPsw';
 import AoiHelper from '../../helpers/aoiHelper';
 
-
 const MyProfile = () => {
 
   const [customActiveTab, setCustomActiveTab] = useState('1');
@@ -46,6 +45,7 @@ const MyProfile = () => {
                     onClick={() => {
                       toggleCustom('2')
                     }}
+                    data-testid="updateProfilePasswordBtn"
                   >
                     <span className='d-none d-sm-block me-2'><i className='fas fa-lock'></i></span>
                     <span className='d-block'>Change Password</span>

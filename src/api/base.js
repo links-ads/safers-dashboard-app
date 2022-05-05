@@ -2,7 +2,7 @@ import axios from 'axios'
 import { authHeader } from '../helpers/authHelper';
 import { BASE_URL } from '../config';
 
-const API_PREFIX = 'api';
+export const API_PREFIX = 'api';
 
 const axiosApi = axios.create({
   baseURL: `${BASE_URL}/${API_PREFIX}`,
@@ -12,6 +12,7 @@ axiosApi.interceptors.response.use(
   response => response,
   error => Promise.reject(error)
 )
+export const axiosInstance = axiosApi;
 
 export async function get(url, config = {}) {
   return await axiosApi.get(url, {...config, headers: authHeader()}).then(response => response)
