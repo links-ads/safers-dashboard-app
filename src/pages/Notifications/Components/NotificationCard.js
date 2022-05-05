@@ -41,7 +41,7 @@ const NotificatonCard = ({ card }) => {
                   </Col>
                   <Col>
                     <CardText>
-                      <span className='float-end alert-source-text me-2'>{card.source}</span>
+                      <span className='float-end alert-source-text me-2 text-uppercase'>{card.source}</span>
                     </CardText>
                   </Col>
                 </Row>

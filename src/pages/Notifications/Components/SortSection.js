@@ -1,27 +1,38 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Input} from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
-import { setFilterdNotifications, setNotificationSortByDate, setNotificationSource } from '../../../store/notifications/action';
+import { getAllNotifications } from '../../../store/notifications/action';
 
-const SortSection = () => {
-  const { filteredNotifications, sortByDate, notificationSource } = useSelector(state => state.notifications);
-  const notifications = useSelector(state => state.notifications.allNotifications);
-
+const SortSection = ({ setFilterdNotifications, filteredNotifications}) => {
   const dispatch = useDispatch();
 
+  const notifications = useSelector(state => state.notifications.allNotifications);
+  const [notificationSource, setNotificationSource] = useState('Report')
+  const [sortByDate, setSortByDate] = useState('desc')
+  
+  let params = {default_bbox: false}
+
   const filterBySource = (notificationSource) => {
-    dispatch(setNotificationSource(notificationSource));
+    setNotificationSource(notificationSource);
     if (notificationSource === 'all')
-      dispatch(setFilterdNotifications(notifications));
+      setFilterdNotifications(notifications);
     else
-      dispatch(setFilterdNotifications(_.filter(notifications, (o) => o.source.includes(notificationSource ))));
+      setFilterdNotifications(_.filter(notifications, (o) => o.source.includes(notificationSource )));
   }
+  
   const filterByDate = (sortByDate) => {
-    dispatch(setNotificationSortByDate(sortByDate))
-    dispatch(setFilterdNotifications(_.orderBy(filteredNotifications, ['timestamp'], [sortByDate])));
+    setSortByDate(sortByDate)
+    setFilterdNotifications(_.orderBy(filteredNotifications, ['timestamp'], [sortByDate]))
   };
+
+  useEffect(() => {
+    if(notificationSource){
+      params.source = notificationSource;
+    }
+    dispatch(getAllNotifications(params));
+  }, [notificationSource]);
 
   return(
     <>
@@ -51,6 +62,7 @@ const SortSection = () => {
             value={notificationSource}
           >
             <option value={'all'} >Source : All</option>
+            <option value={'Report'} >Source : Reports</option>
           </Input>
         </Col>
         <Col>
@@ -69,6 +81,8 @@ SortSection.propTypes = {
   setSortByDate: PropTypes.string,
   alertSource: PropTypes.func,
   setAlertSource: PropTypes.func,
+  filteredNotifications: PropTypes.array,
+  setFilterdNotifications: PropTypes.func
 }
 
 export default SortSection;

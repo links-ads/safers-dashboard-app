@@ -15,7 +15,8 @@ axiosApi.interceptors.response.use(
 export const axiosInstance = axiosApi;
 
 export async function get(url, config = {}) {
-  return await axiosApi.get(url, {...config, headers: authHeader()}).then(response => response)
+  console.log(config);
+  return await axiosApi.get(url, { params: config, headers: authHeader()}).then(response => response)
 }
 
 export async function patch(url, data, config = {}) {

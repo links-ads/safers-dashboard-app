@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 import _ from 'lodash';
 import moment from 'moment';
@@ -11,40 +11,28 @@ import DateComponent from '../../components/DateRangePicker/DateRange';
 
 import NotificationsList from './Components/NotificationsList';
 import { NOTIFICATIONS_PAGE_SIZE } from '../../store/notifications/types';
-import { getAllNotifications, setCurrentNotificationPage, setFilterdNotifications, setNotificationDateRange, setPaginatedNotifications } from '../../store/notifications/action';
 
 const Notifications = () => {
   const notifications = useSelector(state => state.notifications.allNotifications);
-  const { filteredNotifications, sortByDate, notificationSource, dateRange } = useSelector(state => state.notifications);
-
-  const dispatch = useDispatch();
-
+  const [ filteredNotifications, setFilterdNotifications] = useState([])
+  const [ paginatedNotifications, setPaginatedNotifications] = useState([])
+  const [ currentPage, setCurrentPage] = useState(1)
+  // eslint-disable-next-line no-unused-vars
+  const [ dateRange, setNotificationDateRange] = useState([])
+  
   useEffect(() => {
-    dispatch(getAllNotifications(
-      {
-        sortOrder: sortByDate,
-        source: notificationSource,
-        from: dateRange[0],
-        to: dateRange[1]
-      }
-    ));
-  }, []);
-
-  useEffect(() => {
-    if (notifications.length > 0) {
-      dispatch(setFilterdNotifications(notifications));
-    }
+    setFilterdNotifications(notifications);
   }, [notifications]);
 
   useEffect(() => {
-    dispatch(setCurrentNotificationPage(1));
-    dispatch(setPaginatedNotifications(_.cloneDeep(filteredNotifications.slice(0, NOTIFICATIONS_PAGE_SIZE))))
+    setCurrentPage(1);
+    setPaginatedNotifications(_.cloneDeep(filteredNotifications.slice(0, NOTIFICATIONS_PAGE_SIZE)))
   }, [filteredNotifications]);
 
   const handleDateRangePicker = (dates) => {
     let from = moment(dates[0]).format('DD-MM-YYYY');
     let to = moment(dates[1]).format('DD-MM-YYYY');
-    dispatch(setNotificationDateRange([from, to]));
+    setNotificationDateRange([from, to]);
   }
 
   return (
@@ -60,10 +48,16 @@ const Notifications = () => {
         </Row>
         <Row>
           <Col xl={12}>
-            <SortSection />
+            <SortSection filteredNotifications={filteredNotifications} setFilterdNotifications={setFilterdNotifications}/>
             <Row>
               <Col xl={12} className='px-3'>
-                <NotificationsList/>
+                <NotificationsList 
+                  filteredNotifications={filteredNotifications} 
+                  paginatedNotifications={paginatedNotifications} 
+                  setPaginatedNotifications={setPaginatedNotifications}
+                  currentPage={currentPage}
+                  setCurrentPage={setCurrentPage}
+                />
               </Col>
             </Row>
           </Col>
