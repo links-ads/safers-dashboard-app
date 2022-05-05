@@ -10,9 +10,6 @@ const initialState = {
   iconLayer: undefined,
   alertId: null,
   hoverInfo: undefined,
-  sortByDate: 'desc',
-  alertSource: 'all',
-  dateRange: getDefaultDateRange(),
   currentPage: 1,
   error: false,
   success: null,
@@ -50,8 +47,6 @@ const eventAlertReducer = (state = initialState, action) => {
   case actionTypes.SET_DATE_RANGE: return setDateRange(state, action);
   case actionTypes.SET_NEW_EVENT_STATE: return setNewEventState(state, action);
   case actionTypes.RESET_EVENT_API_PARAMS: return resetEventApiParams(state, action);
-
-
   default:
     return state;
   }
@@ -171,27 +166,35 @@ const setZoomLevel = (state, action) => {
 }
 const setSortByDate = (state, action) => {
   const updatedState = {
-    sortByDate: action.payload,
+    params: {
+      ...state.params,
+      sortByDate: action.payload,
+    }
   }
   return updateObject(state, updatedState);
 }
 const setAlertSource = (state, action) => {
   const updatedState = {
-    alertSource: action.payload,
+    params: {
+      ...state.params,
+      alertSource: action.payload,
+    }
   }
   return updateObject(state, updatedState);
 }
 const setDateRange = (state, action) => {
   const updatedState = {
-    dateRange: action.payload,
+    params: {
+      ...state.params,
+      dateRange: action.payload,
+    }
   }
   return updateObject(state, updatedState);
 }
 
 const resetEventApiParams = (state) => {
   const updatedState = {
-    error: false,
-    success: null
+    params: initialState.params,
   }
   return updateObject(state, updatedState);
 }

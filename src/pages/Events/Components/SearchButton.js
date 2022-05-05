@@ -4,7 +4,8 @@ import { Button } from 'reactstrap'
 import { getAllEventAlerts } from '../../../store/appAction';
 
 const SearchButton = (index) => {
-  const { midPoint, zoomLevel, sortByDate, alertSource, dateRange } = useSelector(state => state.eventAlerts);
+  const { midPoint, zoomLevel, params } = useSelector(state => state.eventAlerts);
+  const { dateRange, sortByDate, alertSource } = params;
 
   const dispatch = useDispatch();
 
@@ -48,7 +49,7 @@ const SearchButton = (index) => {
       onClick={getAlertsByArea}
     >
       <i className="bx bx-revision"></i>{' '}
-        Search This Area
+      Search This Area
     </Button >
   )
 }

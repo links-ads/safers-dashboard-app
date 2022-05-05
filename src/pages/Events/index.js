@@ -19,8 +19,8 @@ const EventAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
   const success = useSelector(state => state.eventAlerts.success);
-  const { filteredAlerts, sortByDate, alertSource, dateRange } = useSelector(state => state.eventAlerts);
-
+  const { params, filteredAlerts } = useSelector(state => state.eventAlerts);
+  const { dateRange, sortByDate, alertSource } = params;
   const [viewState, setViewState] = useState(undefined);
 
   const dispatch = useDispatch();
