@@ -4,7 +4,8 @@ import storage from 'redux-persist/lib/storage/session';//or session
 import thunk from 'redux-thunk';
 
 import reducers from './appReducer';
-// import logger from './middleware/logger';
+// eslint-disable-next-line no-unused-vars
+import logger from './middleware/logger';
 
 const persistConfig = {
   key: 'root',
