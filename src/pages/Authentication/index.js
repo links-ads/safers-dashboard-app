@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
+import PreLoader from '../../components/PreLoader';
 import ResetPassword from './ResetPassword';
 import { isRemembered, setAoiSuccess, getAllAreas } from '../../store/appAction';
 import _ from 'lodash';
@@ -18,7 +19,7 @@ const Authentication = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoggedIn, user } = useSelector(state => state.auth);
-  const allAoi = useSelector(state => state.common.aois);
+  const {aois:allAoi, isLoading} = useSelector(state => state.common);
   const defaultAoi = useSelector(state => state.user.defaultAoi);
 
   useEffect(() => {
@@ -89,20 +90,7 @@ const Authentication = () => {
 
   return (
     <div>
-      {isLoading && 
-      <div id='preloader'>
-        <div className='status'>
-          <div className='spinner-chase'>
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-            <div className='chase-dot' />
-          </div>
-          <p id='status-msg' className='mt-3'><i>{loadingMsg}</i></p>
-        </div>
-      </div>}
+      <PreLoader isLoading={isLoading} loadingMsg="Please wait.." />
       <Container fluid className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">

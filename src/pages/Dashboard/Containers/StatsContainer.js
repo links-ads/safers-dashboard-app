@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
+import { Col, Card, CardHeader, CardBody, CardFooter, Row } from 'reactstrap';
 import { useSelector } from 'react-redux';
 import { formatNumber } from '../../../store/utility';
 
@@ -16,7 +16,7 @@ const StatsContainer = (props) => {
       <Col md={3} sm={6}>
         <Card className='stats-card px-2 pb-3'>
           <CardHeader>
-          {props.t('reports')}
+            {props.t('reports')}
           </CardHeader>
           <CardBody className='mx-auto'>
             {stats ? formatNumber(stats.reports) : 'N/A'}
@@ -28,7 +28,7 @@ const StatsContainer = (props) => {
       <Col md={3} sm={6}>
         <Card className='stats-card px-2 pb-3'>
           <CardHeader>
-          {props.t('alerts')}
+            {props.t('alerts')}
           </CardHeader>
           <CardBody className='mx-auto'>
             {stats ? formatNumber(stats.alerts) : 'N/A'}
@@ -40,7 +40,7 @@ const StatsContainer = (props) => {
       <Col md={3} sm={6} >
         <Card className='stats-card px-2 pb-3'>
           <CardHeader>
-          {props.t('events')}
+            {props.t('events')}
           </CardHeader>
           <CardBody className='mx-auto'>
             {stats ? formatNumber(stats.events) : 'N/A'}
@@ -52,13 +52,13 @@ const StatsContainer = (props) => {
       <Col md={3} sm={6}>
         <Card className='stats-card px-2 pb-3'>
           <CardHeader>
-          {props.t('social engagement')}
+            {props.t('social engagement')}
           </CardHeader>
           <CardBody className='mx-auto'>
             <span>{stats ? formatNumber(stats.socialEngagement) : 'N/A'}</span>
           </CardBody>
           <CardFooter className='mx-auto'>
-          {props.t('tot tweets')}
+            {props.t('tot tweets')}
           </CardFooter>
         </Card>
       </Col>
