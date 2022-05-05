@@ -45,7 +45,7 @@ const pollingHelper = (props) => {
   }, [allAlerts]);
 
   useEffect(() => {
-    var newEventsCount = /*allEvents.length*/ Math.floor(Math.random() * 90 + 10);//to simulate new alerts
+    var newEventsCount = /*allEvents.length*/ Math.floor(Math.random() * 90 + 10);//to simulate new events
     if (currentEventCount && newEventsCount > currentEventCount) {
       let difference = newEventsCount - currentEventCount;
       if (!isEventPageActive)
