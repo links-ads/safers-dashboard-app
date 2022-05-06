@@ -11,14 +11,22 @@
     background-color: $card-bg;
     z-index: 9999;
     text-align: center;
+    opacity: 0.8
 }
 
-#status {
+.status {
     margin-top: 20%;
     display: inline-block;
     text-align: center;
 }
 
+.pre-loader-status {
+    display: inline-block;
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+}
 .spinner-chase {
     margin: 0 auto;
     width: 40px;

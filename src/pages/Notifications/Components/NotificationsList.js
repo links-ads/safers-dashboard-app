@@ -1,25 +1,18 @@
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
-import { setCurrentNotificationPage, setPaginatedNotifications } from '../../../store/notifications/action';
 import { NOTIFICATIONS_PAGE_SIZE } from '../../../store/notifications/types';
 import NotificatonCard from './NotificationCard';
+import PropTypes from 'prop-types';
 
-
-const NotificationsList = () => {
-  const { paginatedNotifications, filteredNotifications } = useSelector(state => state.notifications);
-  const currentPage = useSelector(state => state.notifications.currentPage);
-  
-  const dispatch = useDispatch();
+const NotificationsList = ({filteredNotifications, paginatedNotifications, setPaginatedNotifications, currentPage, setCurrentPage}) => {
   
   const updatePage = page => {
-    dispatch(setCurrentNotificationPage(page));
+    setCurrentPage(page);
     const to = NOTIFICATIONS_PAGE_SIZE * page;
     const from = to - NOTIFICATIONS_PAGE_SIZE;
-    
-    dispatch(setPaginatedNotifications(_.cloneDeep(filteredNotifications.slice(from, to))));
+    setPaginatedNotifications(_.cloneDeep(filteredNotifications.slice(from, to)));
   };
   
   return(
@@ -42,6 +35,14 @@ const NotificationsList = () => {
         />
       </Row>
     </>)
+}
+
+NotificationsList.propTypes = {
+  filteredNotifications: PropTypes.array,
+  paginatedNotifications: PropTypes.array,
+  setPaginatedNotifications: PropTypes.func,
+  currentPage: PropTypes.number,
+  setCurrentPage: PropTypes.func
 }
 
 export default NotificationsList;

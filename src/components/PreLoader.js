@@ -6,7 +6,7 @@ const PreLoader =  ({isLoading = false, loadingMsg = ''}) => {
     <>
       {isLoading && 
         <div id='preloader'>
-          <div id='status'>
+          <div id='status' className='pre-loader-status'>
             <div className='spinner-chase'>
               <div className='chase-dot' />
               <div className='chase-dot' />
