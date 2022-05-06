@@ -1,9 +1,15 @@
 import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
+import queryString from 'query-string';
 
 export const getAllFireAlerts = (options) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.getAll, options);
+  const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify({
+    ...options,
+    default_start: false,
+    default_end: false,
+    default_bbox: false
+  })));
   if (response.status === 200) {
     return dispatch(getAlertsSuccess(response.data));
   }
