@@ -44,16 +44,15 @@ const Notifications = () => {
     }
     dispatch(getAllNotifications(params));
   }, [notificationSource, dateRange]);
+
   useEffect(() => {
     setCurrentPage(1);
     setPaginatedNotifications(_.cloneDeep(filteredNotifications.slice(0, NOTIFICATIONS_PAGE_SIZE)))
   }, [filteredNotifications]);
 
   const handleDateRangePicker = (dates) => {
-    console.log(dates)
     let from = moment(dates[0]).format('YYYY-MM-DD');
     let to = moment(dates[1]).format('YYYY-MM-DD');
-    console.log(from, to)
     setDateRange([from, to]);
   }
 
