@@ -6,7 +6,7 @@ import { setSession, deleteSession, getSession } from '../../helpers/authHelper'
 import _ from 'lodash';
 
 
-const InProgress = (status, msg='') => {
+export const InProgress = (status, msg='') => {
   return {
     type: CM_WIP,
     payload: msg,

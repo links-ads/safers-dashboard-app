@@ -5,22 +5,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
+import PreLoader from '../../components/PreLoader';
 import ResetPassword from './ResetPassword';
 import { isRemembered, setAoiSuccess, getAllAreas } from '../../store/appAction';
 import _ from 'lodash';
 
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
-import PreLoader from '../../components/PreLoader';
 
 const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';
   const { currentPage } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLoading, loadingMsg } = useSelector(state => state.common);
   const { isLoggedIn, user } = useSelector(state => state.auth);
-  const allAoi = useSelector(state => state.common.aois);
+  const {aois:allAoi, isLoading} = useSelector(state => state.common);
   const defaultAoi = useSelector(state => state.user.defaultAoi);
 
   useEffect(() => {
@@ -91,7 +90,7 @@ const Authentication = () => {
 
   return (
     <div>
-      <PreLoader isLoading={isLoading} loadingMsg={loadingMsg}/>
+      <PreLoader isLoading={isLoading} loadingMsg="Please wait.." />
       <Container fluid className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">

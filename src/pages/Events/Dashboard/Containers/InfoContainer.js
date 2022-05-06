@@ -124,7 +124,7 @@ const InfoContainer = () => {
                 </CardText>
               </Col>
             </Row>
-            <Row className='mt-3'>
+            <Row className='mt-4'>
               <Col >
                 <CardText className='mb-2'>
                   Source: <span className='ms-3'>{event ? (event.source).join(', ') : 'not set'}</span>
