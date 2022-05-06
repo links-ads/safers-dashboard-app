@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import _ from 'lodash';
@@ -9,7 +10,10 @@ import { FlyToInterpolator } from 'deck.gl';
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css'
 
-const AoiHelper = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const AoiHelper = ({t}) => {
   toastr.options = {
     preventDuplicates: true,
   }
@@ -145,7 +149,7 @@ const AoiHelper = () => {
                 color="primary"
                 onClick={handleSubmit}
                 data-test-id='save-default-aoi-btn'>
-                SAVE AREA OF INTEREST
+                {t('save-aoi')}
               </Button>
             </div>
           </Row>
@@ -155,4 +159,8 @@ const AoiHelper = () => {
   )
 }
 
-export default AoiHelper;
+AoiHelper.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['common'])(AoiHelper);

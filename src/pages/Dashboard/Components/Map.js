@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import MapCards from '../Components/MapCards';
+import MapCards from '../../../components/BaseMap/MapCards';
 
 const MapComponent = () => {
   const { polygonLayer, viewState } = useSelector(state => state.common);

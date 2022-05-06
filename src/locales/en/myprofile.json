@@ -1,0 +1,26 @@
+{
+  "My Profile": "My Profile",
+  "Change Password": "Change Password",
+  "Selected Area of Interest": "Selected Area of Interest",
+  "Edit Image": "Edit Image",
+  "Email": "Email",
+  "Location": "Location",
+  "Organization": "Organization",
+  "Personal Details": "Personal Details",
+  "First Name": "First Name",
+  "Last Name": "Last Name",
+  "Country": "Country",
+  "Select your country": "Select your country",
+  "City": "City",
+  "Role": "Role",
+  "Select your role": "Select your role",
+  "Address": "Address",
+  "update-details": "UPDATE DETAILS",
+  "delete-account": "DELETE MY ACCOUNT",
+  "confirm-delete-text": "Please confirm if you want to delete this account",
+  "current-password": "CURRENT PASSWORD",
+  "new-password": "NEW PASSWORD",
+  "confirm-password": "CONFIRM PASSWORD",
+  "change-password": "CHANGE PASSWORD"
+
+}
