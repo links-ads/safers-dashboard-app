@@ -31,6 +31,7 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications}) => {
     if(notificationSource){
       params.source = notificationSource;
     }
+    
     dispatch(getAllNotifications(params));
   }, [notificationSource]);
 

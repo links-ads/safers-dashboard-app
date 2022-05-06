@@ -11,7 +11,6 @@ const axiosApi = axios.create({
 })
 
 axiosApi.interceptors.request.use(async(config) => {
-  // spinning start to show
   if(!config.url.includes('alerts')){
     store.dispatch(InProgress(true, 'Please wait..'));
   }
@@ -31,7 +30,6 @@ axiosApi.interceptors.response.use(
 export const axiosInstance = axiosApi;
 
 export async function get(url, config = {}) {
-  console.log(config);
   return await axiosApi.get(url, { params: config, headers: authHeader()}).then(response => response)
 }
 
