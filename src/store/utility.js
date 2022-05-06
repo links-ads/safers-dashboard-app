@@ -13,8 +13,8 @@ export const formatNumber = (number) => {
 }
 
 export const getDefaultDateRange = () => {
-  const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
-  const to = moment(new Date()).format('DD-MM-YYYY');
+  const from = moment(new Date()).add(-3, 'days').format('YYYY-MM-DD');
+  const to = moment(new Date()).format('YYYY-MM-DD');
   return [from, to];
 }
 

@@ -9,15 +9,10 @@ import { getAllDataLayers } from '../../store/appAction';
 
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TreeView from './TreeView';
+// import { getDefaultDateRange } from '../../store/utility';
 
 const LON_BASE_POINT = 16;
 const LAT_BASE_POINT = 12;
-
-const getDefaultDateRange = () => {
-  const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
-  const to = moment(new Date()).format('DD-MM-YYYY');
-  return [from, to];
-}
 
 const DataLayer = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -26,21 +21,11 @@ const DataLayer = () => {
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [boundaryBox, setBoundaryBox] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState('desc');
-  const [layerSource, setLayerSource] = useState('all');
-  const [dateRange, setDateRange] = useState(getDefaultDateRange());
+  const [sortByDate, setSortByDate] = useState(undefined);
+  const [layerSource, setLayerSource] = useState(undefined);
+  const [dataDomain, setDataDomain] = useState(undefined);
+  const [dateRange, setDateRange] = useState([undefined, undefined]);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAllDataLayers(
-      {
-        sortOrder: sortByDate,
-        source: layerSource,
-        from: dateRange[0],
-        to: dateRange[1]
-      }
-    ));
-  }, []);
 
   useEffect(() => {
     setBoundaryBox(
@@ -67,13 +52,18 @@ const DataLayer = () => {
     //TODO: filter and sort UI logics
     dispatch(getAllDataLayers(
       {
-        sortOrder: sortByDate,
-        source: layerSource,
-        from: dateRange[0],
-        to: dateRange[1]
+        order: sortByDate,
+        source: layerSource ? layerSource : undefined,
+        domain: dataDomain ? dataDomain : undefined,
+        start: dateRange[0],
+        end: dateRange[1],
+        // bbox: boundaryBox ? boundaryBox.toString() : undefined, //disabled since bbox value won't return data 
+        default_start: false,
+        default_end: false,
+        default_bbox: false
       }
     ));
-  }, [layerSource, sortByDate, dateRange]);
+  }, [layerSource, dataDomain, sortByDate, dateRange, boundaryBox]);
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -106,9 +96,14 @@ const DataLayer = () => {
   }
 
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
-    setDateRange([from, to]);
+    if (dates) {
+      let from = moment(dates[0]).format('YYYY-MM-DD');
+      let to = moment(dates[1]).format('YYYY-MM-DD');
+      setDateRange([from, to]);
+    } else {
+      //setDateRange(getDefaultDateRange()); disabled since start/end values won't return data 
+      setDateRange([undefined, undefined]);
+    }
   }
 
   const handleResetAOI = useCallback(() => {
@@ -136,8 +131,8 @@ const DataLayer = () => {
                       onChange={(e) => setSortByDate(e.target.value)}
                       value={sortByDate}
                     >
-                      <option value={'desc'} >Sort By : Date desc</option>
-                      <option value={'asc'} >Sort By : Date asc</option>
+                      <option value={'-date'} >Sort By : Date desc</option>
+                      <option value={'date'} >Sort By : Date asc</option>
                     </Input>
                   </Col>
                   <Col xl={4}>
@@ -150,7 +145,7 @@ const DataLayer = () => {
                       onChange={(e) => setLayerSource(e.target.value)}
                       value={layerSource}
                     >
-                      <option value={'all'} >Source : All</option>
+                      <option value={''} >Source : All</option>
                       <option value={'web'} >Source : Web</option>
                       <option value={'camera'} >Source : Camera</option>
                       <option value={'satellite'} >Source : Satellite</option>
@@ -163,10 +158,10 @@ const DataLayer = () => {
                       name="dataDomain"
                       placeholder="Domain"
                       type="select"
-                      onChange={(e) => setLayerSource(e.target.value)}
-                      value={layerSource}
+                      onChange={(e) => setDataDomain(e.target.value)}
+                      value={dataDomain}
                     >
-                      <option value={'all'} >Data Domain : All</option>
+                      <option value={''} >Data Domain : All</option>
                       <option value={'fire'} >Data Domain : Fire</option>
                       <option value={'weather'} >Data Domain : Weather</option>
                       <option value={'water'} >Data Domain : Water</option>
@@ -197,7 +192,7 @@ const DataLayer = () => {
                 </InputGroup>
               </Col>
               <Col xl={5}>
-                <DateRangePicker setDates={handleDateRangePicker} />
+                <DateRangePicker setDates={handleDateRangePicker} clearDates={handleDateRangePicker} />
               </Col>
             </Row>
             <Row>

@@ -1,9 +1,10 @@
 import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
+import queryString from 'query-string';
 
 export const getAllDataLayers = (options) => async (dispatch) => {
-  const response = await api.post(endpoints.dataLayers.getAll, options);
+  const response = await api.get(endpoints.dataLayers.getAll.concat('?', queryString.stringify(options)));
   if (response.status === 200) {
     return dispatch(getDataLayersSuccess(response.data));
   }
