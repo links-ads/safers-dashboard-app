@@ -3,7 +3,7 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 export const getAllNotifications = (options) => async (dispatch) => {
-  const response = await api.post(endpoints.notifications.getAll, options);
+  const response = await api.get(endpoints.notifications.getAll, options);
   if (response.status === 200) {
     return dispatch(getNotificationsSuccess(response.data));
   }
