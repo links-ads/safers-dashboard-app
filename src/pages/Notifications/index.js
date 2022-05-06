@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
 import _ from 'lodash';
 import moment from 'moment';
@@ -11,28 +11,50 @@ import DateComponent from '../../components/DateRangePicker/DateRange';
 
 import NotificationsList from './Components/NotificationsList';
 import { NOTIFICATIONS_PAGE_SIZE } from '../../store/notifications/types';
+import { getAllNotifications } from '../../store/notifications/action';
 
 const Notifications = () => {
+  const dispatch = useDispatch();
+
   const notifications = useSelector(state => state.notifications.allNotifications);
   const [ filteredNotifications, setFilterdNotifications] = useState([])
   const [ paginatedNotifications, setPaginatedNotifications] = useState([])
   const [ currentPage, setCurrentPage] = useState(1)
+  const [notificationSource, setNotificationSource] = useState('Report')
+  const [sortByDate, setSortByDate] = useState('desc')
   // eslint-disable-next-line no-unused-vars
-  const [ dateRange, setNotificationDateRange] = useState([])
+  const [ dateRange, setDateRange] = useState([])
   
+  let params = {default_bbox: false}
+
   useEffect(() => {
     setFilterdNotifications(notifications);
   }, [notifications]);
 
+  useEffect(() => {
+    params.default_date = true
+    if(notificationSource){
+      params.source = notificationSource;
+    }
+    
+    if(dateRange.length ===2){
+      params.default_date = false
+      params.start_date = dateRange[0]
+      params.end_date = dateRange[1]
+    }
+    dispatch(getAllNotifications(params));
+  }, [notificationSource, dateRange]);
   useEffect(() => {
     setCurrentPage(1);
     setPaginatedNotifications(_.cloneDeep(filteredNotifications.slice(0, NOTIFICATIONS_PAGE_SIZE)))
   }, [filteredNotifications]);
 
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
-    setNotificationDateRange([from, to]);
+    console.log(dates)
+    let from = moment(dates[0]).format('YYYY-MM-DD');
+    let to = moment(dates[1]).format('YYYY-MM-DD');
+    console.log(from, to)
+    setDateRange([from, to]);
   }
 
   return (
@@ -48,7 +70,14 @@ const Notifications = () => {
         </Row>
         <Row>
           <Col xl={12}>
-            <SortSection filteredNotifications={filteredNotifications} setFilterdNotifications={setFilterdNotifications}/>
+            <SortSection 
+              filteredNotifications={filteredNotifications} 
+              setFilterdNotifications={setFilterdNotifications}
+              sortByDate={sortByDate}
+              setSortByDate={setSortByDate}
+              notificationSource={notificationSource}
+              setNotificationSource={setNotificationSource}
+            />
             <Row>
               <Col xl={12} className='px-3'>
                 <NotificationsList 

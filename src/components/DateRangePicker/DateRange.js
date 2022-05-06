@@ -22,7 +22,7 @@ const DateComponent = ({ setDates }) => {
           placeholder="dd/mm/yy"
           ref={fp}
           onChange={(dates) => {
-            dates.length > 1 && setDates(dates);
+            setDates(dates);
           }}
           options={{
             mode: 'range',

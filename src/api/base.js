@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { authHeader } from '../helpers/authHelper';
+import { authHeader, deleteSession } from '../helpers/authHelper';
 import { BASE_URL } from '../config';
 import store from '../store'
-import { InProgress, signOut } from '../store/authentication/action';
+import { InProgress, signOutSuccess } from '../store/authentication/action';
 
 export const API_PREFIX = 'api';
 
@@ -61,7 +61,8 @@ export async function del(url, config = {}) {
 const handleError = (error) => {
   switch(error.response.status){
   case 401:
-    store.dispatch(signOut())
+    deleteSession();
+    store.dispatch(signOutSuccess())
     return Promise.reject(error)
   case 404:
     window.location.href = '/pages-404'

@@ -1,18 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, {  } from 'react';
 import { Row, Col, Input} from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
-import { getAllNotifications } from '../../../store/notifications/action';
 
-const SortSection = ({ setFilterdNotifications, filteredNotifications}) => {
-  const dispatch = useDispatch();
+const SortSection = ({ setFilterdNotifications, filteredNotifications, notificationSource, setNotificationSource, sortByDate, setSortByDate}) => {
 
   const notifications = useSelector(state => state.notifications.allNotifications);
-  const [notificationSource, setNotificationSource] = useState('Report')
-  const [sortByDate, setSortByDate] = useState('desc')
-  
-  let params = {default_bbox: false}
 
   const filterBySource = (notificationSource) => {
     setNotificationSource(notificationSource);
@@ -27,13 +21,7 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications}) => {
     setFilterdNotifications(_.orderBy(filteredNotifications, ['timestamp'], [sortByDate]))
   };
 
-  useEffect(() => {
-    if(notificationSource){
-      params.source = notificationSource;
-    }
-    
-    dispatch(getAllNotifications(params));
-  }, [notificationSource]);
+  
 
   return(
     <>
@@ -78,12 +66,14 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications}) => {
 }
 
 SortSection.propTypes = {
-  sortByDate: PropTypes.any,
-  setSortByDate: PropTypes.string,
-  alertSource: PropTypes.func,
+  alertSource: PropTypes.string,
   setAlertSource: PropTypes.func,
   filteredNotifications: PropTypes.array,
-  setFilterdNotifications: PropTypes.func
+  setFilterdNotifications: PropTypes.func,
+  notificationSource: PropTypes.string,
+  setNotificationSource: PropTypes.func,
+  sortByDate: PropTypes.string,
+  setSortByDate: PropTypes.func,
 }
 
 export default SortSection;
