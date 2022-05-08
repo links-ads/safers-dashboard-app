@@ -37,5 +37,15 @@
   "End": "Ende",
   "Burned Area Delineation": "Abgrenzung des verbrannten Bereichs",
   "Fire Propagation": "Feuerausbreitung",
-  "show-info": "ZEIGE INFO"
+  "show-info": "ZEIGE INFO",
+  "Notification List": "Benachrichtigungsliste",
+  "view": "AUSSICHT",
+  "North": "Norden",
+  "East": "East",
+  "South": "Ost",
+  "West": "Westen",
+  "Location": "Standort",
+  "Organization": "Organisation",
+  "save-aoi-success-msg": "Área de interés configurada con éxito",
+  "open": "OFFEN" 
 }

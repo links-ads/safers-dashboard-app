@@ -1,11 +1,14 @@
-import React, {  } from 'react';
+import React from 'react';
 import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { setFilterdReports } from '../../../store/reports/action';
 import _ from 'lodash';
 
-const SortSection = () => {
+//i18N
+import { withTranslation } from 'react-i18next';
+
+const SortSection = ({t}) => {
   const { allReports } = useSelector(state => state.reports);
 
   const dispatch = useDispatch();
@@ -27,7 +30,7 @@ const SortSection = () => {
       <Row className=''>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>Results {allReports.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {allReports.length}</span>
         </Col>
       </Row>
       <hr/>
@@ -41,8 +44,8 @@ const SortSection = () => {
             type="select"
             onChange={(e) => filterByDate(e.target.value)}
           >
-            <option value={'desc'} >Sort By : Date desc</option>
-            <option value={'asc'} >Sort By : Date asc</option>
+            <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
         <Col xl={4} className='my-1'>
@@ -71,6 +74,7 @@ SortSection.propTypes = {
   setSortByDate: PropTypes.string,
   alertSource: PropTypes.func,
   setAlertSource: PropTypes.func,
+  t: PropTypes.func
 }
 
-export default SortSection;
+export default withTranslation(['common'])(SortSection);

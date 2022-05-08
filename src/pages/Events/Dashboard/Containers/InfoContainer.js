@@ -40,7 +40,7 @@ const InfoContainer = ({t}) => {
           </Col>
           <Col className='mx-auto mt-2 mb-0' md={10}>
             <Row>
-              <Col className='my-2 font-size-16'>{t('Location')}</Col>
+              <Col className='my-2 font-size-16'>{t('Location', {ns: 'common'})}</Col>
             </Row>
             <Row>
               <Col md={1} className='d-flex'>

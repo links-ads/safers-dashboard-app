@@ -92,7 +92,7 @@ const EventAlerts = ({t}) => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>{t('Events', {ns: 'events'})}</p>
+            <p className='align-self-baseline alert-title'>{t('Events', {ns: 'common'})}</p>
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
               {t('default-aoi')}</Button>

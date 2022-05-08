@@ -41,7 +41,7 @@ const AoiHelper = ({t}) => {
 
   useEffect(() => {
     if(aoiSetSuccess) {
-      toastr.success('Area of interest set successfully', '');
+      toastr.success(t('save-aoi-success-msg', {ns: 'common'}), '');
     } 
   }, [aoiSetSuccess]);
 

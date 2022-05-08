@@ -21,7 +21,7 @@ i18n
       })
   }))
   .init({
-    ns: ['common', 'dashboard', 'myprofile', 'fireAlerts', 'events'],
+    ns: ['common', 'dashboard', 'myprofile', 'fireAlerts', 'events', 'dataLayers', 'reports', 'socialMonitor', 'inSitu'],
     defaultNs: 'common',
     lng: localStorage.getItem('I18N_LANGUAGE') || 'en',
     fallbackLng: 'en', // use en if detected lng is not available

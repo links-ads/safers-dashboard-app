@@ -175,13 +175,13 @@ const UpdateProfile = ({t}) => {
                     {user.email}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-map me-2'></i><span>{t('Location')}</span> 
+                    <i className='bx bx-map me-2'></i><span>{t('Location', {ns: 'common'})}</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     {user.address && user.address.length>0 ? `${user.address}, ` : ''}{user.city  && user.city.length>0 ? `${user.city}, ` : ''}{user.country && user.country.length>0 ? `${getName(user.country)}` : ''}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-shopping-bag me-2'></i><span>{t('Organization')}</span> 
+                    <i className='bx bx-shopping-bag me-2'></i><span>{t('Organization', {ns: 'common'})}</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     {orgName}

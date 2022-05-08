@@ -13,7 +13,6 @@ const TwitterContainer = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-
     if(localLang != i18n.language){
       setLocalLang(i18n.language)
     }

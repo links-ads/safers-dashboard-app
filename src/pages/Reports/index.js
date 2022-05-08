@@ -13,12 +13,15 @@ import ReportList from './Components/ReportList';
 import { getAllReports, resetReportResponseState, setDateRange} from '../../store/reports/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 
+import { useTranslation } from 'react-i18next';
+
 const MAP_TYPE = 'reports';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const {allReports: OrgReportList, success, filteredReports} = useSelector(state => state.reports);
   const { sortByDate, alertSource, dateRange } = useSelector(state => state.inSituAlerts);
+  const { t } = useTranslation();
 
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
@@ -70,10 +73,10 @@ const Reports = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>Reports List</p>
+            <p className='align-self-baseline alert-title'>{t('Reports List', {ns: 'reports'})}</p>
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
-                Default AOI</Button>
+              {t('default-aoi', {ns: 'common'})}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
             <DateComponent setDates={handleDateRangePicker} />
