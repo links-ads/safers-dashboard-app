@@ -1,4 +1,4 @@
-import React, {  } from 'react';
+import React from 'react';
 import { Row, Col, Input} from 'reactstrap';
 import PropTypes from 'prop-types';
 //i18n
