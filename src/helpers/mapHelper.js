@@ -16,7 +16,7 @@ export const getViewState = (midPoint, zoomLevel = 4) => {
   return {
     longitude: midPoint[0],
     latitude: midPoint[1],
-    zoom: zoomLevel + 1.25,
+    zoom: zoomLevel,
     bearing: 0,
     pitch: 0,
     transitionDuration: 1000,

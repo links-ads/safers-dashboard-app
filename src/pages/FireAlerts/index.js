@@ -175,7 +175,7 @@ const FireAlerts = () => {
     return {
       longitude: midPoint[0],
       latitude: midPoint[1],
-      zoom: zoomLevel + 1.25,
+      zoom: zoomLevel,
       pitch: 0,
       bearing: 0,
       transitionDuration: 1000,
