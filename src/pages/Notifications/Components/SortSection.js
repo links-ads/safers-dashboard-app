@@ -1,42 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Row, Col, Input} from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import _ from 'lodash';
-import { getAllNotifications } from '../../../store/notifications/action';
-
 //i18n
 import { withTranslation } from 'react-i18next'
 
-const SortSection = ({ setFilterdNotifications, filteredNotifications, t}) => {
-  const dispatch = useDispatch();
-
-  const notifications = useSelector(state => state.notifications.allNotifications);
-  const [notificationSource, setNotificationSource] = useState('Report')
-  const [sortByDate, setSortByDate] = useState('desc')
-  
-  let params = {default_bbox: false}
-
-  const filterBySource = (notificationSource) => {
-    setNotificationSource(notificationSource);
-    if (notificationSource === 'all')
-      setFilterdNotifications(notifications);
-    else
-      setFilterdNotifications(_.filter(notifications, (o) => o.source.includes(notificationSource )));
-  }
-  
-  const filterByDate = (sortByDate) => {
-    setSortByDate(sortByDate)
-    setFilterdNotifications(_.orderBy(filteredNotifications, ['timestamp'], [sortByDate]))
-  };
-
-  useEffect(() => {
-    if(notificationSource){
-      params.source = notificationSource;
-    }
-    
-    dispatch(getAllNotifications(params));
-  }, [notificationSource]);
+const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, sortOrder, setSortOrder, t}) => {
 
   return(
     <>
@@ -49,11 +17,11 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications, t}) => {
             name="sortByDate"
             placeholder="Sort By : Date"
             type="select"
-            onChange={(e) => filterByDate(e.target.value)}
-            value={sortByDate}
+            onChange={(e) => setSortOrder(e.target.value)}
+            value={sortOrder}
           >
-            <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
-            <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
+            <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
        
           <Input
@@ -62,7 +30,7 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications, t}) => {
             name="alertSource"
             placeholder="Source"
             type="select"
-            onChange={(e) =>filterBySource(e.target.value)}
+            onChange={(e) => setNotificationSource(e.target.value)}
             value={notificationSource}
           >
             <option value={'all'} >Source : All</option>
@@ -81,12 +49,14 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications, t}) => {
 }
 
 SortSection.propTypes = {
-  sortByDate: PropTypes.any,
-  setSortByDate: PropTypes.string,
-  alertSource: PropTypes.func,
+  alertSource: PropTypes.string,
   setAlertSource: PropTypes.func,
   filteredNotifications: PropTypes.array,
   setFilterdNotifications: PropTypes.func,
+  notificationSource: PropTypes.string,
+  setNotificationSource: PropTypes.func,
+  sortOrder: PropTypes.string,
+  setSortOrder: PropTypes.func,
   t: PropTypes.func
 }
 

@@ -153,7 +153,7 @@ export const signOut = () => async (dispatch) => {
   }
 };
 
-const signOutSuccess = () => {
+export const signOutSuccess = () => {
   return {
     type: actionTypes.SIGN_OUT,
   };
