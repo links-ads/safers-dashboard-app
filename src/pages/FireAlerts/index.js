@@ -16,20 +16,13 @@ import 'rc-pagination/assets/index.css';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
+// import { getDefaultDateRange } from '../../store/utility';
 
 const RANGE_BASE_POINT = 18;
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
 };
-const DEFAULT_SORT_ORDER = 'desc';
-const DEFAULT_SOURCE = 'all';
-
-const getDefaultDateRange = () => {
-  const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
-  const to = moment(new Date()).format('DD-MM-YYYY');
-  return [from, to];
-}
 
 const FireAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -37,12 +30,12 @@ const FireAlerts = () => {
   const success = useSelector(state => state.alerts.success);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState(DEFAULT_SORT_ORDER);
-  const [alertSource, setAlertSource] = useState(DEFAULT_SOURCE);
+  const [sortByDate, setSortByDate] = useState(undefined);
+  const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundaryBox, setBoundaryBox] = useState(undefined);
   const [zoomLevel, setZoomLevel] = useState(undefined);
-  const [dateRange, setDateRange] = useState(getDefaultDateRange());
+  const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
   const [filteredAlerts, setFilteredAlerts] = useState([]);
@@ -139,18 +132,19 @@ const FireAlerts = () => {
   };
 
   const getAlerts = () => {
-    if (sortByDate && alertSource && dateRange && boundaryBox) {
-      setAlertId(undefined);
-      const alertParams = {
-        sortOrder: sortByDate,
-        source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1],
-        bbox: boundaryBox
-      };
-      dispatch(setAlertApiParams(alertParams));
-      dispatch(getAllFireAlerts(alertParams));
-    }
+    setAlertId(undefined);
+    const alertParams = {
+      order: sortByDate ? sortByDate : undefined,
+      source: alertSource ? alertSource : undefined,
+      start: dateRange[0],
+      end: dateRange[1],
+      // bbox: boundaryBox ? boundaryBox.toString() : undefined, //disabled since bbox value won't return data 
+      default_date: false,
+      default_bbox: false
+    };
+    dispatch(setAlertApiParams(alertParams));
+    dispatch(getAllFireAlerts(alertParams));
+
   }
 
   const setSelectedAlert = (id, isEdit) => {
@@ -210,9 +204,14 @@ const FireAlerts = () => {
   }
 
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
-    setDateRange([from, to]);
+    if (dates) {
+      let from = moment(dates[0]).format('YYYY-MM-DD');
+      let to = moment(dates[1]).format('YYYY-MM-DD');
+      setDateRange([from, to]);
+    } else {
+      //setDateRange(getDefaultDateRange()); disabled since start/end values won't return data 
+      setDateRange([undefined, undefined]);
+    }
   }
 
   const handleResetAOI = useCallback(() => {
@@ -307,7 +306,7 @@ const FireAlerts = () => {
               Default AOI</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
-            <DateRangePicker setDates={handleDateRangePicker} />
+            <DateRangePicker setDates={handleDateRangePicker} clearDates={handleDateRangePicker} />
           </Col>
         </Row>
         <Row>
@@ -324,8 +323,8 @@ const FireAlerts = () => {
                   onChange={(e) => setSortByDate(e.target.value)}
                   value={sortByDate}
                 >
-                  <option value={'desc'} >Sort By : Date desc</option>
-                  <option value={'asc'} >Sort By : Date asc</option>
+                  <option value={'-date'} >Sort By : Date desc</option>
+                  <option value={'date'} >Sort By : Date asc</option>
                 </Input>
               </Col>
               <Col xl={4}>
@@ -339,7 +338,7 @@ const FireAlerts = () => {
                   value={alertSource}
                   data-testid='fireAlertSource'
                 >
-                  <option value={'all'} >Source : All</option>
+                  <option value={''} >Source : All</option>
                   <option value={'web'} >Source : Web</option>
                   <option value={'camera'} >Source : Camera</option>
                   <option value={'satellite'} >Source : Satellite</option>

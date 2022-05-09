@@ -4,12 +4,7 @@ import * as api from '../../api/base';
 import queryString from 'query-string';
 
 export const getAllFireAlerts = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify({
-    ...options,
-    default_start: false,
-    default_end: false,
-    default_bbox: false
-  })));
+  const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
   if (response.status === 200) {
     return dispatch(getAlertsSuccess(response.data));
   }
