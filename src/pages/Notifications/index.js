@@ -30,13 +30,10 @@ const Notifications = () => {
   }, [notifications]);
 
   useEffect(() => {
-    let params = { default_bbox: false }
-    params.default_date = false
+    let params = { default_bbox: false, order : sortOrder, default_date: true }
+    
     if(notificationSource && notificationSource != 'all'){
       params.source = notificationSource;
-    }
-    if(sortOrder){
-      params.order = sortOrder;
     }
     if(dateRange.length === 2){
       params.default_date = false
