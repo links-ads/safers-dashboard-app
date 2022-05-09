@@ -1,8 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Card, CardBody, CardText, CardTitle, Col, Row, Button } from 'reactstrap';
+import { formatDate } from '../../../store/utility';
+
+import { useTranslation } from 'react-i18next';
 
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
+
+  const {t} = useTranslation();
 
   return (
     <Card
@@ -27,20 +32,20 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Row>
               <Col>
                 <CardTitle>
-                  <span className='card-title font-size-18'>Report Name A</span>
+                  <span className='card-title font-size-18'>{card.name}</span>
                 </CardTitle>
                 <CardText className='card-desc'>
                   {card.description}
                 </CardText>
               </Col>
               <Col md={4} className='text-end'>
-                <Button className="btn btn-primary px-3 py-2">OPEN</Button>
+                <Button className="btn btn-primary px-3 py-2">{t('open', {ns: 'common'})}</Button>
               </Col>
             </Row>
             <Row className='mt-2'>
               <Col>
                 <small className="card-desc no-wrap">
-                  Sep 3, 2021, 17:11
+                  {formatDate(card.date, 'll HH:MM')}
                 </small>
               </Col>
               
@@ -48,12 +53,12 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Row className='mt-0'>
               <Col>
                 <small className="card-desc no-wrap">
-                  Location: lat 45.065466 long 7.659904
+                  {card.location}
                 </small>
               </Col>
               <Col md={2}>
                 <CardText>
-                  <span className='float-end card-desc me-2'>Chatbot</span>
+                  <span className='float-end card-desc me-2'>{card.source.join(', ')}</span>
                 </CardText>
               </Col>
             </Row>

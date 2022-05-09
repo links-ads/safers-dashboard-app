@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import {
   Button,
   // Card,
@@ -13,7 +13,10 @@ import {
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
 
-const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEvent, editInfo }) => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEvent, editInfo, t }) => {
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState(object.isFavorite);
   const [description, setDescription] = useState(object.description);
@@ -65,7 +68,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
           <Row className='g-0'>
             <Col md={3}>
               <CardText className='mb-2'>
-                <span className='float-start mb-5'>Info: </span>
+                <span className='float-start mb-5'>{t('Info')}: </span>
               </CardText>
             </Col>
             <Col>
@@ -82,7 +85,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
             <Col md={3}>
               <CardText className='mb-2'>
                 <small className="font-italic">
-                  Source:
+                  {t('Source')}:
                 </small>
               </CardText>
             </Col>
@@ -103,24 +106,24 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
                     setEditToggle(false);
                     editInfo(object.id, description);
                   }} >
-                  SAVE
+                  {t('save')}
                 </Button>
               </Row>
               <Row className='g-0'>
                 <Button className='link-button' color="link" onClick={() => setEditToggle(false)} >
-                  Cancel
+                  {t('cancel')}
                 </Button>
               </Row>
             </>
             : <>
               <Row className='g-0'>
                 <Button color="primary" className='create-event-button' onClick={() => validateEvent(object.id)}>
-                  CREATE EVENT
+                  {t('create-event')}
                 </Button>
               </Row>
               <Row className='g-0'>
                 <Button className='link-button' color="link" onClick={() => setEditToggle(true)} >
-                  Edit
+                  {t('edit')}
                 </Button>
               </Row>
             </>
@@ -137,8 +140,8 @@ Tooltip.propTypes = {
   isEdit: PropTypes.bool,
   setFavorite: PropTypes.func,
   validateEvent: PropTypes.func,
-  editInfo: PropTypes.func
-
+  editInfo: PropTypes.func,
+  t: PropTypes.func
 }
 
-export default Tooltip;
+export default withTranslation(['common'])(Tooltip);

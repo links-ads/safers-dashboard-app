@@ -4,7 +4,11 @@ import { Card, Row, Col } from 'reactstrap';
 import MediaComponent from '../../../../components/MediaComponent';
 import PaginationWrapper from '../../../../components/Pagination';
 
+import { useTranslation } from 'react-i18next';
+
 const MediaContainer = ({ reportDetail }) => {
+
+  const { t } = useTranslation();
 
   const [pageData, setPageData] = useState([]);
 
@@ -16,7 +20,7 @@ const MediaContainer = ({ reportDetail }) => {
       <Col md={12} className='d-flex mt-3'>
         <Card className='card-weather' >
           <Row className='mb-2'>
-            <span className='weather-text'>Media Files Attached</span>
+            <span className='weather-text'>{t('Media Files Attached', {ns: 'reports'})}</span>
           </Row>
           <Row >
             {pageData.map((media, index) => {

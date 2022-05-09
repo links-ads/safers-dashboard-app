@@ -15,13 +15,15 @@ import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, set
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
+//i18n
+import { useTranslation } from 'react-i18next'
+
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.inSituAlerts.allAlerts);
   const success = useSelector(state => state.inSituAlerts.success);
   const { filteredAlerts, sortByDate, alertSource, dateRange } = useSelector(state => state.inSituAlerts);
-
-  console.log('state.inSituAlerts..', alerts);
+  const {t} = useTranslation();
 
   const [viewState, setViewState] = useState(undefined);
 
@@ -93,10 +95,10 @@ const InSituAlerts = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>In Situ Cameras</p>
+            <p className='align-self-baseline alert-title'>{t('In Situ Cameras', {ns: 'inSitu'})}</p>
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
-                Default AOI</Button>
+              {t('default-aoi', {ns: 'common'})}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
             <DateComponent setDates={handleDateRangePicker} />

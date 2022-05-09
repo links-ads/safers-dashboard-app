@@ -1,0 +1,24 @@
+{
+  "My Profile": "Mon profil",
+  "Change Password": "Changer le mot de passe",
+  "Selected Area of Interest": "Domaine d'intérêt sélectionné",
+  "Edit Image": "Éditer l'image",
+  "Email": "E-mail",
+  "Personal Details": "Détails personnels",
+  "First Name": "Prénom",
+  "Last Name": "Nom de famille",
+  "Country": "Pays",
+  "Select your country": "Sélectionnez votre pays",
+  "City": "Ville",
+  "Role": "Rôle",
+  "Select your role": "Sélectionnez votre rôle",
+  "Address": "Adresse",
+  "update-details": "DÉTAILS DE LA MISE À JOUR",
+  "delete-account": "SUPPRIMER MON COMPTE",
+  "confirm-delete-text": "Veuillez confirmer si vous souhaitez supprimer ce compte",
+  "current-password": "MOT DE PASSE ACTUEL",
+  "new-password": "NOUVEAU MOT DE PASSE",
+  "confirm-password": "CONFIRMEZ LE MOT DE PASSE",
+  "change-password": "CONFIRMEZ LE MOT DE PASSE"
+
+}

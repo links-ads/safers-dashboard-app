@@ -1,11 +1,16 @@
 import React , { useState } from 'react';
+import PropTypes from 'prop-types';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Container, Row, Col, Card, CardBody, CardTitle } from 'reactstrap';
 import classnames from 'classnames';
 import UpdateProfile from './UpdateProfile';
 import ResetPsw from './ResetPsw';
 import AoiHelper from '../../helpers/aoiHelper';
 
-const MyProfile = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+
+const MyProfile = ({t}) => {
 
   const [customActiveTab, setCustomActiveTab] = useState('1');
 
@@ -33,7 +38,7 @@ const MyProfile = () => {
                     }}
                   >
                     <span className='d-none d-sm-block me-2'><i className='fas fa-user-alt'></i></span>
-                    <span className='d-block'>My Profile</span>
+                    <span className='d-block'>{t('My Profile')}</span>
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -48,7 +53,7 @@ const MyProfile = () => {
                     data-testid="updateProfilePasswordBtn"
                   >
                     <span className='d-none d-sm-block me-2'><i className='fas fa-lock'></i></span>
-                    <span className='d-block'>Change Password</span>
+                    <span className='d-block'>{t('Change Password')}</span>
                   </NavLink>
                 </NavItem>
                 <NavItem>
@@ -62,7 +67,7 @@ const MyProfile = () => {
                     }}
                   >
                     <span className='d-none d-sm-block me-2'><i className='fas fa-flag-checkered'></i></span>
-                    <span className='d-block'>Area of Interest</span>
+                    <span className='d-block'>{t('Area of Interest', { ns: 'common' })}</span>
                   </NavLink>
                 </NavItem>
               </Nav>
@@ -79,7 +84,7 @@ const MyProfile = () => {
                       <Card color="dark default-panel">
                         <CardBody>
                           <CardTitle className="mb-2 dflt-seperator">
-                            <h3 className="h5 mb-0">Selected Area of Interest</h3>
+                            <h3 className="h5 mb-0">{t('Selected Area of Interest')}</h3>
                           </CardTitle>
                           <AoiHelper />
                         </CardBody>
@@ -96,4 +101,8 @@ const MyProfile = () => {
   );
 }
 
-export default MyProfile;
+MyProfile.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['myprofile'])(MyProfile);

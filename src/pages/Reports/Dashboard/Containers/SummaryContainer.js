@@ -4,7 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle, Button } from 'reactstrap';
 import { formatDate } from '../../../../store/utility';
 
-const SummaryContainer = ({reportDetail}) => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const SummaryContainer = ({reportDetail, t}) => {
   const navigate = useNavigate();
 
   if(!reportDetail) 
@@ -21,7 +24,7 @@ const SummaryContainer = ({reportDetail}) => {
       </Row>
       
       <Col md={12} className='mb-3'>
-        <span className='event-alert-title opacity-75'> Reports &gt;</span> <span className='event-alert-title'>{reportDetail.name}</span>
+        <span className='event-alert-title opacity-75'> {t('Results')} &gt;</span> <span className='event-alert-title'>{reportDetail.name}</span>
       </Col>
 
       <Col md={7}>
@@ -30,13 +33,13 @@ const SummaryContainer = ({reportDetail}) => {
             <span className='text-title'>{reportDetail.name}</span>
           </Row>
           <Row className='my-3'>
-            <span>Hazard Type: {reportDetail.hazardType}</span>
+            <span>{t('Hazard Type')}: {reportDetail.hazardType}</span>
           </Row>
           <Row className='my-3'>
-            <span>Status: {reportDetail.status}</span>
+            <span>{t('Status')}: {reportDetail.status}</span>
           </Row>
           <Row className='mt-5 mb-2'>
-            <span>Description</span>
+            <span>{t('Description')}</span>
           </Row>
           <Row>
             <span>{reportDetail.description}</span>
@@ -48,16 +51,16 @@ const SummaryContainer = ({reportDetail}) => {
           <Col className='mx-auto' md={11}>
             <Row>
               <Col className='text-end'>
-                <span className='text-username'>Username : </span><h5 className='d-inline-block text-username-org'>{reportDetail.userName}</h5></Col>
+                <span className='text-username'>{t('Username')} : </span><h5 className='d-inline-block text-username-org'>{reportDetail.userName}</h5></Col>
             </Row>
             <Row>
-              <Col className='text-end'><span className='text-username'>Organization : </span><h5 className='d-inline-block text-username-org'>{reportDetail.organization}</h5></Col>
+              <Col className='text-end'><span className='text-username'>{t('Organization', {ns: 'common'})} : </span><h5 className='d-inline-block text-username-org'>{reportDetail.organization}</h5></Col>
             </Row>
           </Col>
           <hr></hr>
           <Col className='mx-auto mb-0' md={10}>
             <Row className='mb-1'>
-              <Col className='font-size-18'>Location</Col>
+              <Col className='font-size-18'>{t('Location', {ns: 'common'})}</Col>
             </Row>
             <Row className='mt-2'>
               <Col md={1} className='d-flex'>
@@ -73,7 +76,7 @@ const SummaryContainer = ({reportDetail}) => {
           <hr></hr>
           <Col className='mx-auto' md={10}>
             <Row className='mb-1'>
-              <Col className='font-size-18'>Date of Report</Col>
+              <Col className='font-size-18'>{t('Date of Report')}</Col>
             </Row>
             <Row >
               <Col md={1} className='d-flex'>
@@ -91,14 +94,14 @@ const SummaryContainer = ({reportDetail}) => {
             <Row>
               <Col>
                 <CardText>
-                    Source: {reportDetail.source}
+                  {t('Source', {ns: 'common'})}: {reportDetail.source}
                 </CardText>
               </Col>
             </Row>
             <Row>
               <Col>
                 <CardText >
-                    Report Privacy: {reportDetail.reportPrivacy}
+                  {t('Report Privacy')}: {reportDetail.reportPrivacy}
                 </CardText>
               </Col>
             </Row>
@@ -108,14 +111,14 @@ const SummaryContainer = ({reportDetail}) => {
             <Row>
               <Col>
                 <CardText className='opacity-50'>
-                    Passport ID: {reportDetail.passportID}
+                  {t('Passport ID')}: {reportDetail.passportID}
                 </CardText>
               </Col>
             </Row>
             <Row>
               <Col>
                 <CardText className='opacity-50'>
-                    Mission ID: {reportDetail.missionId}
+                  {t('Mission ID')}: {reportDetail.missionId}
                 </CardText>
               </Col>
             </Row>
@@ -128,6 +131,7 @@ const SummaryContainer = ({reportDetail}) => {
 
 SummaryContainer.propTypes = {
   reportDetail: PropTypes.object,
+  t: PropTypes.func
 }
 
-export default SummaryContainer;
+export default withTranslation(['reports'])(SummaryContainer);

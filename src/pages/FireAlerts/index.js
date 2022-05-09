@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card } from 'reactstrap';
 import { FlyToInterpolator, IconLayer } from 'deck.gl';
@@ -6,17 +7,19 @@ import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import moment from 'moment';
 import toastr from 'toastr';
+//i18n
+import { withTranslation } from 'react-i18next'
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState } from '../../store/appAction';
-import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
-
-import 'toastr/build/toastr.min.css'
-import 'rc-pagination/assets/index.css';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 // import { getDefaultDateRange } from '../../store/utility';
+
+import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
+import 'toastr/build/toastr.min.css'
+import 'rc-pagination/assets/index.css';
 
 const RANGE_BASE_POINT = 18;
 const PAGE_SIZE = 4;
@@ -24,7 +27,7 @@ const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
 };
 
-const FireAlerts = () => {
+const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.alerts.allAlerts);
   const success = useSelector(state => state.alerts.success);
@@ -278,7 +281,7 @@ const FireAlerts = () => {
         onClick={getAlertsByArea}
       >
         <i className="bx bx-revision"></i>{' '}
-        Search This Area
+        {t('Search This Area')}
       </Button >
     )
   }
@@ -288,8 +291,7 @@ const FireAlerts = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>
-              Alert List
+            <p className='align-self-baseline alert-title'>{t('Alert List', { ns: 'fireAlerts' })}
               <button
                 type="button"
                 className="btn float-end mt-1 py-0 px-1"
@@ -303,7 +305,7 @@ const FireAlerts = () => {
             </p>
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
-              Default AOI</Button>
+              {t('default-aoi')}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
             <DateRangePicker setDates={handleDateRangePicker} clearDates={handleDateRangePicker} />
@@ -323,8 +325,8 @@ const FireAlerts = () => {
                   onChange={(e) => setSortByDate(e.target.value)}
                   value={sortByDate}
                 >
-                  <option value={'-date'} >Sort By : Date desc</option>
-                  <option value={'date'} >Sort By : Date asc</option>
+                  <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+                  <option value={'date'}  >{t('Sort By')} : {t('Date')} {t('asc')}</option>
                 </Input>
               </Col>
               <Col xl={4}>
@@ -345,7 +347,7 @@ const FireAlerts = () => {
                 </Input>
               </Col>
               <Col xl={3} className="d-flex justify-content-end" role='results-section'>
-                <span className='my-auto alert-report-text'>Results {filteredAlerts.length}</span></Col>
+                <span className='my-auto alert-report-text'>{t('Results')} {filteredAlerts.length}</span></Col>
             </Row>
             <Row>
               <Col xl={12} className='p-3'>
@@ -389,4 +391,8 @@ const FireAlerts = () => {
   );
 }
 
-export default FireAlerts;
+FireAlerts.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['common'])(FireAlerts);

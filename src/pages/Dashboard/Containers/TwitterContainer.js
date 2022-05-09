@@ -25,7 +25,7 @@ const TwitterContainer = ({t, i18n}) => {
       <Col  className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
-            <span className='weather-text'>{t('Latest Tweets')}</span>
+            <span className='weather-text'>{t('Latest Tweets', {ns: 'common'})}</span>
           </Row>
           <Row>
             {pageData.map((tweet, index) => {

@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 import { getAllNotifications } from '../../../store/notifications/action';
 
-const SortSection = ({ setFilterdNotifications, filteredNotifications}) => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const SortSection = ({ setFilterdNotifications, filteredNotifications, t}) => {
   const dispatch = useDispatch();
 
   const notifications = useSelector(state => state.notifications.allNotifications);
@@ -49,8 +52,8 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications}) => {
             onChange={(e) => filterByDate(e.target.value)}
             value={sortByDate}
           >
-            <option value={'desc'} >Sort By : Date desc</option>
-            <option value={'asc'} >Sort By : Date asc</option>
+            <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
        
           <Input
@@ -69,7 +72,7 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications}) => {
         <Col>
         </Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>Results {filteredNotifications.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {filteredNotifications.length}</span>
         </Col>
       </Row>
       
@@ -83,7 +86,8 @@ SortSection.propTypes = {
   alertSource: PropTypes.func,
   setAlertSource: PropTypes.func,
   filteredNotifications: PropTypes.array,
-  setFilterdNotifications: PropTypes.func
+  setFilterdNotifications: PropTypes.func,
+  t: PropTypes.func
 }
 
-export default SortSection;
+export default withTranslation(['common'])(SortSection);
