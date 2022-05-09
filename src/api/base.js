@@ -14,8 +14,8 @@ const axiosApi = axios.create({
 
 axiosApi.interceptors.response.use(
   response => response,
-  error => {handleError(error)}
-)
+  error => handleError(error)
+).then(() => store.dispatch(InProgress(false)))
 
 export const axiosInstance = axiosApi;
 
