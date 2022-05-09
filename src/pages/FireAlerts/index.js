@@ -155,7 +155,7 @@ const FireAlerts = ({t}) => {
 
   const validateEvent = (id) => {
     let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.status = 'VALIDATED';
+    selectedAlert.type = 'VALIDATED';
     dispatch(validateAlert(id));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
@@ -215,7 +215,7 @@ const FireAlerts = ({t}) => {
     return (new IconLayer({
       data: alerts,
       pickable: true,
-      getPosition: d => d.geometry.coordinates,
+      getPosition: d => d.center,
       iconAtlas: firePin,
       iconMapping: ICON_MAPPING,
       // onHover: !hoverInfo.objects && setHoverInfo,

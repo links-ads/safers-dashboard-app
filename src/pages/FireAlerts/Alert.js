@@ -5,10 +5,10 @@ import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
 
   const getBadge = () => {
-    let status = card.status == 'VALIDATED' ? 'validated' : 'to-verify';
+    let type = card.type == 'VALIDATED' ? 'validated' : 'to-verify';
     return (
-      <Badge className={`me-1 rounded-pill alert-badge ${status} py-0 px-2 pb-0 mb-0`}>
-        <span>{card.status}</span>
+      <Badge className={`me-1 rounded-pill alert-badge ${type} py-0 px-2 pb-0 mb-0`}>
+        <span>{card.type}</span>
       </Badge>
     )
   }
