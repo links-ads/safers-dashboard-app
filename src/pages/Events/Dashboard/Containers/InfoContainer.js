@@ -1,12 +1,16 @@
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle } from 'reactstrap';
 import { formatDate } from '../../../../store/utility';
 import MapComponent from '../Components/Map';
 
-const InfoContainer = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const InfoContainer = ({t}) => {
   const weatherStats = useSelector(state => state.dashboard.weatherStats);
   const { id } = useParams();
   const { allAlerts }  = useSelector(state => state.eventAlerts);
@@ -21,7 +25,7 @@ const InfoContainer = () => {
     <Row role='info-container'>
       
       <Col md={12} className='mb-2'>
-        <span className='event-alert-title '> Events &gt;</span> <span className='event-alert-title'> {event ? event.title : '' }</span>
+        <span className='event-alert-title '> {t('Events')} &gt;</span> <span className='event-alert-title'> {event ? event.title : '' }</span>
       </Col>
       
       <Col md={7}>
@@ -31,12 +35,12 @@ const InfoContainer = () => {
         <Card className='card-weather px-0' >
           <Col className='mx-auto mt-1' md={11}>
             <Row className='mb-2 '>
-              <span className='weather-text font-size-22'>Important Info</span>
+              <span className='weather-text font-size-22'>{t('Important Info')}</span>
             </Row>
           </Col>
           <Col className='mx-auto mt-2 mb-0' md={10}>
             <Row>
-              <Col className='my-2 font-size-16'>Location</Col>
+              <Col className='my-2 font-size-16'>{t('Location', {ns: 'common'})}</Col>
             </Row>
             <Row>
               <Col md={1} className='d-flex'>
@@ -52,7 +56,7 @@ const InfoContainer = () => {
           <hr></hr>
           <Col className='mx-auto' md={10}>
             <Row>
-              <Col className='my-2 font-size-16'>Date of Event</Col>
+              <Col className='my-2 font-size-16'>{t('Date of Event')}</Col>
             </Row>
             <Row >
               <Col md={1} className='d-flex'>
@@ -60,8 +64,8 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-              Start: { event && event.start ? formatDate(event.start) :  'not set'} <br></br>
-              End: {  event && event.end ? formatDate(event.end) :  'not set'}
+                  {t('Start', {ns: 'common'})}: { event && event.start ? formatDate(event.start) :  'not set'} <br></br>
+                  {t('End', {ns: 'common'})}: {  event && event.end ? formatDate(event.end) :  'not set'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -69,7 +73,7 @@ const InfoContainer = () => {
           <hr></hr>
           <Col className='mx-auto' md={10}>
             <Row>
-              <Col className='my-2 font-size-16'>Damages</Col>
+              <Col className='my-2 font-size-16'>{t('Damages')}</Col>
             </Row>
             <Row >
               <Col md={1} className='d-flex'>
@@ -77,7 +81,7 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-                  People Affected : {event && event.people_affected ? event.people_affected :  'not recorded'}
+                  {t('People Affected')} : {event && event.people_affected ? event.people_affected :  'not recorded'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -90,7 +94,7 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-                  Casualties: {event && event.casualties ? event.casualties :  'not recorded'}
+                  {t('Casualties')}: {event && event.casualties ? event.casualties :  'not recorded'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -103,7 +107,7 @@ const InfoContainer = () => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto">
-                Estimated damage: {event && event.damage ? event.damage :  'not recorded'}
+                  {t('Estimated damage')}: {event && event.damage ? event.damage :  'not recorded'}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -113,7 +117,7 @@ const InfoContainer = () => {
             <Row className='mt-1'>
               <Col >
                 <CardText className='mb-2'>
-                  <span className='mb-5 font-size-16'>Info </span>
+                  <span className='mb-5 font-size-16'>{t('Info', {ns: 'common'})} </span>
                 </CardText>
               </Col>
             </Row>
@@ -127,7 +131,7 @@ const InfoContainer = () => {
             <Row className='mt-4'>
               <Col >
                 <CardText className='mb-2'>
-                  Source: <span className='ms-3'>{event ? (event.source).join(', ') : 'not set'}</span>
+                  {t('Source', {ns: 'common'})}: <span className='ms-3'>{event ? (event.source).join(', ') : 'not set'}</span>
                 </CardText>
               </Col>
               
@@ -140,4 +144,8 @@ const InfoContainer = () => {
   );
 }
 
-export default InfoContainer;
+InfoContainer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['events'])(InfoContainer);

@@ -17,7 +17,7 @@ const InSituContainer = (props) => {
       <Col md={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>
-            <span className='weather-text'>{props.t('In-situ Photos & Videos')}</span>
+            <span className='weather-text'>{props.t('In-situ Photos & Videos', {ns: 'common'})}</span>
           </Row>
           <Row >
             {pageData.map((media, index) => {

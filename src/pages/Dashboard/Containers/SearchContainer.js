@@ -114,4 +114,4 @@ SearchContainer.propTypes = {
   t: PropTypes.any,
 }
 
-export default withTranslation()(SearchContainer);
+export default withTranslation(['common'])(SearchContainer);

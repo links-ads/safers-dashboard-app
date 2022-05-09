@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef }  from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Card, CardBody, CardTitle, Media, Form, Label, Input,   Modal } from 'reactstrap';
 import avatar from '../../assets/images/users/profile.png';
 import { Formik } from 'formik';
@@ -12,8 +13,11 @@ import * as Yup from 'yup';
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css'
 
+//i18n
+import { withTranslation } from 'react-i18next'
 
-const UpdateProfile = () => {
+
+const UpdateProfile = ({t}) => {
   toastr.options = {
     preventDuplicates: true,
   }
@@ -153,7 +157,7 @@ const UpdateProfile = () => {
                       alt=""
                       className="avatar-md rounded-circle img-thumbnail"
                     />
-                    <div className='text-center mt-2 d-none'><a className='lnk-edit' onClick={(e)=>{handleClick(e)}}>Edit Image</a></div>
+                    <div className='text-center mt-2 d-none'><a className='lnk-edit' onClick={(e)=>{handleClick(e)}}>{t('Edit Image')}</a></div>
                     <input type="file" id="file" ref={fileUploader} style={{display: 'none'}} onChange={(e) => {onChangeFile(e)}}/>
                   </div>
                   <Media body className="ms-4 align-self-center">
@@ -165,25 +169,25 @@ const UpdateProfile = () => {
               <div className="p-4">
                 <Row className='prof-list'>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-mail-send me-2'></i><span>Email</span>
+                    <i className='bx bx-mail-send me-2'></i><span>{t('Email')}</span>
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     {user.email}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-map me-2'></i><span>Location</span> 
+                    <i className='bx bx-map me-2'></i><span>{t('Location', {ns: 'common'})}</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     {user.address && user.address.length>0 ? `${user.address}, ` : ''}{user.city  && user.city.length>0 ? `${user.city}, ` : ''}{user.country && user.country.length>0 ? `${getName(user.country)}` : ''}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-shopping-bag me-2'></i><span>Organization</span> 
+                    <i className='bx bx-shopping-bag me-2'></i><span>{t('Organization', {ns: 'common'})}</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     {orgName}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-map me-2'></i><span>Area of Interest</span> 
+                    <i className='bx bx-map me-2'></i><span>{t('Area of Interest', {ns: 'common'})}</span> 
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     {defaultAoi?.features[0].properties.name}
@@ -197,7 +201,7 @@ const UpdateProfile = () => {
           <Card color="dark default-panel">
             <CardBody>
               <CardTitle className="mb-2 dflt-seperator">
-                <h3 className="h5 mb-0">Personal Details</h3>
+                <h3 className="h5 mb-0">{t('Personal Details')}</h3>
               </CardTitle>
               <Formik
                 enableReinitialize={true}
@@ -221,7 +225,7 @@ const UpdateProfile = () => {
                     <Row>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-email-Input">First Name</Label>
+                          <Label htmlFor="formrow-email-Input">{t('First Name')}</Label>
                           <Input
                             type="text"
                             id="first_name"
@@ -239,7 +243,7 @@ const UpdateProfile = () => {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">Last Name</Label>
+                          <Label htmlFor="formrow-password-Input">{t('Last Name')}</Label>
                           <Input
                             type="text"
                             id="last_name"
@@ -257,7 +261,7 @@ const UpdateProfile = () => {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">Organization</Label>
+                          <Label htmlFor="formrow-password-Input">{t('Organization')}</Label>
                           <Input
                             type="select"
                             id="organization"
@@ -279,7 +283,7 @@ const UpdateProfile = () => {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">Country</Label>
+                          <Label htmlFor="formrow-password-Input">{t('Country')}</Label>
                           <Input
                             id="country"
                             className={getError('country', errors, touched)}
@@ -291,7 +295,7 @@ const UpdateProfile = () => {
                             value={values.country}
                             data-testid="update-profile-country"
                           >
-                            <option value={''} >--Select your country--</option>
+                            <option value={''} >--{t('Select your country')}--</option>
                             {countryNameArr.map((value) => { return (<option key={countryObj[value]} value={countryObj[value]}>{value}</option>) })}
                           </Input>
                           {getError('country', errors, touched, false)}
@@ -299,7 +303,7 @@ const UpdateProfile = () => {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">City</Label>
+                          <Label htmlFor="formrow-password-Input">{t('City')}</Label>
                           <Input
                             type="text"
                             id="city"
@@ -317,7 +321,7 @@ const UpdateProfile = () => {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">Role</Label>
+                          <Label htmlFor="formrow-password-Input">{t('Role')}</Label>
                           <Input
                             id="role"
                             className={getError('role', errors, touched)}
@@ -329,7 +333,7 @@ const UpdateProfile = () => {
                             value={values.role}
                             data-testid="update-profile-role"
                           >
-                            <option value={''} >--Select your role--</option>
+                            <option value={''} >--{t('Select your role')}--</option>
                             {roles.map((roleObj, index) => { return (<option key={index} value={roleObj.id}>{roleObj.name}</option>) })}
                           </Input>
                           {getError('role', errors, touched, false)}
@@ -337,7 +341,7 @@ const UpdateProfile = () => {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">Address</Label>
+                          <Label htmlFor="formrow-password-Input">{t('Address')}</Label>
                           <Input
                             type="text"
                             id="address"
@@ -356,14 +360,14 @@ const UpdateProfile = () => {
                     </Row>
                     <div className='text-center'>
                       <button type="submit" data-testid="updateProfileButton" className="btn btn-primary w-md me-2" disabled={isSubmitting}>
-                      UPDATE DETAILS
+                        {t('update-details')}
                       </button>
                       <button type="button" className="btn btn-secondary w-md"
                         onClick={() => {
                           tog_modal()
                         }}
                         data-toggle="modal">
-                        DELETE MY ACCOUNT
+                        {t('delete-account')}
                       </button>
                       <Modal
                         isOpen={modal_backdrop}
@@ -374,20 +378,20 @@ const UpdateProfile = () => {
                         id="staticBackdrop"
                       >
                         <div className="modal-header">
-                          <h5 className="modal-title" id="staticBackdropLabel">Warning!</h5>
+                          <h5 className="modal-title" id="staticBackdropLabel">{t('Warning', { ns: 'common' } )}!</h5>
                           <button type="button" className="btn-close"
                             onClick={() => {
                               setmodal_backdrop(false)
                             }} aria-label="Close"></button>
                         </div>
                         <div className="modal-body">
-                          <p>Please confirm if you want to delete this account.</p>
+                          <p>{t('confirm-delete-text')}.</p>
                         </div>
                         <div className="modal-footer">
                           <button type="button" className="btn btn-light" onClick={() => {
                             setmodal_backdrop(false)
-                          }}>Close</button>
-                          <button type="button" className="btn btn-primary" onClick={() => {confirmAccDelete()}}>Yes</button>
+                          }}>{t('Close', { ns: 'common' } )}</button>
+                          <button type="button" className="btn btn-primary" onClick={() => {confirmAccDelete()}}>{t('Yes', { ns: 'common' } )}</button>
                         </div>
                       </Modal>
                     </div>
@@ -402,4 +406,8 @@ const UpdateProfile = () => {
   );
 }
 
-export default UpdateProfile;
+UpdateProfile.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['myprofile'])(UpdateProfile);

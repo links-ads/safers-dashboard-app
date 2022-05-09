@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
 import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
@@ -11,10 +12,13 @@ import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TreeView from './TreeView';
 // import { getDefaultDateRange } from '../../store/utility';
 
+//i18n
+import { withTranslation } from 'react-i18next'
+
 const LON_BASE_POINT = 16;
 const LAT_BASE_POINT = 12;
 
-const DataLayer = () => {
+const DataLayer = ({t}) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
   const [currentLayer, setCurrentLayer] = useState(undefined);
@@ -114,7 +118,7 @@ const DataLayer = () => {
         <Row>
           <Col xl={5}>
             <Row>
-              <p className='align-self-baseline alert-title'>Data Layers</p>
+              <p className='align-self-baseline alert-title'>{t('Data Layers', {ns: 'dataLayers'})}</p>
             </Row>
             <Row>
               <Col xl={10}>
@@ -129,8 +133,8 @@ const DataLayer = () => {
                       onChange={(e) => setSortByDate(e.target.value)}
                       value={sortByDate}
                     >
-                      <option value={'-date'} >Sort By : Date desc</option>
-                      <option value={'date'} >Sort By : Date asc</option>
+                      <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+                      <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
                     </Input>
                   </Col>
                   <Col xl={4}>
@@ -170,7 +174,7 @@ const DataLayer = () => {
               <Col xl={2} className="d-flex justify-content-end">
                 <Button color='link'
                   onClick={handleResetAOI} className='align-self-baseline p-0'>
-                  Default AOI
+                  {t('default-aoi')}
                 </Button>
               </Col>
             </Row>
@@ -219,4 +223,8 @@ const DataLayer = () => {
   );
 }
 
-export default DataLayer;
+DataLayer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['common'])(DataLayer);
