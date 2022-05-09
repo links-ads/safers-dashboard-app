@@ -1,13 +1,13 @@
 {
-  "Events": "Événements",
-  "Ongoing": "En coursEn cours",
-  "Closed": "Fermée",
-  "Important Info": "Informations importantes",
-  "Location": "Emplacement",
-  "Date of Event": "Date de l'évènement",
-  "Damages": "Dégâts",
-  "People Affected": "Personnes affectées",
-  "Casualties": "Victimes",
-  "Estimated damage": "Dommages estimés"
+  "Events": "Eventi",
+  "Ongoing": "Incorsa",
+  "Closed": "Chiusa",
+  "Important Info": "Informazioni importanti",  
+  "Location": "Posizione",
+  "Date of Event": "Data dell'evento",
+  "Damages": "Danni",
+  "People Affected": "Persone interessate",
+  "Casualties": "Vittime",
+  "Estimated damage": "Danno stimato"
 }
 
