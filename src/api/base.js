@@ -2,6 +2,7 @@ import axios from 'axios'
 import { authHeader, deleteSession } from '../helpers/authHelper';
 import { BASE_URL } from '../config';
 import store from '../store'
+// eslint-disable-next-line no-unused-vars
 import { InProgress, signOutSuccess } from '../store/authentication/action';
 
 export const API_PREFIX = 'api';
@@ -10,22 +11,28 @@ const axiosApi = axios.create({
   baseURL: `${BASE_URL}/${API_PREFIX}`,
 })
 
-axiosApi.interceptors.request.use(async(config) => {
-  if(!config.url.includes('alerts')){
-    store.dispatch(InProgress(true, 'Please wait..'));
-  }
-  return config
-}, (error) => {
-  return Promise.reject(error);
-});
+// eslint-disable-next-line no-unused-vars
+// axiosApi.interceptors.request.use(async(config) => {
+// if(!config.url.includes('alerts')){
+//   store.dispatch(InProgress(true, 'Please wait..'));
+// }
+// return config
+// }, (error) => {
+//   return Promise.reject(error);
+// });
 
 axiosApi.interceptors.response.use(
   (response) => {
     store.dispatch(InProgress(false));
     return response
   },
-  error => handleError(error)
+  error => Promise.reject(error)
 )
+
+// axiosApi.interceptors.response.use(
+//   response => response,
+//   error => Promise.reject(error)
+// )
 
 export const axiosInstance = axiosApi;
 
@@ -58,6 +65,7 @@ export async function del(url, config = {}) {
     .then(response => response)
 }
 
+// eslint-disable-next-line no-unused-vars
 const handleError = (error) => {
   switch(error.response.status){
   case 401:
