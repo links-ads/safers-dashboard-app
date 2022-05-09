@@ -15,11 +15,6 @@ import TreeView from './TreeView';
 //i18n
 import { withTranslation } from 'react-i18next'
 
-const getDefaultDateRange = () => {
-  const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
-  const to = moment(new Date()).format('DD-MM-YYYY');
-  return [from, to];
-}
 const LON_BASE_POINT = 16;
 const LAT_BASE_POINT = 12;
 
