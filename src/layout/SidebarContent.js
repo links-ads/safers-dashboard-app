@@ -170,4 +170,4 @@ SidebarContent.propTypes = {
   t: PropTypes.any,
 }
 
-export default withTranslation()(SidebarContent)
+export default withTranslation(['common'])(SidebarContent)

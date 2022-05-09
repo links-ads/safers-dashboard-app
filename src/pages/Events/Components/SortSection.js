@@ -5,7 +5,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/events/action';
 import _ from 'lodash';
 
-const SortSection = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const SortSection = ({t}) => {
   const { sortByDate, alertSource, filteredAlerts } = useSelector(state => state.eventAlerts);
 
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
@@ -70,7 +73,7 @@ const SortSection = () => {
             check
             for="onGoing"
           >
-                  Ongoing ({ongoing})
+            {t('Ongoing', {ns: 'events'})} ({ongoing})
           </Label>
         </FormGroup>
         <FormGroup className="form-group d-inline-block ms-4" check>
@@ -86,7 +89,7 @@ const SortSection = () => {
             check
             for="closedEvents"
           >
-                  Closed ({closed})
+            {t('Closed', {ns: 'events'})} ({closed})
           </Label>
         </FormGroup>
       </div>
@@ -94,7 +97,7 @@ const SortSection = () => {
       <Row role='results-section'>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>Results {filteredAlerts.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {filteredAlerts.length}</span>
         </Col>
       </Row>
       <hr />
@@ -109,8 +112,8 @@ const SortSection = () => {
             onChange={(e) => filterByDate(e.target.value)}
             value={sortByDate}
           >
-            <option value={'desc'} >Sort By : Date desc</option>
-            <option value={'asc'} >Sort By : Date asc</option>
+            <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
         <Col xl={4} className='my-1'>
@@ -162,6 +165,7 @@ SortSection.propTypes = {
   setSortByDate: PropTypes.string,
   alertSource: PropTypes.func,
   setAlertSource: PropTypes.func,
+  t: PropTypes.func,
 }
 
-export default SortSection;
+export default withTranslation(['common'])(SortSection);

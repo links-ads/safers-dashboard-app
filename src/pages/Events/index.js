@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import _ from 'lodash';
@@ -15,7 +16,10 @@ import { getAllEventAlerts, resetEventAlertsResponseState, setCurrentPage, setDa
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
-const EventAlerts = () => {
+//i18n
+import { withTranslation } from 'react-i18next'
+
+const EventAlerts = ({t}) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
   const success = useSelector(state => state.eventAlerts.success);
@@ -88,10 +92,10 @@ const EventAlerts = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>Events</p>
+            <p className='align-self-baseline alert-title'>{t('Events', {ns: 'common'})}</p>
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
-                Default AOI</Button>
+              {t('default-aoi')}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
             <DateComponent setDates={handleDateRangePicker} />
@@ -117,4 +121,8 @@ const EventAlerts = () => {
   );
 }
 
-export default EventAlerts;
+EventAlerts.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['common'])(EventAlerts);

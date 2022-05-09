@@ -4,6 +4,8 @@ import classnames from 'classnames';
 
 import BaseMap from '../../../../components/BaseMap/BaseMap';
 
+import { useTranslation } from 'react-i18next';
+
 const MapDataLayer = () => {
   // eslint-disable-next-line no-unused-vars
   const [viewState, setViewState] = useState(undefined);
@@ -11,6 +13,9 @@ const MapDataLayer = () => {
   const [ polygonLayer, setPolygonLayer ] = useState(undefined);
   //to update when data layers ready
   const [ dataLayer, setDataLayer ] = useState(1);
+
+  const { t } = useTranslation();
+
   return (
     <Col md={12}>
       <Row>
@@ -21,13 +26,13 @@ const MapDataLayer = () => {
                 'active': dataLayer === 1,
               }, 'switch-data-layer-btn left')}
             >
-            Burned Area Delineation
+              {t('Burned Area Delineation', {ns: 'common'})}
             </Button>
           
             <Button className={classnames({
               'active': dataLayer === 2,
             }, 'switch-data-layer-btn right')} onClick={() => setDataLayer(2)}>
-            Fire Propagation
+              {t('Fire Propagation', {ns: 'common'})}
             </Button>
           </ButtonGroup>
         </Col>

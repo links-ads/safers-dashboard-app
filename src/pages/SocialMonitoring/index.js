@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
 import { FlyToInterpolator } from 'deck.gl';
@@ -13,6 +14,9 @@ import IconClusterLayer from './IconClusterLayer';
 import iconMapping from '../../constants/location-icon-mapping.json';
 import iconAtlas from '../../assets/images/location-icon-atlas.png';
 
+//i18n
+import { withTranslation } from 'react-i18next'
+
 const MOCK_DATA =
   'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json';//using this mock data until the tweets API ready with coordinates.
 
@@ -22,7 +26,7 @@ const getDefaultDateRange = () => {
   return [from, to];
 }
 
-const SocialMonitoring = () => {
+const SocialMonitoring = ({t}) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const stats = useSelector(state => state.dashboard.stats);
   const tweetsTrend = 23;//hard coded text until API available
@@ -90,7 +94,7 @@ const SocialMonitoring = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row className='mb-3'>
           <Col xl={9}>
-            <p className='align-self-baseline alert-title'>Social Monitor</p>
+            <p className='align-self-baseline alert-title'>{t('Social Monitor')}</p>
           </Col>
           <Col xl={3} className="d-flex justify-content-end">
             <DateRangePicker setDates={handleDateRangePicker} />
@@ -100,7 +104,7 @@ const SocialMonitoring = () => {
           <Col xl={3} md={6} sm={6}>
             <Card className='tweets-card px-2 pb-3'>
               <CardHeader>
-                Total Tweets
+                {t('Total Tweets')}
               </CardHeader>
               <CardBody className='pb-0'>
                 <span className='float-start total-tweets'>{stats ? formatNumber(stats.socialEngagement) : 'N/A'}</span>
@@ -130,4 +134,8 @@ const SocialMonitoring = () => {
   );
 }
 
-export default SocialMonitoring;
+SocialMonitoring.propTypes = {
+  t: PropTypes.func
+}
+
+export default withTranslation(['socialMonitor'])(SocialMonitoring);

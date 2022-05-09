@@ -17,6 +17,9 @@ export const endpoints = {
     validate: '/alerts/validate',
     edit: '/alerts/id-goes-here',
   },
+  dataLayers: {
+    getAll: '/data/layers',
+  },
   eventAlerts: {
     getAll: '/event-alerts/',
     setFavorite: '/event-alerts/favorite',

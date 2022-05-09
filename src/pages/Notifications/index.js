@@ -13,6 +13,8 @@ import NotificationsList from './Components/NotificationsList';
 import { NOTIFICATIONS_PAGE_SIZE } from '../../store/notifications/types';
 import { getAllNotifications } from '../../store/notifications/action';
 
+import { useTranslation } from 'react-i18next';
+
 const Notifications = () => {
   const dispatch = useDispatch();
 
@@ -24,6 +26,8 @@ const Notifications = () => {
   const [sortOrder, setSortOrder] = useState('-date')
   // eslint-disable-next-line no-unused-vars
   const [ dateRange, setDateRange] = useState([])
+
+  const { t } = useTranslation();
   
   useEffect(() => {
     setFilterdNotifications(notifications);
@@ -59,7 +63,7 @@ const Notifications = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>Notification List</p>
+            <p className='align-self-baseline alert-title'>{t('Notification List', {ns: 'common'})}</p>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
             <DateComponent setDates={handleDateRangePicker} />

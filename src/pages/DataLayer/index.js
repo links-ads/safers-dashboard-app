@@ -1,79 +1,71 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
-import { FlyToInterpolator } from 'deck.gl';
-import _ from 'lodash';
+import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
-import toastr from 'toastr';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllFireAlerts, resetAlertsResponseState } from '../../store/appAction';
+import { getAllDataLayers } from '../../store/appAction';
 
-import 'toastr/build/toastr.min.css';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TreeView from './TreeView';
+// import { getDefaultDateRange } from '../../store/utility';
 
-const getDefaultDateRange = () => {
-  const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
-  const to = moment(new Date()).format('DD-MM-YYYY');
-  return [from, to];
-}
+//i18n
+import { withTranslation } from 'react-i18next'
 
-const DataLayer = () => {
+const LON_BASE_POINT = 16;
+const LAT_BASE_POINT = 12;
+
+const DataLayer = ({t}) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const alerts = useSelector(state => state.alerts.allAlerts);
-  const success = useSelector(state => state.alerts.success);
+  const dataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const [currentLayer, setCurrentLayer] = useState(undefined);
+  const [bitmapLayer, setBitmapLayer] = useState(undefined);
+  const [boundaryBox, setBoundaryBox] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState('desc');
-  const [alertSource, setAlertSource] = useState('all');
-  const [dateRange, setDateRange] = useState(getDefaultDateRange());
-  const [filteredAlerts, setFilteredAlerts] = useState([]);
+  const [sortByDate, setSortByDate] = useState(undefined);
+  const [layerSource, setLayerSource] = useState(undefined);
+  const [dataDomain, setDataDomain] = useState(undefined);
+  const [dateRange, setDateRange] = useState([undefined, undefined]);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllFireAlerts(
-      {
-        sortOrder: sortByDate,
-        source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1]
-      }
-    ));
-  }, []);
+    setBoundaryBox(
+      getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+  }, [defaultAoi]);
 
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
+    if (currentLayer && currentLayer.url) {
+      const imageUrl = currentLayer.url.replace('{bbox}', boundaryBox);
+      setBitmapLayer(getBitmapLayer(imageUrl));
     }
-    dispatch(resetAlertsResponseState());
-
-  }, [success]);
+  }, [currentLayer]);
 
   useEffect(() => {
-    if (alerts.length > 0) {
+    if (dataLayers.length > 0) {
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
-      setFilteredAlerts(alerts);
     }
-  }, [alerts]);
+  }, [dataLayers]);
 
   useEffect(() => {
-    if (!viewState) {
-      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-    }
-  }, [filteredAlerts]);
-
-  useEffect(() => {
-    if (alertSource === 'all')
-      setFilteredAlerts(alerts);
-    else
-      setFilteredAlerts(_.filter(alerts, { source: alertSource }));
-  }, [alertSource]);
-
-  useEffect(() => {
-    setFilteredAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
-  }, [sortByDate]);
+    dispatch(getAllDataLayers(
+      {
+        order: sortByDate,
+        source: layerSource ? layerSource : undefined,
+        domain: dataDomain ? dataDomain : undefined,
+        start: dateRange[0],
+        end: dateRange[1],
+        // bbox: boundaryBox ? boundaryBox.toString() : undefined, //disabled since bbox value won't return data 
+        default_start: false,
+        default_end: false,
+        default_bbox: false
+      }
+    ));
+  }, [layerSource, dataDomain, sortByDate, dateRange, boundaryBox]);
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -87,10 +79,33 @@ const DataLayer = () => {
     };
   }
 
+  const getBitmapLayer = (url) => {
+    return (new BitmapLayer({
+      id: 'bitmap-layer',
+      bounds: boundaryBox,
+      image: url
+    }))
+  }
+
+  const getBoundaryBox = (midPoint, zoomLevel) => {
+    const lonRangeFactor = (1 / zoomLevel) * LON_BASE_POINT;
+    const latRangeFactor = (1 / zoomLevel) * LAT_BASE_POINT;
+    const left = midPoint[0] - lonRangeFactor; //minLongX
+    const right = midPoint[0] + lonRangeFactor; //maxLongX
+    const top = midPoint[1] + latRangeFactor; //maxLatY
+    const bottom = midPoint[1] - latRangeFactor; //minLatY
+    return [left, bottom, right, top];
+  }
+
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
-    setDateRange([from, to]);
+    if (dates) {
+      let from = moment(dates[0]).format('YYYY-MM-DD');
+      let to = moment(dates[1]).format('YYYY-MM-DD');
+      setDateRange([from, to]);
+    } else {
+      //setDateRange(getDefaultDateRange()); disabled since start/end values won't return data 
+      setDateRange([undefined, undefined]);
+    }
   }
 
   const handleResetAOI = useCallback(() => {
@@ -103,7 +118,7 @@ const DataLayer = () => {
         <Row>
           <Col xl={5}>
             <Row>
-              <p className='align-self-baseline alert-title'>Data Layers</p>
+              <p className='align-self-baseline alert-title'>{t('Data Layers', {ns: 'dataLayers'})}</p>
             </Row>
             <Row>
               <Col xl={10}>
@@ -118,21 +133,21 @@ const DataLayer = () => {
                       onChange={(e) => setSortByDate(e.target.value)}
                       value={sortByDate}
                     >
-                      <option value={'desc'} >Sort By : Date desc</option>
-                      <option value={'asc'} >Sort By : Date asc</option>
+                      <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+                      <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
                     </Input>
                   </Col>
                   <Col xl={4}>
                     <Input
-                      id="alertSource"
+                      id="layerSource"
                       className="btn-sm sort-select-input"
-                      name="alertSource"
-                      placeholder="Source"
+                      name="layerSource"
+                      placeholder="layerSource"
                       type="select"
-                      onChange={(e) => setAlertSource(e.target.value)}
-                      value={alertSource}
+                      onChange={(e) => setLayerSource(e.target.value)}
+                      value={layerSource}
                     >
-                      <option value={'all'} >Source : All</option>
+                      <option value={''} >Source : All</option>
                       <option value={'web'} >Source : Web</option>
                       <option value={'camera'} >Source : Camera</option>
                       <option value={'satellite'} >Source : Satellite</option>
@@ -145,10 +160,10 @@ const DataLayer = () => {
                       name="dataDomain"
                       placeholder="Domain"
                       type="select"
-                      onChange={(e) => setAlertSource(e.target.value)}
-                      value={alertSource}
+                      onChange={(e) => setDataDomain(e.target.value)}
+                      value={dataDomain}
                     >
-                      <option value={'all'} >Data Domain : All</option>
+                      <option value={''} >Data Domain : All</option>
                       <option value={'fire'} >Data Domain : Fire</option>
                       <option value={'weather'} >Data Domain : Weather</option>
                       <option value={'water'} >Data Domain : Water</option>
@@ -159,7 +174,7 @@ const DataLayer = () => {
               <Col xl={2} className="d-flex justify-content-end">
                 <Button color='link'
                   onClick={handleResetAOI} className='align-self-baseline p-0'>
-                  Default AOI
+                  {t('default-aoi')}
                 </Button>
               </Col>
             </Row>
@@ -179,36 +194,14 @@ const DataLayer = () => {
                 </InputGroup>
               </Col>
               <Col xl={5}>
-                <DateRangePicker setDates={handleDateRangePicker} />
+                <DateRangePicker setDates={handleDateRangePicker} clearDates={handleDateRangePicker} />
               </Col>
             </Row>
             <Row>
               <Col>
                 <TreeView
-                  data={[
-                    {
-                      text: 'Fire',
-                      id: 1,
-                      children:
-                        [
-                          {
-                            text: 'Links',
-                            id: 11,
-                            children:
-                              [
-                                {
-                                  text: 'Soil Burn Severity',
-                                  id: 111,
-                                },
-                                {
-                                  text: 'Wid Forecast',
-                                  id: 112,
-                                },
-                              ]
-                          }
-                        ]
-                    }
-                  ]}
+                  data={dataLayers}
+                  setCurrentLayer={setCurrentLayer}
                 />
               </Col>
             </Row>
@@ -216,7 +209,7 @@ const DataLayer = () => {
           <Col xl={7} className='mx-auto'>
             <Card className='map-card mb-0' style={{ height: 670 }}>
               <BaseMap
-                layers={[]}
+                layers={[bitmapLayer]}
                 initialViewState={viewState}
                 widgets={[/*search button or any widget*/]}
                 screenControlPosition='top-right'
@@ -230,4 +223,8 @@ const DataLayer = () => {
   );
 }
 
-export default DataLayer;
+DataLayer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['common'])(DataLayer);

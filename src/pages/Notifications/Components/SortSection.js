@@ -1,8 +1,10 @@
 import React, {  } from 'react';
 import { Row, Col, Input} from 'reactstrap';
 import PropTypes from 'prop-types';
+//i18n
+import { withTranslation } from 'react-i18next'
 
-const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, sortOrder, setSortOrder}) => {
+const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, sortOrder, setSortOrder, t}) => {
 
   return(
     <>
@@ -18,8 +20,8 @@ const SortSection = ({ filteredNotifications, notificationSource, setNotificatio
             onChange={(e) => setSortOrder(e.target.value)}
             value={sortOrder}
           >
-            <option value={'-date'} >Sort By : Date desc</option>
-            <option value={'date'} >Sort By : Date asc</option>
+            <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
        
           <Input
@@ -38,7 +40,7 @@ const SortSection = ({ filteredNotifications, notificationSource, setNotificatio
         <Col>
         </Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>Results {filteredNotifications.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {filteredNotifications.length}</span>
         </Col>
       </Row>
       
@@ -55,6 +57,7 @@ SortSection.propTypes = {
   setNotificationSource: PropTypes.func,
   sortOrder: PropTypes.string,
   setSortOrder: PropTypes.func,
+  t: PropTypes.func
 }
 
-export default SortSection;
+export default withTranslation(['common'])(SortSection);

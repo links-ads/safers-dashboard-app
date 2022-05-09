@@ -1,4 +1,5 @@
 import React, { useState, useEffect }  from 'react';
+import PropTypes from 'prop-types';
 import { Row, Col, Card, CardBody, CardTitle, Form, Label, Input, InputGroup, InputGroupText } from 'reactstrap';
 import { Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
@@ -9,8 +10,10 @@ import { getGeneralErrors, getError }  from '../../helpers/errorHelper'
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css'
 
+//i18n
+import { withTranslation } from 'react-i18next'
 
-const ResetPsw = () => {
+const ResetPsw = ({t}) => {
   const resetPswSuccessRes = useSelector(state => state.user.resetPswSuccessRes);
   const error = useSelector(state => state.user.resetPswFailRes);
   const [passwordToggle, setPasswordToggle] = useState(false);
@@ -70,7 +73,7 @@ const ResetPsw = () => {
                   <Row>
                     <Col md={6}>
                       <div className="mb-3">
-                        <Label htmlFor="formrow-email-Input">CURRENT PASSWORD</Label>
+                        <Label htmlFor="formrow-email-Input">{t('current-password')}</Label>
                         <InputGroup>
                           <Input
                             type={passwordToggle ? 'text' : 'password'}
@@ -94,7 +97,7 @@ const ResetPsw = () => {
                   <Row>
                     <Col md={6}>
                       <div className="mb-3">
-                        <Label htmlFor="formrow-password-Input">NEW PASSWORD</Label>
+                        <Label htmlFor="formrow-password-Input">{t('new-password')}</Label>
                         <InputGroup>
                           <Input
                             id="new_password1"
@@ -118,7 +121,7 @@ const ResetPsw = () => {
                     </Col>
                     <Col md={6}>
                       <div className="mb-3">
-                        <Label htmlFor="formrow-password-Input">CONFIRM PASSWORD</Label>
+                        <Label htmlFor="formrow-password-Input">{t('confirm-password')}</Label>
                         <InputGroup>
                           <Input
                             id="new_password2"
@@ -142,10 +145,10 @@ const ResetPsw = () => {
                   </Row>
                   <div className='mt-2 text-end'>
                     <button type="submit" data-test-id="changePasswordUpdateBtn" className="btn btn-primary w-md me-2" disabled={isSubmitting}>
-                    CHANGE PASSWORD
+                      {t('change-password')}
                     </button>
                     <button type="button" onClick={handleReset} className="btn btn-secondary w-md">
-                    CLEAR
+                      {t('clear', {ns: 'common'})}
                     </button>
                   </div>
                 </Form>
@@ -158,4 +161,9 @@ const ResetPsw = () => {
   );
 }
 
-export default ResetPsw;
+ResetPsw.propTypes = {
+  t: PropTypes.any,
+}
+
+
+export default withTranslation(['myprofile'])(ResetPsw);
