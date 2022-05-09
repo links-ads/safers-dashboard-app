@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
-  useDispatch,/*, useSelector*/
+  useDispatch,
   useSelector
 } from 'react-redux';
 import { POLLING_INTERVAL } from '../config';
@@ -35,7 +35,7 @@ const pollingHelper = (props) => {
   }, [alertParams, eventParams]);
 
   useEffect(() => {
-    var newAlertsCount = /*allAlerts.length*/ Math.floor(Math.random() * 90 + 10);//to simulate new alerts
+    var newAlertsCount = allAlerts.length
     if (currentAlertCount && newAlertsCount > currentAlertCount) {
       let difference = newAlertsCount - currentAlertCount;
       if (!isAlertPageActive)
@@ -45,7 +45,7 @@ const pollingHelper = (props) => {
   }, [allAlerts]);
 
   useEffect(() => {
-    var newEventsCount = /*allEvents.length*/ Math.floor(Math.random() * 90 + 10);//to simulate new events
+    var newEventsCount = allEvents.length
     if (currentEventCount && newEventsCount > currentEventCount) {
       let difference = newEventsCount - currentEventCount;
       if (!isEventPageActive)

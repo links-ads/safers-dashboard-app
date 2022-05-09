@@ -50,7 +50,6 @@ const EventAlerts = () => {
   }, [success]);
 
   useEffect(() => {
-    var randomBoolean = Math.random() < 0.5;//to simulate new alerts
     if (alerts.length > 0 && filteredAlerts.length === 0) {
       dispatch(setIconLayer(getIconLayer(alerts)));
       if (!viewState) {
@@ -58,7 +57,7 @@ const EventAlerts = () => {
       }
       dispatch(setFilterdAlerts(alerts));
     }
-    else if (alerts.length > filteredAlerts.length || randomBoolean/*to simulate new alerts*/) {
+    else if (alerts.length > filteredAlerts.length) {
       toastr.success('New events are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
   }, [alerts]);
