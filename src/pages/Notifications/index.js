@@ -21,29 +21,30 @@ const Notifications = () => {
   const [ paginatedNotifications, setPaginatedNotifications] = useState([])
   const [ currentPage, setCurrentPage] = useState(1)
   const [notificationSource, setNotificationSource] = useState('Report')
-  const [sortByDate, setSortByDate] = useState('desc')
+  const [sortOrder, setSortOrder] = useState('-date')
   // eslint-disable-next-line no-unused-vars
   const [ dateRange, setDateRange] = useState([])
   
-  let params = {default_bbox: false}
-
   useEffect(() => {
     setFilterdNotifications(notifications);
   }, [notifications]);
 
   useEffect(() => {
-    params.default_date = true
-    if(notificationSource){
+    let params = { default_bbox: false }
+    params.default_date = false
+    if(notificationSource && notificationSource != 'all'){
       params.source = notificationSource;
     }
-    
-    if(dateRange.length ===2){
+    if(sortOrder){
+      params.order = sortOrder;
+    }
+    if(dateRange.length === 2){
       params.default_date = false
       params.start_date = dateRange[0]
       params.end_date = dateRange[1]
     }
     dispatch(getAllNotifications(params));
-  }, [notificationSource, dateRange]);
+  }, [notificationSource, dateRange, sortOrder]);
 
   useEffect(() => {
     setCurrentPage(1);
@@ -72,8 +73,8 @@ const Notifications = () => {
             <SortSection 
               filteredNotifications={filteredNotifications} 
               setFilterdNotifications={setFilterdNotifications}
-              sortByDate={sortByDate}
-              setSortByDate={setSortByDate}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
               notificationSource={notificationSource}
               setNotificationSource={setNotificationSource}
             />

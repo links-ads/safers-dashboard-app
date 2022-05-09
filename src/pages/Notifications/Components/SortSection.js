@@ -1,27 +1,8 @@
 import React, {  } from 'react';
 import { Row, Col, Input} from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
-import _ from 'lodash';
 
-const SortSection = ({ setFilterdNotifications, filteredNotifications, notificationSource, setNotificationSource, sortByDate, setSortByDate}) => {
-
-  const notifications = useSelector(state => state.notifications.allNotifications);
-
-  const filterBySource = (notificationSource) => {
-    setNotificationSource(notificationSource);
-    if (notificationSource === 'all')
-      setFilterdNotifications(notifications);
-    else
-      setFilterdNotifications(_.filter(notifications, (o) => o.source.includes(notificationSource )));
-  }
-  
-  const filterByDate = (sortByDate) => {
-    setSortByDate(sortByDate)
-    setFilterdNotifications(_.orderBy(filteredNotifications, ['timestamp'], [sortByDate]))
-  };
-
-  
+const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, sortOrder, setSortOrder}) => {
 
   return(
     <>
@@ -34,11 +15,11 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications, notificat
             name="sortByDate"
             placeholder="Sort By : Date"
             type="select"
-            onChange={(e) => filterByDate(e.target.value)}
-            value={sortByDate}
+            onChange={(e) => setSortOrder(e.target.value)}
+            value={sortOrder}
           >
-            <option value={'desc'} >Sort By : Date desc</option>
-            <option value={'asc'} >Sort By : Date asc</option>
+            <option value={'-date'} >Sort By : Date desc</option>
+            <option value={'date'} >Sort By : Date asc</option>
           </Input>
        
           <Input
@@ -47,7 +28,7 @@ const SortSection = ({ setFilterdNotifications, filteredNotifications, notificat
             name="alertSource"
             placeholder="Source"
             type="select"
-            onChange={(e) =>filterBySource(e.target.value)}
+            onChange={(e) => setNotificationSource(e.target.value)}
             value={notificationSource}
           >
             <option value={'all'} >Source : All</option>
@@ -72,8 +53,8 @@ SortSection.propTypes = {
   setFilterdNotifications: PropTypes.func,
   notificationSource: PropTypes.string,
   setNotificationSource: PropTypes.func,
-  sortByDate: PropTypes.string,
-  setSortByDate: PropTypes.func,
+  sortOrder: PropTypes.string,
+  setSortOrder: PropTypes.func,
 }
 
 export default SortSection;
