@@ -4,12 +4,7 @@ import * as api from '../../api/base';
 import queryString from 'query-string';
 
 export const getAllFireAlerts = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify({
-    ...options,
-    default_start: false,
-    default_end: false,
-    default_bbox: false
-  })));
+  const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
   if (response.status === 200) {
     return dispatch(getAlertsSuccess(response.data));
   }
@@ -95,6 +90,22 @@ const editAlertInfoFail = (error) => {
 export const resetAlertsResponseState = () => {
   return {
     type: actionTypes.RESET_ALERT_STATE,
+  }
+};
+
+export const setAlertApiParams = (params) => {
+  return {
+    type: actionTypes.SET_ALERT_API_PARAMS,
+    payload: params
+  }
+};
+
+export const setNewAlertState = (alertState, pageState, newItemsCount) => {
+  return {
+    type: actionTypes.SET_NEW_ALERT_STATE,
+    isNewAlert: alertState,
+    isPageActive: pageState,
+    newItemsCount
   }
 };
 

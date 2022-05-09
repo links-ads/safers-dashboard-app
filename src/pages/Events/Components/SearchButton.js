@@ -1,13 +1,13 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap'
-import { getAllFireAlerts } from '../../../store/appAction';
+import { getAllEventAlerts } from '../../../store/appAction';
 
 import { useTranslation } from 'react-i18next';
 
 const SearchButton = (index) => {
-  const { midPoint, zoomLevel, sortByDate, alertSource, dateRange } = useSelector(state => state.eventAlerts);
-  const { t } = useTranslation();
+  const { midPoint, zoomLevel, params } = useSelector(state => state.eventAlerts);
+  const { dateRange, sortByDate, alertSource } = params; const { t } = useTranslation();
 
   const dispatch = useDispatch();
 
@@ -26,8 +26,7 @@ const SearchButton = (index) => {
       [left, bottom]
     ];
 
-
-    dispatch(getAllFireAlerts(
+    dispatch(getAllEventAlerts(
       {
         sortOrder: sortByDate,
         source: alertSource,
@@ -51,7 +50,7 @@ const SearchButton = (index) => {
       onClick={getAlertsByArea}
     >
       <i className="bx bx-revision"></i>{' '}
-      {t('Search This Area', {ns: 'common'})}
+      {t('Search This Area', { ns: 'common' })}
     </Button >
   )
 }

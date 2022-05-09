@@ -8,14 +8,19 @@ const initialState = {
   midPoint: [],
   zoomLevel: undefined,
   iconLayer: undefined,
-  alertId : null,
+  alertId: null,
   hoverInfo: undefined,
-  sortByDate: 'desc',
-  alertSource: 'all',
-  dateRange : getDefaultDateRange(),
   currentPage: 1,
   error: false,
   success: null,
+  params: {
+    sortByDate: 'desc',
+    alertSource: 'all',
+    dateRange: getDefaultDateRange(),
+  },
+  isNewEvent: false,
+  isPageActive: false,
+  newItemsCount: 0,
   inSituMedia: [],
   tweets: []
 };
@@ -42,6 +47,8 @@ const eventAlertReducer = (state = initialState, action) => {
   case actionTypes.SET_SORT_BY_DATE: return setSortByDate(state, action);
   case actionTypes.SET_ALERT_SOURCE: return setAlertSource(state, action);
   case actionTypes.SET_DATE_RANGE: return setDateRange(state, action);
+  case actionTypes.SET_NEW_EVENT_STATE: return setNewEventState(state, action);
+  case actionTypes.RESET_EVENT_API_PARAMS: return resetEventApiParams(state, action);
   case actionTypes.EVENTS_IN_SITU_MEDIA_GET_SUCCESS: return getInSituMediaSuccess(state, action);
   case actionTypes.EVENTS_IN_SITU_MEDIA_GET_FAIL: return getInSituMediaFail(state, action);
   case actionTypes.EVENTS_TWEETS_GET_SUCCESS: return getTweetsSuccess(state, action);
@@ -166,19 +173,44 @@ const setZoomLevel = (state, action) => {
 }
 const setSortByDate = (state, action) => {
   const updatedState = {
-    sortByDate: action.payload,
+    params: {
+      ...state.params,
+      sortByDate: action.payload,
+    }
   }
   return updateObject(state, updatedState);
 }
 const setAlertSource = (state, action) => {
   const updatedState = {
-    alertSource: action.payload,
+    params: {
+      ...state.params,
+      alertSource: action.payload,
+    }
   }
   return updateObject(state, updatedState);
 }
 const setDateRange = (state, action) => {
   const updatedState = {
-    dateRange: action.payload,
+    params: {
+      ...state.params,
+      dateRange: action.payload,
+    }
+  }
+  return updateObject(state, updatedState);
+}
+
+const resetEventApiParams = (state) => {
+  const updatedState = {
+    params: initialState.params,
+  }
+  return updateObject(state, updatedState);
+}
+
+const setNewEventState = (state, action) => {
+  const updatedState = {
+    isNewEvent: action.isNewEvent,
+    isPageActive: action.isPageActive,
+    newItemsCount: action.newItemsCount
   }
   return updateObject(state, updatedState);
 }

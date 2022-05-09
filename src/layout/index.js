@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Header from './Header'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
-
+import PollingHelper from '../helpers/pollingHelper';
 class Layout extends Component {
 
   constructor(props) {
@@ -21,13 +21,15 @@ class Layout extends Component {
       this.props.changeSidebarType('default', this.state.isMobile)
     }
   }
-  render() { 
+  render() {
     return (
       <>
         <div id='layout-wrapper'>
           <Header toggleMenuCallback={this.toggleMenuCallback} />
-          <Sidebar/>
-          <div className='main-content'>{this.props.children}</div>
+          <Sidebar />
+          <PollingHelper>
+            <div className='main-content'>{this.props.children}</div>
+          </PollingHelper>
           <Footer />
         </div>
       </>

@@ -160,6 +160,21 @@ export const setDateRange = (payload) => {
   };
 };
 
+export const resetEventApiParams = () => {
+  return {
+    type: actionTypes.RESET_EVENT_API_PARAMS,
+  }
+};
+
+export const setNewEventState = (eventState, pageState, newItemsCount) => {
+  return {
+    type: actionTypes.SET_NEW_EVENT_STATE,
+    isNewEvent: eventState,
+    isPageActive: pageState,
+    newItemsCount
+  }
+};
+
 export const getInSituMedia = (params) => async (dispatch) => {
   const response = await api.get(endpoints.eventAlerts.getInSitu, params);
   if (response.status === 200) {

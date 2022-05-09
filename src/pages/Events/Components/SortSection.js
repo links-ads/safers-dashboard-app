@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/events/action';
 import _ from 'lodash';
-
 //i18n
 import { withTranslation } from 'react-i18next'
+import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/events/action';
 
 const SortSection = ({t}) => {
-  const { sortByDate, alertSource, filteredAlerts } = useSelector(state => state.eventAlerts);
+  const { params, filteredAlerts } = useSelector(state => state.eventAlerts);
+  const { sortByDate, alertSource } = params;
 
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
-  const ongoing  = _.sumBy(alerts, ({ status }) => status == 'ONGOING');
-  const closed  = _.sumBy(alerts, ({ status }) => status == 'CLOSED');
+  const ongoing = _.sumBy(alerts, ({ status }) => status == 'ONGOING');
+  const closed = _.sumBy(alerts, ({ status }) => status == 'CLOSED');
   const [checkedStatus, setCheckedStatus] = useState([])
 
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const SortSection = ({t}) => {
     if (alertSource === 'all')
       dispatch(setFilterdAlerts(alerts));
     else
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource ))));
+      dispatch(setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource))));
   }
   const filterByDate = (sortByDate) => {
     dispatch(setAlertId(undefined));
@@ -41,23 +41,23 @@ const SortSection = ({t}) => {
   };
 
   const handleChecked = (value) => {
-    if(checkedStatus.includes(value)){
-      setCheckedStatus(_.remove(checkedStatus, (status) => status!=value))
-    }else{
+    if (checkedStatus.includes(value)) {
+      setCheckedStatus(_.remove(checkedStatus, (status) => status != value))
+    } else {
       setCheckedStatus([...checkedStatus, value])
     }
   };
 
   useEffect(() => {
     dispatch(setAlertId(undefined));
-    if(checkedStatus.length == 0){
+    if (checkedStatus.length == 0) {
       dispatch(setFilterdAlerts(alerts))
-    }else{
+    } else {
       dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.status))));
     }
   }, [checkedStatus]);
 
-  return(
+  return (
     <>
       <div role='status-section'>
         <FormGroup className="form-group d-inline-block" check>
@@ -67,7 +67,7 @@ const SortSection = ({t}) => {
             name="status"
             type="checkbox"
             value="ONGOING"
-            onChange={(e) => handleChecked(e.target.value)}     
+            onChange={(e) => handleChecked(e.target.value)}
           />
           <Label
             check
@@ -83,7 +83,7 @@ const SortSection = ({t}) => {
             name="status"
             type="checkbox"
             value="CLOSED"
-            onChange={(e) => handleChecked(e.target.value)}      
+            onChange={(e) => handleChecked(e.target.value)}
           />
           <Label
             check
@@ -123,7 +123,7 @@ const SortSection = ({t}) => {
             name="alertSource"
             placeholder="Source"
             type="select"
-            onChange={(e) =>filterByAlertSource(e.target.value)}
+            onChange={(e) => filterByAlertSource(e.target.value)}
             value={alertSource}
             data-testid='eventAlertSource'
           >
@@ -134,7 +134,7 @@ const SortSection = ({t}) => {
           </Input>
         </Col>
         <Col xl={3}>
-                
+
         </Col>
       </Row>
       <Row className='mt-3'>
