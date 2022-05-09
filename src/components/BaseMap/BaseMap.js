@@ -26,6 +26,7 @@ const BaseMap = ({
   renderTooltip = () => { },
   onClick = () => { },
   onViewStateChange = () => { },
+  onViewportLoad = () => { },
   widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
@@ -50,7 +51,7 @@ const BaseMap = ({
         views={new MapView({ repeat: true })}
         onClick={onClick}
         onViewStateChange={onViewStateChange}
-        onViewportLoad={(e) => { console.log(e) }}
+        onViewportLoad={onViewportLoad}
         initialViewState={initialViewState}
         controller={true}
         layers={finalLayerSet}

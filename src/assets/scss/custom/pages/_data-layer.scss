@@ -1,6 +1,11 @@
 .dl-tree-collapse {
     color: #fff;
+    margin-left: 50px;
 }
 .dl-item {
     color: #fff;
+    width: 350px;
+    &.selected{
+        background-color: #909090 !important;
+    }
 }
