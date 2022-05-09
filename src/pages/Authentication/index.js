@@ -43,7 +43,7 @@ const Authentication = () => {
     else {
       dispatch(isRemembered());
     }
-  }, [isLoggedIn, user]);
+  }, [allAoi, isLoggedIn, user]);
 
   useEffect(() => {
     if (defaultAoi) {
