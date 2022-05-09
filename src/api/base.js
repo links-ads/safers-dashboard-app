@@ -12,10 +12,25 @@ const axiosApi = axios.create({
   timeout: 5000
 })
 
+axiosApi.interceptors.request.use(async(config) => {
+  if(!config.url.includes('alert')){
+    store.dispatch(InProgress(true, 'Please wait..'));
+  }
+  return config
+}, (error) => {
+  return Promise.reject(error);
+});
+
 axiosApi.interceptors.response.use(
-  response => response,
-  error => handleError(error)
-).then(() => store.dispatch(InProgress(false)))
+  response => {
+    store.dispatch(InProgress(false));
+    return response
+  },
+  error => {
+    store.dispatch(InProgress(false));
+    return handleError(error)
+  }
+)
 
 export const axiosInstance = axiosApi;
 
