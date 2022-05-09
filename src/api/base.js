@@ -64,9 +64,6 @@ const handleError = (error) => {
     deleteSession();
     store.dispatch(signOutSuccess())
     return Promise.reject(error)
-  case 404:
-    window.location.href = '/pages-404'
-    return Promise.reject(error)
   case 500:
     window.location.href = '/pages-500'
     return Promise.reject(error)
