@@ -16,7 +16,7 @@ const NotificatonCard = ({ card }) => {
   return (
     <Card
       className={'alerts-card mb-2 '}>
-      <CardBody className='p-0 m-2'>
+      <CardBody className='px-0 py-1 my-2'>
         <Row>
           <Col className='ms-4'>
             <Row>
@@ -34,14 +34,14 @@ const NotificatonCard = ({ card }) => {
                   </CardText>
                 </Row>
                 <Row className='mt-2'>
-                  <Col>
-                    <p className="text-muted card-desc">
+                  <Col className=''>
+                    <span className="text-muted card-desc">
                       {formatDate(card.timestamp)}
-                    </p>
+                    </span>
                   </Col>
                   <Col>
-                    <CardText>
-                      <span className='float-end alert-source-text me-2'>{card.source}</span>
+                    <CardText className='bg-danger'>
+                      <span className='float-end alert-source-text me-2 text-uppercase'>{card.source}</span>
                     </CardText>
                   </Col>
                 </Row>
