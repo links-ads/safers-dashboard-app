@@ -33,7 +33,6 @@ const DataLayer = () => {
   }, [defaultAoi]);
 
   useEffect(() => {
-    console.log('boundaryBox', boundaryBox, viewState);
     if (currentLayer && currentLayer.url) {
       const imageUrl = currentLayer.url.replace('{bbox}', boundaryBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
@@ -49,7 +48,6 @@ const DataLayer = () => {
   }, [dataLayers]);
 
   useEffect(() => {
-    //TODO: filter and sort UI logics
     dispatch(getAllDataLayers(
       {
         order: sortByDate,
@@ -207,7 +205,6 @@ const DataLayer = () => {
           <Col xl={7} className='mx-auto'>
             <Card className='map-card mb-0' style={{ height: 670 }}>
               <BaseMap
-                onClick={(e) => { console.log(e.coordinate) }}
                 layers={[bitmapLayer]}
                 initialViewState={viewState}
                 widgets={[/*search button or any widget*/]}
