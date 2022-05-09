@@ -1,13 +1,13 @@
 {
-  "Reports List": "Liste des rapports",
-  "Reports": "Rapports",
-  "Hazard Type": "Type de danger",
-  "Status": "Statut",
-  "Description": "La description",
-  "Username": "Nom d'utilisateur",
-  "Date of Report": "Date de report",
-  "Report Privacy": "Signaler la confidentialité",
-  "Passport ID": "ID du passeport",
-  "Mission ID": "ID de mission",
-  "Media Files Attached": "Fichiers multimédia joints"
+  "Reports List": "Elenco rapporti",
+  "Reports": "Rapporti",
+  "Hazard Type": "Tipo di pericolo",
+  "Status": "Stato",
+  "Description": "Descrizione",
+  "Username": "Nome utente",
+  "Date of Report": "Data del rapporto",
+  "Report Privacy": "Segnala Privacy",
+  "Passport ID": "ID passaporto",
+  "Mission ID": "ID missione",
+  "Media Files Attached": "File multimediali allegati"
 }
