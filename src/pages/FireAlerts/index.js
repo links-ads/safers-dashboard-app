@@ -160,7 +160,7 @@ const FireAlerts = ({ t }) => {
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(clonedAlerts));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);

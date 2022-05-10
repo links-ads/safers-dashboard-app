@@ -5,7 +5,7 @@ import queryString from 'query-string';
 
 export const getAllFireAlerts = (options) => async (dispatch) => {
   const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
-  if (response.status === 200) {
+  if (response && response.status === 200) {
     return dispatch(getAlertsSuccess(response.data));
   }
   else
@@ -25,8 +25,8 @@ const getAlertsFail = (error) => {
 };
 
 export const setFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
-  if (response.status === 200) {
+  const response = await api.post(endpoints.fireAlerts.setFavorite.replace('alert_id', alertId), { is_favorite: isFavorite });
+  if (response && response.status === 200) {
     return dispatch(setFavoriteAlertSuccess(response.data));
   }
   else
@@ -46,8 +46,8 @@ const setFavoriteAlertFail = (error) => {
 }
 
 export const validateAlert = (alertId) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.validate, { alert_id: alertId });
-  if (response.status === 200) {
+  const response = await api.patch(endpoints.fireAlerts.edit.concat(alertId), { type: 'VALIDATED' });
+  if (response && response.status === 200) {
     return dispatch(validateAlertSuccess(response.data));
   }
   else
@@ -67,8 +67,8 @@ const validateAlertFail = (error) => {
 };
 
 export const editAlertInfo = (alertId, desc) => async (dispatch) => {
-  const response = await api.patch(endpoints.fireAlerts.edit, { alert_id: alertId, description: desc });
-  if (response.status === 200) {
+  const response = await api.patch(endpoints.fireAlerts.edit.concat(alertId), { description: desc });
+  if (response && response.status === 200) {
     return dispatch(editAlertInfoSuccess(response.data));
   }
   else
