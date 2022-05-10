@@ -46,7 +46,7 @@ const setFavoriteAlertFail = (error) => {
 }
 
 export const validateAlert = (alertId) => async (dispatch) => {
-  const response = await api.patch(endpoints.fireAlerts.edit.concat(alertId), { type: 'VALIDATED' });
+  const response = await api.patch(endpoints.fireAlerts.edit.concat(alertId), { type: 'validated' });
   if (response && response.status === 200) {
     return dispatch(validateAlertSuccess(response.data));
   }
