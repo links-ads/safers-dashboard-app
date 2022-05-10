@@ -5,6 +5,7 @@ import {
 } from 'react-redux';
 import { POLLING_INTERVAL } from '../config';
 import { getAllFireAlerts, setNewAlertState, getAllEventAlerts, setNewEventState } from '../store/appAction';
+import { getAllNotifications, setNewNotificationState } from '../store/notifications/action';
 
 const pollingHelper = (props) => {
   const dispatch = useDispatch();
@@ -19,9 +20,15 @@ const pollingHelper = (props) => {
   const isEventPageActive = useSelector(state => state.eventAlerts.isPageActive);
   const [currentEventCount, setCurrentEventCount] = useState(undefined);
 
+  const allNotifications = useSelector(state => state.notifications.allNotifications);
+  const notificationParams = useSelector(state => state.notifications.params);
+  const isNotificationPageActive = useSelector(state => state.notifications.isPageActive);
+  const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
+
   const callAPIs = () => {
     dispatch(getAllFireAlerts(alertParams));
     dispatch(getAllEventAlerts(eventParams));
+    dispatch(getAllNotifications(notificationParams));
   };
 
   useEffect(() => {
@@ -32,7 +39,7 @@ const pollingHelper = (props) => {
   useEffect(() => {
     clearInterval(timer.current);
     timer.current = setInterval(callAPIs, POLLING_INTERVAL);
-  }, [alertParams, eventParams]);
+  }, [alertParams, eventParams, notificationParams]);
 
   useEffect(() => {
     var newAlertsCount = allAlerts.length
@@ -52,6 +59,16 @@ const pollingHelper = (props) => {
         dispatch(setNewEventState(true, false, difference));
     }
     setCurrentEventCount(newEventsCount);
+  }, [allEvents]);
+
+  useEffect(() => {
+    var newNotificationsCount = allNotifications.length
+    if (currentNotificationCount && newNotificationsCount > currentNotificationCount) {
+      let difference = newNotificationsCount - currentNotificationCount;
+      if (!isNotificationPageActive)
+        dispatch(setNewNotificationState(true, false, difference));
+    }
+    setCurrentNotificationCount(newNotificationsCount);
   }, [allEvents]);
 
   return (

@@ -11,7 +11,7 @@ import DateComponent from '../../components/DateRangePicker/DateRange';
 
 import NotificationsList from './Components/NotificationsList';
 import { NOTIFICATIONS_PAGE_SIZE } from '../../store/notifications/types';
-import { getAllNotifications } from '../../store/notifications/action';
+import { getAllNotifications, setNewNotificationState, setNotificationParams } from '../../store/notifications/action';
 
 import { useTranslation } from 'react-i18next';
 
@@ -19,12 +19,13 @@ const Notifications = () => {
   const dispatch = useDispatch();
 
   const notifications = useSelector(state => state.notifications.allNotifications);
+  const notificationParams = useSelector(state => state.notifications.params);
+
   const [ filteredNotifications, setFilterdNotifications] = useState([])
   const [ paginatedNotifications, setPaginatedNotifications] = useState([])
   const [ currentPage, setCurrentPage] = useState(1)
-  const [notificationSource, setNotificationSource] = useState('Report')
-  const [sortOrder, setSortOrder] = useState('-date')
-  // eslint-disable-next-line no-unused-vars
+  const [ notificationSource, setNotificationSource] = useState('Report')
+  const [ sortOrder, setSortOrder] = useState('-date')
   const [ dateRange, setDateRange] = useState([])
 
   const { t } = useTranslation();
@@ -34,18 +35,31 @@ const Notifications = () => {
   }, [notifications]);
 
   useEffect(() => {
-    let params = { default_bbox: false, order : sortOrder, default_date: true }
-    
-    if(notificationSource && notificationSource != 'all'){
+    let params = {...notificationParams}
+    if(notificationSource){
       params.source = notificationSource;
+    }
+    if(notificationSource == 'all'){
+      delete params.source
     }
     if(dateRange.length === 2){
       params.default_date = false
       params.start_date = dateRange[0]
       params.end_date = dateRange[1]
     }
-    dispatch(getAllNotifications(params));
-  }, [notificationSource, dateRange, sortOrder]);
+    if(sortOrder){
+      params.order = sortOrder
+    }
+    dispatch(setNotificationParams(params))
+  }, [dateRange, notificationSource, sortOrder])
+
+  useEffect(() => {
+    dispatch(getAllNotifications(notificationParams));
+    dispatch(setNewNotificationState(false, true));
+    return () => {
+      dispatch(setNewNotificationState(false, false));
+    }
+  }, [notificationParams]);
 
   useEffect(() => {
     setCurrentPage(1);
