@@ -46,10 +46,15 @@ const Notifications = () => {
       params.default_date = false
       params.start_date = dateRange[0]
       params.end_date = dateRange[1]
+    }else if(dateRange.length === 0){
+      delete params.start_date
+      delete params.end_date
+      params.default_date = true
     }
     if(sortOrder){
       params.order = sortOrder
     }
+    
     dispatch(setNotificationParams(params))
   }, [dateRange, notificationSource, sortOrder])
 
@@ -71,6 +76,9 @@ const Notifications = () => {
     let to = moment(dates[1]).format('YYYY-MM-DD');
     setDateRange([from, to]);
   }
+  const clearDates = () => {
+    setDateRange([]);
+  }
 
   return (
     <div className='page-content'>
@@ -80,7 +88,7 @@ const Notifications = () => {
             <p className='align-self-baseline alert-title'>{t('Notification List', {ns: 'common'})}</p>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} />
+            <DateComponent setDates={() => handleDateRangePicker} clearDates={() => clearDates()}/>
           </Col>
         </Row>
         <Row>
