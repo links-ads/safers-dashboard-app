@@ -19,8 +19,7 @@ const SidebarContent = (props) => {
   const newAlertsCount = useSelector(state => state.alerts.newItemsCount);
   const isNewEvent = useSelector(state => state.eventAlerts.isNewEvent);
   const newEventsCount = useSelector(state => state.eventAlerts.newItemsCount);
-  const isNewNotification = useSelector(state => state.notifications.isNewNotification);
-  const newNotificationsCount = useSelector(state => state.notifications.newItemsCount);
+  const {isNewNotification, newItemsCount:newNotificationsCount } = useSelector(state => state.notifications);
   const ref = useRef();
   const location = useLocation();
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously

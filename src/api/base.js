@@ -19,7 +19,6 @@ const whitelistedUrls = [
 ]
 
 axiosApi.interceptors.request.use(async(config) => {
-  // console.log(config.url, isWhitelisted(config.url))
   if(!isWhitelisted(config.url)){
     store.dispatch(InProgress(true, 'Please wait..'));
   }
