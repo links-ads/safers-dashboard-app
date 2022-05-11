@@ -67,7 +67,7 @@ const pollingHelper = (props) => {
         dispatch(setNewNotificationState(true, false, difference));
     }
     setCurrentNotificationCount(newNotificationsCount);
-  }, [allEvents]);
+  }, [allNotifications]);
 
   return (
     <>
