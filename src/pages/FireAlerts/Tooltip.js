@@ -18,7 +18,7 @@ import { withTranslation } from 'react-i18next'
 
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEvent, editInfo, t }) => {
   const [editToggle, setEditToggle] = useState(isEdit);
-  const [favToggle, setFavToggle] = useState(object.isFavorite);
+  const [favToggle, setFavToggle] = useState(object.favorite);
   const [description, setDescription] = useState(object.description);
   return (
     <Popup

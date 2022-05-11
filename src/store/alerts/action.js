@@ -27,10 +27,11 @@ const getAlertsFail = (error) => {
 export const setFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
   const response = await api.post(endpoints.fireAlerts.setFavorite.replace('alert_id', alertId), { is_favorite: isFavorite });
   if (response && response.status === 200) {
-    return dispatch(setFavoriteAlertSuccess(response.data));
+    let successMessage = `Successfully ${isFavorite ? 'added to' : 'removed from'} favorite list`;
+    return dispatch(setFavoriteAlertSuccess(successMessage));
   }
   else
-    return dispatch(setFavoriteAlertFail(response.error));
+    return dispatch(setFavoriteAlertFail(response?.data?.[0]));
 };
 const setFavoriteAlertSuccess = (msg) => {
   return {
@@ -46,12 +47,12 @@ const setFavoriteAlertFail = (error) => {
 }
 
 export const validateAlert = (alertId) => async (dispatch) => {
-  const response = await api.patch(endpoints.fireAlerts.edit.concat(alertId), { type: 'validated' });
+  const response = await api.post(endpoints.fireAlerts.validate.replace('alert_id', alertId), { type: 'validated' });
   if (response && response.status === 200) {
     return dispatch(validateAlertSuccess(response.data));
   }
   else
-    return dispatch(validateAlertFail(response.error));
+    return dispatch(validateAlertFail(response?.data?.[0]));
 };
 const validateAlertSuccess = (msg) => {
   return {
@@ -67,12 +68,13 @@ const validateAlertFail = (error) => {
 };
 
 export const editAlertInfo = (alertId, desc) => async (dispatch) => {
-  const response = await api.patch(endpoints.fireAlerts.edit.concat(alertId), { description: desc });
+  const response = await api.patch(endpoints.fireAlerts.edit.replace('alert_id', alertId), { description: desc });
   if (response && response.status === 200) {
-    return dispatch(editAlertInfoSuccess(response.data));
+    let successMessage = 'Successfully updated the description';
+    return dispatch(editAlertInfoSuccess(successMessage));
   }
   else
-    return dispatch(editAlertInfoFail(response.error));
+    return dispatch(editAlertInfoFail(response?.data?.[0]));
 };
 const editAlertInfoSuccess = (msg) => {
   return {

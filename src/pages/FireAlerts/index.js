@@ -31,6 +31,7 @@ const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.alerts.allAlerts);
   const success = useSelector(state => state.alerts.success);
+  const error = useSelector(state => state.alerts.error);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
@@ -64,11 +65,13 @@ const FireAlerts = ({ t }) => {
   }, [sortByDate, alertSource, dateRange, boundaryBox]);
 
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
-    }
+    if (success) {
+      toastr.success(success, '');
+    } else if (error)
+      toastr.error(error, '');
+
     dispatch(resetAlertsResponseState());
-  }, [success]);
+  }, [success, error]);
 
   useEffect(() => {
     if (alerts.length > 0 && filteredAlerts.length === 0) {
@@ -99,8 +102,8 @@ const FireAlerts = ({ t }) => {
 
   const setFavorite = (id) => {
     let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.isFavorite = !selectedAlert.isFavorite;
-    dispatch(setFavoriteAlert(id, selectedAlert.isFavorite));
+    selectedAlert.favorite = !selectedAlert.favorite;
+    dispatch(setFavoriteAlert(id, selectedAlert.favorite));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));

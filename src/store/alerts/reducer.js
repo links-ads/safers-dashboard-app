@@ -7,7 +7,7 @@ const initialState = {
   isNewAlert: false,
   isPageActive: false,
   newItemsCount: 0,
-  error: false,
+  error: null,
   success: null
 };
 
@@ -64,9 +64,9 @@ const validateAlertSuccess = (state, action) => {
   }
   return updateObject(state, updatedState);
 }
-const validateAlertFail = (state) => {
+const validateAlertFail = (state, action) => {
   const updatedState = {
-    error: true,
+    error: action.payload,
   }
   return updateObject(state, updatedState);
 }
