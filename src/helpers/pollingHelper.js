@@ -19,9 +19,7 @@ const pollingHelper = (props) => {
   const eventParams = useSelector(state => state.eventAlerts.params);
   const isEventPageActive = useSelector(state => state.eventAlerts.isPageActive);
   const [currentEventCount, setCurrentEventCount] = useState(undefined);
-
-  const allNotifications = useSelector(state => state.notifications.allNotifications);
-  const notificationParams = useSelector(state => state.notifications.params);
+  const { allNotifications, params:notificationParams } = useSelector(state => state.notifications);
   const isNotificationPageActive = useSelector(state => state.notifications.isPageActive);
   const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
 
