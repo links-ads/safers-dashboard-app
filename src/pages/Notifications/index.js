@@ -18,8 +18,8 @@ import { useTranslation } from 'react-i18next';
 const Notifications = () => {
   const dispatch = useDispatch();
 
-  const notifications = useSelector(state => state.notifications.allNotifications);
-  const notificationParams = useSelector(state => state.notifications.params);
+  
+  const { allNotifications : notifications, params:notificationParams } = useSelector(state => state.notifications);
 
   const [ filteredNotifications, setFilterdNotifications] = useState([])
   const [ paginatedNotifications, setPaginatedNotifications] = useState([])
@@ -35,27 +35,26 @@ const Notifications = () => {
   }, [notifications]);
 
   useEffect(() => {
-    let params = {...notificationParams}
     if(notificationSource){
-      params.source = notificationSource;
+      notificationParams.source = notificationSource;
     }
     if(notificationSource == 'all'){
-      delete params.source
+      delete notificationParams.source
     }
     if(dateRange.length === 2){
-      params.default_date = false
-      params.start_date = dateRange[0]
-      params.end_date = dateRange[1]
+      notificationParams.default_date = false
+      notificationParams.start_date = dateRange[0]
+      notificationParams.end_date = dateRange[1]
     }else if(dateRange.length === 0){
-      delete params.start_date
-      delete params.end_date
-      params.default_date = true
+      delete notificationParams.start_date
+      delete notificationParams.end_date
+      notificationParams.default_date = true
     }
     if(sortOrder){
-      params.order = sortOrder
+      notificationParams.order = sortOrder
     }
     
-    dispatch(setNotificationParams(params))
+    dispatch(setNotificationParams(notificationParams))
   }, [dateRange, notificationSource, sortOrder])
 
   useEffect(() => {

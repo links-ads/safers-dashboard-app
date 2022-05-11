@@ -19,6 +19,8 @@ const SidebarContent = (props) => {
   const newAlertsCount = useSelector(state => state.alerts.newItemsCount);
   const isNewEvent = useSelector(state => state.eventAlerts.isNewEvent);
   const newEventsCount = useSelector(state => state.eventAlerts.newItemsCount);
+  const isNewNotification = useSelector(state => state.notifications.isNewNotification);
+  const newNotificationsCount = useSelector(state => state.notifications.newItemsCount);
   const ref = useRef();
   const location = useLocation();
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
@@ -148,6 +150,7 @@ const SidebarContent = (props) => {
               <Link to='/notifications'>
                 <i className='bx bx-bell'></i>
                 <span>{props.t('Notifications')}</span>
+                {isNewNotification && <span className='new-info-indicator float-end'>{newNotificationsCount}</span>}
               </Link>
             </li>
 
