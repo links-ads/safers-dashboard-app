@@ -3,12 +3,14 @@ import {
   useDispatch,
   useSelector
 } from 'react-redux';
-import { POLLING_INTERVAL } from '../config';
 import { getAllFireAlerts, setNewAlertState, getAllEventAlerts, setNewEventState } from '../store/appAction';
 
+const MILLISECONDS = 1000;
 const pollingHelper = (props) => {
   const dispatch = useDispatch();
   const timer = useRef(null)
+  const config = useSelector(state => state.common.config);
+  const pollingFrequency = config ? config.polling_frequency : undefined;
   const allAlerts = useSelector(state => state.alerts.allAlerts);
   const alertParams = useSelector(state => state.alerts.params);
   const isAlertPageActive = useSelector(state => state.alerts.isPageActive);
@@ -25,13 +27,17 @@ const pollingHelper = (props) => {
   };
 
   useEffect(() => {
-    timer.current = setInterval(callAPIs, POLLING_INTERVAL);
-    return () => clearInterval(timer.current);
+    if (pollingFrequency && pollingFrequency > 0) {
+      timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
+      return () => clearInterval(timer.current);
+    }
   }, []);
 
   useEffect(() => {
-    clearInterval(timer.current);
-    timer.current = setInterval(callAPIs, POLLING_INTERVAL);
+    if (pollingFrequency && pollingFrequency > 0) {
+      clearInterval(timer.current);
+      timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
+    }
   }, [alertParams, eventParams]);
 
   useEffect(() => {

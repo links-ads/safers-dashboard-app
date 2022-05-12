@@ -2,12 +2,13 @@ import * as actionTypes from './types';
 import { updateObject } from '../utility';
 
 const initialState = {
+  sources: [],
   allAlerts: [],
   params: {},
   isNewAlert: false,
   isPageActive: false,
   newItemsCount: 0,
-  error: false,
+  error: null,
   success: null
 };
 
@@ -23,6 +24,8 @@ const alertReducer = (state = initialState, action) => {
   case actionTypes.EDIT_ALERT_INFO_FAIL: return editAlertInfoFail(state, action);
   case actionTypes.SET_ALERT_API_PARAMS: return setAlertApiParams(state, action);
   case actionTypes.SET_NEW_ALERT_STATE: return setNewAlertState(state, action);
+  case actionTypes.GET_ALERT_SOURCE_SUCCESS: return getAlertSourceSuccess(state, action);
+  case actionTypes.GET_ALERT_SOURCE_FAIL: return getAlertSourceFail(state, action);
   case actionTypes.RESET_ALERT_STATE: return resetAlertsResponseState(state, action);
   default:
     return state;
@@ -64,9 +67,9 @@ const validateAlertSuccess = (state, action) => {
   }
   return updateObject(state, updatedState);
 }
-const validateAlertFail = (state) => {
+const validateAlertFail = (state, action) => {
   const updatedState = {
-    error: true,
+    error: action.payload,
   }
   return updateObject(state, updatedState);
 }
@@ -108,5 +111,20 @@ const setNewAlertState = (state, action) => {
   }
   return updateObject(state, updatedState);
 }
+
+const getAlertSourceSuccess = (state, action) => {
+  const updatedState = {
+    sources: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const getAlertSourceFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
+
 
 export default alertReducer;

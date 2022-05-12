@@ -10,7 +10,7 @@ import logger from './middleware/logger';
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['auth', 'user'],
+  whitelist: ['auth', 'user', 'common'],
 };
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -21,7 +21,7 @@ const store = createStore(
   persistedReducer,
   composeEnhancers(applyMiddleware(
     thunk,
-    // logger
+    //logger
   ))
 );
 

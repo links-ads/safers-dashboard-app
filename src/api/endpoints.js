@@ -13,9 +13,10 @@ export const endpoints = {
   },
   fireAlerts: {
     getAll: '/alerts/',
-    setFavorite: '/alerts/favorite',
-    validate: '/alerts/validate',
-    edit: '/alerts/id-goes-here',
+    setFavorite: '/alerts/:alert_id/favorite/',
+    validate: '/alerts/:alert_id/validate/',
+    edit: '/alerts/:alert_id/',
+    source: '/alerts/sources',
   },
   dataLayers: {
     getAll: '/data/layers',
@@ -33,10 +34,11 @@ export const endpoints = {
     resetPsw: '/auth/password/change/',
   },
   common: {
+    config: '/config',
     organizations: '/organizations/',
     roles: '/roles/',
     termsNconditions: '/api/documents/terms-current',
-    privacyPolicy: '/api/documents/privacy-current'
+    privacyPolicy: '/api/documents/privacy-current',
   },
   dashboard: {
     getStats: '/dashboard/stats',

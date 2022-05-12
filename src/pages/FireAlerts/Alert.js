@@ -47,7 +47,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
                 setFavorite(card.id);
               }}
             >
-              <i className={`mdi mdi-star${!card.isFavorite ? '-outline' : ''} card-title`}></i>
+              <i className={`mdi mdi-star${!card.favorite ? '-outline' : ''} card-title`}></i>
             </button>
           </Col>
           <Col>

@@ -133,8 +133,8 @@ const DataLayer = ({t}) => {
                       onChange={(e) => setSortByDate(e.target.value)}
                       value={sortByDate}
                     >
-                      <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
-                      <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
+                      <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+                      <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
                     </Input>
                   </Col>
                   <Col xl={4}>

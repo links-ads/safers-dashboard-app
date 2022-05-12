@@ -3,9 +3,33 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import queryString from 'query-string';
 
+
+export const getSource = () => async (dispatch) => {
+  const response = await api.get(endpoints.fireAlerts.source);
+  if (response.status === 200) {
+    return dispatch(getSourceSuccess(response.data));
+  }
+  else
+    return dispatch(getSourceFail(response.data));
+};
+
+const getSourceSuccess = (sources) => {
+  return {
+    type: actionTypes.GET_ALERT_SOURCE_SUCCESS,
+    payload: sources
+  };
+};
+const getSourceFail = (error) => {
+  return {
+    type: actionTypes.GET_ALERT_SOURCE_FAIL,
+    payload: error
+  };
+};
+
+
 export const getAllFireAlerts = (options) => async (dispatch) => {
   const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
-  if (response.status === 200) {
+  if (response && response.status === 200) {
     return dispatch(getAlertsSuccess(response.data));
   }
   else
@@ -25,12 +49,13 @@ const getAlertsFail = (error) => {
 };
 
 export const setFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
-  if (response.status === 200) {
-    return dispatch(setFavoriteAlertSuccess(response.data));
+  const response = await api.post(endpoints.fireAlerts.setFavorite.replace(':alert_id', alertId), { is_favorite: isFavorite });
+  if (response && response.status === 200) {
+    let successMessage = `Successfully ${isFavorite ? 'added to' : 'removed from'} the favorite list`;
+    return dispatch(setFavoriteAlertSuccess(successMessage));
   }
   else
-    return dispatch(setFavoriteAlertFail(response.error));
+    return dispatch(setFavoriteAlertFail(response?.data?.[0]));
 };
 const setFavoriteAlertSuccess = (msg) => {
   return {
@@ -46,12 +71,12 @@ const setFavoriteAlertFail = (error) => {
 }
 
 export const validateAlert = (alertId) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.validate, { alert_id: alertId });
-  if (response.status === 200) {
+  const response = await api.post(endpoints.fireAlerts.validate.replace(':alert_id', alertId), { type: 'VALIDATED' });
+  if (response && response.status === 200) {
     return dispatch(validateAlertSuccess(response.data));
   }
   else
-    return dispatch(validateAlertFail(response.error));
+    return dispatch(validateAlertFail(response?.data?.[0]));
 };
 const validateAlertSuccess = (msg) => {
   return {
@@ -67,12 +92,13 @@ const validateAlertFail = (error) => {
 };
 
 export const editAlertInfo = (alertId, desc) => async (dispatch) => {
-  const response = await api.patch(endpoints.fireAlerts.edit, { alert_id: alertId, description: desc });
-  if (response.status === 200) {
-    return dispatch(editAlertInfoSuccess(response.data));
+  const response = await api.patch(endpoints.fireAlerts.edit.replace(':alert_id', alertId), { information: desc });
+  if (response && response.status === 200) {
+    let successMessage = 'Successfully updated the information';
+    return dispatch(editAlertInfoSuccess(successMessage));
   }
   else
-    return dispatch(editAlertInfoFail(response.error));
+    return dispatch(editAlertInfoFail(response?.data?.[0]));
 };
 const editAlertInfoSuccess = (msg) => {
   return {
