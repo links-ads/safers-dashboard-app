@@ -2,7 +2,7 @@ import * as actionTypes from './types';
 import { updateObject } from '../utility';
 
 const initialState = {
-  config: {},
+  config: undefined,
   orgList: [],
   roleList: [],
   aois: [],

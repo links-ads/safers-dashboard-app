@@ -11,7 +11,7 @@ import toastr from 'toastr';
 import { withTranslation } from 'react-i18next'
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState } from '../../store/appAction';
+import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState, getSource } from '../../store/appAction';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
@@ -30,6 +30,7 @@ const ICON_MAPPING = {
 const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.alerts.allAlerts);
+  const sources = useSelector(state => state.alerts.sources);
   const success = useSelector(state => state.alerts.success);
   const error = useSelector(state => state.alerts.error);
   const [iconLayer, setIconLayer] = useState(undefined);
@@ -48,6 +49,7 @@ const FireAlerts = ({ t }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(getSource());
     dispatch(setNewAlertState(false, true));
     return () => {
       dispatch(setAlertApiParams({}));
@@ -344,9 +346,8 @@ const FireAlerts = ({ t }) => {
                   data-testid='fireAlertSource'
                 >
                   <option value={''} >Source : All</option>
-                  <option value={'web'} >Source : Web</option>
-                  <option value={'camera'} >Source : Camera</option>
-                  <option value={'satellite'} >Source : Satellite</option>
+                  {sources.map((source, index) => { return <option key={index} value={source} >Source : {source}</option> }
+                  )}
                 </Input>
               </Col>
               <Col xl={3} className="d-flex justify-content-end" role='results-section'>

@@ -3,6 +3,30 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import queryString from 'query-string';
 
+
+export const getSource = () => async (dispatch) => {
+  const response = await api.get(endpoints.fireAlerts.source);
+  if (response.status === 200) {
+    return dispatch(getSourceSuccess(response.data));
+  }
+  else
+    return dispatch(getSourceFail(response.data));
+};
+
+const getSourceSuccess = (sources) => {
+  return {
+    type: actionTypes.GET_ALERT_SOURCE_SUCCESS,
+    payload: sources
+  };
+};
+const getSourceFail = (error) => {
+  return {
+    type: actionTypes.GET_ALERT_SOURCE_FAIL,
+    payload: error
+  };
+};
+
+
 export const getAllFireAlerts = (options) => async (dispatch) => {
   const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
   if (response && response.status === 200) {
