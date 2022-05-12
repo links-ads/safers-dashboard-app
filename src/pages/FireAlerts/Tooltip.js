@@ -9,6 +9,7 @@ import {
   CardTitle,
   Col,
   Input,
+  Modal,
   Row
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
@@ -17,6 +18,7 @@ import { Popup } from 'react-map-gl';
 import { withTranslation } from 'react-i18next'
 
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEvent, editInfo, t }) => {
+  const [confirmEventToggle, setConfirmEventToggle] = useState(false);
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState(object.favorite);
   const [information, setInformation] = useState(object.information);
@@ -117,7 +119,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
             </>
             : <>
               {object.type == 'UNVALIDATED' && <Row className='g-0'>
-                <Button color="primary" className='create-event-button' onClick={() => validateEvent(object.id)}>
+                <Button color="primary" className='create-event-button' onClick={() => setConfirmEventToggle(true)}>
                   {t('create-event')}
                 </Button>
               </Row>}
@@ -130,6 +132,34 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
           }
         </Row>
       </div>
+      <Modal
+        isOpen={confirmEventToggle}
+        toggle={() => {
+          setConfirmEventToggle(!confirmEventToggle)
+        }}
+        scrollable={true}
+        id="staticBackdrop"
+      >
+        <div className="modal-header">
+          <h5 className="modal-title" id="staticBackdropLabel">{t('Warning', { ns: 'common' })}!</h5>
+          <button type="button" className="btn-close"
+            onClick={() => {
+              setConfirmEventToggle(false);
+            }} aria-label="Close"></button>
+        </div>
+        <div className="modal-body">
+          <p>{t('Confirm Event Alert', { ns: 'fireAlerts' })}</p>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-light" onClick={() => {
+            setConfirmEventToggle(false);
+          }}>{t('Close', { ns: 'common' })}</button>
+          <button type="button" className="btn btn-primary" onClick={() => {
+            validateEvent(object.id);
+            setConfirmEventToggle(false);
+          }}>{t('Yes', { ns: 'common' })}</button>
+        </div>
+      </Modal>
     </Popup >
   )
 }

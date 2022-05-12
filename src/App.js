@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Routes, Route } from 'react-router-dom';
 import { publicRoutes, privateRoutes } from './routes/allRoutes';
 import Authmiddleware from './routes/middleware/Authmiddleware';
-import { Routes, Route } from 'react-router-dom';
 import './assets/scss/theme.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import PreLoader from './components/PreLoader';
-import { useDispatch, useSelector } from 'react-redux';
 import { getConfig } from './store/appAction';
 
 const App = () => {

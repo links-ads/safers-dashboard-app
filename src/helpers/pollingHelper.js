@@ -5,6 +5,7 @@ import {
 } from 'react-redux';
 import { getAllFireAlerts, setNewAlertState, getAllEventAlerts, setNewEventState } from '../store/appAction';
 
+const MILLISECONDS = 1000;
 const pollingHelper = (props) => {
   const dispatch = useDispatch();
   const timer = useRef(null)
@@ -27,7 +28,7 @@ const pollingHelper = (props) => {
 
   useEffect(() => {
     if (pollingFrequency && pollingFrequency > 0) {
-      timer.current = setInterval(callAPIs, pollingFrequency);
+      timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
       return () => clearInterval(timer.current);
     }
   }, []);
@@ -35,7 +36,7 @@ const pollingHelper = (props) => {
   useEffect(() => {
     if (pollingFrequency && pollingFrequency > 0) {
       clearInterval(timer.current);
-      timer.current = setInterval(callAPIs, pollingFrequency);
+      timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
     }
   }, [alertParams, eventParams]);
 
