@@ -27,7 +27,7 @@ const getAlertsFail = (error) => {
 export const setFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
   const response = await api.post(endpoints.fireAlerts.setFavorite.replace('alert_id', alertId), { is_favorite: isFavorite });
   if (response && response.status === 200) {
-    let successMessage = `Successfully ${isFavorite ? 'added to' : 'removed from'} favorite list`;
+    let successMessage = `Successfully ${isFavorite ? 'added to' : 'removed from'} the favorite list`;
     return dispatch(setFavoriteAlertSuccess(successMessage));
   }
   else
@@ -47,7 +47,7 @@ const setFavoriteAlertFail = (error) => {
 }
 
 export const validateAlert = (alertId) => async (dispatch) => {
-  const response = await api.post(endpoints.fireAlerts.validate.replace('alert_id', alertId), { type: 'validated' });
+  const response = await api.post(endpoints.fireAlerts.validate.replace('alert_id', alertId), { type: 'VALIDATED' });
   if (response && response.status === 200) {
     return dispatch(validateAlertSuccess(response.data));
   }
@@ -68,9 +68,9 @@ const validateAlertFail = (error) => {
 };
 
 export const editAlertInfo = (alertId, desc) => async (dispatch) => {
-  const response = await api.patch(endpoints.fireAlerts.edit.replace('alert_id', alertId), { description: desc });
+  const response = await api.patch(endpoints.fireAlerts.edit.replace('alert_id', alertId), { information: desc });
   if (response && response.status === 200) {
-    let successMessage = 'Successfully updated the description';
+    let successMessage = 'Successfully updated the information';
     return dispatch(editAlertInfoSuccess(successMessage));
   }
   else

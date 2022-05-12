@@ -120,7 +120,7 @@ const FireAlerts = ({ t }) => {
 
   const editInfo = (id, desc) => {
     let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.description = desc;
+    selectedAlert.information = desc;
     dispatch(editAlertInfo(id, desc));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;

@@ -19,7 +19,7 @@ import { withTranslation } from 'react-i18next'
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEvent, editInfo, t }) => {
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState(object.favorite);
-  const [description, setDescription] = useState(object.description);
+  const [information, setInformation] = useState(object.information);
   return (
     <Popup
       longitude={coordinate[0]}
@@ -75,8 +75,8 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
               <CardText>
                 {
                   editToggle ?
-                    <Input type='textarea' rows="6" value={description} onChange={(e) => { setDescription(e.target.value) }} />
-                    : description
+                    <Input type='textarea' rows="6" value={information} onChange={(e) => { setInformation(e.target.value) }} />
+                    : information
                 }
               </CardText>
             </Col>
@@ -104,7 +104,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
                   className='save-event-button'
                   onClick={() => {
                     setEditToggle(false);
-                    editInfo(object.id, description);
+                    editInfo(object.id, information);
                   }} >
                   {t('save')}
                 </Button>
@@ -116,11 +116,11 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
               </Row>
             </>
             : <>
-              <Row className='g-0'>
+              {object.type == 'UNVALIDATED' && <Row className='g-0'>
                 <Button color="primary" className='create-event-button' onClick={() => validateEvent(object.id)}>
                   {t('create-event')}
                 </Button>
-              </Row>
+              </Row>}
               <Row className='g-0'>
                 <Button className='link-button' color="link" onClick={() => setEditToggle(true)} >
                   {t('edit')}

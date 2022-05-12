@@ -2,6 +2,7 @@ import * as actionTypes from './types';
 import { updateObject } from '../utility';
 
 const initialState = {
+  config: {},
   orgList: [],
   roleList: [],
   aois: [],
@@ -14,6 +15,8 @@ const initialState = {
 
 const commonReducer = (state = initialState, action) => {
   switch (action.type) {
+  case actionTypes.GET_CONFIG_SUCCESS: return getConfigSuccess(state, action);
+  case actionTypes.GET_CONFIG_FAIL: return getConfigFail(state, action);
   case actionTypes.CM_GET_ORGLIST_SUCCESS: return getOrgListSuccess(state, action);
   case actionTypes.CM_GET_ORGLIST_FAIL: return getOrgListFail(state, action);
   case actionTypes.CM_GET_ROLELIST_SUCCESS: return getRoleListSuccess(state, action);
@@ -37,6 +40,20 @@ const isSiteLoading = (state, action) => {
   return updateObject(state, updatedState);
 }
 
+const getConfigSuccess = (state, action) => {
+  const updatedState = {
+    config: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const getConfigFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
 const getOrgListSuccess = (state, action) => {
   const updatedState = {
     orgList: action.payload,
