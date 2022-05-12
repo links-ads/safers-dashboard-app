@@ -4,7 +4,7 @@ import { BASE_URL } from '../config';
 import store from '../store'
 // eslint-disable-next-line no-unused-vars
 import { InProgress, signOutSuccess } from '../store/authentication/action';
-
+import { endpoints } from './endpoints'
 export const API_PREFIX = 'api';
 
 const axiosApi = axios.create({
@@ -12,8 +12,14 @@ const axiosApi = axios.create({
   timeout: 5000
 })
 
+const whitelistedUrls = [
+  endpoints.notifications.getAll,
+  endpoints.eventAlerts.getAll,
+  endpoints.fireAlerts.getAll
+]
+
 axiosApi.interceptors.request.use(async(config) => {
-  if(!config.url.includes('alert')){
+  if(!isWhitelisted(config.url)){
     store.dispatch(InProgress(true, 'Please wait..'));
   }
   return config
@@ -83,4 +89,9 @@ export function isSuccessResp(status) {
     return true;
   }
   return false;
+}
+
+function isWhitelisted (url) {  
+  return whitelistedUrls.findIndex(whiteListedurl => 
+    url.includes(whiteListedurl)) >-1;
 }

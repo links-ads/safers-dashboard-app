@@ -4,6 +4,7 @@ import {
   useSelector
 } from 'react-redux';
 import { getAllFireAlerts, setNewAlertState, getAllEventAlerts, setNewEventState } from '../store/appAction';
+import { getAllNotifications, setNewNotificationState } from '../store/notifications/action';
 
 const MILLISECONDS = 1000;
 const pollingHelper = (props) => {
@@ -20,10 +21,14 @@ const pollingHelper = (props) => {
   const eventParams = useSelector(state => state.eventAlerts.params);
   const isEventPageActive = useSelector(state => state.eventAlerts.isPageActive);
   const [currentEventCount, setCurrentEventCount] = useState(undefined);
+  const { allNotifications, params:notificationParams } = useSelector(state => state.notifications);
+  const isNotificationPageActive = useSelector(state => state.notifications.isPageActive);
+  const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
 
   const callAPIs = () => {
     dispatch(getAllFireAlerts(alertParams));
     dispatch(getAllEventAlerts(eventParams));
+    dispatch(getAllNotifications(notificationParams));
   };
 
   useEffect(() => {
@@ -38,7 +43,7 @@ const pollingHelper = (props) => {
       clearInterval(timer.current);
       timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
     }
-  }, [alertParams, eventParams]);
+  }, [alertParams, eventParams, notificationParams]);
 
   useEffect(() => {
     var newAlertsCount = allAlerts.length
@@ -59,6 +64,16 @@ const pollingHelper = (props) => {
     }
     setCurrentEventCount(newEventsCount);
   }, [allEvents]);
+
+  useEffect(() => {
+    var newNotificationsCount = allNotifications.length
+    if (currentNotificationCount && newNotificationsCount > currentNotificationCount) {
+      let difference = newNotificationsCount - currentNotificationCount;
+      if (!isNotificationPageActive)
+        dispatch(setNewNotificationState(true, false, difference));
+    }
+    setCurrentNotificationCount(newNotificationsCount);
+  }, [allNotifications]);
 
   return (
     <>

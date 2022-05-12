@@ -22,3 +22,24 @@ const getNotificationsFail = (error) => {
     payload: error
   };
 };
+
+export const setNotificationParams = (payload) => {
+  return {
+    type: actionTypes.SET_NOTIFICATION_PARAMS,
+    payload,
+  };
+};
+export const resetNotificationApiParams = () => {
+  return {
+    type: actionTypes.RESET_NOTIFICATION_API_PARAMS,
+  }
+};
+
+export const setNewNotificationState = (notificationState, pageState, newItemsCount) => {
+  return {
+    type: actionTypes.SET_NEW_NOTIFICATION_STATE,
+    isNewNotification: notificationState,
+    isPageActive: pageState,
+    newItemsCount
+  }
+};

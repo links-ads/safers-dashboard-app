@@ -31,7 +31,7 @@ const DateComponent = ({ setDates = () => { }, clearDates = () => { } }) => {
           }}
         />
 
-        <div className='bg-white d-flex border-none calender-right' onClick={() => { fp.current.flatpickr.clear(); }}>
+        <div className='bg-white d-flex border-none calender-right' onClick={() => { fp.current.flatpickr.clear(); clearDates() }}>
           <i className='fa fa-sync px-2 m-auto bg-white border-none'></i>
         </div>
       </InputGroup>
