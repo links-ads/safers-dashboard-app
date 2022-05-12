@@ -13,9 +13,9 @@ export const endpoints = {
   },
   fireAlerts: {
     getAll: '/alerts/',
-    setFavorite: '/alerts/alert_id/favorite/',
-    validate: '/alerts/alert_id/validate/',
-    edit: '/alerts/alert_id/',
+    setFavorite: '/alerts/:alert_id/favorite/',
+    validate: '/alerts/:alert_id/validate/',
+    edit: '/alerts/:alert_id/',
     source: '/alerts/sources',
   },
   dataLayers: {
