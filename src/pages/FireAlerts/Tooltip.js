@@ -9,6 +9,7 @@ import {
   CardTitle,
   Col,
   Input,
+  Modal,
   Row
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
@@ -17,9 +18,10 @@ import { Popup } from 'react-map-gl';
 import { withTranslation } from 'react-i18next'
 
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEvent, editInfo, t }) => {
+  const [confirmEventToggle, setConfirmEventToggle] = useState(false);
   const [editToggle, setEditToggle] = useState(isEdit);
-  const [favToggle, setFavToggle] = useState(object.isFavorite);
-  const [description, setDescription] = useState(object.description);
+  const [favToggle, setFavToggle] = useState(object.favorite);
+  const [information, setInformation] = useState(object.information);
   return (
     <Popup
       longitude={coordinate[0]}
@@ -53,16 +55,16 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
           </Col>
         </Row>
         <Row className='no-gutters mx-0'>
-          {object.media[0] && <Col md={6} className='px-1'>
+          <Col md={6} className='px-1'>
             <CardImg
               className="img-fluid tooltip-img"
-              src={object.media[0]} alt="" />
-          </Col>}
-          {object.media[1] && <Col md={6} className='px-1'>
+              src={object.media && object.media[0] ? object.media[0] : ''} alt="" />
+          </Col>
+          <Col md={6} className='px-1'>
             <CardImg
               className="img-fluid tooltip-img"
-              src={object.media[1]} alt="" />
-          </Col>}
+              src={object.media && object.media[1] ? object.media[1] : ''} alt="" />
+          </Col>
         </Row>
         <Row className='mt-3 px-1 g-0'>
           <Row className='g-0'>
@@ -75,8 +77,8 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
               <CardText>
                 {
                   editToggle ?
-                    <Input type='textarea' rows="6" value={description} onChange={(e) => { setDescription(e.target.value) }} />
-                    : description
+                    <Input type='textarea' rows="6" value={information} onChange={(e) => { setInformation(e.target.value) }} />
+                    : information
                 }
               </CardText>
             </Col>
@@ -104,7 +106,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
                   className='save-event-button'
                   onClick={() => {
                     setEditToggle(false);
-                    editInfo(object.id, description);
+                    editInfo(object.id, information);
                   }} >
                   {t('save')}
                 </Button>
@@ -116,11 +118,11 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
               </Row>
             </>
             : <>
-              <Row className='g-0'>
-                <Button color="primary" className='create-event-button' onClick={() => validateEvent(object.id)}>
+              {object.type == 'UNVALIDATED' && <Row className='g-0'>
+                <Button color="primary" className='create-event-button' onClick={() => setConfirmEventToggle(true)}>
                   {t('create-event')}
                 </Button>
-              </Row>
+              </Row>}
               <Row className='g-0'>
                 <Button className='link-button' color="link" onClick={() => setEditToggle(true)} >
                   {t('edit')}
@@ -130,6 +132,34 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
           }
         </Row>
       </div>
+      <Modal
+        isOpen={confirmEventToggle}
+        toggle={() => {
+          setConfirmEventToggle(!confirmEventToggle)
+        }}
+        scrollable={true}
+        id="staticBackdrop"
+      >
+        <div className="modal-header">
+          <h5 className="modal-title" id="staticBackdropLabel">{t('Warning', { ns: 'common' })}!</h5>
+          <button type="button" className="btn-close"
+            onClick={() => {
+              setConfirmEventToggle(false);
+            }} aria-label="Close"></button>
+        </div>
+        <div className="modal-body">
+          <p>{t('Confirm Event Alert', { ns: 'fireAlerts' })}</p>
+        </div>
+        <div className="modal-footer">
+          <button type="button" className="btn btn-light" onClick={() => {
+            setConfirmEventToggle(false);
+          }}>{t('Close', { ns: 'common' })}</button>
+          <button type="button" className="btn btn-primary" onClick={() => {
+            validateEvent(object.id);
+            setConfirmEventToggle(false);
+          }}>{t('Yes', { ns: 'common' })}</button>
+        </div>
+      </Modal>
     </Popup >
   )
 }

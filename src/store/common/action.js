@@ -6,13 +6,21 @@ import * as api from '../../api/base';
 export const generalInProgress = (msg) => async (dispatch) => {
   dispatch(InProgress(msg));
 }
-
 const InProgress = (msg) => {
   return {
     type: actionTypes.CM_WIP,
     payload: msg,
     isLoading: true
   };
+};
+
+export const getConfig = () => async (dispatch) => {
+  const response = await api.get(endpoints.common.config);
+  if (response.status === 200) {
+    return dispatch(getConfigSuccess(response.data));
+  }
+  else
+    return dispatch(getConfigFail(response.data));
 };
 
 export const getOrgList = () => async (dispatch) => {
@@ -33,6 +41,18 @@ export const getRoleList = () => async (dispatch) => {
     return dispatch(getRoleListFail(response.data));
 };
 
+const getConfigSuccess = (config) => {
+  return {
+    type: actionTypes.GET_CONFIG_SUCCESS,
+    payload: config
+  };
+};
+const getConfigFail = (error) => {
+  return {
+    type: actionTypes.GET_CONFIG_FAIL,
+    payload: error
+  };
+};
 const getRoleListSuccess = (roles) => {
   return {
     type: actionTypes.CM_GET_ROLELIST_SUCCESS,

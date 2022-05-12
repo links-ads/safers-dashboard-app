@@ -11,7 +11,7 @@ import toastr from 'toastr';
 import { withTranslation } from 'react-i18next'
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState } from '../../store/appAction';
+import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState, getSource } from '../../store/appAction';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
@@ -30,7 +30,9 @@ const ICON_MAPPING = {
 const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.alerts.allAlerts);
+  const sources = useSelector(state => state.alerts.sources);
   const success = useSelector(state => state.alerts.success);
+  const error = useSelector(state => state.alerts.error);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
@@ -47,6 +49,7 @@ const FireAlerts = ({ t }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(getSource());
     dispatch(setNewAlertState(false, true));
     return () => {
       dispatch(setAlertApiParams({}));
@@ -64,11 +67,13 @@ const FireAlerts = ({ t }) => {
   }, [sortByDate, alertSource, dateRange, boundaryBox]);
 
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
-    }
+    if (success) {
+      toastr.success(success, '');
+    } else if (error)
+      toastr.error(error, '');
+
     dispatch(resetAlertsResponseState());
-  }, [success]);
+  }, [success, error]);
 
   useEffect(() => {
     if (alerts.length > 0 && filteredAlerts.length === 0) {
@@ -99,8 +104,8 @@ const FireAlerts = ({ t }) => {
 
   const setFavorite = (id) => {
     let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.isFavorite = !selectedAlert.isFavorite;
-    dispatch(setFavoriteAlert(id, selectedAlert.isFavorite));
+    selectedAlert.favorite = !selectedAlert.favorite;
+    dispatch(setFavoriteAlert(id, selectedAlert.favorite));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -110,6 +115,7 @@ const FireAlerts = ({ t }) => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.type = 'VALIDATED';
     dispatch(validateAlert(id));
+    hideTooltip();
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -117,7 +123,7 @@ const FireAlerts = ({ t }) => {
 
   const editInfo = (id, desc) => {
     let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.description = desc;
+    selectedAlert.information = desc;
     dispatch(editAlertInfo(id, desc));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
@@ -160,7 +166,7 @@ const FireAlerts = ({ t }) => {
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(clonedAlerts));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
@@ -341,9 +347,8 @@ const FireAlerts = ({ t }) => {
                   data-testid='fireAlertSource'
                 >
                   <option value={''} >Source : All</option>
-                  <option value={'web'} >Source : Web</option>
-                  <option value={'camera'} >Source : Camera</option>
-                  <option value={'satellite'} >Source : Satellite</option>
+                  {sources.map((source, index) => { return <option key={index} value={source} >Source : {source}</option> }
+                  )}
                 </Input>
               </Col>
               <Col xl={3} className="d-flex justify-content-end" role='results-section'>
