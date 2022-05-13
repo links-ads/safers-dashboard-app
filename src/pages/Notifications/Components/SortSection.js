@@ -34,7 +34,8 @@ const SortSection = ({ filteredNotifications, notificationSource, setNotificatio
             value={notificationSource}
           >
             <option value={'all'} >Source : All</option>
-            <option value={'Report'} >Source : Reports</option>
+            <option value={'REPORT'} >Source : Reports</option>
+            <option value={'EFFIS_FWI'} >Source : EFFIS FWI</option>
           </Input>
         </Col>
         <Col>
