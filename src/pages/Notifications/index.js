@@ -20,7 +20,6 @@ const Notifications = () => {
 
   
   const { allNotifications : notifications, params:notificationParams } = useSelector(state => state.notifications);
-  // const params = useSelector(state => state.notifications.params)
 
   const [ filteredNotifications, setFilterdNotifications] = useState([])
   const [ paginatedNotifications, setPaginatedNotifications] = useState([])
