@@ -24,7 +24,6 @@ const getNotificationsFail = (error) => {
 };
 
 export const setNotificationParams = (payload) => {
-  console.log(payload)
   return {
     type: actionTypes.SET_NOTIFICATION_PARAMS,
     payload,
