@@ -27,10 +27,11 @@ const getSourceFail = (error) => {
 };
 
 
-export const getAllFireAlerts = (options) => async (dispatch) => {
+export const getAllFireAlerts = (options, fromPage) => async (dispatch) => {
   const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
   if (response && response.status === 200) {
-    return dispatch(getAlertsSuccess(response.data));
+    fromPage && dispatch(setFilteredAlerts(response.data));
+    return dispatch(getAlertsSuccess(response.data, fromPage));
   }
   else
     return dispatch(getAlertsFail(response.error));
@@ -38,7 +39,13 @@ export const getAllFireAlerts = (options) => async (dispatch) => {
 const getAlertsSuccess = (alerts) => {
   return {
     type: actionTypes.GET_ALERTS_SUCCESS,
-    payload: alerts
+    payload: alerts,
+  };
+};
+export const setFilteredAlerts = (alerts) => {
+  return {
+    type: actionTypes.SET_FILTERED_ALERTS,
+    payload: alerts,
   };
 };
 const getAlertsFail = (error) => {
