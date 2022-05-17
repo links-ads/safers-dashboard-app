@@ -59,6 +59,7 @@ const Header = () => {
                 tToggle()
               }}
               className='btn btn-sm px-3 font-size-16 header-item '
+              aria-label='vertical-menu-btn'
               id='vertical-menu-btn'
             >
               <i className='fa fa-fw fa-bars' />
@@ -73,6 +74,7 @@ const Header = () => {
                 }}
                 className='btn header-item noti-icon '
                 data-toggle='fullscreen'
+                aria-label='btn-header-item'
               >
                 <i className='bx bx-fullscreen' />
               </button>

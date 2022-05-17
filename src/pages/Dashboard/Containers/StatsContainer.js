@@ -12,7 +12,7 @@ const StatsContainer = (props) => {
   const stats = useSelector(state => state.dashboard.stats);
 
   return(
-    <Row role='stats'>
+    <Row data-testid='stats'>
       <Col md={3} sm={6}>
         <Card className='stats-card px-2 pb-3'>
           <CardHeader>
