@@ -49,5 +49,6 @@
   "Organization": "Organization",
   "Location": "Location",
   "save-aoi-success-msg": "Area of ​​interest set successfully",
-  "open": "OPEN" 
+  "open": "OPEN",
+  "All" : "All"
 }

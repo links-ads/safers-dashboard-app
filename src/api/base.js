@@ -9,7 +9,6 @@ export const API_PREFIX = 'api';
 
 const axiosApi = axios.create({
   baseURL: `${BASE_URL}/${API_PREFIX}`,
-  timeout: 5000
 })
 
 const whitelistedUrls = [
@@ -70,9 +69,7 @@ export async function del(url, config = {}) {
 }
 
 const handleError = (error) => {
-  try{
-
-  
+  if(error.response){
     switch(error.response.status){
     case 401:
       deleteSession();
@@ -85,8 +82,8 @@ const handleError = (error) => {
     default:
       return Promise.reject(error)
     }
-  }catch(e){
-    console.log(e);
+  }else{
+    return Promise.reject(error)
   }
 }
 export function isSuccessResp(status) {

@@ -22,7 +22,7 @@ export const endpoints = {
     getAll: '/data/layers',
   },
   eventAlerts: {
-    getAll: '/event-alerts/',
+    getAll: '/events/',
     setFavorite: '/event-alerts/favorite',
     validate: '/event-alerts/validate',
     edit: '/event-alerts/id-goes-here',

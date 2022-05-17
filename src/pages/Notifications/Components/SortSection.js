@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 
 const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, sortOrder, setSortOrder, t}) => {
   const notificationSources = useSelector(state => state.notifications.sources);
+  console.log(notificationSources);
   return(
     <>
       <hr />
@@ -34,10 +35,10 @@ const SortSection = ({ filteredNotifications, notificationSource, setNotificatio
             onChange={(e) => setNotificationSource(e.target.value)}
             value={notificationSource}
           >
-            <option value={'all'} >Source : All</option>
-            {notificationSources.map((notificationSource) => {
-              <option value={notificationSource} >Source {notificationSource}</option>
-            })}
+            <option value={'all'} > {t('Source')} : {t('All')}</option>
+            {notificationSources.map((notificationSource, idx) => 
+              <option value={notificationSource} key={idx}>{t('Source')} : {notificationSource}</option>
+            )}
           </Input>
         </Col>
         <Col>

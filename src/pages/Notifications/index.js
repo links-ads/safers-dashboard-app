@@ -32,7 +32,7 @@ const Notifications = () => {
 
   useEffect(() => {
     dispatch(getAllNotificationSources())
-  })
+  }, [])
   
   useEffect(() => {
     setFilterdNotifications(notifications);

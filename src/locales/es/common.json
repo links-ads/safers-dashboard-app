@@ -50,5 +50,7 @@
   "Location": "Localización",
   "Organization": "Organización",
   "save-aoi-success-msg": "Área de interés configurada con éxito",
-  "open": "ABIERTA"
+  "open": "ABIERTA",
+  "All" : "Todos"
+  
 }
