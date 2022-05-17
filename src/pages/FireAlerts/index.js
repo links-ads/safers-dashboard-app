@@ -58,10 +58,10 @@ const FireAlerts = ({ t }) => {
     }
   }, []);
 
-  useEffect(() => {
-    setBoundaryBox(
-      getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-  }, [defaultAoi]);
+  // useEffect(() => {
+  //   setBoundaryBox(
+  //     getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+  // }, [defaultAoi]);
 
   useEffect(() => {
     getAlerts();
@@ -143,7 +143,7 @@ const FireAlerts = ({ t }) => {
       source: alertSource ? alertSource : undefined,
       start: dateRange[0],
       end: dateRange[1],
-      // bbox: boundaryBox ? boundaryBox.toString() : undefined, //disabled since bbox value won't return data 
+      bbox: boundaryBox ? boundaryBox.toString() : undefined, 
       default_date: false,
       default_bbox: false
     };
