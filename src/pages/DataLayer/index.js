@@ -14,16 +14,15 @@ import TreeView from './TreeView';
 
 //i18n
 import { withTranslation } from 'react-i18next'
+import { getBoundingBox } from '../../helpers/mapHelper';
 
-const LON_BASE_POINT = 16;
-const LAT_BASE_POINT = 12;
 
-const DataLayer = ({t}) => {
+const DataLayer = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
-  const [boundaryBox, setBoundaryBox] = useState(undefined);
+  const [boundingBox, setBoundingBox] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
   const [layerSource, setLayerSource] = useState(undefined);
@@ -32,13 +31,13 @@ const DataLayer = ({t}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    setBoundaryBox(
-      getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+    setBoundingBox(
+      getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   }, [defaultAoi]);
 
   useEffect(() => {
     if (currentLayer && currentLayer.url) {
-      const imageUrl = currentLayer.url.replace('{bbox}', boundaryBox);
+      const imageUrl = currentLayer.url.replace('{bbox}', boundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
     }
   }, [currentLayer]);
@@ -59,13 +58,13 @@ const DataLayer = ({t}) => {
         domain: dataDomain ? dataDomain : undefined,
         start: dateRange[0],
         end: dateRange[1],
-        // bbox: boundaryBox ? boundaryBox.toString() : undefined, //disabled since bbox value won't return data 
+        // bbox: boundingBox ? boundingBox.toString() : undefined, //disabled since bbox value won't return data 
         default_start: false,
         default_end: false,
         default_bbox: false
       }
     ));
-  }, [layerSource, dataDomain, sortByDate, dateRange, boundaryBox]);
+  }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -82,19 +81,9 @@ const DataLayer = ({t}) => {
   const getBitmapLayer = (url) => {
     return (new BitmapLayer({
       id: 'bitmap-layer',
-      bounds: boundaryBox,
+      bounds: boundingBox,
       image: url
     }))
-  }
-
-  const getBoundaryBox = (midPoint, zoomLevel) => {
-    const lonRangeFactor = (1 / zoomLevel) * LON_BASE_POINT;
-    const latRangeFactor = (1 / zoomLevel) * LAT_BASE_POINT;
-    const left = midPoint[0] - lonRangeFactor; //minLongX
-    const right = midPoint[0] + lonRangeFactor; //maxLongX
-    const top = midPoint[1] + latRangeFactor; //maxLatY
-    const bottom = midPoint[1] - latRangeFactor; //minLatY
-    return [left, bottom, right, top];
   }
 
   const handleDateRangePicker = (dates) => {
@@ -118,7 +107,7 @@ const DataLayer = ({t}) => {
         <Row>
           <Col xl={5}>
             <Row>
-              <p className='align-self-baseline alert-title'>{t('Data Layers', {ns: 'dataLayers'})}</p>
+              <p className='align-self-baseline alert-title'>{t('Data Layers', { ns: 'dataLayers' })}</p>
             </Row>
             <Row>
               <Col xl={10}>

@@ -20,8 +20,8 @@ import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
+import { getBoundingBox } from '../../helpers/mapHelper';
 
-const RANGE_BASE_POINT = 18;
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
@@ -39,7 +39,7 @@ const FireAlerts = ({ t }) => {
   const [sortByDate, setSortByDate] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
-  const [boundaryBox, setBoundaryBox] = useState(undefined);
+  const [boundingBox, setBoundingBox] = useState(undefined);
   const [zoomLevel, setZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
@@ -59,13 +59,13 @@ const FireAlerts = ({ t }) => {
   }, []);
 
   // useEffect(() => {
-  //   setBoundaryBox(
-  //     getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+  //   setBoundingBox(
+  //     latLngToBounds(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   // }, [defaultAoi]);
 
   useEffect(() => {
     getAlerts();
-  }, [sortByDate, alertSource, dateRange, boundaryBox]);
+  }, [sortByDate, alertSource, dateRange, boundingBox]);
 
   useEffect(() => {
     if (success) {
@@ -94,7 +94,7 @@ const FireAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
   const getAlertsByArea = () => {
-    setBoundaryBox(getBoundaryBox(midPoint, zoomLevel));
+    setBoundingBox(getBoundingBox(midPoint, zoomLevel));
   }
 
   const setFavorite = (id) => {
@@ -143,7 +143,7 @@ const FireAlerts = ({ t }) => {
       source: alertSource ? alertSource : undefined,
       start: dateRange[0],
       end: dateRange[1],
-      bbox: boundaryBox ? boundaryBox.toString() : undefined, 
+      bbox: boundingBox ? boundingBox.toString() : undefined,
       default_date: false,
       default_bbox: false
     };
@@ -198,15 +198,6 @@ const FireAlerts = ({ t }) => {
       sizeMaxPixels: 100,
       sizeScale: 0.5,
     }))
-  }
-
-  const getBoundaryBox = (midPoint, zoomLevel) => {
-    const rangeFactor = (1 / zoomLevel) * RANGE_BASE_POINT;
-    const left = midPoint[0] - rangeFactor; //minLongX
-    const right = midPoint[0] + rangeFactor; //maxLongX
-    const top = midPoint[1] + rangeFactor; //maxLatY
-    const bottom = midPoint[1] - rangeFactor; //minLatY
-    return [left, bottom, right, top];
   }
 
   const handleDateRangePicker = (dates) => {
