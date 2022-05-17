@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 
 const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, sortOrder, setSortOrder, t}) => {
   const notificationSources = useSelector(state => state.notifications.sources);
-  console.log(notificationSources);
   return(
     <>
       <hr />

@@ -24,7 +24,7 @@ const Notifications = () => {
   const [ filteredNotifications, setFilterdNotifications] = useState([])
   const [ paginatedNotifications, setPaginatedNotifications] = useState([])
   const [ currentPage, setCurrentPage] = useState(1)
-  const [ notificationSource, setNotificationSource] = useState('REPORT')
+  const [ notificationSource, setNotificationSource] = useState('all')
   const [ sortOrder, setSortOrder] = useState('-date')
   const [ dateRange, setDateRange] = useState([])
 
