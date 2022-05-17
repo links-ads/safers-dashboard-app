@@ -11,7 +11,7 @@ import DateComponent from '../../components/DateRangePicker/DateRange';
 
 import NotificationsList from './Components/NotificationsList';
 import { NOTIFICATIONS_PAGE_SIZE } from '../../store/notifications/types';
-import { getAllNotifications, setNewNotificationState, setNotificationParams } from '../../store/notifications/action';
+import { getAllNotifications, getAllNotificationSources, setNewNotificationState, setNotificationParams } from '../../store/notifications/action';
 
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +29,10 @@ const Notifications = () => {
   const [ dateRange, setDateRange] = useState([])
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    dispatch(getAllNotificationSources())
+  })
   
   useEffect(() => {
     setFilterdNotifications(notifications);

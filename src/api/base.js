@@ -70,17 +70,23 @@ export async function del(url, config = {}) {
 }
 
 const handleError = (error) => {
-  switch(error.response.status){
-  case 401:
-    deleteSession();
-    store.dispatch(signOutSuccess())
-    return Promise.reject(error)
-  case 500:
-    window.location.href = '/pages-500'
-    return Promise.reject(error)
+  try{
+
   
-  default:
-    return Promise.reject(error)
+    switch(error.response.status){
+    case 401:
+      deleteSession();
+      store.dispatch(signOutSuccess())
+      return Promise.reject(error)
+    case 500:
+      window.location.href = '/pages-500'
+      return Promise.reject(error)
+  
+    default:
+      return Promise.reject(error)
+    }
+  }catch(e){
+    console.log(e);
   }
 }
 export function isSuccessResp(status) {

@@ -3,9 +3,10 @@ import { Row, Col, Input} from 'reactstrap';
 import PropTypes from 'prop-types';
 //i18n
 import { withTranslation } from 'react-i18next'
+import { useSelector } from 'react-redux';
 
 const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, sortOrder, setSortOrder, t}) => {
-
+  const notificationSources = useSelector(state => state.notifications.sources);
   return(
     <>
       <hr />
@@ -34,8 +35,9 @@ const SortSection = ({ filteredNotifications, notificationSource, setNotificatio
             value={notificationSource}
           >
             <option value={'all'} >Source : All</option>
-            <option value={'REPORT'} >Source : Reports</option>
-            <option value={'EFFIS_FWI'} >Source : EFFIS FWI</option>
+            {notificationSources.map((notificationSource) => {
+              <option value={notificationSource} >Source {notificationSource}</option>
+            })}
           </Input>
         </Col>
         <Col>
