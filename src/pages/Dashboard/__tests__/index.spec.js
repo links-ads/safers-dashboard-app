@@ -53,7 +53,7 @@ describe('Test Dashboard Component', () => {
     })
 
     it('displays dashboard stats', () => {
-      const statsScreen = screen.getByRole('stats')
+      const statsScreen = screen.getByTestId('stats')
       expect(statsScreen).toHaveTextContent(formatNumber(STATS.alerts))
       expect(statsScreen).toHaveTextContent(formatNumber(STATS.events))
       expect(statsScreen).toHaveTextContent(formatNumber(STATS.socialEngagement))
@@ -61,14 +61,14 @@ describe('Test Dashboard Component', () => {
     })
 
     it('displays weather stats', () => {
-      const weatherStatsScreen = screen.getByRole('weather-stats')
+      const weatherStatsScreen = screen.getByTestId('weather-stats')
       expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.temp[0])
       expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.temp[1])
       expect(weatherStatsScreen).toHaveTextContent(WEATHER_STATS.forecast.temp[2])
     })
 
     it('switches text displayed in weather stats when clicked', async() => {
-      const weatherStatsScreen = screen.getByRole('weather-stats')
+      const weatherStatsScreen = screen.getByTestId('weather-stats')
       act(() => {
         fireEvent.click(screen.getByTestId('show-precipitation'))
       })
@@ -80,7 +80,7 @@ describe('Test Dashboard Component', () => {
     })
 
     it('displays weather variables on an hourly basis', () => {
-      const weatherVariablesScreen = screen.getByRole('weather-variables')
+      const weatherVariablesScreen = screen.getByTestId('weather-variables')
       
       weatherVariables.map((weatherVariable) => {
         expect(weatherVariablesScreen).toHaveTextContent(weatherVariable.wind)
@@ -90,7 +90,7 @@ describe('Test Dashboard Component', () => {
     })
     
     it('displays in situ media', () => {
-      const inSituMediaScreen = screen.getByRole('in-situ-media')
+      const inSituMediaScreen = screen.getByTestId('in-situ-media')
       inSituMedia.map((media) => {
         expect(inSituMediaScreen).toHaveTextContent(media.title)
       })

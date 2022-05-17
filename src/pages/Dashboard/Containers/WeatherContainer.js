@@ -18,7 +18,7 @@ const WeatherContainer = (props) => {
     if (active == 3) return weatherStats.forecast ? `${weatherStats.forecast.precipitation[tab]}°` : 'N/A'
   }
   return (
-    <Row role='weather-stats'>
+    <Row data-testid='weather-stats'>
       <Col md={6}>
         <MapComponent weatherStats={weatherStats}/>
       </Col>

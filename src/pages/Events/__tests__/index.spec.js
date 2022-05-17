@@ -84,7 +84,7 @@ describe('Test Events Screen', () => {
         userEvent.click(screen.getByTestId('closedEvents'))
       })
     
-      await waitFor(() => expect(screen.getByRole('results-section')).toHaveTextContent(/Results 2/i))
+      await waitFor(() => expect(screen.getByTestId('results-section')).toHaveTextContent(/Results 2/i))
       expect(screen.findByText('Ongoing (0)')).not.toBeNull()
       expect(screen.queryAllByText('CLOSED').length).toEqual(2)
      

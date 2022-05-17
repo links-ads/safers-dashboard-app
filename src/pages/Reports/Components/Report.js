@@ -23,6 +23,7 @@ const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <button
               type="button"
               className="btn float-start py-0 px-1"
+              aria-label='report-favorite-button'
               onClick={(e) => {
                 e.stopPropagation();
                 setFavorite(card.id);

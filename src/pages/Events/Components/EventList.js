@@ -60,7 +60,7 @@ const EventList = () => {
   
   return(
     <>
-      <Row role='event-list'>
+      <Row data-testid='event-list'>
         {
           paginatedAlerts.map((alert, index) => <Alert
             key={index}

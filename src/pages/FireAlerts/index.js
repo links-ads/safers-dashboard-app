@@ -305,8 +305,10 @@ const FireAlerts = ({ t }) => {
                   setAlertId(undefined);
                   setFilteredAlerts(alerts);
                 }}
+                aria-label='refresh-results'
               >
-                <i className="mdi mdi-sync"></i>
+                <i className="mdi mdi-sync"
+                ></i>
               </button>
             </p>
             <Button color='link'
@@ -351,7 +353,7 @@ const FireAlerts = ({ t }) => {
                   )}
                 </Input>
               </Col>
-              <Col xl={3} className="d-flex justify-content-end" role='results-section'>
+              <Col xl={3} className="d-flex justify-content-end" data-testid='results-section'>
                 <span className='my-auto alert-report-text'>{t('Results')} {filteredAlerts.length}</span></Col>
             </Row>
             <Row>

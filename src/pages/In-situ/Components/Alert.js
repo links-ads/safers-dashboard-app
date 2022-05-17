@@ -91,6 +91,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
               <button
                 type="button"
                 className="btn float-start py-0 px-1"
+                aria-label='in-situ-favorite-button'
                 onClick={(e) => {
                   e.stopPropagation();
                   setFavorite(card.id);
