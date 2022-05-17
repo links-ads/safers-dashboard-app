@@ -76,7 +76,7 @@ describe('Test Events Screen', () => {
       act(() => {
         userEvent.selectOptions(screen.getByTestId('fireAlertSource'), 'satellite')
       })
-      await waitFor(() => expect(screen.getByRole('results-section')).toHaveTextContent(/Results 1/i)) 
+      await waitFor(() => expect(screen.getByTestId('results-section')).toHaveTextContent(/Results 1/i)) 
     });
   })
   

@@ -59,7 +59,7 @@ const SortSection = ({t}) => {
 
   return (
     <>
-      <div role='status-section'>
+      <div data-testid='status-section'>
         <FormGroup className="form-group d-inline-block" check>
           <Input
             id="onGoing"
@@ -94,7 +94,7 @@ const SortSection = ({t}) => {
         </FormGroup>
       </div>
             
-      <Row role='results-section'>
+      <Row data-testid='results-section'>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
           <span className='my-auto alert-report-text'>{t('Results')} {filteredAlerts.length}</span>

@@ -31,6 +31,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
               <button
                 type="button"
                 className="btn float-end py-0 px-1"
+                aria-label='event-edit-button'
                 onClick={(e) => {
                   e.stopPropagation();
                   setSelectedAlert(card.id, true);
@@ -46,6 +47,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <button
               type="button"
               className="btn float-start py-0 px-1"
+              aria-label='event-favorite-button'
               onClick={(e) => {
                 e.stopPropagation();
                 setFavorite(card.id);

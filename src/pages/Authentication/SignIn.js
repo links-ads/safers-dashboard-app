@@ -51,7 +51,7 @@ const SignIn = () => {
                       EMAIL ADDRESS:
                     </Label>
                     <Input
-                      id="userEmail"
+                      id="signInUserEmail"
                       className={getError('email', errors, touched)}
                       name="email"
                       placeholder="email address"
@@ -72,7 +72,7 @@ const SignIn = () => {
                     </Label>
                     <InputGroup>
                       <Input
-                        id="userPassword"
+                        id="signInUserPassword"
                         className={getError('password', errors, touched)}
                         name="password"
                         placeholder="password"

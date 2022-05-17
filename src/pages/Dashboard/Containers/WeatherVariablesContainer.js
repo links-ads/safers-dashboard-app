@@ -10,7 +10,7 @@ const WeatherVariablesContainer = (props) => {
   const weatherVariables = useSelector(state => state.dashboard.weatherVariables);
 
   return (
-    <Row role='weather-variables'>
+    <Row data-testid='weather-variables'>
       <Col md={12} className='d-flex'>
         <Card className='card-weather' >
           <Row className='mb-2'>

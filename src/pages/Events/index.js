@@ -104,6 +104,7 @@ const EventAlerts = ({ t }) => {
               <button
                 type="button"
                 className="btn float-end mt-1 py-0 px-1"
+                aria-label='refresh-events'
                 onClick={() => {
                   dispatch(setFilterdAlerts(alerts));
                 }}

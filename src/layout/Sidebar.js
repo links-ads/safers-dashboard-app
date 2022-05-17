@@ -16,12 +16,12 @@ const Sidebar = props => {
     <React.Fragment>
       <div className='vertical-menu'>
         <div className='navbar-brand-box'>
-          <Link to='/' className='logo logo-light'>
+          <Link to='/' className='logo logo-light' aria-label="logo">
             <span className='logo-sm'>
-              <img src={logo} alt='' height='35' />
+              <img src={logo} alt='logo-image' height='35' />
             </span>
             <span className='logo-lg'>
-              <img src={logoPng} alt='' height='60' />
+              <img src={logoPng} alt='logo-image' height='60' />
             </span>
           </Link>
         </div>
