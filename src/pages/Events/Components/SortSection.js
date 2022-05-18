@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
 //i18n
 import { withTranslation } from 'react-i18next'
-import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/events/action';
 
-const SortSection = ({t}) => {
+const SortSection = ({t, setAlertId, setAlertSource, setFilterdAlerts, setSortByDate}) => {
   const { params, filteredAlerts } = useSelector(state => state.eventAlerts);
   const { sortByDate, alertSource } = params;
 
@@ -16,28 +15,26 @@ const SortSection = ({t}) => {
   const closed = _.sumBy(alerts, ({ status }) => status == 'CLOSED');
   const [checkedStatus, setCheckedStatus] = useState([])
 
-  const dispatch = useDispatch();
-
   const filterByAlertSource = (alertSource) => {
-    dispatch(setAlertId(undefined));
-    dispatch(setAlertSource(alertSource));
+    setAlertId(undefined);
+    setAlertSource(alertSource);
     if (alertSource === 'all')
-      dispatch(setFilterdAlerts(alerts));
+      setFilterdAlerts(alerts);
     else
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource))));
+      setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource)));
   }
   const filterByDate = (sortByDate) => {
-    dispatch(setAlertId(undefined));
-    dispatch(setSortByDate(sortByDate))
-    dispatch(setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate])));
+    setAlertId(undefined);
+    setSortByDate(sortByDate)
+    setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
   };
 
   const filterBySearchText = (query) => {
-    dispatch(setAlertId(undefined));
+    setAlertId(undefined);
     if (query === '')
-      dispatch(setFilterdAlerts(alerts));
+      setFilterdAlerts(alerts);
     else
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase()))));
+      setFilterdAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase())));
   };
 
   const handleChecked = (value) => {
@@ -49,11 +46,11 @@ const SortSection = ({t}) => {
   };
 
   useEffect(() => {
-    dispatch(setAlertId(undefined));
+    setAlertId(undefined);
     if (checkedStatus.length == 0) {
-      dispatch(setFilterdAlerts(alerts))
+      setFilterdAlerts(alerts)
     } else {
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.status))));
+      setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.status)));
     }
   }, [checkedStatus]);
 
@@ -127,10 +124,10 @@ const SortSection = ({t}) => {
             value={alertSource}
             data-testid='eventAlertSource'
           >
-            <option value={'all'} >Source : All</option>
-            <option value={'web'} >Source : Web</option>
-            <option value={'camera'} >Source : Camera</option>
-            <option value={'satellite'} >Source : Satellite</option>
+            <option value={'all'} >{t('Source')} : {t('All')}</option>
+            <option value={'web'} >{t('Source')} : Web</option>
+            <option value={'camera'} >{t('Source')} : Camera</option>
+            <option value={'satellite'} >{t('Source')} : Satellite</option>
           </Input>
         </Col>
         <Col xl={3}>
@@ -165,6 +162,8 @@ SortSection.propTypes = {
   setSortByDate: PropTypes.string,
   alertSource: PropTypes.func,
   setAlertSource: PropTypes.func,
+  setAlertId: PropTypes.func,
+  setFilterdAlerts: PropTypes.func,
   t: PropTypes.func,
 }
 

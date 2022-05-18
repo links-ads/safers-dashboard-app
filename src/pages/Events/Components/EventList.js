@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import Pagination from 'rc-pagination';
 import React from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux';
@@ -8,8 +7,9 @@ import { getIconLayer } from '../../../helpers/mapHelper';
 import { setEventFavoriteAlert } from '../../../store/events/action';
 import { PAGE_SIZE } from '../../../store/events/types';
 import Alert from './Alert';
+import PaginationWrapper from '../../../components/Pagination';
 
-const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, currentPage, setCurrentPage, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel}) => {
+const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, currentPage, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel}) => {
   
   const dispatch = useDispatch();
   
@@ -25,10 +25,10 @@ const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, curren
   }
   const hideTooltip = (e) => {
     if (e && e.viewState) {
-      dispatch(setMidpoint([e.viewState.longitude, e.viewState.latitude]));
-      dispatch(setZoomLevel(e.viewState.zoom));
+      setMidpoint([e.viewState.longitude, e.viewState.latitude]);
+      setZoomLevel(e.viewState.zoom);
     }
-    dispatch(setHoverInfo({}));
+    setHoverInfo({});
   };
 
   const setSelectedAlert = (id, isEdit) => {
@@ -36,25 +36,22 @@ const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, curren
       if (id === alertId) {
         hideTooltip();
       }
-      dispatch(setAlertId(id));
+      setAlertId(id);
       let alertsToEdit = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(alertsToEdit, { id });
       selectedAlert.isSelected = true;
-      dispatch(setIconLayer(getIconLayer(alertsToEdit)));
-      dispatch(setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit }));
+      setIconLayer(getIconLayer(alertsToEdit));
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
     } else {
-      dispatch(setAlertId(undefined));
-      dispatch(setIconLayer(getIconLayer(filteredAlerts)));
+      setAlertId(undefined);
+      setIconLayer(getIconLayer(filteredAlerts));
     }
   }
-  const updatePage = page => {
-    dispatch(setAlertId(undefined));
-    dispatch(setIconLayer(getIconLayer(filteredAlerts)));
-    dispatch(setCurrentPage(page));
-    const to = PAGE_SIZE * page;
-    const from = to - PAGE_SIZE;
+  const setPageData = pageData => {
+    setAlertId(undefined);
+    setIconLayer(getIconLayer(filteredAlerts));
     hideTooltip();
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
+    setPaginatedAlerts(pageData);
   };
   
   return(
@@ -72,13 +69,7 @@ const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, curren
       </Row>
       
       <Row className='text-center my-1'> 
-        <Pagination
-          pageSize={PAGE_SIZE}
-          onChange={updatePage}
-          current={currentPage}
-          total={filteredAlerts.length}
-        />
-        
+        <PaginationWrapper pageSize={PAGE_SIZE} list={filteredAlerts} setPageData={setPageData} />
       </Row>
     </>)
 }
