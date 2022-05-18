@@ -5,7 +5,11 @@
 .dl-item {
     color: #fff;
     width: 350px;
-    &.selected{
+    &.selected {
         background-color: #909090 !important;
     }
+}
+
+.rangeslider-horizontal {
+    width: 400px;
 }

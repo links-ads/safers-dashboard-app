@@ -27,7 +27,7 @@ const TreeView = ({ data, setCurrentLayer }) => {
       const item =
         <>
           <ListGroupItem
-            key={id}
+            key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? 'selected' : ''} mb-2`}
             onClick={() => { node.children ? toggleExpandCollapse(id) : setSelectedLayer(node) }}
           >
@@ -47,7 +47,7 @@ const TreeView = ({ data, setCurrentLayer }) => {
           {
             node.children && id &&
             <Collapse
-              key={id + '-' + lvl}
+              key={index + id + '-' + lvl}
               isOpen={itemState[id] || false}
               className='dl-tree-collapse'
             >
