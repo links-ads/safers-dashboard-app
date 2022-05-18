@@ -58,11 +58,6 @@ const FireAlerts = ({ t }) => {
     }
   }, []);
 
-  // useEffect(() => {
-  //   setBoundingBox(
-  //     latLngToBounds(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-  // }, [defaultAoi]);
-
   useEffect(() => {
     getAlerts();
   }, [sortByDate, alertSource, dateRange, boundingBox]);
