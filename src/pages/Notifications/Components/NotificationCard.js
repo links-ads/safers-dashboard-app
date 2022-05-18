@@ -12,8 +12,8 @@ const NotificatonCard = ({ card }) => {
 
   const getBadge = (badgeType) => {
     return (
-      <Badge className={`me-1 rounded-pill alert-badge ${badgeType == BADGETYPES.STATUS ? 'notification-badge' : 'to-verify'}  py-0 px-2 pb-0 mb-0`}>
-        <span>{badgeType == BADGETYPES.STATUS ? card.status : card.type}</span>
+      <Badge className={`me-1 rounded-pill alert-badge ${badgeType == BADGETYPES.TYPE ? 'notification-badge' : 'to-verify'}  py-0 px-2 pb-0 mb-0`}>
+        <span>{badgeType == BADGETYPES.TYPE ? card.type : card.status}</span>
       </Badge>
     )
   }
@@ -28,8 +28,8 @@ const NotificatonCard = ({ card }) => {
             <Row>
               <Col>
                 <CardText className='mb-2'>
-                  {getBadge(BADGETYPES.STATUS)}
                   {getBadge(BADGETYPES.TYPE)}
+                  {getBadge(BADGETYPES.STATUS)}
                 </CardText>
               </Col>
             </Row>
