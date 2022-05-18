@@ -22,7 +22,26 @@ const getNotificationsFail = (error) => {
     payload: error
   };
 };
-
+export const getAllNotificationSources = (options) => async (dispatch) => {
+  const response = await api.get(endpoints.notifications.sources, options);
+  if (response.status === 200) {
+    return dispatch(getNotificationSourcesSuccess(response.data));
+  }
+  else
+    return dispatch(getNotificationSourcesFail(response.error));
+};
+const getNotificationSourcesSuccess = (sources) => {
+  return {
+    type: actionTypes.GET_NOTIFICATION_SOURCES_SUCCESS,
+    payload: sources
+  };
+};
+const getNotificationSourcesFail = (error) => {
+  return {
+    type: actionTypes.GET_NOTIFICATIONS_SOURCES_FAIL,
+    payload: error
+  };
+};
 export const setNotificationParams = (payload) => {
   return {
     type: actionTypes.SET_NOTIFICATION_PARAMS,
