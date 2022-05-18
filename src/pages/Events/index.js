@@ -23,9 +23,21 @@ const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
   const success = useSelector(state => state.eventAlerts.success);
-  const { params, filteredAlerts } = useSelector(state => state.eventAlerts);
-  const { dateRange, sortByDate, alertSource } = params;
+  const { params } = useSelector(state => state.eventAlerts);
+ 
   const [viewState, setViewState] = useState(undefined);
+  const [iconLayer, setIconLayer] = useState(undefined);
+  const [sortByDate, setSortByDate] = useState(undefined);
+  const [alertSource, setAlertSource] = useState(undefined);
+  const [midPoint, setMidPoint] = useState([]);
+  const [boundaryBox, setBoundaryBox] = useState(undefined);
+  const [zoomLevel, setZoomLevel] = useState(undefined);
+  const [dateRange, setDateRange] = useState([undefined, undefined]);
+  const [alertId, setAlertId] = useState(undefined);
+  const [hoverInfo, setHoverInfo] = useState({});
+  const [filteredAlerts, setFilteredAlerts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginatedAlerts, setPaginatedAlerts] = useState([]);
 
   const dispatch = useDispatch();
 
@@ -34,8 +46,8 @@ const EventAlerts = ({ t }) => {
       {
         sortOrder: sortByDate,
         source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1]
+        default_date: false,
+        default_bbox : false
       }
     ));
     dispatch(setNewEventState(false, true));
@@ -106,7 +118,7 @@ const EventAlerts = ({ t }) => {
                 className="btn float-end mt-1 py-0 px-1"
                 aria-label='refresh-events'
                 onClick={() => {
-                  dispatch(setFilterdAlerts(alerts));
+                  setFilterdAlerts(alerts);
                 }}
               >
                 <i className="mdi mdi-sync"></i>
@@ -125,7 +137,13 @@ const EventAlerts = ({ t }) => {
             <SortSection />
             <Row>
               <Col xl={12} className='px-3'>
-                <EventList />
+                <EventList 
+                  alertId={alertId}
+                  setAlertId={setAlertId} 
+                  filteredAlerts={filteredAlerts}
+                  paginatedAlerts={paginatedAlerts}
+                  currentPage={currentPage}
+                />
               </Col>
             </Row>
           </Col>

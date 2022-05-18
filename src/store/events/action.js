@@ -3,7 +3,7 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 export const getAllEventAlerts = (options) => async (dispatch) => {
-  const response = await api.post(endpoints.eventAlerts.getAll, options);
+  const response = await api.get(endpoints.eventAlerts.getAll, options);
   if (response.status === 200) {
     return dispatch(getEventAlertsSuccess(response.data));
   }
@@ -24,7 +24,6 @@ const getEventAlertsFail = (error) => {
 };
 
 export const setEventFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
-  console.log('set favorite')
   const response = await api.post(endpoints.eventAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
   if (response.status === 200) {
     return dispatch(setEventFavoriteAlertSuccess(response.data));

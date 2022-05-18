@@ -1,16 +1,15 @@
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types'
+import { useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getIconLayer } from '../../../helpers/mapHelper';
-import { setAlertId, setCurrentPage, setEventFavoriteAlert, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../../store/events/action';
+import { setEventFavoriteAlert } from '../../../store/events/action';
 import { PAGE_SIZE } from '../../../store/events/types';
 import Alert from './Alert';
 
-const EventList = () => {
-  const { paginatedAlerts, filteredAlerts, alertId } = useSelector(state => state.eventAlerts);
-  const currentPage = useSelector(state => state.eventAlerts.currentPage);
+const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, currentPage, setCurrentPage, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel}) => {
   
   const dispatch = useDispatch();
   
@@ -20,7 +19,7 @@ const EventList = () => {
     dispatch(setEventFavoriteAlert(id, selectedAlert.isFavorite));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
 
     // updatePage(currentPage);
   }
@@ -79,8 +78,23 @@ const EventList = () => {
           current={currentPage}
           total={filteredAlerts.length}
         />
+        
       </Row>
     </>)
+}
+
+EventList.propTypes = {
+  alertId: PropTypes.number,
+  setAlertId: PropTypes.func,
+  filteredAlerts: PropTypes.func,
+  paginatedAlerts: PropTypes.array,
+  setPaginatedAlerts: PropTypes.func,
+  currentPage: PropTypes.number,
+  setCurrentPage: PropTypes.func,
+  setHoverInfo: PropTypes.func,
+  setIconLayer: PropTypes.func,
+  setMidpoint: PropTypes.array,
+  setZoomLevel: PropTypes.func,
 }
 
 export default EventList;
