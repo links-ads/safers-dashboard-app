@@ -21,7 +21,7 @@ const store = createStore(
   persistedReducer,
   composeEnhancers(applyMiddleware(
     thunk,
-    //logger
+    logger
   ))
 );
 

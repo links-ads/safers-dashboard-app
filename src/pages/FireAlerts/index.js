@@ -11,7 +11,7 @@ import toastr from 'toastr';
 import { withTranslation } from 'react-i18next'
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState, getSource } from '../../store/appAction';
+import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState, getSource, setFilteredAlerts } from '../../store/appAction';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
@@ -20,8 +20,8 @@ import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
+import { getBoundingBox } from '../../helpers/mapHelper';
 
-const RANGE_BASE_POINT = 18;
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
@@ -30,6 +30,7 @@ const ICON_MAPPING = {
 const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.alerts.allAlerts);
+  const filteredAlerts = useSelector(state => state.alerts.filteredAlerts);
   const sources = useSelector(state => state.alerts.sources);
   const success = useSelector(state => state.alerts.success);
   const error = useSelector(state => state.alerts.error);
@@ -38,12 +39,12 @@ const FireAlerts = ({ t }) => {
   const [sortByDate, setSortByDate] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
-  const [boundaryBox, setBoundaryBox] = useState(undefined);
+  const [boundingBox, setBoundingBox] = useState(undefined);
   const [zoomLevel, setZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
+  const [isEdit, setIsEdit] = useState(false);
   const [hoverInfo, setHoverInfo] = useState({});
-  const [filteredAlerts, setFilteredAlerts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
   const dispatch = useDispatch();
@@ -58,13 +59,8 @@ const FireAlerts = ({ t }) => {
   }, []);
 
   useEffect(() => {
-    setBoundaryBox(
-      getBoundaryBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
-  }, [defaultAoi]);
-
-  useEffect(() => {
     getAlerts();
-  }, [sortByDate, alertSource, dateRange, boundaryBox]);
+  }, [sortByDate, alertSource, dateRange, boundingBox]);
 
   useEffect(() => {
     if (success) {
@@ -76,19 +72,13 @@ const FireAlerts = ({ t }) => {
   }, [success, error]);
 
   useEffect(() => {
-    if (alerts.length > 0 && filteredAlerts.length === 0) {
-      setIconLayer(getIconLayer(alerts));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
-      setFilteredAlerts(alerts);
-    }
-    else if (alerts.length > filteredAlerts.length) {
+    if (alerts.length > filteredAlerts.length) {
       toastr.success('New alerts are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
   }, [alerts]);
 
   useEffect(() => {
+    setAlertId(undefined);
     setIconLayer(getIconLayer(filteredAlerts));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
@@ -99,12 +89,13 @@ const FireAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
   const getAlertsByArea = () => {
-    setBoundaryBox(getBoundaryBox(midPoint, zoomLevel));
+    setBoundingBox(getBoundingBox(midPoint, zoomLevel));
   }
 
   const setFavorite = (id) => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.favorite = !selectedAlert.favorite;
+    hoverInfo.object && setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
     dispatch(setFavoriteAlert(id, selectedAlert.favorite));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
@@ -147,12 +138,12 @@ const FireAlerts = ({ t }) => {
       source: alertSource ? alertSource : undefined,
       start: dateRange[0],
       end: dateRange[1],
-      // bbox: boundaryBox ? boundaryBox.toString() : undefined, //disabled since bbox value won't return data 
+      bbox: boundingBox ? boundingBox.toString() : undefined,
       default_date: false,
       default_bbox: false
     };
     dispatch(setAlertApiParams(alertParams));
-    dispatch(getAllFireAlerts(alertParams));
+    dispatch(getAllFireAlerts(alertParams, true));
 
   }
 
@@ -166,7 +157,8 @@ const FireAlerts = ({ t }) => {
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(clonedAlerts));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
+      setIsEdit(isEdit);
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
@@ -203,15 +195,6 @@ const FireAlerts = ({ t }) => {
     }))
   }
 
-  const getBoundaryBox = (midPoint, zoomLevel) => {
-    const rangeFactor = (1 / zoomLevel) * RANGE_BASE_POINT;
-    const left = midPoint[0] - rangeFactor; //minLongX
-    const right = midPoint[0] + rangeFactor; //maxLongX
-    const top = midPoint[1] + rangeFactor; //maxLatY
-    const bottom = midPoint[1] - rangeFactor; //minLatY
-    return [left, bottom, right, top];
-  }
-
   const handleDateRangePicker = (dates) => {
     if (dates) {
       let from = moment(dates[0]).format('YYYY-MM-DD');
@@ -232,6 +215,7 @@ const FireAlerts = ({ t }) => {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
       setZoomLevel(e.viewState.zoom);
     }
+    setIsEdit(false);
     setHoverInfo({});
   };
 
@@ -245,13 +229,14 @@ const FireAlerts = ({ t }) => {
   };
 
   const renderTooltip = (info) => {
-    const { object, coordinate, isEdit } = info;
+    const { object, coordinate } = info;
     if (object) {
       return <Tooltip
         key={object.id}
         object={object}
         coordinate={coordinate}
         isEdit={isEdit}
+        setIsEdit={setIsEdit}
         setFavorite={setFavorite}
         validateEvent={validateEvent}
         editInfo={editInfo}
@@ -302,8 +287,7 @@ const FireAlerts = ({ t }) => {
                 type="button"
                 className="btn float-end mt-1 py-0 px-1"
                 onClick={() => {
-                  setAlertId(undefined);
-                  setFilteredAlerts(alerts);
+                  dispatch(setFilteredAlerts(alerts));
                 }}
                 aria-label='refresh-results'
               >
@@ -391,10 +375,8 @@ const FireAlerts = ({ t }) => {
 
           </Col>
         </Row>
-
       </div>
     </div >
-
   );
 }
 

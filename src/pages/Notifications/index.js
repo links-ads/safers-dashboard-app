@@ -11,7 +11,7 @@ import DateComponent from '../../components/DateRangePicker/DateRange';
 
 import NotificationsList from './Components/NotificationsList';
 import { NOTIFICATIONS_PAGE_SIZE } from '../../store/notifications/types';
-import { getAllNotifications, setNewNotificationState, setNotificationParams } from '../../store/notifications/action';
+import { getAllNotifications, getAllNotificationSources, setNewNotificationState, setNotificationParams } from '../../store/notifications/action';
 
 import { useTranslation } from 'react-i18next';
 
@@ -24,11 +24,15 @@ const Notifications = () => {
   const [ filteredNotifications, setFilterdNotifications] = useState([])
   const [ paginatedNotifications, setPaginatedNotifications] = useState([])
   const [ currentPage, setCurrentPage] = useState(1)
-  const [ notificationSource, setNotificationSource] = useState('Report')
+  const [ notificationSource, setNotificationSource] = useState('all')
   const [ sortOrder, setSortOrder] = useState('-date')
   const [ dateRange, setDateRange] = useState([])
 
   const { t } = useTranslation();
+
+  useEffect(() => {
+    dispatch(getAllNotificationSources())
+  }, [])
   
   useEffect(() => {
     setFilterdNotifications(notifications);
@@ -41,6 +45,7 @@ const Notifications = () => {
     if(notificationSource == 'all'){
       delete notificationParams.source
     }
+    
     if(dateRange.length === 2){
       notificationParams.default_date = false
       notificationParams.start_date = dateRange[0]
@@ -55,15 +60,13 @@ const Notifications = () => {
     }
     
     dispatch(setNotificationParams(notificationParams))
-  }, [dateRange, notificationSource, sortOrder])
-
-  useEffect(() => {
     dispatch(getAllNotifications(notificationParams));
     dispatch(setNewNotificationState(false, true));
     return () => {
       dispatch(setNewNotificationState(false, false));
     }
-  }, [notificationParams]);
+  }, [dateRange, notificationSource, sortOrder])
+
 
   useEffect(() => {
     setCurrentPage(1);
@@ -87,7 +90,7 @@ const Notifications = () => {
             <p className='align-self-baseline alert-title'>{t('Notification List', {ns: 'common'})}</p>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={() => handleDateRangePicker} clearDates={() => clearDates()}/>
+            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates}/>
           </Col>
         </Row>
         <Row>

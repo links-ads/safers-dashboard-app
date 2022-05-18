@@ -3,15 +3,21 @@ import PropTypes from 'prop-types'
 import { Badge, Card, CardBody, CardText, Col, Row } from 'reactstrap';
 import { formatDate } from '../../../store/utility';
 
+const BADGETYPES = {
+  STATUS : 'status',
+  TYPE : 'type'
+}
+
 const NotificatonCard = ({ card }) => {
 
-  const getBadge = () => {
+  const getBadge = (badgeType) => {
     return (
-      <Badge className='me-1 rounded-pill alert-badge notification-badge py-0 px-2 pb-0 mb-0'>
-        <span>{card.status}</span>
+      <Badge className={`me-1 rounded-pill alert-badge ${badgeType == BADGETYPES.TYPE ? 'notification-badge' : 'to-verify'}  py-0 px-2 pb-0 mb-0`}>
+        <span>{badgeType == BADGETYPES.TYPE ? card.type : card.status}</span>
       </Badge>
     )
   }
+  
 
   return (
     <Card
@@ -22,7 +28,8 @@ const NotificatonCard = ({ card }) => {
             <Row>
               <Col>
                 <CardText className='mb-2'>
-                  {getBadge()}
+                  {getBadge(BADGETYPES.TYPE)}
+                  {getBadge(BADGETYPES.STATUS)}
                 </CardText>
               </Col>
             </Row>

@@ -3,6 +3,7 @@ import { getDefaultDateRange, updateObject } from '../utility';
 
 const initialState = {
   allNotifications: [],
+  sources: [],
   dateRange : getDefaultDateRange(),
   error: false,
   success: null,
@@ -19,6 +20,8 @@ const notificationsReducer = (state = initialState, action) => {
   case actionTypes.RESET_NOTIFICATION_API_PARAMS: return resetNotificationApiParams(state, action);
   case actionTypes.SET_NEW_NOTIFICATION_STATE: return setNewNotificationState(state, action);
   case actionTypes.SET_NOTIFICATION_PARAMS: return setNotificationParams(state, action);
+  case actionTypes.GET_NOTIFICATION_SOURCES_SUCCESS: return getNotificationSourcesSuccess(state, action);
+  case actionTypes.GET_NOTIFICATIONS_SOURCES_FAIL: return getNotificationSourcesFail(state, action);
   default:
     return state;
   }
@@ -58,5 +61,17 @@ const setNewNotificationState = (state, action) => {
   }
   return updateObject(state, updatedState);
 }
-
+const getNotificationSourcesSuccess = (state, action) => {
+  const updatedState = {
+    sources: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const getNotificationSourcesFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
 export default notificationsReducer;
