@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   Button,
@@ -17,11 +17,20 @@ import { Popup } from 'react-map-gl';
 //i18n
 import { withTranslation } from 'react-i18next'
 
-const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEvent, editInfo, t }) => {
+const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, validateEvent, editInfo, t }) => {
   const [confirmEventToggle, setConfirmEventToggle] = useState(false);
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState(object.favorite);
   const [information, setInformation] = useState(object.information);
+
+  useEffect(() => {
+    setEditToggle(isEdit);
+  }, [isEdit]);
+
+  useEffect(() => {
+    setFavToggle(object.favorite);
+  }, [object.favorite]);
+
   return (
     <Popup
       longitude={coordinate[0]}
@@ -77,7 +86,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
               <CardText>
                 {
                   editToggle ?
-                    <Input type='textarea' rows="6" value={information} onChange={(e) => { setInformation(e.target.value) }} />
+                    <Input type='textarea' rows="2" value={information} onChange={(e) => { setInformation(e.target.value) }} />
                     : information
                 }
               </CardText>
@@ -112,7 +121,11 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, validateEven
                 </Button>
               </Row>
               <Row className='g-0'>
-                <Button className='link-button' color="link" onClick={() => setEditToggle(false)} >
+                <Button className='link-button' color="link" onClick={() => {
+                  setEditToggle(false);
+                  setInformation(object.information);
+                  setIsEdit(false);
+                }} >
                   {t('cancel')}
                 </Button>
               </Row>
@@ -171,6 +184,7 @@ Tooltip.propTypes = {
   setFavorite: PropTypes.func,
   validateEvent: PropTypes.func,
   editInfo: PropTypes.func,
+  setIsEdit: PropTypes.func,
   t: PropTypes.func
 }
 
