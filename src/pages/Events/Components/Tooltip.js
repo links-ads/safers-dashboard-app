@@ -21,10 +21,10 @@ import { withTranslation } from 'react-i18next'
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo, t }) => {
   
   const [editToggle, setEditToggle] = useState(isEdit);
-  const [favToggle, setFavToggle] = useState(object.isFavorite);
-  const [casualties, setCasualties] = useState(object.casualties);
-  const [damage, setDamage] = useState(object.damage);
-  const [endDate, setEndDate] = useState(object.end);
+  const [favToggle, setFavToggle] = useState(object.favorite);
+  const [casualties, setCasualties] = useState(object.causalties);
+  const [damage, setDamage] = useState(object.estimated_damage);
+  const [endDate, setEndDate] = useState(object.end_date);
   const [peopleAffected, setPeoppleAffected] = useState(object.people_affected);
   const [description, setDescription] = useState(object.description);
   
@@ -66,7 +66,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo, t 
             </Col>
             <Col md={10}>
               <CardSubtitle className="my-auto">
-                {object.location}
+                {object.location ? object.location : 'N/A'}
               </CardSubtitle>
             </Col>
           </Row>
@@ -76,7 +76,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo, t 
             </Col>
             <Col>
               <CardSubtitle className="my-auto">
-                {t('Start', {ns: 'common'})} :&nbsp;{formatDate(object.start)} <br></br>
+                {t('Start', {ns: 'common'})} :&nbsp;{formatDate(object.start_date)} <br></br>
                 <div className='d-flex text-nowrap'>
                   {t('End', {ns: 'common'})} : &nbsp;
                   {
@@ -174,7 +174,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, editInfo, t 
             <Col>
               <CardText className='mb-2'>
                 <small className="font-italic">
-                  {(object.source).join(', ')}
+                  {object.alerts.map((alert) => alert.title).join(', ')}
                 </small>
               </CardText>
             </Col>

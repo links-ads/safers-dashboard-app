@@ -45,11 +45,12 @@ export const getPolygonLayer = (aoi) => {
 }
 
 export const getIconLayer = (alerts, mapType = 'alerts') => {
+  console.log(alerts)
   const icon = mapType == 'reports' ? locationPin : firePin
   return (new IconLayer({
     data: alerts,
     pickable: true,
-    getPosition: d => d.geometry.coordinates,
+    getPosition: d => d.center,
     iconAtlas: icon,
     iconMapping: ICON_MAPPING,
     // onHover: !hoverInfo.objects && setHoverInfo,
@@ -64,3 +65,4 @@ export const getIconLayer = (alerts, mapType = 'alerts') => {
     sizeScale: 0.5,
   }))
 }
+
