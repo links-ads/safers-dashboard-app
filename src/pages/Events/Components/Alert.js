@@ -73,7 +73,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
               </Col>
               <Col md={2}>
                 <CardText>
-                  {/* <span className='float-end alert-source-text me-2'>{(card.source).join(', ')}</span> */}
+                  <span className='float-end alert-source-text me-2'>{card.alerts.map((alert) => alert.title).join(',')}</span>
                 </CardText>
               </Col>
             </Row>

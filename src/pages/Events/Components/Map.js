@@ -32,7 +32,6 @@ const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo
   };
 
   const renderTooltip = (info) => {
-    if(!info) return null
     const { object, coordinate, isEdit } = info;
     if (object) {
       return <ToolTip

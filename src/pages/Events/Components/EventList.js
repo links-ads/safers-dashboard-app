@@ -75,16 +75,16 @@ const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, curren
 }
 
 EventList.propTypes = {
-  alertId: PropTypes.number,
+  alertId: PropTypes.string,
   setAlertId: PropTypes.func,
-  filteredAlerts: PropTypes.func,
+  filteredAlerts: PropTypes.array,
   paginatedAlerts: PropTypes.array,
   setPaginatedAlerts: PropTypes.func,
   currentPage: PropTypes.number,
   setCurrentPage: PropTypes.func,
   setHoverInfo: PropTypes.func,
   setIconLayer: PropTypes.func,
-  setMidpoint: PropTypes.array,
+  setMidpoint: PropTypes.func,
   setZoomLevel: PropTypes.func,
 }
 

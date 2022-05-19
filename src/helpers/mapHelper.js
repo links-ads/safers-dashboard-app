@@ -45,7 +45,6 @@ export const getPolygonLayer = (aoi) => {
 }
 
 export const getIconLayer = (alerts, mapType = 'alerts') => {
-  console.log(alerts)
   const icon = mapType == 'reports' ? locationPin : firePin
   return (new IconLayer({
     data: alerts,

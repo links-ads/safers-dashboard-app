@@ -141,6 +141,7 @@ const EventAlerts = ({ t }) => {
               sortByDate={sortByDate}
               setSortByDate={setSortByDate}
               setAlertSource={setAlertSource}
+              setFilterdAlerts={setFilteredAlerts}
             />
             <Row>
               <Col xl={12} className='px-3'>
@@ -156,6 +157,8 @@ const EventAlerts = ({ t }) => {
                   setZoomLevel={setZoomLevel}
                   setHoverInfo={setHoverInfo}
                   setCurrentPage={setCurrentPage}
+                  setIconLayer={setIconLayer}
+                  setPaginatedAlerts={setPaginatedAlerts}
                 />
               </Col>
             </Row>
@@ -174,6 +177,7 @@ const EventAlerts = ({ t }) => {
               setMidpoint={setMidPoint}
               setZoomLevel={setZoomLevel}
               setCurrentPage={setCurrentPage}
+              setAlertId={setAlertId}
             />
           </Col>
         </Row>

@@ -159,8 +159,8 @@ const SortSection = ({t, setAlertId, setAlertSource, setFilterdAlerts, setSortBy
 
 SortSection.propTypes = {
   sortByDate: PropTypes.any,
-  setSortByDate: PropTypes.string,
-  alertSource: PropTypes.func,
+  setSortByDate: PropTypes.func,
+  alertSource: PropTypes.string,
   setAlertSource: PropTypes.func,
   setAlertId: PropTypes.func,
   setFilterdAlerts: PropTypes.func,

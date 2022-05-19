@@ -23,6 +23,5 @@ export const formatDefaultDate = (date, format='L') => {
 }
 
 export const formatDate = (date, format='ll') => {
-  console.log(date)
   return moment(date).format(format)
 }
