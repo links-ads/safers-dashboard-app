@@ -18,7 +18,7 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
 
-
+const SLIDER_SPEED = 800;
 const DataLayer = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
@@ -39,7 +39,7 @@ const DataLayer = ({ t }) => {
 
   useEffect(() => {
     setBoundingBox(
-      getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+      getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel, 300, 300));
   }, [defaultAoi]);
 
   useEffect(() => {
@@ -63,39 +63,19 @@ const DataLayer = ({ t }) => {
     let nextValue = sliderValue;
     if (isPlaying) {
       timer.current = setInterval(() => {
-        nextValue += 1;
-        setSliderValue(nextValue);
-      }, 2000);
+        if (nextValue < currentLayer.urls.length) {
+          nextValue += 1;
+          setSliderValue(nextValue);
+        } else {
+          clearInterval(timer.current);
+          setIsPlaying(false);
+        }
+      }, SLIDER_SPEED);
     }
     else {
       clearInterval(timer.current);
-      //setSliderValue(0);
     }
   }, [isPlaying]);
-
-  // useEffect(() => {
-  //   let animation = 0;
-  //   if (isPlaying) {
-  //     animation = requestAnimationFrame(() => {
-  //       let nextValue = sliderValue + 1;
-  //       if (nextValue > sliderRangeLimit) {
-  //         nextValue = 0;
-  //       }
-  //       setTimeout(() => {
-  //         if (!isPlaying)
-  //           nextValue = 0;
-
-  //         setSliderValue(nextValue);
-  //       }, 1000);
-  //     });
-  //   }
-  //   return () => {
-  //     if (animation) {
-  //       cancelAnimationFrame(animation);
-  //       //setSliderValue(0);
-  //     }
-  //   }
-  // });
 
   useEffect(() => {
     if (dataLayers.length > 0) {
@@ -142,45 +122,49 @@ const DataLayer = ({ t }) => {
   }
 
   const getSlider = (index) => {
-    return (
-      <div style={{
-        position: 'absolute',
-        zIndex: 1,
-        bottom: '70px',
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
-      }}>
-        <button
-          type="button"
-          className="btn float-start me-2"
-          onClick={() => setIsPlaying(!isPlaying)}
-          aria-label='play-data-layers'
-        >
-          <i className={`mdi ${isPlaying ? 'mdi-play' : 'mdi-stop'}`} />
-        </button>
-        <Slider
-          key={index}
-          value={sliderValue}
-          orientation="horizontal"
-          min={0}
-          max={sliderRangeLimit}
-          onClick={() => {
-            setSliderChangeComplete(true)
-          }}
-          onChangeStart={() => {
-            setIsPlaying(false);
-            setSliderChangeComplete(false);
-          }}
-          onChange={value => setSliderValue(value)}
-          onChangeComplete={() => {
-            setSliderChangeComplete(true)
-          }}
-        />
-      </div>
-    )
+    if (currentLayer?.urls) {
+      return (
+        <div style={{
+          position: 'absolute',
+          zIndex: 1,
+          bottom: '70px',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <button
+            type="button"
+            className="btn btn-layers-slider-play float-start me-2 p-0"
+            onClick={() => setIsPlaying(!isPlaying)}
+            aria-label='play-data-layers'
+          >
+            <i className={`h4 mdi ${isPlaying ? 'mdi-play' : 'mdi-stop'}`} />
+          </button>
+          <Slider
+            key={index}
+            value={sliderValue}
+            orientation="horizontal"
+            min={0}
+            max={sliderRangeLimit}
+            onClick={() => {
+              setSliderChangeComplete(true)
+            }}
+            onChangeStart={() => {
+              setIsPlaying(false);
+              setSliderChangeComplete(false);
+            }}
+            onChange={value => setSliderValue(value)}
+            onChangeComplete={() => {
+              setIsPlaying(false);
+              setSliderChangeComplete(true)
+            }}
+          />
+        </div>
+      );
+    }
   }
+
   const handleDateRangePicker = (dates) => {
     if (dates) {
       let from = moment(dates[0]).format('YYYY-MM-DD');
