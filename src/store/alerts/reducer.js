@@ -4,6 +4,7 @@ import { updateObject } from '../utility';
 const initialState = {
   sources: [],
   allAlerts: [],
+  filteredAlerts: [],
   params: {},
   isNewAlert: false,
   isPageActive: false,
@@ -16,6 +17,7 @@ const alertReducer = (state = initialState, action) => {
   switch (action.type) {
   case actionTypes.GET_ALERTS_SUCCESS: return getAlertsSuccess(state, action);
   case actionTypes.GET_ALERTS_FAIL: return getAlertsFail(state, action);
+  case actionTypes.SET_FILTERED_ALERTS: return setFilteredAlerts(state, action);
   case actionTypes.SET_FAV_ALERT_SUCCESS: return setFavoriteAlertSuccess(state, action);
   case actionTypes.SET_FAV_ALERT_FAIL: return setFavoriteAlertFail(state, action);
   case actionTypes.CREATE_EVENT_ALERT_SUCCESS: return validateAlertSuccess(state, action);
@@ -42,6 +44,12 @@ const getAlertsSuccess = (state, action) => {
 const getAlertsFail = (state) => {
   const updatedState = {
     error: true,
+  }
+  return updateObject(state, updatedState);
+}
+const setFilteredAlerts = (state, action) => {
+  const updatedState = {
+    filteredAlerts: action.payload,
   }
   return updateObject(state, updatedState);
 }

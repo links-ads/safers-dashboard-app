@@ -65,3 +65,24 @@ export const getIconLayer = (alerts, mapType = 'alerts') => {
   }))
 }
 
+const EARTH_CIR_METERS = 40075016.686;
+const degreesPerMeter = 360 / EARTH_CIR_METERS;
+
+const toRadians = (degrees) => {
+  return degrees * Math.PI / 180;
+};
+
+export const getBoundingBox = (midPoint, zoomLevel, width = 600, height = 600) => {
+  const lat = midPoint[1];
+  const lng = midPoint[0];
+  const metersPerPixelEW = EARTH_CIR_METERS / Math.pow(2, zoomLevel + 8);
+  const metersPerPixelNS = EARTH_CIR_METERS / Math.pow(2, zoomLevel + 8) * Math.cos(toRadians(lat));
+
+  const shiftMetersEW = width / 4 * metersPerPixelEW;
+  const shiftMetersNS = height / 4 * metersPerPixelNS;
+
+  const shiftDegreesEW = shiftMetersEW * degreesPerMeter;
+  const shiftDegreesNS = shiftMetersNS * degreesPerMeter;
+  //[west, south, east, north]
+  return [lng - shiftDegreesEW, lat - shiftDegreesNS, lng + shiftDegreesEW, lat + shiftDegreesNS];
+}
