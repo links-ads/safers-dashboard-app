@@ -1,10 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
-import { debounce } from 'lodash';
 
 const TreeView = ({ data, setCurrentLayer }) => {
   const [itemState, setItemState] = useState({});
@@ -17,14 +16,11 @@ const TreeView = ({ data, setCurrentLayer }) => {
   }, [selectedLayer]);
 
   const toggleExpandCollapse = id => {
-    //const id = e.target.id;
     setItemState(prevState => ({
       ...prevState,
       [id]: !prevState[id]
     }));
   }
-
-  const delayedFetchEndpoint = useCallback(debounce(q => fetchEndpoint(q), 500), []);
 
   const mapper = (nodes, parentId, lvl) => {
     return nodes.map((node, index) => {
@@ -37,15 +33,14 @@ const TreeView = ({ data, setCurrentLayer }) => {
             onClick={() => {
               node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
             }}
+            onMouseEnter={async () => {
+              setTooltipInfo(undefined);
+              setTooltipInfo(await fetchEndpoint(node.info_url));
+            }}
+            onMouseLeave={() => setTooltipInfo(undefined)}
           >
             <>
-              <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1'
-                onMouseEnter={async () => {
-                  setTooltipInfo(undefined);
-                  setTooltipInfo(await delayedFetchEndpoint(node.info_url));
-                }}
-                onMouseLeave={() => setTooltipInfo(undefined)}
-              />
+              <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
               {
                 node.children ?
                   <>
