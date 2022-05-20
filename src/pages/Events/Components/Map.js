@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
 
 // eslint-disable-next-line no-unused-vars
-const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo, setHoverInfo, filteredAlerts, iconLayer, setMidpoint, setZoomLevel, setPaginatedAlerts}) => {
+const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo, setHoverInfo, filteredAlerts, iconLayer, setMidpoint, setZoomLevel, setPaginatedAlerts, setSelectedAlert}) => {
   
   const dispatch = useDispatch();
 
@@ -24,7 +24,7 @@ const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo
 
   const showTooltip = info => {
     if (info.picked && info.object) {
-      setAlertId(info.object.id);
+      setSelectedAlert(info.object.id);
       setHoverInfo(info);
     } else {
       setHoverInfo({});
@@ -103,7 +103,8 @@ MapSection.propTypes = {
   filteredAlerts: PropTypes.array,
   setMidpoint: PropTypes.func,
   setZoomLevel: PropTypes.func,
-  setPaginatedAlerts: PropTypes.func
+  setPaginatedAlerts: PropTypes.func,
+  setSelectedAlert: PropTypes.func
 }
 
 export default MapSection;

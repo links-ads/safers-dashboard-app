@@ -3,6 +3,7 @@ import { getDefaultDateRange, updateObject } from '../utility';
 
 const initialState = {
   allAlerts: [],
+  event: {},
   paginatedAlerts: [],
   filteredAlerts: [],
   midPoint: [],
@@ -12,6 +13,7 @@ const initialState = {
   hoverInfo: undefined,
   currentPage: 1,
   error: false,
+  updateError: null,
   success: null,
   params: {
     sortByDate: 'desc',
@@ -29,6 +31,8 @@ const eventAlertReducer = (state = initialState, action) => {
   switch (action.type) {
   case actionTypes.GET_EVENT_ALERTS_SUCCESS: return getAlertsSuccess(state, action);
   case actionTypes.GET_EVENT_ALERTS_FAIL: return getAlertsFail(state, action);
+  case actionTypes.GET_EVENT_SUCCESS: return getEventAlertSuccess(state, action);
+  case actionTypes.GET_EVENT_FAIL: return getEventAlertFail(state, action);
   case actionTypes.SET_FAV_EVENT_ALERT_SUCCESS: return setFavoriteAlertSuccess(state, action);
   case actionTypes.SET_FAV_EVENT_ALERT_FAIL: return setFavoriteAlertFail(state, action);
   case actionTypes.EVENTS_CREATE_EVENT_ALERT_SUCCESS: return validateAlertSuccess(state, action);
@@ -68,7 +72,22 @@ const getAlertsSuccess = (state, action) => {
 }
 const getAlertsFail = (state) => {
   const updatedState = {
-    error: true,
+    error: true, 
+  }
+  return updateObject(state, updatedState);
+}
+
+const getEventAlertSuccess = (state, action) => {
+  console.log(action.payload)
+  const updatedState = {
+    event: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const getEventAlertFail = (state) => {
+  const updatedState = {
+    error: true, 
   }
   return updateObject(state, updatedState);
 }
@@ -103,14 +122,15 @@ const validateAlertFail = (state) => {
 
 const editAlertInfoSuccess = (state, action) => {
   const updatedState = {
-    success: action.msg,
+    event: action.payload,
     error: false,
   }
   return updateObject(state, updatedState);
 }
-const editAlertInfoFail = (state) => {
+const editAlertInfoFail = (state, action) => {
   const updatedState = {
     error: true,
+    updateError: action.payload
   }
   return updateObject(state, updatedState);
 }

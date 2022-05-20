@@ -9,7 +9,7 @@ import { PAGE_SIZE } from '../../../store/events/types';
 import Alert from './Alert';
 import PaginationWrapper from '../../../components/Pagination';
 
-const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, currentPage, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel}) => {
+const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, currentPage, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, setSelectedAlert}) => {
   
   const dispatch = useDispatch();
   
@@ -31,22 +31,6 @@ const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, curren
     setHoverInfo({});
   };
 
-  const setSelectedAlert = (id, isEdit) => {
-    if (id) {
-      if (id === alertId) {
-        hideTooltip();
-      }
-      setAlertId(id);
-      let alertsToEdit = _.cloneDeep(filteredAlerts);
-      let selectedAlert = _.find(alertsToEdit, { id });
-      selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(alertsToEdit));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit });
-    } else {
-      setAlertId(undefined);
-      setIconLayer(getIconLayer(filteredAlerts));
-    }
-  }
   const setPageData = pageData => {
     setAlertId(undefined);
     setIconLayer(getIconLayer(filteredAlerts));
@@ -86,6 +70,7 @@ EventList.propTypes = {
   setIconLayer: PropTypes.func,
   setMidpoint: PropTypes.func,
   setZoomLevel: PropTypes.func,
+  setSelectedAlert: PropTypes.func,
 }
 
 export default EventList;

@@ -23,9 +23,10 @@ export const endpoints = {
   },
   eventAlerts: {
     getAll: '/events/',
+    getEvent: '/events/:event_id/',
     setFavorite: '/event-alerts/favorite',
     validate: '/event-alerts/validate',
-    edit: '/event-alerts/id-goes-here',
+    edit: '/events/:event_id/',
     getInSitu: '/event-alerts/inSitu',
     getTweets: '/event-alerts/tweets'
   },

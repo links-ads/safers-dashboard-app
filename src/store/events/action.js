@@ -1,6 +1,7 @@
 import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
+import { InProgress } from '../authentication/action';
 
 export const getAllEventAlerts = (options) => async (dispatch) => {
   const response = await api.get(endpoints.eventAlerts.getAll, options);
@@ -65,14 +66,19 @@ const validateEventAlertFail = (error) => {
   };
 };
 
-export const editEventAlertInfo = (alertId, desc) => async (dispatch) => {
-  const response = await api.patch(endpoints.eventAlerts.edit, { alert_id: alertId, description: desc });
+export const editEventAlertInfo = (eventId, editInfo) => async (dispatch) => {
+  const response = await api.patch(endpoints.eventAlerts.edit.replace(':event_id', eventId), editInfo);
+  dispatch(InProgress(true, 'Loading..'));
   if (response.status === 200) {
+    dispatch(InProgress(false, 'Loading..'));
     return dispatch(editEventAlertInfoSuccess(response.data));
   }
-  else
-    return dispatch(editEventAlertInfoFail(response.error));
+  else{
+    dispatch(InProgress(false, 'Loading..'));
+    return dispatch(editEventAlertInfoFail(response.data));
+  }
 };
+
 const editEventAlertInfoSuccess = (msg) => {
   return {
     type: actionTypes.EDIT_EVENT_ALERT_INFO_SUCCESS,
@@ -82,6 +88,32 @@ const editEventAlertInfoSuccess = (msg) => {
 const editEventAlertInfoFail = (error) => {
   return {
     type: actionTypes.EDIT_EVENT_ALERT_INFO_FAIL,
+    payload: error
+  };
+};
+
+export const getEventInfo = (eventId) => async (dispatch) => {
+  const response = await api.get(endpoints.eventAlerts.getEventInfo.replace(':event_id', eventId));
+  dispatch(InProgress(true, 'Loading..'));
+  if (response.status === 200) {
+    dispatch(InProgress(false, 'Loading..'));
+    return dispatch(getEventAlertInfoSuccess(response.data));
+  }
+  else{
+    dispatch(InProgress(false, 'Loading..'));
+    return dispatch(getEventAlertInfoFail(response.data));
+  }
+};
+
+const getEventAlertInfoSuccess = (msg) => {
+  return {
+    type: actionTypes.GET_EVENT_SUCCESS,
+    msg,
+  };
+};
+const getEventAlertInfoFail = (error) => {
+  return {
+    type: actionTypes.GET_EVENT_FAIL,
     payload: error
   };
 };

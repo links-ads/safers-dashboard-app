@@ -23,6 +23,7 @@ const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
   const success = useSelector(state => state.eventAlerts.success);
+  const error = useSelector(state => state.alerts.error);
   // eslint-disable-next-line no-unused-vars
   const { params } = useSelector(state => state.eventAlerts);
  
@@ -58,14 +59,15 @@ const EventAlerts = ({ t }) => {
       dispatch(setNewEventState(false, false));
     }
   }, []);
-
+  
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
-    }
-    dispatch(resetEventAlertsResponseState());
+    if (success) {
+      toastr.success(success, '');
+    } else if (error)
+      toastr.error(error, '');
 
-  }, [success]);
+    dispatch(resetEventAlertsResponseState());
+  }, [success, error]);
 
   useEffect(() => {
     if (alerts.length > 0 && filteredAlerts.length === 0) {
@@ -108,6 +110,23 @@ const EventAlerts = ({ t }) => {
     setHoverInfo({});
   };
 
+  const setSelectedAlert = (id, isEdit) => {
+    if (id) {
+      if (id === alertId) {
+        hideTooltip();
+      }
+      setAlertId(id);
+      let clonedAlerts = _.cloneDeep(filteredAlerts);
+      let selectedAlert = _.find(clonedAlerts, { id });
+      selectedAlert.isSelected = true;
+      setIconLayer(getIconLayer(clonedAlerts));
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
+      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+    } else {
+      setAlertId(undefined);
+      setIconLayer(getIconLayer(filteredAlerts));
+    }
+  }
 
   return (
     <div className='page-content'>
@@ -159,6 +178,7 @@ const EventAlerts = ({ t }) => {
                   setCurrentPage={setCurrentPage}
                   setIconLayer={setIconLayer}
                   setPaginatedAlerts={setPaginatedAlerts}
+                  setSelectedAlert={setSelectedAlert}
                 />
               </Col>
             </Row>
@@ -178,6 +198,7 @@ const EventAlerts = ({ t }) => {
               setZoomLevel={setZoomLevel}
               setCurrentPage={setCurrentPage}
               setAlertId={setAlertId}
+              setSelectedAlert={setSelectedAlert}
             />
           </Col>
         </Row>
