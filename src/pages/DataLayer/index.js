@@ -17,6 +17,7 @@ import { withTranslation } from 'react-i18next'
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
+import SimpleBar from 'simplebar-react';
 
 const SLIDER_SPEED = 800;
 const DataLayer = ({ t }) => {
@@ -131,7 +132,6 @@ const DataLayer = ({ t }) => {
 
   const getSlider = (index) => {
     if (currentLayer?.urls) {
-      console.log(Object.keys(currentLayer?.urls))
       return (
         <div style={{
           position: 'absolute',
@@ -278,10 +278,12 @@ const DataLayer = ({ t }) => {
             </Row>
             <Row>
               <Col>
-                <TreeView
-                  data={dataLayers}
-                  setCurrentLayer={setCurrentLayer}
-                />
+                <SimpleBar style={{ maxHeight: '500px', margin: '5px' }}>
+                  <TreeView
+                    data={dataLayers}
+                    setCurrentLayer={setCurrentLayer}
+                  />
+                </SimpleBar>
               </Col>
             </Row>
           </Col>

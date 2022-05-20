@@ -29,8 +29,3 @@ export const resetDataLayersResponseState = () => {
     type: actionTypes.RESET_DATA_LAYER_STATE,
   }
 };
-
-
-
-
-

@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
+import { fetchEndpoint } from '../../helpers/apiHelper';
+import { debounce } from 'lodash';
 
 const TreeView = ({ data, setCurrentLayer }) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
+  const [tooltipInfo, setTooltipInfo] = useState(undefined);
 
   useEffect(() => {
     //TODO: when single layer selected
@@ -21,6 +24,8 @@ const TreeView = ({ data, setCurrentLayer }) => {
     }));
   }
 
+  const delayedFetchEndpoint = useCallback(debounce(q => fetchEndpoint(q), 500), []);
+
   const mapper = (nodes, parentId, lvl) => {
     return nodes.map((node, index) => {
       const id = node.id;
@@ -29,10 +34,18 @@ const TreeView = ({ data, setCurrentLayer }) => {
           <ListGroupItem
             key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? 'selected' : ''} mb-2`}
-            onClick={() => { node.children ? toggleExpandCollapse(id) : setSelectedLayer(node) }}
+            onClick={() => {
+              node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
+            }}
           >
             <>
-              <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
+              <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1'
+                onMouseEnter={async () => {
+                  setTooltipInfo(undefined);
+                  setTooltipInfo(await delayedFetchEndpoint(node.info_url));
+                }}
+                onMouseLeave={() => setTooltipInfo(undefined)}
+              />
               {
                 node.children ?
                   <>
@@ -54,9 +67,15 @@ const TreeView = ({ data, setCurrentLayer }) => {
               {mapper(node.children, id, (lvl || 0) + 1)}
             </Collapse>
           }
-          <ReactTooltip id={`${parentId}-${index}-tooltip`} aria-haspopup="true" role={node.info} place='right' class="alert-tooltip text-light">
-            <p className='mb-2'>{node.info}</p>
-          </ReactTooltip>
+          {(node.info || node.info_url) &&
+            <ReactTooltip id={`${parentId}-${index}-tooltip`}
+              aria-haspopup="true"
+              role={tooltipInfo || node.info}
+              place='right'
+              class="alert-tooltip text-light"
+            >
+              <p className='mb-2'>{tooltipInfo || node.info}</p>
+            </ReactTooltip>}
         </>
       return item;
     });
