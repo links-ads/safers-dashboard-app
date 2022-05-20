@@ -28,9 +28,9 @@ const pollingHelper = (props) => {
   const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
 
   const callAPIs = () => {
-    // dispatch(getAllFireAlerts(alertParams));
-    // dispatch(getAllEventAlerts(eventParams));
-    // dispatch(getAllNotifications(notificationParams));
+    dispatch(getAllFireAlerts(alertParams));
+    dispatch(getAllEventAlerts(eventParams));
+    dispatch(getAllNotifications(notificationParams));
   };
 
   useEffect(() => {
