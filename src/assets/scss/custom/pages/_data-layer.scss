@@ -1,7 +1,7 @@
 .dl-tree-collapse {
     color: #fff;
-    margin-left: 50px;
 }
+
 .dl-item {
     color: #fff;
     width: 350px;
@@ -16,4 +16,9 @@
 
 .btn-layers-slider-play {
     color: #e27b1d !important;
+}
+
+.rangeslider .rangeslider__handle-tooltip {
+    width: 200px !important;
+    height: 40px;
 }

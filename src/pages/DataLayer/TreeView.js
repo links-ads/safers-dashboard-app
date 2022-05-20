@@ -49,13 +49,13 @@ const TreeView = ({ data, setCurrentLayer }) => {
             <Collapse
               key={index + id + '-' + lvl}
               isOpen={itemState[id] || false}
-              className='dl-tree-collapse'
+              className='dl-tree-collapse ms-5'
             >
               {mapper(node.children, id, (lvl || 0) + 1)}
             </Collapse>
           }
-          <ReactTooltip id={`${parentId}-${index}-tooltip`} aria-haspopup="true" role={node.text} place='right' class="alert-tooltip text-light">
-            <p className='mb-2'>{node.text}</p>
+          <ReactTooltip id={`${parentId}-${index}-tooltip`} aria-haspopup="true" role={node.info} place='right' class="alert-tooltip text-light">
+            <p className='mb-2'>{node.info}</p>
           </ReactTooltip>
         </>
       return item;

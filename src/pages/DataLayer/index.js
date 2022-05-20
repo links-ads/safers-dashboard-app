@@ -46,16 +46,20 @@ const DataLayer = ({ t }) => {
     setSliderValue(0);
     setIsPlaying(false);
     if (currentLayer && currentLayer.urls) {
-      const imageUrl = currentLayer.urls[0].replace('{bbox}', boundingBox);
+      const urls = getUrls();
+      const imageUrl = urls[0].replace('{bbox}', boundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
-      setSliderRangeLimit(currentLayer.urls.length);
+      setSliderRangeLimit(urls.length - 1);
     }
   }, [currentLayer]);
 
   useEffect(() => {
-    if (sliderChangeComplete && currentLayer && currentLayer.urls && currentLayer.urls[sliderValue]) {
-      const imageUrl = currentLayer.urls[sliderValue].replace('{bbox}', boundingBox);
-      setBitmapLayer(getBitmapLayer(imageUrl));
+    if (sliderChangeComplete && currentLayer && currentLayer.urls) {
+      const urls = getUrls();
+      if (urls[sliderValue]) {
+        const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
+        setBitmapLayer(getBitmapLayer(imageUrl));
+      }
     }
   }, [sliderValue, sliderChangeComplete]);
 
@@ -63,7 +67,7 @@ const DataLayer = ({ t }) => {
     let nextValue = sliderValue;
     if (isPlaying) {
       timer.current = setInterval(() => {
-        if (nextValue < currentLayer.urls.length) {
+        if (nextValue < getUrls().length) {
           nextValue += 1;
           setSliderValue(nextValue);
         } else {
@@ -101,6 +105,8 @@ const DataLayer = ({ t }) => {
     ));
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
+  const getUrls = () => Object.values(currentLayer?.urls);
+
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
       longitude: midPoint[0],
@@ -121,8 +127,11 @@ const DataLayer = ({ t }) => {
     }))
   }
 
+  const formatTooltip = value => moment(Object.assign({}, Object.keys(currentLayer?.urls))[value]).format('LLL');
+
   const getSlider = (index) => {
     if (currentLayer?.urls) {
+      console.log(Object.keys(currentLayer?.urls))
       return (
         <div style={{
           position: 'absolute',
@@ -145,8 +154,10 @@ const DataLayer = ({ t }) => {
             key={index}
             value={sliderValue}
             orientation="horizontal"
+            format={formatTooltip}
             min={0}
             max={sliderRangeLimit}
+            tooltip={true}
             onClick={() => {
               setSliderChangeComplete(true)
             }}
