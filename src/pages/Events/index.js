@@ -18,10 +18,11 @@ import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
 import { withTranslation } from 'react-i18next'
+import { getEventInfo, setEventParams } from '../../store/events/action';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const alerts = useSelector(state => state.eventAlerts.allAlerts);
+  const  { allAlerts: alerts, params: eventParams } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
   const error = useSelector(state => state.alerts.error);
   // eslint-disable-next-line no-unused-vars
@@ -29,9 +30,10 @@ const EventAlerts = ({ t }) => {
  
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
+  const [status, setStatus] = useState('');
   // const [boundaryBox, setBoundaryBox] = useState(undefined);
   const [zoomLevel, setZoomLevel] = useState(undefined);
   // eslint-disable-next-line no-unused-vars
@@ -45,21 +47,43 @@ const EventAlerts = ({ t }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllEventAlerts(
-      {
-        sortOrder: sortByDate,
-        source: alertSource,
-        default_date: false,
-        default_bbox : false
-      }
-    ));
+    if(alertSource){
+      eventParams.source = alertSource;
+    }
+    if(alertSource == 'all'){
+      delete eventParams.source
+    }
+    if(status){
+      eventParams.status = status;
+    }else{
+      delete eventParams.status
+    }
+    if(dateRange.length === 2){
+      eventParams.default_date = false
+      eventParams.start_date = dateRange[0]
+      eventParams.end_date = dateRange[1]
+    }else if(dateRange.length === 0){
+      delete eventParams.start_date
+      delete eventParams.end_date
+      eventParams.default_date = true
+    }
+    if(sortOrder){
+      eventParams.order = sortOrder
+    }
+  
+    dispatch(setEventParams(eventParams))
+    dispatch(getAllEventAlerts(eventParams));
     dispatch(setNewEventState(false, true));
     return () => {
       dispatch(resetEventApiParams());
       dispatch(setNewEventState(false, false));
     }
-  }, []);
-  
+  }, [dateRange, alertSource, sortOrder, status])
+
+  useEffect(() => {
+    setFilteredAlerts(alerts);
+  }, [alerts]);
+
   useEffect(() => {
     if (success) {
       toastr.success(success, '');
@@ -93,9 +117,12 @@ const EventAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
+    let from = moment(dates[0]).format('YYYY-MM-DD');
+    let to = moment(dates[1]).format('YYYY-MM-DD');
     setDateRange([from, to]);
+  }
+  const clearDates = () => {
+    setDateRange([]);
   }
 
   const handleResetAOI = useCallback(() => {
@@ -116,6 +143,7 @@ const EventAlerts = ({ t }) => {
         hideTooltip();
       }
       setAlertId(id);
+      dispatch(getEventInfo(id))
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
@@ -150,17 +178,20 @@ const EventAlerts = ({ t }) => {
               {t('default-aoi')}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} />
+            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates}/>
           </Col>
         </Row>
         <Row>
           <Col xl={5}>
             <SortSection
               setAlertId={setAlertId}
-              sortByDate={sortByDate}
-              setSortByDate={setSortByDate}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
               setAlertSource={setAlertSource}
+              filteredAlerts={filteredAlerts}
               setFilterdAlerts={setFilteredAlerts}
+              status={status}
+              setStatus={setStatus}
             />
             <Row>
               <Col xl={12} className='px-3'>

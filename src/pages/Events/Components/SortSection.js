@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
@@ -6,27 +6,27 @@ import _ from 'lodash';
 //i18n
 import { withTranslation } from 'react-i18next'
 
-const SortSection = ({t, setAlertId, setAlertSource, setFilterdAlerts, setSortByDate}) => {
-  const { params, filteredAlerts } = useSelector(state => state.eventAlerts);
+const SortSection = ({t, setAlertId, setAlertSource, filteredAlerts, setFilterdAlerts, setSortOrder, setStatus}) => {
+  const { params } = useSelector(state => state.eventAlerts);
   const { sortByDate, alertSource } = params;
 
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
-  const ongoing = _.sumBy(alerts, ({ status }) => status == 'ONGOING');
-  const closed = _.sumBy(alerts, ({ status }) => status == 'CLOSED');
-  const [checkedStatus, setCheckedStatus] = useState([])
+  const ongoing = alerts.filter((alert) => alert.status == 'OPEN').length;
+  const closed = alerts.filter((alert) => alert.status == 'CLOSED').length;
 
   const filterByAlertSource = (alertSource) => {
     setAlertId(undefined);
     setAlertSource(alertSource);
-    if (alertSource === 'all')
-      setFilterdAlerts(alerts);
-    else
-      setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource)));
+  }
+  const filterByStatus = (status, checked) => {
+    if(!checked){
+      status = ''
+    }
+    setStatus(status)
   }
   const filterByDate = (sortByDate) => {
     setAlertId(undefined);
-    setSortByDate(sortByDate)
-    setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate]));
+    setSortOrder(sortByDate)
   };
 
   const filterBySearchText = (query) => {
@@ -37,22 +37,6 @@ const SortSection = ({t, setAlertId, setAlertSource, setFilterdAlerts, setSortBy
       setFilterdAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase())));
   };
 
-  const handleChecked = (value) => {
-    if (checkedStatus.includes(value)) {
-      setCheckedStatus(_.remove(checkedStatus, (status) => status != value))
-    } else {
-      setCheckedStatus([...checkedStatus, value])
-    }
-  };
-
-  useEffect(() => {
-    setAlertId(undefined);
-    if (checkedStatus.length == 0) {
-      setFilterdAlerts(alerts)
-    } else {
-      setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.status)));
-    }
-  }, [checkedStatus]);
 
   return (
     <>
@@ -63,8 +47,8 @@ const SortSection = ({t, setAlertId, setAlertSource, setFilterdAlerts, setSortBy
             data-testid="onGoing"
             name="status"
             type="checkbox"
-            value="ONGOING"
-            onChange={(e) => handleChecked(e.target.value)}
+            value="OPEN"
+            onChange={(e) => filterByStatus(e.target.value, e.target.checked)}
           />
           <Label
             check
@@ -80,7 +64,7 @@ const SortSection = ({t, setAlertId, setAlertSource, setFilterdAlerts, setSortBy
             name="status"
             type="checkbox"
             value="CLOSED"
-            onChange={(e) => handleChecked(e.target.value)}
+            onChange={(e) => filterByStatus(e.target.value, e.target.checked)}
           />
           <Label
             check
@@ -109,8 +93,8 @@ const SortSection = ({t, setAlertId, setAlertSource, setFilterdAlerts, setSortBy
             onChange={(e) => filterByDate(e.target.value)}
             value={sortByDate}
           >
-            <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
-            <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
+            <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
         <Col xl={4} className='my-1'>
@@ -158,12 +142,14 @@ const SortSection = ({t, setAlertId, setAlertSource, setFilterdAlerts, setSortBy
 }
 
 SortSection.propTypes = {
-  sortByDate: PropTypes.any,
-  setSortByDate: PropTypes.func,
+  sortOrder: PropTypes.any,
+  setSortOrder: PropTypes.func,
   alertSource: PropTypes.string,
   setAlertSource: PropTypes.func,
   setAlertId: PropTypes.func,
   setFilterdAlerts: PropTypes.func,
+  setStatus: PropTypes.func,
+  filteredAlerts: PropTypes.array,
   t: PropTypes.func,
 }
 

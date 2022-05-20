@@ -79,10 +79,10 @@ export const editEventAlertInfo = (eventId, editInfo) => async (dispatch) => {
   }
 };
 
-const editEventAlertInfoSuccess = (msg) => {
+const editEventAlertInfoSuccess = (payload) => {
   return {
     type: actionTypes.EDIT_EVENT_ALERT_INFO_SUCCESS,
-    msg,
+    payload,
   };
 };
 const editEventAlertInfoFail = (error) => {
@@ -93,7 +93,7 @@ const editEventAlertInfoFail = (error) => {
 };
 
 export const getEventInfo = (eventId) => async (dispatch) => {
-  const response = await api.get(endpoints.eventAlerts.getEventInfo.replace(':event_id', eventId));
+  const response = await api.get(endpoints.eventAlerts.getEvent.replace(':event_id', eventId));
   dispatch(InProgress(true, 'Loading..'));
   if (response.status === 200) {
     dispatch(InProgress(false, 'Loading..'));
@@ -105,10 +105,10 @@ export const getEventInfo = (eventId) => async (dispatch) => {
   }
 };
 
-const getEventAlertInfoSuccess = (msg) => {
+const getEventAlertInfoSuccess = (payload) => {
   return {
     type: actionTypes.GET_EVENT_SUCCESS,
-    msg,
+    payload,
   };
 };
 const getEventAlertInfoFail = (error) => {
@@ -124,69 +124,9 @@ export const resetEventAlertsResponseState = () => {
   }
 };
 
-export const setFilterdAlerts = (payload) => {
+export const setEventParams = (payload) => {
   return {
-    type: actionTypes.SET_FILTERED_ALERTS,
-    payload,
-  };
-};
-export const setPaginatedAlerts = (payload) => {
-  return {
-    type: actionTypes.SET_PAGINATED_ALERTS,
-    payload,
-  };
-};
-export const setCurrentPage = (payload) => {
-  return {
-    type: actionTypes.SET_CURRENT_PAGE,
-    payload,
-  };
-};
-export const setAlertId = (payload) => {
-  return {
-    type: actionTypes.SET_ALERT_ID,
-    payload,
-  };
-};
-export const setHoverInfo = (payload) => {
-  return {
-    type: actionTypes.SET_HOVER_INFO,
-    payload,
-  };
-};
-export const setIconLayer = (payload) => {
-  return {
-    type: actionTypes.SET_ICON_LAYER,
-    payload,
-  };
-};
-export const setMidpoint = (payload) => {
-  return {
-    type: actionTypes.SET_MIDPOINT,
-    payload,
-  };
-};
-export const setZoomLevel = (payload) => {
-  return {
-    type: actionTypes.SET_ZOOM_LEVEL,
-    payload,
-  };
-};
-export const setSortByDate = (payload) => {
-  return {
-    type: actionTypes.SET_SORT_BY_DATE,
-    payload,
-  };
-};
-export const setAlertSource = (payload) => {
-  return {
-    type: actionTypes.SET_ALERT_SOURCE,
-    payload,
-  };
-};
-export const setDateRange = (payload) => {
-  return {
-    type: actionTypes.SET_DATE_RANGE,
+    type: actionTypes.SET_EVENT_PARAMS,
     payload,
   };
 };

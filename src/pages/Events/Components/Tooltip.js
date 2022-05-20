@@ -17,29 +17,33 @@ import DatePicker from '../../../components/DateRangePicker/DatePicker';
 
 //i18n
 import { withTranslation } from 'react-i18next'
-import { editEventAlertInfo, getEventInfo } from '../../../store/events/action';
+import { editEventAlertInfo } from '../../../store/events/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { getGeneralErrors } from '../../../helpers/errorHelper';
 
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
   const { updateError:genError, event  } = useSelector(state => state.eventAlerts);
   const [editToggle, setEditToggle] = useState(isEdit);
-  const [favToggle, setFavToggle] = useState(event.favorite);
-  const [casualties, setCasualties] = useState(event.causalties);
-  const [damage, setDamage] = useState(event.estimated_damage);
-  const [endDate, setEndDate] = useState(event.end_date);
-  const [peopleAffected, setPeoppleAffected] = useState(event.people_affected);
-  const [description, setDescription] = useState(event.description);
+  const [favToggle, setFavToggle] = useState('');
+
+  const [casualties, setCasualties] = useState('');
+  const [damage, setDamage] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [peopleAffected, setPeoppleAffected] = useState('');
+  const [description, setDescription] = useState('');
   
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getEventInfo(object.id)
-  }, [object.id])
-
-  useEffect(() => {
-    console.log(event)
+    if(event){
+      setFavToggle(event.favorite)
+      setCasualties(event.causalties)
+      setDamage(event.estimated_damage)
+      setEndDate(event.end_date)
+      setPeoppleAffected(event.people_affected)
+      setDescription(event.description)
+    }
   }, [event])
 
   const editInfo = (id) => {
@@ -80,7 +84,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             </Col>
             <Col>
               <CardTitle className="card-title h-100 d-flex">
-                {JSON.stringify(event)}
+                {}
                 <p className='my-auto'>{event ? event.title : 'N/A'}</p>
               </CardTitle>
             </Col>
@@ -91,7 +95,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             </Col>
             <Col md={10} sm={10}>
               <CardSubtitle className="my-auto">
-                {event.location ? event.location : 'N/A'}
+                {event ? event.location : 'N/A'}
               </CardSubtitle>
             </Col>
           </Row>
@@ -101,7 +105,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             </Col>
             <Col>
               <CardSubtitle className="my-auto">
-                {t('Start', {ns: 'common'})} :&nbsp;{event.start_date ? formatDate(event.start_date) : 'N/A'} <br></br>
+                {t('Start', {ns: 'common'})} :&nbsp;{event && event.start_date ? formatDate(event.start_date) : 'N/A'} <br></br>
                 <div className='d-flex text-nowrap'>
                   {t('End', {ns: 'common'})} : &nbsp;
                   {
@@ -112,7 +116,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
                         isTooltipInput={true}
                         date={endDate} 
                       />
-                      :  event.end_date ? formatDate(event.end_date) : 'not set'
+                      :  event && event.end_date ? formatDate(event.end_date) : 'not set'
                   }
                 </div>
               </CardSubtitle>
@@ -130,7 +134,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
                 {
                   editToggle ?
                     <Input type='text' value={peopleAffected ? peopleAffected: '' } className='tootip-input ms-2' onChange={(e) => { setPeoppleAffected(e.target.value) }} />
-                    :  event.people_affected ? event.people_affected : 'not recorded'
+                    :  event ? event.people_affected : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
@@ -147,7 +151,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
                 {
                   editToggle ?
                     <Input type='text' className='tootip-input ms-2' value={casualties? casualties: ''} onChange={(e) => { setCasualties(e.target.value) }} />
-                    :  event.causalties ? event.causalties : 'not recorded'
+                    :  event ? event.causalties : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
@@ -164,7 +168,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
                 {
                   editToggle ?
                     <Input type='text' className='tootip-input ms-2' value={damage ? damage : ''} onChange={(e) => { setDamage(e.target.value) }} />
-                    :  event.damage ?  event.damage : 'not recorded'
+                    :  event ?  event.damage : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
@@ -199,7 +203,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             <Col>
               <CardText className='mb-2'>
                 <small className="font-italic">
-                  {event.alerts && event.alerts.map((alert) => alert.title).join(', ')}
+                  {event && event.alerts ? event.alerts.map((alert) => alert.title).join(', ') : ''}
                 </small>
               </CardText>
             </Col>
@@ -226,7 +230,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             : <>
               <Row className='g-0'>
                 {event &&
-                <Button color="secondary" className='create-event-button' onClick={()=>{navigate(`/event-dashboard/${event.id}`);}}>
+                <Button color="secondary" className='create-event-button' onClick={()=>{navigate(`/event-dashboard/${object.id}`);}}>
                   {t('show-info', {ns: 'common'})}
                 </Button>}
               </Row>
