@@ -14,38 +14,40 @@ import { withTranslation } from 'react-i18next'
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
 
   const [isOpen, setisOpen] = useState(false);
+  const TAG_VIDEO = 'video';
+  const TAG_IMAGE = 'photo';
+  const TAG_FIRE = 'fire';
+  const TAG_SMOKE = 'smoke';
 
   const getBadge = (tag, index) => {
     let icon = '';
     let bgColor = '';
-    if(tag === 'Fire'|| tag === 'Smoke' ){
-      icon = <i className={`fa-lg ${tag === 'Fire' ? 'text-danger' : ''} mdi mdi-fire`}></i>;
+    if(tag === TAG_FIRE|| tag === TAG_SMOKE ){
+      icon = <i className={`fa-lg ${tag === TAG_FIRE ? 'text-danger' : ''} mdi mdi-fire`}></i>;
       bgColor = 'alert-badge event-alert-badge';
     }
     
-    if(tag === 'Photo') {
+    if(tag === TAG_IMAGE) {
       bgColor = 'to-verify';
     }
 
-    if(tag === 'Video') {
+    if(tag === TAG_VIDEO) {
       bgColor = 'validated'
     }
 
     return (
       <Badge key={index} className={`me-1 rounded-pill alert-badge ${bgColor} py-0 px-2 pb-0 mb-0 badge`}>
         {icon}
-        <span className={tag === 'Fire' ? 'text-danger' : ''}>{tag.toUpperCase()}</span>
+        <span className={tag === TAG_FIRE ? 'text-danger' : ''}>{tag.toUpperCase()}</span>
       </Badge>
     )
   }
 
   const getMedia = (card) => {
-    const { media } = card;
-    if(!media) return null;
-    if(media.type == 'Video'){
+    if(card.type == 'video'){
       return <ModalVideo
-        videoId={media.videoId}
-        channel={media.channel}
+        videoId={card.videoId}
+        channel={card.channel}
         isOpen={isOpen}
         onClose={() => {
           setisOpen(!isOpen)
@@ -54,12 +56,12 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
     }
     return (isOpen ? (
       <Lightbox
-        mainSrc={media.url}
+        mainSrc={card.url}
         enableZoom={true}
         imageCaption={
           <div className='position-fixed top-0 start-0 m-2'>
-            <h5 className='mb-1'>{formatDate(card.date, 'YYYY-MM-DD HH:mm')}</h5>
-            <h5>{card.source.join(', ')}</h5>
+            <h5 className='mb-1'>{formatDate(card.timestamp, 'YYYY-MM-DD HH:mm')}</h5>
+            <h5>{card.camera_id}</h5>
           </div>
         }
         onCloseRequest={() => {
@@ -103,19 +105,12 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
             <Col>
               <Row>
                 <Col md={8}>
-                  <p>{formatDate(card.date)}</p>
-                  <p className='mb-1'><i data-tip data-for="smoke-column" className='bx bx-info-circle float-start fs-5 me-2'></i><span >{t('Smoke Column Class')}: {card.sourceInfo.SmokeColumn}</span></p>
-                  <p className='mb-1'><i  data-tip data-for="geo-direction" className='bx bx-info-circle float-start fs-5 me-2'></i><span>{t('Geographical Direction')}: {card.sourceInfo.GeoInfo}&deg;</span></p>
+                  <p>{formatDate(card.timestamp)}</p>
+                  { card.fire_classes && <p className='mb-1'><i data-tip data-for="smoke-column" className='bx bx-info-circle float-start fs-5 me-2'></i><span >{t('Smoke Column Class')}: {card.fire_classes.join()}</span></p> }
+                  { card.direction && <p className='mb-1'><i  data-tip data-for="geo-direction" className='bx bx-info-circle float-start fs-5 me-2'></i><span>{t('Geographical Direction')}: {card.direction}&deg;</span></p> }
                 </Col>
                 <Col  md={4} className='text-end'>
                   <Button className="btn btn-primary px-5 py-2" onClick={()=>{setisOpen(true)}}>{t('view', {ns: 'common'})}</Button>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={2} className="ms-auto">
-                  <CardText>
-                    <span className='float-end alert-source-text me-2'>{(card.source).join(', ')}</span>
-                  </CardText>
                 </Col>
               </Row>
             </Col>

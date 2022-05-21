@@ -7,7 +7,8 @@ import {
 import { Popup } from 'react-map-gl';
 import { formatDate } from '../../../store/utility';
 
-const Tooltip = ({object, coordinate, }) => {
+const Tooltip = ({object, coordinate }) => {
+
   return (
     <Popup
       longitude={coordinate[0]}
@@ -21,9 +22,9 @@ const Tooltip = ({object, coordinate, }) => {
       <div className='my-2 mx-4 map-tooltip'>
         <Row className='mb-2'>
           <Col md={11} className='text-white ms-auto'>
-            <p className='mb-1'>Camera Number: {object.sourceInfo.camNo} </p>
-            <p className='mb-1'>Camara Location: {object.sourceInfo.camLocation}</p>
-            <p className='mb-1'>Last Uploaded feed: {formatDate(object.sourceInfo.lastUploadedFeed)}</p>
+            <p className='mb-1'>Camera Number: {object.id} </p>
+            <p className='mb-1'>Camara Location: Long. {object.location.longitude}, Lat. {object.location.latitude}</p>
+            <p className='mb-1'>Last Uploaded feed: {object.last_update ? formatDate(object.last_update) : '-'}</p>
           </Col>
         </Row>
         <Row>
@@ -31,7 +32,7 @@ const Tooltip = ({object, coordinate, }) => {
             <b>Info:</b>
           </Col>
           <Col md={11}>
-            {object.sourceInfo.desc}
+            {object.description}
           </Col>
         </Row>
       </div>
@@ -40,8 +41,8 @@ const Tooltip = ({object, coordinate, }) => {
 }
 
 Tooltip.propTypes = {
-  object: PropTypes.any,
   coordinate: PropTypes.array,
+  object: PropTypes.object,
 }
 
 export default Tooltip;

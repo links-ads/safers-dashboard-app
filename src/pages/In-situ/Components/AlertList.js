@@ -1,18 +1,28 @@
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getIconLayer } from '../../../helpers/mapHelper';
-import { setAlertId, setCurrentPage, setInSituFavoriteAlert, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../../store/insitu/action';
+import { setAlertId, setCurrentPage, setInSituFavoriteAlert, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCamera } from '../../../store/insitu/action';
 import { PAGE_SIZE } from '../../../store/insitu/types';
 import Alert from './Alert';
 
 const AlertList = () => {
-  const { paginatedAlerts, currentPage, filteredAlerts, alertId } = useSelector(state => state.inSituAlerts);
+  const { paginatedAlerts, currentPage, filteredAlerts, alertId, cameraList, cameraInfo } = useSelector(state => state.inSituAlerts);
+  const [selCam, setsSelCam] = useState(undefined);
 
   const dispatch = useDispatch();
   
+
+  useEffect(() => {
+    if(selCam){
+      dispatch(setIconLayer(getIconLayer(selCam)));
+      dispatch(setHoverInfo({ object: cameraInfo, coordinate: selCam.geometry.coordinates, isEdit: false }));
+    }
+
+  }, [cameraInfo]);
+
   const setFavorite = (id) => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.isFavorite = !selectedAlert.isFavorite;
@@ -29,7 +39,7 @@ const AlertList = () => {
     dispatch(setHoverInfo({}));
   };
 
-  const setSelectedAlert = (id, isEdit) => {
+  const setSelectedAlert = (id) => {
     if (id) {
       if (id === alertId) {
         hideTooltip();
@@ -37,9 +47,10 @@ const AlertList = () => {
       dispatch(setAlertId(id));
       let alertsToEdit = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(alertsToEdit, { id });
+      let camera = _.find(cameraList.features, { properties: { id:selectedAlert.camera_id } });
       selectedAlert.isSelected = true;
-      dispatch(setIconLayer(getIconLayer(alertsToEdit)));
-      dispatch(setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.geometry.coordinates, isEdit }));
+      setsSelCam(camera);
+      dispatch(getCamera(selectedAlert.camera_id));
     } else {
       dispatch(setAlertId(undefined));
       dispatch(setIconLayer(getIconLayer(filteredAlerts)));

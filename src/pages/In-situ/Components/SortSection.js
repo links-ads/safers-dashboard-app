@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Input, Label, FormGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/insitu/action';
-import _, { isArray } from 'lodash';
+import _ from 'lodash';
 
 //i18n
 import { withTranslation } from 'react-i18next'
 
-const SortSection = ({t}) => {
-  const { sortByDate, alertSource, filteredAlerts, allAlerts:alerts } = useSelector(state => state.inSituAlerts);
+const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
+  const { sortByDate, alertSource, filteredAlerts, allAlerts:alerts, cameraList } = useSelector(state => state.inSituAlerts);
+  const FILTER_IMAGE = 'IMAGE';
+  const FILTER_VIDEO = 'VIDEO';
 
-  const photo  = _.sumBy(alerts, ({ tags }) => isArray(tags) && tags.includes('Photo'));
-  const video  = _.sumBy(alerts, ({ tags }) => isArray(tags) && tags.includes('Video'));
-  const [checkedStatus, setCheckedStatus] = useState([])
+  const photo  = _.filter(alerts, ({ type }) => type == FILTER_IMAGE);
+  const video  = _.filter(alerts, ({ type }) => type == FILTER_VIDEO);
 
   const dispatch = useDispatch();
 
@@ -21,7 +22,7 @@ const SortSection = ({t}) => {
   const filterByAlertSource = (alertSource) => {
     dispatch(setAlertId(undefined));
     dispatch(setAlertSource(alertSource));
-    if (alertSource === 'all')
+    if (alertSource === '')
       dispatch(setFilterdAlerts(alerts));
     else
       dispatch(setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource ))));
@@ -34,7 +35,7 @@ const SortSection = ({t}) => {
 
   const handleChecked = (value) => {
     if(checkedStatus.includes(value)){
-      setCheckedStatus(_.remove(checkedStatus, (tags) => isArray(tags) && tags.includes(value)))
+      setCheckedStatus(_.without(checkedStatus, value))
     }else{
       setCheckedStatus([...checkedStatus, value])
     }
@@ -45,7 +46,7 @@ const SortSection = ({t}) => {
     if(checkedStatus.length == 0){
       dispatch(setFilterdAlerts(alerts))
     }else{
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.media.type))));
+      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.type))));
     }
   }, [checkedStatus]);
 
@@ -58,14 +59,14 @@ const SortSection = ({t}) => {
             data-testid="photo"
             name="status"
             type="checkbox"
-            value="Photo"
+            value={FILTER_IMAGE}
             onChange={(e) => handleChecked(e.target.value)}     
           />
           <Label
             check
             for="photo"
           >
-            {t('Photos', {ns: 'inSitu'})} ({photo})
+            {t('Photos', {ns: 'inSitu'})} ({photo.length})
           </Label>
         </FormGroup>
         <FormGroup className="form-group d-inline-block ms-4" check>
@@ -74,14 +75,14 @@ const SortSection = ({t}) => {
             data-testid="video"
             name="status"
             type="checkbox"
-            value="Video"
+            value={FILTER_VIDEO}
             onChange={(e) => handleChecked(e.target.value)}      
           />
           <Label
             check
             for="video"
           >
-            {t('Videos', {ns: 'inSitu'})} ({video})
+            {t('Videos', {ns: 'inSitu'})} ({video.length})
           </Label>
         </FormGroup>
       </div>
@@ -104,8 +105,8 @@ const SortSection = ({t}) => {
             onChange={(e) => filterByDate(e.target.value)}
             value={sortByDate}
           >
-            <option value={'desc'} >{t('Sort By')} : {t('Date')} desc</option>
-            <option value={'asc'} >{t('Sort By')} : {t('Date')} asc</option>
+            <option value={'date'} >{t('Sort By')} : {t('Date')} desc</option>
+            <option value={'-date'} >{t('Sort By')} : {t('Date')} asc</option>
           </Input>
         </Col>
         <Col xl={4} className='my-1'>
@@ -118,10 +119,10 @@ const SortSection = ({t}) => {
             onChange={(e) =>filterByAlertSource(e.target.value)}
             value={alertSource}
           >
-            <option value={'all'} >Source : All</option>
-            <option value={'web'} >Source : Web</option>
-            <option value={'camera'} >Source : Camera</option>
-            <option value={'satellite'} >Source : Satellite</option>
+            <option value='' key={''}> ---------- {t('Source')} : {t('All')} -----------</option>
+            {cameraList.features?.map((camObj, index) => <option key={index} value={camObj.properties.id}>
+              {camObj.properties.id}
+            </option>)}
           </Input>
         </Col>
         <Col xl={3}>
@@ -133,10 +134,8 @@ const SortSection = ({t}) => {
 }
 
 SortSection.propTypes = {
-  sortByDate: PropTypes.any,
-  setSortByDate: PropTypes.string,
-  alertSource: PropTypes.func,
-  setAlertSource: PropTypes.func,
+  checkedStatus: PropTypes.any,
+  setCheckedStatus: PropTypes.func,
   t: PropTypes.func,
 }
 
