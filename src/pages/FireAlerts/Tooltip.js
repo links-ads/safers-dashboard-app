@@ -107,6 +107,96 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
               </CardText>
             </Col>
           </Row>
+          <Row className='g-0'>
+            <Col md={3}>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  Category:
+                </small>
+              </CardText>
+            </Col>
+            <Col>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  {object.category}</small>
+              </CardText>
+            </Col>
+          </Row>
+          <Row className='g-0'>
+            <Col md={3}>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  Event:
+                </small>
+              </CardText>
+            </Col>
+            <Col>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  {object.event}</small>
+              </CardText>
+            </Col>
+          </Row>
+          <Row className='g-0'>
+            <Col md={3}>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  Urgency:
+                </small>
+              </CardText>
+            </Col>
+            <Col>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  {object.urgency}</small>
+              </CardText>
+            </Col>
+          </Row>
+          <Row className='g-0'>
+            <Col md={3}>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  Severity:
+                </small>
+              </CardText>
+            </Col>
+            <Col>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  {object.severity}</small>
+              </CardText>
+            </Col>
+          </Row>
+          <Row className='g-0'>
+            <Col md={3}>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  Certainty:
+                </small>
+              </CardText>
+            </Col>
+            <Col>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  {object.certainty}</small>
+              </CardText>
+            </Col>
+          </Row>
+          <Row className='g-0'>
+            <Col md={3}>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  Description:
+                </small>
+              </CardText>
+            </Col>
+            <Col>
+              <CardText className='mb-2'>
+                <small className="font-italic">
+                  {object.description}</small>
+              </CardText>
+            </Col>
+          </Row>
           {editToggle ?
             <>
               <Row className='align-middle g-0'>
