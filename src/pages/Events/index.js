@@ -19,6 +19,7 @@ import { PAGE_SIZE } from '../../store/events/types';
 //i18n
 import { withTranslation } from 'react-i18next'
 import { getEventInfo, setEventParams } from '../../store/events/action';
+import { MAPTYPES } from '../../constants/common';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -95,7 +96,7 @@ const EventAlerts = ({ t }) => {
 
   useEffect(() => {
     if (alerts.length > 0 && filteredAlerts.length === 0) {
-      setIconLayer(getIconLayer(alerts));
+      setIconLayer(getIconLayer(alerts, MAPTYPES.ALERTS));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }

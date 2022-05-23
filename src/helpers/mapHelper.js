@@ -2,6 +2,7 @@ import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import { PolygonLayer } from '@deck.gl/layers';
 import firePin from '../assets/images/atoms-general-icon-fire-drop.png'
 import locationPin from '../assets/images/map/map.png';
+import { MAPTYPES } from '../constants/common';
 
 const ICON_MAPPING = {
   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
@@ -45,11 +46,18 @@ export const getPolygonLayer = (aoi) => {
 }
 
 export const getIconLayer = (alerts, mapType = 'alerts') => {
-  const icon = mapType == 'reports' ? locationPin : firePin
+  const icon = mapType == MAPTYPES.REPORTS ? locationPin : firePin
   return (new IconLayer({
     data: alerts,
     pickable: true,
-    getPosition: d => d.center,
+    getPosition: d => {
+      if (MAPTYPES.ALERTS){
+        return d.center
+      }
+      else{
+        return d.geometry.coordinates
+      }
+    },
     iconAtlas: icon,
     iconMapping: ICON_MAPPING,
     // onHover: !hoverInfo.objects && setHoverInfo,
