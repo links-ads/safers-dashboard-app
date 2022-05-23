@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
@@ -14,9 +14,12 @@ import TreeView from './TreeView';
 
 //i18n
 import { withTranslation } from 'react-i18next'
+import Slider from 'react-rangeslider';
+import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
+import SimpleBar from 'simplebar-react';
 
-
+const SLIDER_SPEED = 800;
 const DataLayer = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
@@ -28,19 +31,56 @@ const DataLayer = ({ t }) => {
   const [layerSource, setLayerSource] = useState(undefined);
   const [dataDomain, setDataDomain] = useState(undefined);
   const [dateRange, setDateRange] = useState([undefined, undefined]);
+  const [sliderValue, setSliderValue] = useState(0);
+  const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
+  const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
   const dispatch = useDispatch();
+  const timer = useRef(null);
 
   useEffect(() => {
     setBoundingBox(
-      getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+      getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel, 300, 300));
   }, [defaultAoi]);
 
   useEffect(() => {
-    if (currentLayer && currentLayer.url) {
-      const imageUrl = currentLayer.url.replace('{bbox}', boundingBox);
+    setSliderValue(0);
+    setIsPlaying(false);
+    if (currentLayer && currentLayer.urls) {
+      const urls = getUrls();
+      const imageUrl = urls[0].replace('{bbox}', boundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
+      setSliderRangeLimit(urls.length - 1);
     }
   }, [currentLayer]);
+
+  useEffect(() => {
+    if (sliderChangeComplete && currentLayer && currentLayer.urls) {
+      const urls = getUrls();
+      if (urls[sliderValue]) {
+        const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
+        setBitmapLayer(getBitmapLayer(imageUrl));
+      }
+    }
+  }, [sliderValue, sliderChangeComplete]);
+
+  useEffect(() => {
+    let nextValue = sliderValue;
+    if (isPlaying) {
+      timer.current = setInterval(() => {
+        if (nextValue < getUrls().length) {
+          nextValue += 1;
+          setSliderValue(nextValue);
+        } else {
+          clearInterval(timer.current);
+          setIsPlaying(false);
+        }
+      }, SLIDER_SPEED);
+    }
+    else {
+      clearInterval(timer.current);
+    }
+  }, [isPlaying]);
 
   useEffect(() => {
     if (dataLayers.length > 0) {
@@ -66,6 +106,8 @@ const DataLayer = ({ t }) => {
     ));
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
+  const getUrls = () => Object.values(currentLayer?.urls);
+
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
       longitude: midPoint[0],
@@ -84,6 +126,54 @@ const DataLayer = ({ t }) => {
       bounds: boundingBox,
       image: url
     }))
+  }
+
+  const formatTooltip = value => moment(Object.assign({}, Object.keys(currentLayer?.urls))[value]).format('LLL');
+
+  const getSlider = (index) => {
+    if (currentLayer?.urls) {
+      return (
+        <div style={{
+          position: 'absolute',
+          zIndex: 1,
+          bottom: '70px',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <button
+            type="button"
+            className="btn btn-layers-slider-play float-start me-2 p-0"
+            onClick={() => setIsPlaying(!isPlaying)}
+            aria-label='play-data-layers'
+          >
+            <i className={`h4 mdi ${isPlaying ? 'mdi-play' : 'mdi-stop'}`} />
+          </button>
+          <Slider
+            key={index}
+            value={sliderValue}
+            orientation="horizontal"
+            format={formatTooltip}
+            min={0}
+            max={sliderRangeLimit}
+            tooltip={true}
+            onClick={() => {
+              setSliderChangeComplete(true)
+            }}
+            onChangeStart={() => {
+              setIsPlaying(false);
+              setSliderChangeComplete(false);
+            }}
+            onChange={value => setSliderValue(value)}
+            onChangeComplete={() => {
+              setIsPlaying(false);
+              setSliderChangeComplete(true)
+            }}
+          />
+        </div>
+      );
+    }
   }
 
   const handleDateRangePicker = (dates) => {
@@ -188,10 +278,12 @@ const DataLayer = ({ t }) => {
             </Row>
             <Row>
               <Col>
-                <TreeView
-                  data={dataLayers}
-                  setCurrentLayer={setCurrentLayer}
-                />
+                <SimpleBar style={{ maxHeight: '500px', margin: '5px' }}>
+                  <TreeView
+                    data={dataLayers}
+                    setCurrentLayer={setCurrentLayer}
+                  />
+                </SimpleBar>
               </Col>
             </Row>
           </Col>
@@ -200,10 +292,11 @@ const DataLayer = ({ t }) => {
               <BaseMap
                 layers={[bitmapLayer]}
                 initialViewState={viewState}
-                widgets={[/*search button or any widget*/]}
+                widgets={[]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
               />
+              {getSlider()}
             </Card>
           </Col>
         </Row>

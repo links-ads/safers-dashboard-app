@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
+import { fetchEndpoint } from '../../helpers/apiHelper';
 
 const TreeView = ({ data, setCurrentLayer }) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
+  const [tooltipInfo, setTooltipInfo] = useState(undefined);
 
   useEffect(() => {
     //TODO: when single layer selected
@@ -14,7 +16,6 @@ const TreeView = ({ data, setCurrentLayer }) => {
   }, [selectedLayer]);
 
   const toggleExpandCollapse = id => {
-    //const id = e.target.id;
     setItemState(prevState => ({
       ...prevState,
       [id]: !prevState[id]
@@ -27,9 +28,16 @@ const TreeView = ({ data, setCurrentLayer }) => {
       const item =
         <>
           <ListGroupItem
-            key={id}
+            key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? 'selected' : ''} mb-2`}
-            onClick={() => { node.children ? toggleExpandCollapse(id) : setSelectedLayer(node) }}
+            onClick={() => {
+              node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
+            }}
+            onMouseEnter={async () => {
+              setTooltipInfo(undefined);
+              setTooltipInfo(await fetchEndpoint(node.info_url));
+            }}
+            onMouseLeave={() => setTooltipInfo(undefined)}
           >
             <>
               <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
@@ -47,16 +55,22 @@ const TreeView = ({ data, setCurrentLayer }) => {
           {
             node.children && id &&
             <Collapse
-              key={id + '-' + lvl}
+              key={index + id + '-' + lvl}
               isOpen={itemState[id] || false}
-              className='dl-tree-collapse'
+              className='dl-tree-collapse ms-5'
             >
               {mapper(node.children, id, (lvl || 0) + 1)}
             </Collapse>
           }
-          <ReactTooltip id={`${parentId}-${index}-tooltip`} aria-haspopup="true" role={node.text} place='right' class="alert-tooltip text-light">
-            <p className='mb-2'>{node.text}</p>
-          </ReactTooltip>
+          {(node.info || node.info_url) &&
+            <ReactTooltip id={`${parentId}-${index}-tooltip`}
+              aria-haspopup="true"
+              role={tooltipInfo || node.info}
+              place='right'
+              class="alert-tooltip text-light"
+            >
+              <p className='mb-2'>{tooltipInfo || node.info}</p>
+            </ReactTooltip>}
         </>
       return item;
     });

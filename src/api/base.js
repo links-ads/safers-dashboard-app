@@ -14,7 +14,8 @@ const axiosApi = axios.create({
 const whitelistedUrls = [
   endpoints.notifications.getAll,
   endpoints.eventAlerts.getAll,
-  endpoints.fireAlerts.getAll
+  endpoints.fireAlerts.getAll,
+  endpoints.dataLayers.metadata
 ]
 
 axiosApi.interceptors.request.use(async(config) => {

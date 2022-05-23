@@ -20,6 +20,7 @@ export const endpoints = {
   },
   dataLayers: {
     getAll: '/data/layers',
+    metadata:'/data/layers/metadata/'
   },
   eventAlerts: {
     getAll: '/events/',
