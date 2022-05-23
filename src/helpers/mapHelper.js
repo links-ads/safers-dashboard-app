@@ -51,12 +51,10 @@ export const getIconLayer = (alerts, mapType = 'alerts') => {
     data: alerts,
     pickable: true,
     getPosition: d => {
-      if (MAPTYPES.ALERTS){
+      if (mapType === MAPTYPES.EVENTS){
         return d.center
       }
-      else{
-        return d.geometry.coordinates
-      }
+      return d.geometry.coordinates;
     },
     iconAtlas: icon,
     iconMapping: ICON_MAPPING,

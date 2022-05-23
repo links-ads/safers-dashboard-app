@@ -1,4 +1,5 @@
 export const MAPTYPES = {
   REPORTS : 'reports',
-  ALERTS : 'alerts'
+  ALERTS : 'alerts',
+  EVENTS : 'events'
 }
