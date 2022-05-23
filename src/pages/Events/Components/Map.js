@@ -1,39 +1,37 @@
 import _ from 'lodash';
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Card } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import { editEventAlertInfo, setAlertId, setEventFavoriteAlert, setHoverInfo, setMidpoint, setPaginatedAlerts, setZoomLevel, validateEventAlert } from '../../../store/events/action';
+import { editEventAlertInfo, setEventFavoriteAlert, validateEventAlert } from '../../../store/events/action';
 import { PAGE_SIZE } from '../../../store/events/types';
 import SearchButton from './SearchButton';
 import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
 
 // eslint-disable-next-line no-unused-vars
-const MapSection = ({viewState, setViewState}) => {
-  const { currentPage, iconLayer, hoverInfo, filteredAlerts } = useSelector(state => state.eventAlerts);
+const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo, setHoverInfo, filteredAlerts, iconLayer, setMidpoint, setZoomLevel, setPaginatedAlerts, setSelectedAlert}) => {
   
   const dispatch = useDispatch();
 
   const hideTooltip = (e) => {
     if (e && e.viewState) {
-      dispatch(setMidpoint([e.viewState.longitude, e.viewState.latitude]));
-      dispatch(setZoomLevel(e.viewState.zoom));
+      setMidpoint([e.viewState.longitude, e.viewState.latitude]);
+      setZoomLevel(e.viewState.zoom);
     }
-    dispatch(setHoverInfo({}));
+    setHoverInfo({});
   };
 
   const showTooltip = info => {
     if (info.picked && info.object) {
-      dispatch(setAlertId(info.object.id));
-      dispatch(setHoverInfo(info));
+      setSelectedAlert(info.object.id);
+      setHoverInfo(info);
     } else {
-      dispatch(setHoverInfo({}));
+      setHoverInfo({});
     }
   };
 
   const renderTooltip = (info) => {
-    if(!info) return null
     const { object, coordinate, isEdit } = info;
     if (object) {
       return <ToolTip
@@ -56,7 +54,7 @@ const MapSection = ({viewState, setViewState}) => {
     dispatch(setEventFavoriteAlert(id, selectedAlert.isFavorite));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   }
 
   const validateEvent = (id) => {
@@ -65,7 +63,7 @@ const MapSection = ({viewState, setViewState}) => {
     dispatch(validateEventAlert(id));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   }
 
   const editInfo = (id, desc) => {
@@ -74,7 +72,7 @@ const MapSection = ({viewState, setViewState}) => {
     dispatch(editEventAlertInfo(id, desc));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   }
   
   return (
@@ -97,6 +95,16 @@ const MapSection = ({viewState, setViewState}) => {
 MapSection.propTypes = {
   viewState : PropTypes.any,
   setViewState: PropTypes.any,
+  iconLayer: PropTypes.any,
+  setAlertId: PropTypes.func,
+  currentPage: PropTypes.number,
+  hoverInfo: PropTypes.any,
+  setHoverInfo: PropTypes.func,
+  filteredAlerts: PropTypes.array,
+  setMidpoint: PropTypes.func,
+  setZoomLevel: PropTypes.func,
+  setPaginatedAlerts: PropTypes.func,
+  setSelectedAlert: PropTypes.func
 }
 
 export default MapSection;

@@ -49,7 +49,7 @@ export const getIconLayer = (alerts, mapType = 'alerts') => {
   return (new IconLayer({
     data: alerts,
     pickable: true,
-    getPosition: d => d.geometry.coordinates,
+    getPosition: d => d.center,
     iconAtlas: icon,
     iconMapping: ICON_MAPPING,
     // onHover: !hoverInfo.objects && setHoverInfo,

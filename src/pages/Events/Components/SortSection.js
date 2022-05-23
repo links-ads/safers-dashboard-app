@@ -1,61 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
 //i18n
 import { withTranslation } from 'react-i18next'
-import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/events/action';
 
-const SortSection = ({t}) => {
-  const { params, filteredAlerts } = useSelector(state => state.eventAlerts);
+const SortSection = ({t, setAlertId, setAlertSource, filteredAlerts, setFilterdAlerts, setSortOrder, setStatus}) => {
+  const { params } = useSelector(state => state.eventAlerts);
   const { sortByDate, alertSource } = params;
 
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
-  const ongoing = _.sumBy(alerts, ({ status }) => status == 'ONGOING');
-  const closed = _.sumBy(alerts, ({ status }) => status == 'CLOSED');
-  const [checkedStatus, setCheckedStatus] = useState([])
-
-  const dispatch = useDispatch();
+  const ongoing = alerts.filter((alert) => alert.status == 'OPEN').length;
+  const closed = alerts.filter((alert) => alert.status == 'CLOSED').length;
 
   const filterByAlertSource = (alertSource) => {
-    dispatch(setAlertId(undefined));
-    dispatch(setAlertSource(alertSource));
-    if (alertSource === 'all')
-      dispatch(setFilterdAlerts(alerts));
-    else
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource))));
+    setAlertId(undefined);
+    setAlertSource(alertSource);
+  }
+  const filterByStatus = (status, checked) => {
+    if(!checked){
+      status = ''
+    }
+    setStatus(status)
   }
   const filterByDate = (sortByDate) => {
-    dispatch(setAlertId(undefined));
-    dispatch(setSortByDate(sortByDate))
-    dispatch(setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate])));
+    setAlertId(undefined);
+    setSortOrder(sortByDate)
   };
 
   const filterBySearchText = (query) => {
-    dispatch(setAlertId(undefined));
+    setAlertId(undefined);
     if (query === '')
-      dispatch(setFilterdAlerts(alerts));
+      setFilterdAlerts(alerts);
     else
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase()))));
+      setFilterdAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase())));
   };
 
-  const handleChecked = (value) => {
-    if (checkedStatus.includes(value)) {
-      setCheckedStatus(_.remove(checkedStatus, (status) => status != value))
-    } else {
-      setCheckedStatus([...checkedStatus, value])
-    }
-  };
-
-  useEffect(() => {
-    dispatch(setAlertId(undefined));
-    if (checkedStatus.length == 0) {
-      dispatch(setFilterdAlerts(alerts))
-    } else {
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.status))));
-    }
-  }, [checkedStatus]);
 
   return (
     <>
@@ -66,8 +47,8 @@ const SortSection = ({t}) => {
             data-testid="onGoing"
             name="status"
             type="checkbox"
-            value="ONGOING"
-            onChange={(e) => handleChecked(e.target.value)}
+            value="OPEN"
+            onChange={(e) => filterByStatus(e.target.value, e.target.checked)}
           />
           <Label
             check
@@ -83,7 +64,7 @@ const SortSection = ({t}) => {
             name="status"
             type="checkbox"
             value="CLOSED"
-            onChange={(e) => handleChecked(e.target.value)}
+            onChange={(e) => filterByStatus(e.target.value, e.target.checked)}
           />
           <Label
             check
@@ -112,8 +93,8 @@ const SortSection = ({t}) => {
             onChange={(e) => filterByDate(e.target.value)}
             value={sortByDate}
           >
-            <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
-            <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
+            <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
         <Col xl={4} className='my-1'>
@@ -127,10 +108,10 @@ const SortSection = ({t}) => {
             value={alertSource}
             data-testid='eventAlertSource'
           >
-            <option value={'all'} >Source : All</option>
-            <option value={'web'} >Source : Web</option>
-            <option value={'camera'} >Source : Camera</option>
-            <option value={'satellite'} >Source : Satellite</option>
+            <option value={'all'} >{t('Source')} : {t('All')}</option>
+            <option value={'web'} >{t('Source')} : Web</option>
+            <option value={'camera'} >{t('Source')} : Camera</option>
+            <option value={'satellite'} >{t('Source')} : Satellite</option>
           </Input>
         </Col>
         <Col xl={3}>
@@ -161,10 +142,14 @@ const SortSection = ({t}) => {
 }
 
 SortSection.propTypes = {
-  sortByDate: PropTypes.any,
-  setSortByDate: PropTypes.string,
-  alertSource: PropTypes.func,
+  sortOrder: PropTypes.any,
+  setSortOrder: PropTypes.func,
+  alertSource: PropTypes.string,
   setAlertSource: PropTypes.func,
+  setAlertId: PropTypes.func,
+  setFilterdAlerts: PropTypes.func,
+  setStatus: PropTypes.func,
+  filteredAlerts: PropTypes.array,
   t: PropTypes.func,
 }
 

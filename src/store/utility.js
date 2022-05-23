@@ -23,5 +23,5 @@ export const formatDefaultDate = (date, format='L') => {
 }
 
 export const formatDate = (date, format='ll') => {
-  return moment(date).format(format) 
+  return moment(date).format(format)
 }

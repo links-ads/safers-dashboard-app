@@ -68,12 +68,12 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Row className='mt-2'>
               <Col>
                 <small className="text-muted card-desc date no-wrap">
-                  Start: {formatDate(card.start)} - End: {formatDate(card.end)}
+                  Start: {formatDate(card.start_date)} - End: {card.end_date ? formatDate(card.end_date) : '-'}
                 </small>
               </Col>
               <Col md={2}>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>{(card.source).join(', ')}</span>
+                  <span className='float-end alert-source-text me-2'>{card.alerts.map((alert) => alert.title).join(',')}</span>
                 </CardText>
               </Col>
             </Row>

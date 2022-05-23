@@ -12,54 +12,94 @@ import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
-import { getAllEventAlerts, resetEventAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, resetEventApiParams, setNewEventState, } from '../../store/appAction';
+import { getAllEventAlerts, resetEventAlertsResponseState, resetEventApiParams, setNewEventState, } from '../../store/appAction';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
 import { withTranslation } from 'react-i18next'
+import { getEventInfo, setEventParams } from '../../store/events/action';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const alerts = useSelector(state => state.eventAlerts.allAlerts);
+  const  { allAlerts: alerts, params: eventParams } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
-  const { params, filteredAlerts } = useSelector(state => state.eventAlerts);
-  const { dateRange, sortByDate, alertSource } = params;
+  const error = useSelector(state => state.alerts.error);
+  // eslint-disable-next-line no-unused-vars
+  const { params } = useSelector(state => state.eventAlerts);
+ 
   const [viewState, setViewState] = useState(undefined);
+  const [iconLayer, setIconLayer] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState(undefined);
+  const [alertSource, setAlertSource] = useState(undefined);
+  const [midPoint, setMidPoint] = useState([]);
+  const [status, setStatus] = useState('');
+  // const [boundaryBox, setBoundaryBox] = useState(undefined);
+  const [zoomLevel, setZoomLevel] = useState(undefined);
+  // eslint-disable-next-line no-unused-vars
+  const [dateRange, setDateRange] = useState([undefined, undefined]);
+  const [alertId, setAlertId] = useState(undefined);
+  const [hoverInfo, setHoverInfo] = useState({});
+  const [filteredAlerts, setFilteredAlerts] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [paginatedAlerts, setPaginatedAlerts] = useState([]);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getAllEventAlerts(
-      {
-        sortOrder: sortByDate,
-        source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1]
-      }
-    ));
+    if(alertSource){
+      eventParams.source = alertSource;
+    }
+    if(alertSource == 'all'){
+      delete eventParams.source
+    }
+    if(status){
+      eventParams.status = status;
+    }else{
+      delete eventParams.status
+    }
+    if(dateRange.length === 2){
+      eventParams.default_date = false
+      eventParams.start_date = dateRange[0]
+      eventParams.end_date = dateRange[1]
+    }else if(dateRange.length === 0){
+      delete eventParams.start_date
+      delete eventParams.end_date
+      eventParams.default_date = true
+    }
+    if(sortOrder){
+      eventParams.order = sortOrder
+    }
+  
+    dispatch(setEventParams(eventParams))
+    dispatch(getAllEventAlerts(eventParams));
     dispatch(setNewEventState(false, true));
     return () => {
       dispatch(resetEventApiParams());
       dispatch(setNewEventState(false, false));
     }
-  }, []);
+  }, [dateRange, alertSource, sortOrder, status])
 
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
-    }
-    dispatch(resetEventAlertsResponseState());
+    setFilteredAlerts(alerts);
+  }, [alerts]);
 
-  }, [success]);
+  useEffect(() => {
+    if (success) {
+      toastr.success(success, '');
+    } else if (error)
+      toastr.error(error, '');
+
+    dispatch(resetEventAlertsResponseState());
+  }, [success, error]);
 
   useEffect(() => {
     if (alerts.length > 0 && filteredAlerts.length === 0) {
-      dispatch(setIconLayer(getIconLayer(alerts)));
+      setIconLayer(getIconLayer(alerts));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
-      dispatch(setFilterdAlerts(alerts));
+      setFilteredAlerts(alerts);
     }
     else if (alerts.length > filteredAlerts.length) {
       toastr.success('New events are received. Please refresh the list.', '', { preventDuplicates: true, });
@@ -67,19 +107,22 @@ const EventAlerts = ({ t }) => {
   }, [alerts]);
 
   useEffect(() => {
-    dispatch(setIconLayer(getIconLayer(filteredAlerts)));
+    setIconLayer(getIconLayer(filteredAlerts));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }
-    dispatch(setCurrentPage(1));
+    setCurrentPage(1);
     hideTooltip();
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
+    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
   }, [filteredAlerts]);
 
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
-    dispatch(setDateRange([from, to]));
+    let from = moment(dates[0]).format('YYYY-MM-DD');
+    let to = moment(dates[1]).format('YYYY-MM-DD');
+    setDateRange([from, to]);
+  }
+  const clearDates = () => {
+    setDateRange([]);
   }
 
   const handleResetAOI = useCallback(() => {
@@ -88,12 +131,30 @@ const EventAlerts = ({ t }) => {
 
   const hideTooltip = (e) => {
     if (e && e.viewState) {
-      dispatch(setMidpoint([e.viewState.longitude, e.viewState.latitude]));
-      dispatch(setZoomLevel(e.viewState.zoom));
+      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
+      setZoomLevel(e.viewState.zoom);
     }
-    dispatch(setHoverInfo({}));
+    setHoverInfo({});
   };
 
+  const setSelectedAlert = (id, isEdit) => {
+    if (id) {
+      if (id === alertId) {
+        hideTooltip();
+      }
+      setAlertId(id);
+      dispatch(getEventInfo(id))
+      let clonedAlerts = _.cloneDeep(filteredAlerts);
+      let selectedAlert = _.find(clonedAlerts, { id });
+      selectedAlert.isSelected = true;
+      setIconLayer(getIconLayer(clonedAlerts));
+      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
+      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+    } else {
+      setAlertId(undefined);
+      setIconLayer(getIconLayer(filteredAlerts));
+    }
+  }
 
   return (
     <div className='page-content'>
@@ -106,7 +167,7 @@ const EventAlerts = ({ t }) => {
                 className="btn float-end mt-1 py-0 px-1"
                 aria-label='refresh-events'
                 onClick={() => {
-                  dispatch(setFilterdAlerts(alerts));
+                  setFilteredAlerts(alerts);
                 }}
               >
                 <i className="mdi mdi-sync"></i>
@@ -117,20 +178,59 @@ const EventAlerts = ({ t }) => {
               {t('default-aoi')}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} />
+            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates}/>
           </Col>
         </Row>
         <Row>
           <Col xl={5}>
-            <SortSection />
+            <SortSection
+              setAlertId={setAlertId}
+              sortOrder={sortOrder}
+              setSortOrder={setSortOrder}
+              setAlertSource={setAlertSource}
+              filteredAlerts={filteredAlerts}
+              setFilterdAlerts={setFilteredAlerts}
+              status={status}
+              setStatus={setStatus}
+            />
             <Row>
               <Col xl={12} className='px-3'>
-                <EventList />
+                <EventList 
+                  alertId={alertId}
+                  setAlertId={setAlertId} 
+                  filteredAlerts={filteredAlerts}
+                  paginatedAlerts={paginatedAlerts}
+                  currentPage={currentPage}
+                  midPoint={midPoint}
+                  zoomLevel={zoomLevel}
+                  setMidpoint={setMidPoint}
+                  setZoomLevel={setZoomLevel}
+                  setHoverInfo={setHoverInfo}
+                  setCurrentPage={setCurrentPage}
+                  setIconLayer={setIconLayer}
+                  setPaginatedAlerts={setPaginatedAlerts}
+                  setSelectedAlert={setSelectedAlert}
+                />
               </Col>
             </Row>
           </Col>
           <Col xl={7} className='mx-auto'>
-            <MapSection viewState={viewState} setViewState={setViewState} />
+            <MapSection 
+              viewState={viewState}
+              setViewState={setViewState}
+              hoverInfo={hoverInfo}
+              iconLayer={iconLayer}
+              setHoverInfo={setHoverInfo}
+              paginatedAlerts={paginatedAlerts}
+              currentPage={currentPage}
+              midPoint={midPoint}
+              zoomLevel={zoomLevel}
+              setMidpoint={setMidPoint}
+              setZoomLevel={setZoomLevel}
+              setCurrentPage={setCurrentPage}
+              setAlertId={setAlertId}
+              setSelectedAlert={setSelectedAlert}
+            />
           </Col>
         </Row>
 
