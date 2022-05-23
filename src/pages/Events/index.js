@@ -96,7 +96,7 @@ const EventAlerts = ({ t }) => {
 
   useEffect(() => {
     if (alerts.length > 0 && filteredAlerts.length === 0) {
-      setIconLayer(getIconLayer(alerts, MAPTYPES.ALERTS));
+      setIconLayer(getIconLayer(alerts, MAPTYPES.EVENTS));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }
@@ -108,7 +108,7 @@ const EventAlerts = ({ t }) => {
   }, [alerts]);
 
   useEffect(() => {
-    setIconLayer(getIconLayer(filteredAlerts));
+    setIconLayer(getIconLayer(filteredAlerts, MAPTYPES.EVENTS));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }
@@ -148,12 +148,12 @@ const EventAlerts = ({ t }) => {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(clonedAlerts));
+      setIconLayer(getIconLayer(clonedAlerts, MAPTYPES.EVENTS));
       setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
       // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(filteredAlerts));
+      setIconLayer(getIconLayer(filteredAlerts, MAPTYPES.EVENTS));
     }
   }
 
