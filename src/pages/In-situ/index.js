@@ -11,7 +11,7 @@ import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import AlertList from './Components/AlertList';
-import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel } from '../../store/insitu/action';
+import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCameraList } from '../../store/insitu/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
@@ -20,9 +20,9 @@ import { useTranslation } from 'react-i18next'
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const alerts = useSelector(state => state.inSituAlerts.allAlerts);
-  const success = useSelector(state => state.inSituAlerts.success);
-  const { filteredAlerts, sortByDate, alertSource, dateRange } = useSelector(state => state.inSituAlerts);
+  const { filteredAlerts, sortByDate, alertSource, dateRange, allAlerts:alerts, success, cameraList } = useSelector(state => state.inSituAlerts);
+  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [checkedStatus, setCheckedStatus] = useState([])
   const {t} = useTranslation();
 
   const [viewState, setViewState] = useState(undefined);
@@ -30,15 +30,23 @@ const InSituAlerts = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    dispatch(getCameraList());
+  }, []);
+
+  useEffect(() => {
     dispatch(getAllInSituAlerts(
       {
-        sortOrder: sortByDate,
-        source: alertSource,
+        type: checkedStatus.length === 1 ? checkedStatus[0] : undefined, 
+        order: sortByDate,
+        camera_id: alertSource,
         from: dateRange[0],
-        to: dateRange[1]
+        to: dateRange[1],
+        bbox: boundingBox ? boundingBox.toString() : undefined,
+        default_date: false,
+        default_bbox: false
       }
     ));
-  }, []);
+  }, [sortByDate, alertSource, dateRange, boundingBox, checkedStatus]);
 
   useEffect(() => {
     if (success?.detail) {
@@ -47,19 +55,19 @@ const InSituAlerts = () => {
     dispatch(resetInSituAlertsResponseState());
 
   }, [success]);
-
+  
   useEffect(() => {
-    if (alerts.length > 0) {
-      dispatch(setIconLayer(getIconLayer(alerts)));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
-      dispatch(setFilterdAlerts(alerts));
+    dispatch(setIconLayer(getIconLayer(cameraList.features)));
+  }, [cameraList]);
+  
+  useEffect(() => {
+    if (!viewState) {
+      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
     }
+    dispatch(setFilterdAlerts(alerts));
   }, [alerts]);
 
   useEffect(() => {
-    dispatch(setIconLayer(getIconLayer(filteredAlerts)));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }
@@ -67,9 +75,6 @@ const InSituAlerts = () => {
     hideTooltip();
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
   }, [filteredAlerts]);
-
-  
-
 
   const handleDateRangePicker = (dates) => {
     let from = moment(dates[0]).format('DD-MM-YYYY');
@@ -106,7 +111,7 @@ const InSituAlerts = () => {
         </Row>
         <Row>
           <Col xl={5}>
-            <SortSection />
+            <SortSection checkedStatus={checkedStatus} setCheckedStatus ={setCheckedStatus} />
             <Row>
               <Col xl={12} className='px-3'>
                 <AlertList/>
@@ -114,7 +119,7 @@ const InSituAlerts = () => {
             </Row>
           </Col>
           <Col xl={7} className='mx-auto'>
-            <MapSection viewState={viewState} setViewState={setViewState}/>
+            <MapSection viewState={viewState} setViewState={setViewState} setBoundingBox={setBoundingBox}/>
           </Col>
         </Row>
 

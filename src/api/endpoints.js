@@ -52,7 +52,8 @@ export const endpoints = {
     sources: '/notifications/sources',
   },
   insitu: {
-    getAlerts: '/insitu-alerts/'
+    cameraList: '/cameras/',
+    getMedia: '/cameras/media/',
   },
   reports: {
     getReports: '/reports',
