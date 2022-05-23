@@ -49,7 +49,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
   const editInfo = (id) => {
     const payload = {
       description: description,
-      endDate: endDate,
+      end_date: endDate,
       people_affected: peopleAffected,
       causalties: casualties,
       estimated_damage: damage
