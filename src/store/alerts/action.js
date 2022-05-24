@@ -81,7 +81,6 @@ export const validateAlert = (alertId) => async (dispatch) => {
   const response = await api.post(endpoints.fireAlerts.validate.replace(':alert_id', alertId), { type: 'VALIDATED' });
   if (response.status === 200) {
     const successMessage = response.data['detail']    
-    console.log(successMessage)
     return dispatch(validateAlertSuccess(successMessage));
   }
   else
