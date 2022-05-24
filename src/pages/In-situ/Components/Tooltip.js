@@ -24,6 +24,7 @@ const Tooltip = ({object, coordinate }) => {
           <Col md={11} className='text-white ms-auto'>
             <p className='mb-1'>Camera Number: {object.id} </p>
             <p className='mb-1'>Camara Location: Long. {object.location.longitude}, Lat. {object.location.latitude}</p>
+            <p className='mb-1'>Camara Direction: {object.direction}&#176;</p>
             <p className='mb-1'>Last Uploaded feed: {object.last_update ? formatDate(object.last_update) : '-'}</p>
           </Col>
         </Row>
