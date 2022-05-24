@@ -25,9 +25,10 @@ const getEventAlertsFail = (error) => {
 };
 
 export const setEventFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
-  const response = await api.post(endpoints.eventAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
+  const response = await api.post(endpoints.eventAlerts.setFavorite.replace(':event_id', alertId), { is_favorite: isFavorite });
   if (response.status === 200) {
-    return dispatch(setEventFavoriteAlertSuccess(response.data));
+    const successMessage = `Successfully ${isFavorite ? 'added to' : 'removed from'} the favorite list`;
+    return dispatch(setEventFavoriteAlertSuccess(successMessage));
   }
   else
     return dispatch(setEventFavoriteAlertFail(response.error));
