@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 
-const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
+// const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
+const Report = ({ card, alertId, setSelectedAlert }) => {
 
   const {t} = useTranslation();
 
@@ -20,7 +21,7 @@ const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
         
         <Row className='mt-4'>
           <Col md={1}>
-            <button
+            {/* <button
               type="button"
               className="btn float-start py-0 px-1"
               aria-label='report-favorite-button'
@@ -30,7 +31,7 @@ const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
               }}
             >
               <i className={`mdi mdi-star${!card.isFavorite ? '-outline' : ''} card-title`}></i>
-            </button>
+            </button> */}
           </Col>
           <Col>
             <Row>
@@ -49,7 +50,7 @@ const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  {formatDate(card.date, 'YYYY-MM-DD HH:mm')}
+                  date: {formatDate(card.timestamp, 'YYYY-MM-DD HH:mm')}
                 </p>
               </Col>
               
@@ -57,12 +58,14 @@ const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Row className='mt-0'>
               <Col>
                 <p className="text-muted no-wrap">
-                  {card.location}
+                  location: {(card.location).join(', ')}
                 </p>
               </Col>
               <Col md={2}>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>{(card.source).join(', ')}</span>
+                  <span className='float-end alert-source-text me-2'>
+                    SOURCE: {card.source}
+                  </span>
                 </CardText>
               </Col>
             </Row>

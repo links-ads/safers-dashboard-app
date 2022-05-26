@@ -58,8 +58,8 @@ export const endpoints = {
     getMedia: '/cameras/media/',
   },
   reports: {
-    getReports: '/reports',
-    getReportInfo: '/reportinfo',
+    getReports: '/chatbot/reports',
+    getReportInfo: '/chatbot/reports/:report_id/',
   }
 };
 
