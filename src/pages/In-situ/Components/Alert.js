@@ -111,6 +111,8 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
                 </Col>
                 <Col  md={4} className='text-end'>
                   <Button className="btn btn-primary px-5 py-2" onClick={()=>{setisOpen(true)}}>{t('view', {ns: 'common'})}</Button>
+                  <p></p>
+                  <p className='mb-1'>{card.camera_id}</p>
                 </Col>
               </Row>
             </Col>
