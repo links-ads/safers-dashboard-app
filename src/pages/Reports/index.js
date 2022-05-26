@@ -34,8 +34,10 @@ const Reports = () => {
       {
         sortOrder: sortByDate,
         source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1]
+        start: dateRange[0],
+        end: dateRange[1]
+        // from: dateRange[0],
+        // to: dateRange[1]
       }
     ));
   }, []);
