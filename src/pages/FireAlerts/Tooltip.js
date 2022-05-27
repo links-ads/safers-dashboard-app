@@ -95,105 +95,105 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
           <Row className='g-0'>
             <Col md={3}>
               <CardText className='mb-2'>
-                <small className="font-italic">
+                <span className="font-italic">
                   {t('Source')}:
-                </small>
+                </span>
               </CardText>
             </Col>
             <Col>
               <CardText className='mb-2'>
-                <small className="font-italic">
-                  {object.source}</small>
+                <span className="font-italic">
+                  {object.source}</span>
               </CardText>
             </Col>
           </Row>
           <Row className='g-0'>
             <Col md={3}>
               <CardText className='mb-2'>
-                <small className="font-italic">
+                <span className="font-italic">
                   Category:
-                </small>
+                </span>
               </CardText>
             </Col>
             <Col>
               <CardText className='mb-2'>
-                <small className="font-italic">
-                  {object.category}</small>
+                <span className="font-italic">
+                  {object.category}</span>
               </CardText>
             </Col>
           </Row>
           <Row className='g-0'>
             <Col md={3}>
               <CardText className='mb-2'>
-                <small className="font-italic">
+                <span className="font-italic">
                   Event:
-                </small>
+                </span>
               </CardText>
             </Col>
             <Col>
               <CardText className='mb-2'>
-                <small className="font-italic">
-                  {object.event}</small>
+                <span className="font-italic">
+                  {object.event}</span>
               </CardText>
             </Col>
           </Row>
           <Row className='g-0'>
             <Col md={3}>
               <CardText className='mb-2'>
-                <small className="font-italic">
+                <spand className="font-italic">
                   Urgency:
-                </small>
+                </spand>
               </CardText>
             </Col>
             <Col>
               <CardText className='mb-2'>
-                <small className="font-italic">
-                  {object.urgency}</small>
+                <span className="font-italic">
+                  {object.urgency}</span>
               </CardText>
             </Col>
           </Row>
           <Row className='g-0'>
             <Col md={3}>
               <CardText className='mb-2'>
-                <small className="font-italic">
+                <span className="font-italic">
                   Severity:
-                </small>
+                </span>
               </CardText>
             </Col>
             <Col>
               <CardText className='mb-2'>
-                <small className="font-italic">
-                  {object.severity}</small>
+                <span className="font-italic">
+                  {object.severity}</span>
               </CardText>
             </Col>
           </Row>
           <Row className='g-0'>
             <Col md={3}>
               <CardText className='mb-2'>
-                <small className="font-italic">
+                <span className="font-italic">
                   Certainty:
-                </small>
+                </span>
               </CardText>
             </Col>
             <Col>
               <CardText className='mb-2'>
-                <small className="font-italic">
-                  {object.certainty}</small>
+                <span className="font-italic">
+                  {object.certainty}</span>
               </CardText>
             </Col>
           </Row>
           <Row className='g-0'>
             <Col md={3}>
               <CardText className='mb-2'>
-                <small className="font-italic">
+                <span className="font-italic">
                   Description:
-                </small>
+                </span>
               </CardText>
             </Col>
             <Col>
               <CardText className='mb-2'>
-                <small className="font-italic">
-                  {object.description}</small>
+                <span className="font-italic">
+                  {object.description}</span>
               </CardText>
             </Col>
           </Row>
