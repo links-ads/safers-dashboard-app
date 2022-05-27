@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
+import moment from 'moment';
 
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
 
@@ -64,7 +65,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Row className='mt-2'>
               <Col>
                 <small className="text-muted card-desc">
-                  {card.timestamp}
+                  {moment(card.timestamp).format('lll')}
                 </small>
               </Col>
               <Col>
