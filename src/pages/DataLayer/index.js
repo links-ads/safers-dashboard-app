@@ -24,6 +24,7 @@ const DataLayer = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
   const [currentLayer, setCurrentLayer] = useState(undefined);
+  // const [currentLegend, setCurrentLegend] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
@@ -35,6 +36,7 @@ const DataLayer = ({ t }) => {
   const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -42,6 +44,7 @@ const DataLayer = ({ t }) => {
     setBoundingBox(
       getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel, 300, 300));
   }, [defaultAoi]);
+
 
   useEffect(() => {
     setSliderValue(0);
@@ -51,6 +54,9 @@ const DataLayer = ({ t }) => {
       const imageUrl = urls[0].replace('{bbox}', boundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
+      if (currentLayer.legend_url) {
+        alert(currentLayer.legend_url)
+      }
     }
   }, [currentLayer]);
 
@@ -63,6 +69,13 @@ const DataLayer = ({ t }) => {
       }
     }
   }, [sliderValue, sliderChangeComplete]);
+
+  /* unneccessary ? */
+  useEffect(() => {
+    if (showLegend) {
+      alert(currentLayer.legend_url);
+    }
+  }, [showLegend])
 
   useEffect(() => {
     let nextValue = sliderValue;
@@ -176,6 +189,31 @@ const DataLayer = ({ t }) => {
     }
   }
 
+  const getLegend = () => {
+    if (currentLayer?.legend_url) {
+      return (
+        <div style={{
+          position: 'absolute',
+          zIndex: 1,
+          bottom: '30px',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <button
+            type="button"
+            className="btn btn-layers-slider-play float-start me-2 p-0"
+            onClick={() => setShowLegend(!showLegend)}
+          >
+            <i className="h4 mdi mdi-map-legend">legend</i>
+          </button>     
+          {/* not sure why this doesn't show */}
+          <img url={currentLayer.legend_url} />
+        </div>
+      );
+    }
+  }
+
   const handleDateRangePicker = (dates) => {
     if (dates) {
       let from = moment(dates[0]).format('YYYY-MM-DD');
@@ -194,6 +232,12 @@ const DataLayer = ({ t }) => {
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
+        {showLegend ? (
+          <div className='legend'>
+            <img src={currentLayer.legend_url}/>
+          </div>
+        ) : null
+        }
         <Row>
           <Col xl={5}>
             <Row>
@@ -282,6 +326,7 @@ const DataLayer = ({ t }) => {
                   <TreeView
                     data={dataLayers}
                     setCurrentLayer={setCurrentLayer}
+                    // setCurrentLegend={setCurrentLegend}
                   />
                 </SimpleBar>
               </Col>
@@ -297,6 +342,7 @@ const DataLayer = ({ t }) => {
                 navControlPosition='bottom-right'
               />
               {getSlider()}
+              {getLegend()}
             </Card>
           </Col>
         </Row>
