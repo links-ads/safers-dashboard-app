@@ -4,13 +4,12 @@ import MediaContainer from './Containers/MediaContainer';
 import SummaryContainer from './Containers/SummaryContainer';
 import { useDispatch, useSelector } from 'react-redux';
 import { getReportDetail } from '../../../store/reports/action';
-// import { useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 const ReportsDashboard = () => {
   const dispatch = useDispatch();
   const { reportDetail } = useSelector(state => state.reports);
-  // const { id } = useParams();
-  const id = '1234';
+  const { id } = useParams();
   useEffect(() => {
     dispatch(getReportDetail(id))
   }, [])
