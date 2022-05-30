@@ -39,8 +39,8 @@ const InSituAlerts = () => {
         type: checkedStatus.length === 1 ? checkedStatus[0] : undefined, 
         order: sortByDate,
         camera_id: alertSource,
-        from: dateRange[0],
-        to: dateRange[1],
+        start_date: dateRange[0],
+        end_date: dateRange[1],
         bbox: boundingBox ? boundingBox.toString() : undefined,
         default_date: false,
         default_bbox: false
@@ -77,8 +77,8 @@ const InSituAlerts = () => {
   }, [filteredAlerts]);
 
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
+    let from = moment(dates[0]).format('YYYY-MM-DD');
+    let to = moment(dates[1]).format('YYYY-MM-DD');
     dispatch(setDateRange([from, to]));
   }
 
