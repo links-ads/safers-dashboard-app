@@ -31,7 +31,6 @@ const Reports = () => {
   const allReports = filteredReports || OrgReportList;
 
   useEffect(() => {
-    console.log(dateRange);
     dispatch(getAllReports(
       {
         sortOrder: sortByDate,
