@@ -19,7 +19,8 @@ import { MAPTYPES } from '../../constants/common';
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const {allReports: OrgReportList, success, filteredReports} = useSelector(state => state.reports);
-  const { sortByDate, alertSource, dateRange } = useSelector(state => state.inSituAlerts);
+  const { sortByDate, alertSource, dateRange } = useSelector(state => state.reports);
+  
   const { t } = useTranslation();
 
   const [viewState, setViewState] = useState(undefined);
@@ -35,12 +36,10 @@ const Reports = () => {
         sortOrder: sortByDate,
         source: alertSource,
         start: dateRange[0],
-        end: dateRange[1]
-        // from: dateRange[0],
-        // to: dateRange[1]
+        end: dateRange[1],
       }
     ));
-  }, []);
+  }, [sortByDate, alertSource, dateRange]);
 
   useEffect(() => {
     if (success?.detail) {
@@ -60,8 +59,8 @@ const Reports = () => {
   }, [allReports]);
 
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
+    let from = moment(dates[0]).format('YYYY-MM-DD');
+    let to = moment(dates[1]).format('YYYY-MM-DD');
     dispatch(setDateRange([from, to]));
   }
 
