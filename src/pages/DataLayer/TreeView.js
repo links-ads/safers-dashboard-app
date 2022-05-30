@@ -5,7 +5,7 @@ import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 
-const TreeView = ({ data, setCurrentLayer }) => {
+const TreeView = ({ data, setCurrentLayer}) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
@@ -68,6 +68,7 @@ const TreeView = ({ data, setCurrentLayer }) => {
               role={tooltipInfo || node.info}
               place='right'
               class="alert-tooltip text-light"
+              multiline={true}
             >
               <p className='mb-2'>{tooltipInfo || node.info}</p>
             </ReactTooltip>}

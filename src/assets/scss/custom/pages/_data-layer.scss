@@ -22,3 +22,15 @@
     width: 200px !important;
     height: 40px;
 }
+
+.legend {
+    max-height: 10rem;
+    position: absolute;
+    bottom: 9rem;
+    left: 60rem;
+    z-index: 1;
+
+    img {
+        max-height: inherit;
+    }
+}

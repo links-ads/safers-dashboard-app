@@ -35,6 +35,7 @@ const DataLayer = ({ t }) => {
   const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -63,6 +64,7 @@ const DataLayer = ({ t }) => {
       }
     }
   }, [sliderValue, sliderChangeComplete]);
+
 
   useEffect(() => {
     let nextValue = sliderValue;
@@ -176,6 +178,29 @@ const DataLayer = ({ t }) => {
     }
   }
 
+  const getLegend = () => {
+    if (currentLayer?.legend_url) {
+      return (
+        <div style={{
+          position: 'absolute',
+          zIndex: 1,
+          bottom: '30px',
+          width: '100%',
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <button
+            type="button"
+            className="btn btn-layers-slider-play float-start me-2 p-0"
+            onClick={() => setShowLegend(!showLegend)}
+          >
+            <i className="h4 mdi mdi-map-legend">legend</i>
+          </button>     
+        </div>
+      );
+    }
+  }
+
   const handleDateRangePicker = (dates) => {
     if (dates) {
       let from = moment(dates[0]).format('YYYY-MM-DD');
@@ -194,6 +219,12 @@ const DataLayer = ({ t }) => {
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
+        {showLegend ? (
+          <div className='legend'>
+            <img src={currentLayer.legend_url}/>
+          </div>
+        ) : null
+        }
         <Row>
           <Col xl={5}>
             <Row>
@@ -297,6 +328,7 @@ const DataLayer = ({ t }) => {
                 navControlPosition='bottom-right'
               />
               {getSlider()}
+              {getLegend()}
             </Card>
           </Col>
         </Row>
