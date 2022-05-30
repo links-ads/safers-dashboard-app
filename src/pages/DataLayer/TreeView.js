@@ -5,7 +5,6 @@ import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 
-// const TreeView = ({ data, setCurrentLayer , setCurrentLegend}) => {
 const TreeView = ({ data, setCurrentLayer}) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
@@ -14,7 +13,6 @@ const TreeView = ({ data, setCurrentLayer}) => {
   useEffect(() => {
     //TODO: when single layer selected
     setCurrentLayer(selectedLayer);
-    // setCurrentLegend(selectedLayer.legend_url);
   }, [selectedLayer]);
 
   const toggleExpandCollapse = id => {
@@ -88,7 +86,6 @@ const TreeView = ({ data, setCurrentLayer}) => {
 TreeView.propTypes = {
   data: PropTypes.any,
   setCurrentLayer: PropTypes.func
-  // setCurrentLegend: PropTypes.func
 }
 
 

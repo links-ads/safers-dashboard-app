@@ -24,7 +24,6 @@ const DataLayer = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
   const [currentLayer, setCurrentLayer] = useState(undefined);
-  // const [currentLegend, setCurrentLegend] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
@@ -45,7 +44,6 @@ const DataLayer = ({ t }) => {
       getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel, 300, 300));
   }, [defaultAoi]);
 
-
   useEffect(() => {
     setSliderValue(0);
     setIsPlaying(false);
@@ -54,9 +52,6 @@ const DataLayer = ({ t }) => {
       const imageUrl = urls[0].replace('{bbox}', boundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
-      if (currentLayer.legend_url) {
-        alert(currentLayer.legend_url)
-      }
     }
   }, [currentLayer]);
 
@@ -70,12 +65,6 @@ const DataLayer = ({ t }) => {
     }
   }, [sliderValue, sliderChangeComplete]);
 
-  /* unneccessary ? */
-  useEffect(() => {
-    if (showLegend) {
-      alert(currentLayer.legend_url);
-    }
-  }, [showLegend])
 
   useEffect(() => {
     let nextValue = sliderValue;
@@ -207,8 +196,6 @@ const DataLayer = ({ t }) => {
           >
             <i className="h4 mdi mdi-map-legend">legend</i>
           </button>     
-          {/* not sure why this doesn't show */}
-          <img url={currentLayer.legend_url} />
         </div>
       );
     }
@@ -326,7 +313,6 @@ const DataLayer = ({ t }) => {
                   <TreeView
                     data={dataLayers}
                     setCurrentLayer={setCurrentLayer}
-                    // setCurrentLegend={setCurrentLegend}
                   />
                 </SimpleBar>
               </Col>
