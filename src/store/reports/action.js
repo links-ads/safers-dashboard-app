@@ -69,7 +69,7 @@ export const setDateRange = (payload) => {
 
 export const getReportDetail = (id) => async (dispatch) => {
   console.log('getReportDetail..', getReportDetail);
-  const response = await api.get(`${endpoints.reports.getReportInfo}/${id}`);
+  const response = await api.get(endpoints.reports.getReportInfo.replace(':report_id', id));
   if (response.status === 200) {
     return dispatch(getReportDetailSuccess(response.data));
   }

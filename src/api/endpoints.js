@@ -59,7 +59,7 @@ export const endpoints = {
   },
   reports: {
     getReports: '/chatbot/reports',
-    getReportInfo: '/chatbot/reports/:report_id/',
+    getReportInfo: '/chatbot/reports/:report_id',
   }
 };
 

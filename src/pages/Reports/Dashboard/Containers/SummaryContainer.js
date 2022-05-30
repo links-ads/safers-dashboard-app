@@ -68,7 +68,7 @@ const SummaryContainer = ({reportDetail, t}) => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto font-size-15">
-                  {reportDetail.location}
+                  {(reportDetail.location)?.join(', ')}
                 </CardSubtitle>
               </Col>
             </Row>

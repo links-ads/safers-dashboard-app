@@ -44,7 +44,7 @@ const Report = ({ card, alertId, setSelectedAlert }) => {
                 </CardText>
               </Col>
               <Col md={4} className='text-end'>
-                <Button className="btn btn-primary px-3 py-2" onClick={()=>{navigate(`/reports-dashboard/${card.id}`);}}>{t('open', {ns: 'common'})}</Button>
+                <Button className="btn btn-primary px-3 py-2" onClick={()=>{navigate(`/reports-dashboard/${card.report_id}`);}}>{t('open', {ns: 'common'})}</Button>
               </Col>
             </Row>
             <Row className='mt-2'>
