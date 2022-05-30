@@ -51,10 +51,10 @@ const SummaryContainer = ({reportDetail, t}) => {
           <Col className='mx-auto' md={11}>
             <Row>
               <Col className='text-end'>
-                <span className='text-username'>{t('Username')} : </span><h5 className='d-inline-block text-username-org'>{reportDetail.userName}</h5></Col>
+                <span className='text-username'>{t('Username')} : </span><h5 className='d-inline-block text-username-org'>{reportDetail.reporter?.name}</h5></Col>
             </Row>
             <Row>
-              <Col className='text-end'><span className='text-username'>{t('Organization', {ns: 'common'})} : </span><h5 className='d-inline-block text-username-org'>{reportDetail.organization}</h5></Col>
+              <Col className='text-end'><span className='text-username'>{t('Organization', {ns: 'common'})} : </span><h5 className='d-inline-block text-username-org'>{reportDetail.reporter?.organization}</h5></Col>
             </Row>
           </Col>
           <hr></hr>
