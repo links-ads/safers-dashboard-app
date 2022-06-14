@@ -12,15 +12,15 @@ import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
 import { getAllReports, resetReportResponseState, setDateRange} from '../../store/reports/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
+import { getDefaultDateRange } from '../../store/utility';
 
 import { useTranslation } from 'react-i18next';
 import { MAPTYPES } from '../../constants/common';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const {allReports: OrgReportList, success, filteredReports} = useSelector(state => state.reports);
-  const { sortByDate, alertSource, dateRange } = useSelector(state => state.reports);
-  
+  const {allReports: OrgReportList, success, filteredReports, sortByDate, alertSource, dateRange} = useSelector(state => state.reports);
+
   const { t } = useTranslation();
 
   const [viewState, setViewState] = useState(undefined);
@@ -59,9 +59,13 @@ const Reports = () => {
   }, [allReports]);
 
   const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('YYYY-MM-DD');
-    let to = moment(dates[1]).format('YYYY-MM-DD');
+    const from = moment(dates[0]).format('YYYY-MM-DD');
+    const to = moment(dates[1]).format('YYYY-MM-DD');
     dispatch(setDateRange([from, to]));
+  }
+
+  const clearDates = () => {
+    dispatch(setDateRange(getDefaultDateRange()))
   }
 
   const handleResetAOI = useCallback(() => {
@@ -79,7 +83,7 @@ const Reports = () => {
               {t('default-aoi', {ns: 'common'})}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} />
+            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates}/>
           </Col>
         </Row>
         <Row>
