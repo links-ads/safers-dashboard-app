@@ -12,7 +12,7 @@ const initialState = {
   iconLayer: undefined,
   alertId : null,
   hoverInfo: undefined,
-  sortByDate: 'date',
+  sortByDate: '-date',
   alertSource: '',
   dateRange : getDefaultDateRange(),
   currentPage: 1,
