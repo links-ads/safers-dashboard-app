@@ -136,10 +136,10 @@ const FireAlerts = ({ t }) => {
     const alertParams = {
       order: sortByDate,
       source: alertSource ? alertSource : undefined,
-      start: dateRange[0],
-      end: dateRange[1],
+      start_date: dateRange[0],
+      end_date: dateRange[1],
       bbox: boundingBox ? boundingBox.toString() : undefined,
-      default_date: false,
+      default_date: true,
       default_bbox: false
     };
     dispatch(setAlertApiParams(alertParams));

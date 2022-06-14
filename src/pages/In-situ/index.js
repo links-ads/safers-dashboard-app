@@ -14,6 +14,7 @@ import AlertList from './Components/AlertList';
 import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCameraList } from '../../store/insitu/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
+import { getDefaultDateRange } from '../../store/utility';
 
 //i18n
 import { useTranslation } from 'react-i18next'
@@ -82,6 +83,10 @@ const InSituAlerts = () => {
     dispatch(setDateRange([from, to]));
   }
 
+  const clearDates = () => {
+    dispatch(setDateRange(getDefaultDateRange()))
+  }
+
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
@@ -106,7 +111,7 @@ const InSituAlerts = () => {
               {t('default-aoi', {ns: 'common'})}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} />
+            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates} />
           </Col>
         </Row>
         <Row>

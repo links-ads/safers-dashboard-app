@@ -60,7 +60,7 @@ const EventAlerts = ({ t }) => {
       delete eventParams.status
     }
     if(dateRange.length === 2){
-      eventParams.default_date = false
+      eventParams.default_date = true
       eventParams.start_date = dateRange[0]
       eventParams.end_date = dateRange[1]
     }else if(dateRange.length === 0){
