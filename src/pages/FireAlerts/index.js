@@ -36,7 +36,7 @@ const FireAlerts = ({ t }) => {
   const error = useSelector(state => state.alerts.error);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState(undefined);
+  const [sortByDate, setSortByDate] = useState('-date');
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -134,7 +134,7 @@ const FireAlerts = ({ t }) => {
   const getAlerts = () => {
     setAlertId(undefined);
     const alertParams = {
-      order: sortByDate ? sortByDate : undefined,
+      order: sortByDate,
       source: alertSource ? alertSource : undefined,
       start: dateRange[0],
       end: dateRange[1],
