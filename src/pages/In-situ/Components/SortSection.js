@@ -105,8 +105,8 @@ const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
             onChange={(e) => filterByDate(e.target.value)}
             value={sortByDate}
           >
-            <option value={'date'} >{t('Sort By')} : {t('Date')} desc</option>
-            <option value={'-date'} >{t('Sort By')} : {t('Date')} asc</option>
+            <option value={'-date'} >{t('Sort By')} : {t('Date')} desc</option>
+            <option value={'date'} >{t('Sort By')} : {t('Date')} asc</option>
           </Input>
         </Col>
         <Col xl={4} className='my-1'>
