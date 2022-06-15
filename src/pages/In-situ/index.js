@@ -52,8 +52,9 @@ const InSituAlerts = () => {
   useEffect(() => {
     if (success) {
       toastr.success(success, '');
-    } else if (error) 
+    } else if (error) {
       toastr.error(error, '');
+    }
     dispatch(resetInSituAlertsResponseState());
 
   }, [success, error]);
