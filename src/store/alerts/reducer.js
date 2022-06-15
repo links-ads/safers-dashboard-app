@@ -64,7 +64,7 @@ const setFavoriteAlertSuccess = (state, action) => {
 const setFavoriteAlertFail = (state, action) => {
   const updatedState = {
     error: action.payload,
-  }
+  } 
   return updateObject(state, updatedState);
 }
 
