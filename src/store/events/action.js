@@ -11,12 +11,14 @@ export const getAllEventAlerts = (options) => async (dispatch) => {
   else
     return dispatch(getEventAlertsFail(response.error));
 };
+
 const getEventAlertsSuccess = (alerts) => {
   return {
     type: actionTypes.GET_EVENT_ALERTS_SUCCESS,
     payload: alerts
   };
 };
+
 const getEventAlertsFail = (error) => {
   return {
     type: actionTypes.GET_EVENT_ALERTS_FAIL,
@@ -30,15 +32,18 @@ export const setEventFavoriteAlert = (alertId, isFavorite) => async (dispatch) =
     const successMessage = `Successfully ${isFavorite ? 'added to' : 'removed from'} the favorite list`;
     return dispatch(setEventFavoriteAlertSuccess(successMessage));
   }
-  else
-    return dispatch(setEventFavoriteAlertFail(response.error));
+  else {
+    return dispatch(setEventFavoriteAlertFail(response?.data?.[0]));
+  }
 };
+
 const setEventFavoriteAlertSuccess = (msg) => {
   return {
     type: actionTypes.SET_FAV_EVENT_ALERT_SUCCESS,
     msg,
   };
 };
+
 const setEventFavoriteAlertFail = (error) => {
   return {
     type: actionTypes.SET_FAV_EVENT_ALERT_FAIL,
@@ -54,12 +59,14 @@ export const validateEventAlert = (alertId) => async (dispatch) => {
   else
     return dispatch(validateEventAlertFail(response.error));
 };
+
 const validateEventAlertSuccess = (msg) => {
   return {
     type: actionTypes.EVENTS_CREATE_EVENT_ALERT_FAIL,
     msg,
   };
 };
+
 const validateEventAlertFail = (error) => {
   return {
     type: actionTypes.EVENTS_CREATE_EVENT_ALERT_FAIL,
@@ -86,6 +93,7 @@ const editEventAlertInfoSuccess = (payload) => {
     payload,
   };
 };
+
 const editEventAlertInfoFail = (error) => {
   return {
     type: actionTypes.EDIT_EVENT_ALERT_INFO_FAIL,
@@ -155,12 +163,14 @@ export const getInSituMedia = (params) => async (dispatch) => {
   else
     return dispatch(getInSituMediaFail(response.error));
 };
+
 const getInSituMediaSuccess = (data) => {
   return {
     type: actionTypes.EVENTS_IN_SITU_MEDIA_GET_SUCCESS,
     payload: data
   };
 };
+
 const getInSituMediaFail = (error) => {
   return {
     type: actionTypes.EVENTS_IN_SITU_MEDIA_GET_FAIL,
@@ -176,12 +186,14 @@ export const getTweets = (params) => async (dispatch) => {
   else
     return dispatch(getTweetsFail(response.error));
 };
+
 const getTweetsSuccess = (data) => {
   return {
     type: actionTypes.EVENTS_TWEETS_GET_SUCCESS,
     payload: data
   };
 };
+
 const getTweetsFail = (error) => {
   return {
     type: actionTypes.EVENTS_TWEETS_GET_FAIL,
