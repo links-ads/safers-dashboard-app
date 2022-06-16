@@ -63,18 +63,27 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
             </CardSubtitle>
           </Col>
         </Row>
-        <Row className='no-gutters mx-0'>
-          <Col md={6} className='px-1'>
-            <CardImg
-              className="img-fluid tooltip-img"
-              src={object.media && object.media[0] ? object.media[0] : ''} alt="" />
-          </Col>
-          <Col md={6} className='px-1'>
-            <CardImg
-              className="img-fluid tooltip-img"
-              src={object.media && object.media[1] ? object.media[1] : ''} alt="" />
-          </Col>
-        </Row>
+        {
+          object.media && object.media.length > 0 &&
+          <Row className='no-gutters mx-0 text-center'>
+            {
+              object.media[0] &&
+              <Col className='px-1'>
+                <CardImg
+                  className="img-fluid tooltip-img"
+                  src={object.media[0]} alt="" />
+              </Col>
+            }
+            {
+              object.media[1] &&
+              <Col className='px-1'>
+                <CardImg
+                  className="img-fluid tooltip-img"
+                  src={object.media[1]} alt="" />
+              </Col>
+            }
+          </Row>
+        }
         <Row className='mt-3 px-1 g-0'>
           <Row className='g-0'>
             <Col md={3}>
