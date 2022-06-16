@@ -16,6 +16,7 @@ import Alert from './Alert';
 import Tooltip from './Tooltip';
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 // import { getDefaultDateRange } from '../../store/utility';
+import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types'
 
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
@@ -93,13 +94,16 @@ const FireAlerts = ({ t }) => {
   }
 
   const setFavorite = (id) => {
-    let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.favorite = !selectedAlert.favorite;
-    hoverInfo.object && setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
-    dispatch(setFavoriteAlert(id, selectedAlert.favorite));
-    const to = PAGE_SIZE * currentPage;
-    const from = to - PAGE_SIZE;
-    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
+    const selectedAlert = _.find(filteredAlerts, { id });
+    dispatch(setFavoriteAlert(id, !selectedAlert.favorite)).then((result) => {
+      if (result.type === SET_FAV_ALERT_SUCCESS) {
+        selectedAlert.favorite = !selectedAlert.favorite
+        hoverInfo.object && setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
+        const to = PAGE_SIZE * currentPage;
+        const from = to - PAGE_SIZE;
+        setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
+      }
+    })
   }
 
   const validateEvent = (id) => {

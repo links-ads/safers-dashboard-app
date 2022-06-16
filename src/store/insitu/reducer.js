@@ -16,8 +16,8 @@ const initialState = {
   alertSource: '',
   dateRange : getDefaultDateRange(),
   currentPage: 1,
-  error: false,
-  success: null
+  success: null,
+  error: false
 };
 
 const inSituAlertReducer = (state = initialState, action) => {
@@ -96,9 +96,9 @@ const setFavoriteAlertSuccess = (state, action) => {
   }
   return updateObject(state, updatedState);
 }
-const setFavoriteAlertFail = (state) => {
+const setFavoriteAlertFail = (state, action) => {
   const updatedState = {
-    error: true,
+    error: action.payload,
   }
   return updateObject(state, updatedState);
 }

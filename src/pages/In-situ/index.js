@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { filteredAlerts, sortByDate, alertSource, dateRange, allAlerts:alerts, success, cameraList } = useSelector(state => state.inSituAlerts);
+  const { filteredAlerts, sortByDate, alertSource, dateRange, allAlerts:alerts, success, error, cameraList } = useSelector(state => state.inSituAlerts);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [checkedStatus, setCheckedStatus] = useState([])
   const {t} = useTranslation();
@@ -50,12 +50,14 @@ const InSituAlerts = () => {
   }, [sortByDate, alertSource, dateRange, boundingBox, checkedStatus]);
 
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
+    if (success) {
+      toastr.success(success, '');
+    } else if (error) {
+      toastr.error(error, '');
     }
     dispatch(resetInSituAlertsResponseState());
 
-  }, [success]);
+  }, [success, error]);
   
   useEffect(() => {
     dispatch(setIconLayer(getIconLayer(cameraList.features)));

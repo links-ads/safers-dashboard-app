@@ -68,12 +68,13 @@ const getInSitutAlertsFail = (error) => {
 };
 
 export const setInSituFavoriteAlert = (alertId, isFavorite) => async (dispatch) => {
-  const response = await api.post(endpoints.eventAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
+  const response = await api.post(endpoints.insitu.setFavorite.replace(':media_id', alertId), { is_favorite: isFavorite });
   if (response.status === 200) {
-    return dispatch(setInSituFavoriteAlertSuccess(response.data));
+    const successMessage = `sucessfully ${isFavorite ? 'added to' : 'removed from'} the favorite list`;
+    return dispatch(setInSituFavoriteAlertSuccess(successMessage));
   }
   else
-    return dispatch(setInSituFavoriteAlertFail(response.error));
+    return dispatch(setInSituFavoriteAlertFail(response?.data?.[0]));
 };
 const setInSituFavoriteAlertSuccess = (msg) => {
   return {

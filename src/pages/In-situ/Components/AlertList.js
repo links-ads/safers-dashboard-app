@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getIconLayer } from '../../../helpers/mapHelper';
 import { setAlertId, setCurrentPage, setInSituFavoriteAlert, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCamera } from '../../../store/insitu/action';
-import { PAGE_SIZE } from '../../../store/insitu/types';
+import { PAGE_SIZE, SET_FAV_INSITU_ALERT_SUCCESS } from '../../../store/insitu/types';
 import Alert from './Alert';
 
 const AlertList = () => {
@@ -24,12 +24,17 @@ const AlertList = () => {
   }, [cameraInfo]);
 
   const setFavorite = (id) => {
-    let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.isFavorite = !selectedAlert.isFavorite;
-    dispatch(setInSituFavoriteAlert(id, selectedAlert.isFavorite));
-    const to = PAGE_SIZE * currentPage;
-    const from = to - PAGE_SIZE;
-    dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
+    const selectedAlert = _.find(filteredAlerts, { id });
+    dispatch(setInSituFavoriteAlert(id, !selectedAlert.favorite)).then((result) => {
+      if (result.type === SET_FAV_INSITU_ALERT_SUCCESS) {
+        selectedAlert.favorite = !selectedAlert.favorite;
+        const to = PAGE_SIZE * currentPage;
+        const from = to - PAGE_SIZE;
+        dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
+      }
+    })
+    
+    
   }
   const hideTooltip = (e) => {
     if (e && e.viewState) {
