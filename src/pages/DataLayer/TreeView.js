@@ -67,10 +67,9 @@ const TreeView = ({ data, setCurrentLayer}) => {
               aria-haspopup="true"
               role={tooltipInfo || node.info}
               place='right'
-              class="alert-tooltip text-light"
-              multiline={true}
+              class="alert-tooltip data-layers-alert-tooltip text-light"
             >
-              <p className='mb-2'>{tooltipInfo || node.info}</p>
+              {!tooltipInfo ? 'Loading...' : tooltipInfo || node.info}
             </ReactTooltip>}
         </>
       return item;
