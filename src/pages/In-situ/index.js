@@ -11,7 +11,7 @@ import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import AlertList from './Components/AlertList';
-import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCameraList } from '../../store/insitu/action';
+import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCameraList, getCameraSources } from '../../store/insitu/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 import { getDefaultDateRange } from '../../store/utility';
@@ -31,8 +31,14 @@ const InSituAlerts = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCameraList());
-  }, []);
+    dispatch(getCameraSources());
+  }, [])
+
+  useEffect(() => {
+    dispatch(getCameraList({
+      camera_id: alertSource
+    }));
+  }, [alertSource, boundingBox]);
 
   useEffect(() => {
     dispatch(getAllInSituAlerts(

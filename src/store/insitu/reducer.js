@@ -4,6 +4,7 @@ import { getDefaultDateRange, updateObject } from '../utility';
 const initialState = {
   allAlerts: [],
   cameraList: [],
+  cameraSources: [],
   cameraInfo: null,
   paginatedAlerts: [],
   filteredAlerts: [],
@@ -24,6 +25,8 @@ const inSituAlertReducer = (state = initialState, action) => {
   switch (action.type) {
   case actionTypes.GET_CAMERA_LIST_SUCCESS: return getCameraListSuccess(state, action);
   case actionTypes.GET_CAMERA_LIST_FAIL: return getCameraListFail(state, action);
+  case actionTypes.GET_CAMERA_SOURCES_SUCCESS: return getCameraSourcesSuccess(state, action);
+  case actionTypes.GET_CAMERA_SOURCES_FAIL: return getCameraSourcesFail(state, action);
   case actionTypes.GET_CAMERA_SUCCESS: return getCameraSuccess(state, action);
   case actionTypes.GET_CAMERA_FAIL: return getCameraFail(state, action);
   case actionTypes.GET_INSITU_ALERTS_SUCCESS: return getAlertsSuccess(state, action);
@@ -69,6 +72,20 @@ const getCameraListSuccess = (state, action) => {
   return updateObject(state, updatedState);
 }
 const getCameraListFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
+
+const getCameraSourcesSuccess = (state, action) => {
+  const updatedState = {
+    cameraSources: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const getCameraSourcesFail = (state) => {
   const updatedState = {
     error: true,
   }

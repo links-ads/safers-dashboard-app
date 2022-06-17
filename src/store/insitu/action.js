@@ -2,8 +2,8 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-export const getCameraList = () => async (dispatch) => {
-  const response = await api.get(endpoints.insitu.cameraList);
+export const getCameraList = (options) => async (dispatch) => {
+  const response = await api.get(endpoints.insitu.cameraList, options);
   if (response.status === 200) {
     return dispatch(getCameraListSuccess(response.data));
   }
@@ -20,6 +20,28 @@ const getCameraListSuccess = (list) => {
 const getCameraListFail = (error) => {
   return {
     type: actionTypes.GET_CAMERA_LIST_FAIL,
+    payload: error
+  };
+};
+
+export const getCameraSources = () => async (dispatch) => {
+  const response = await api.get(endpoints.insitu.getSources);
+  if (response.status === 200) {
+    return dispatch(getCameraSourcesSuccess(response.data));
+  }
+  else
+    return dispatch(getCameraSourcesFail(response.error));
+};
+
+const getCameraSourcesSuccess = (list) => {
+  return {
+    type: actionTypes.GET_CAMERA_SOURCES_SUCCESS,
+    payload: list
+  };
+};
+const getCameraSourcesFail = (error) => {
+  return {
+    type: actionTypes.GET_CAMERA_SOURCES_FAIL,
     payload: error
   };
 };

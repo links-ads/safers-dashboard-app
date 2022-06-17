@@ -9,7 +9,7 @@ import _ from 'lodash';
 import { withTranslation } from 'react-i18next'
 
 const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
-  const { sortByDate, alertSource, filteredAlerts, allAlerts:alerts, cameraList } = useSelector(state => state.inSituAlerts);
+  const { sortByDate, alertSource, filteredAlerts, allAlerts:alerts, cameraSources } = useSelector(state => state.inSituAlerts);
   const FILTER_IMAGE = 'IMAGE';
   const FILTER_VIDEO = 'VIDEO';
 
@@ -120,9 +120,9 @@ const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
             value={alertSource}
           >
             <option value='' key={''}> ---------- {t('Source')} : {t('All')} -----------</option>
-            {cameraList.features?.map((camObj, index) => <option key={index} value={camObj.properties.id}>
-              {camObj.properties.id}
-            </option>)}
+            {
+              cameraSources.map((camSrc, index) => <option key={index} value={camSrc}>{camSrc}</option>)
+            }
           </Input>
         </Col>
         <Col xl={3}>
