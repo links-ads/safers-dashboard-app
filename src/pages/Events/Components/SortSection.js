@@ -11,7 +11,7 @@ const SortSection = ({t, setAlertId, setAlertSource, filteredAlerts, setFilterdA
   const { sortByDate, alertSource } = params;
 
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
-  const ongoing = alerts.filter((alert) => alert.status == 'OPEN').length;
+  const ongoing = alerts.filter((alert) => alert.status == 'ONGOING').length;
   const closed = alerts.filter((alert) => alert.status == 'CLOSED').length;
 
   const filterByAlertSource = (alertSource) => {
@@ -47,7 +47,7 @@ const SortSection = ({t, setAlertId, setAlertSource, filteredAlerts, setFilterdA
             data-testid="onGoing"
             name="status"
             type="checkbox"
-            value="OPEN"
+            value="ONGOING"
             onChange={(e) => filterByStatus(e.target.value, e.target.checked)}
           />
           <Label
