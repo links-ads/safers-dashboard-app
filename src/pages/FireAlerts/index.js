@@ -138,13 +138,13 @@ const FireAlerts = ({ t }) => {
       source: alertSource ? alertSource : undefined,
       start_date: dateRange[0],
       end_date: dateRange[1],
-      bbox: boundingBox ? boundingBox.toString() : undefined,
+      bbox: boundingBox ? boundingBox.toString() :
+        defaultAoi ? getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel).toString() : undefined,
       default_date: true,
       default_bbox: false
     };
     dispatch(setAlertApiParams(alertParams));
     dispatch(getAllFireAlerts(alertParams, true));
-
   }
 
   const setSelectedAlert = (id, isEdit) => {
