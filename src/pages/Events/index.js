@@ -12,7 +12,7 @@ import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
-import { getAllEventAlerts, resetEventAlertsResponseState, resetEventApiParams, setNewEventState, } from '../../store/appAction';
+import { getAllEventAlerts, resetEventAlertsResponseState, setNewEventState, } from '../../store/appAction';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
@@ -23,12 +23,12 @@ import { MAPTYPES } from '../../constants/common';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const  { allAlerts: alerts, params: eventParams } = useSelector(state => state.eventAlerts);
+  const { allAlerts: alerts, params: eventParams } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
   const error = useSelector(state => state.alerts.error);
   // eslint-disable-next-line no-unused-vars
   const { params } = useSelector(state => state.eventAlerts);
- 
+
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
@@ -48,35 +48,35 @@ const EventAlerts = ({ t }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(alertSource){
+    if (alertSource) {
       eventParams.source = alertSource;
     }
-    if(alertSource == 'all'){
+    if (alertSource == 'all') {
       delete eventParams.source
     }
-    if(status){
+    if (status) {
       eventParams.status = status;
-    }else{
+    } else {
       delete eventParams.status
     }
-    if(dateRange.length === 2){
+    if (dateRange.length === 2) {
       eventParams.default_date = true
       eventParams.start_date = dateRange[0]
       eventParams.end_date = dateRange[1]
-    }else if(dateRange.length === 0){
+    } else if (dateRange.length === 0) {
       delete eventParams.start_date
       delete eventParams.end_date
       eventParams.default_date = true
     }
-    if(sortOrder){
+    if (sortOrder) {
       eventParams.order = sortOrder
     }
-  
+
     dispatch(setEventParams(eventParams))
     dispatch(getAllEventAlerts(eventParams));
     dispatch(setNewEventState(false, true));
     return () => {
-      dispatch(resetEventApiParams());
+      dispatch(setEventParams(undefined));
       dispatch(setNewEventState(false, false));
     }
   }, [dateRange, alertSource, sortOrder, status])
@@ -179,7 +179,7 @@ const EventAlerts = ({ t }) => {
               {t('default-aoi')}</Button>
           </Col>
           <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates}/>
+            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates} />
           </Col>
         </Row>
         <Row>
@@ -196,9 +196,9 @@ const EventAlerts = ({ t }) => {
             />
             <Row>
               <Col xl={12} className='px-3'>
-                <EventList 
+                <EventList
                   alertId={alertId}
-                  setAlertId={setAlertId} 
+                  setAlertId={setAlertId}
                   filteredAlerts={filteredAlerts}
                   paginatedAlerts={paginatedAlerts}
                   currentPage={currentPage}
@@ -216,7 +216,7 @@ const EventAlerts = ({ t }) => {
             </Row>
           </Col>
           <Col xl={7} className='mx-auto'>
-            <MapSection 
+            <MapSection
               viewState={viewState}
               setViewState={setViewState}
               hoverInfo={hoverInfo}

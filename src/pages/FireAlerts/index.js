@@ -36,7 +36,7 @@ const FireAlerts = ({ t }) => {
   const error = useSelector(state => state.alerts.error);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState('-date');
+  const [sortByDate, setSortByDate] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -53,7 +53,7 @@ const FireAlerts = ({ t }) => {
     dispatch(getSource());
     dispatch(setNewAlertState(false, true));
     return () => {
-      dispatch(setAlertApiParams({}));
+      dispatch(setAlertApiParams(undefined));
       dispatch(setNewAlertState(false, false));
     }
   }, []);
@@ -134,14 +134,13 @@ const FireAlerts = ({ t }) => {
   const getAlerts = () => {
     setAlertId(undefined);
     const alertParams = {
-      order: sortByDate,
-      source: alertSource ? alertSource : undefined,
+      order: sortByDate ? sortByDate : '-date',
+      source: alertSource,
       start_date: dateRange[0],
       end_date: dateRange[1],
-      bbox: boundingBox ? boundingBox.toString() :
-        defaultAoi ? getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel).toString() : undefined,
-      default_date: true,
-      default_bbox: false
+      bbox: boundingBox?.toString(),
+      default_date: false,
+      default_bbox: !boundingBox
     };
     dispatch(setAlertApiParams(alertParams));
     dispatch(getAllFireAlerts(alertParams, true));
@@ -156,17 +155,21 @@ const FireAlerts = ({ t }) => {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
+      setViewState(
+        getViewState(
+          selectedAlert.center,
+          6,
+          selectedAlert
+        ));
       setIconLayer(getIconLayer(clonedAlerts));
       setIsEdit(isEdit);
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
-      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     } else {
       setAlertId(undefined);
       setIconLayer(getIconLayer(filteredAlerts));
     }
   }
 
-  const getViewState = (midPoint, zoomLevel = 4) => {
+  const getViewState = (midPoint, zoomLevel = 4, selectedAlert) => {
     return {
       longitude: midPoint[0],
       latitude: midPoint[1],
@@ -174,7 +177,8 @@ const FireAlerts = ({ t }) => {
       pitch: 0,
       bearing: 0,
       transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator()
+      transitionInterpolator: new FlyToInterpolator(),
+      onTransitionEnd: () => { selectedAlert && setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center }) }
     };
   }
 
@@ -211,7 +215,7 @@ const FireAlerts = ({ t }) => {
   }, []);
 
   const hideTooltip = (e) => {
-    if (e && e.viewState) {
+    if (e && e.viewState && alertId) {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
       setZoomLevel(e.viewState.zoom);
     }

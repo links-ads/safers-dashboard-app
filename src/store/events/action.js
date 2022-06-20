@@ -2,9 +2,10 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import { InProgress } from '../authentication/action';
+import queryString from 'query-string';
 
 export const getAllEventAlerts = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.eventAlerts.getAll, options);
+  const response = await api.get(endpoints.eventAlerts.getAll.concat('?', queryString.stringify(options)));
   if (response.status === 200) {
     return dispatch(getEventAlertsSuccess(response.data));
   }
@@ -130,12 +131,6 @@ export const setEventParams = (payload) => {
     type: actionTypes.SET_EVENT_PARAMS,
     payload,
   };
-};
-
-export const resetEventApiParams = () => {
-  return {
-    type: actionTypes.RESET_EVENT_API_PARAMS,
-  }
 };
 
 export const setNewEventState = (eventState, pageState, newItemsCount) => {

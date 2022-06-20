@@ -4,10 +4,14 @@ import { getDefaultDateRange, updateObject } from '../utility';
 const initialState = {
   allNotifications: [],
   sources: [],
-  dateRange : getDefaultDateRange(),
+  dateRange: getDefaultDateRange(),
   error: false,
   success: null,
-  params: { default_bbox: false, order : '-date', default_date: true },
+  params: {
+    order: '-date',
+    default_bbox: true,
+    default_date: true
+  },
   isNewNotification: false,
   isPageActive: false,
   newItemsCount: 0,
@@ -42,10 +46,11 @@ const getNotificationsFail = (state) => {
 }
 const setNotificationParams = (state, action) => {
   const updatedState = {
-    params: action.payload,
+    params: action.payload ? action.payload : initialState.params,
   }
   return updateObject(state, updatedState);
 }
+
 const resetNotificationApiParams = (state) => {
   const updatedState = {
     params: initialState.params,

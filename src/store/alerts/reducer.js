@@ -5,7 +5,11 @@ const initialState = {
   sources: [],
   allAlerts: [],
   filteredAlerts: [],
-  params: {},
+  params: {
+    order: '-date',
+    default_bbox: true,
+    default_date: true
+  },
   isNewAlert: false,
   isPageActive: false,
   newItemsCount: 0,
@@ -98,7 +102,7 @@ const editAlertInfoFail = (state) => {
 
 export const setAlertApiParams = (state, action) => {
   const updatedState = {
-    params: action.payload
+    params: action.payload ? action.payload : initialState.params
   }
   return updateObject(state, updatedState);
 };

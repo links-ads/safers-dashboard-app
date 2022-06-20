@@ -63,6 +63,7 @@ const Notifications = () => {
     dispatch(getAllNotifications(notificationParams));
     dispatch(setNewNotificationState(false, true));
     return () => {
+      dispatch(setNotificationParams(undefined))
       dispatch(setNewNotificationState(false, false));
     }
   }, [dateRange, notificationSource, sortOrder])
