@@ -26,11 +26,11 @@ const ReportList = ({setIconLayer}) => {
     dispatch(setFavorite(id, selectedAlert.isFavorite));
   }
 
-  const setSelectedReport = (id) => {
-    if (id) {
-      setAlertId(id);
+  const setSelectedReport = (report_id) => {
+    if (report_id) {
+      setAlertId(report_id);
       let alertsToEdit = _.cloneDeep(pageData);
-      let selectedAlert = _.find(alertsToEdit, { id });
+      let selectedAlert = _.find(alertsToEdit, { report_id });
       selectedAlert.isSelected = true;
       setIconLayer(getIconLayer(alertsToEdit, MAP_TYPE));
     } else {
