@@ -9,9 +9,20 @@ import SearchButton from './SearchButton';
 import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
 
-// eslint-disable-next-line no-unused-vars
-const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo, setHoverInfo, filteredAlerts, iconLayer, setMidpoint, setZoomLevel, setPaginatedAlerts, setSelectedAlert}) => {
-  
+const MapSection = ({
+  currentPage,
+  viewState,
+  hoverInfo,
+  setHoverInfo,
+  filteredAlerts,
+  iconLayer,
+  setMidpoint,
+  setZoomLevel,
+  setPaginatedAlerts,
+  setSelectedAlert,
+  getAlertsByArea,
+}) => {
+
   const dispatch = useDispatch();
 
   const hideTooltip = (e) => {
@@ -74,17 +85,25 @@ const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   }
-  
+
+  const getSearchButton = (index) => {
+    return (
+      <SearchButton
+        index={index}
+        getAlertsByArea={getAlertsByArea}
+      />
+    )
+  }
   return (
     <Card className='map-card mb-0' style={{ height: 730 }}>
       <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
-        hoverInfo={hoverInfo} 
+        hoverInfo={hoverInfo}
         renderTooltip={renderTooltip}
         onClick={showTooltip}
         onViewStateChange={hideTooltip}
-        widgets={[SearchButton]}
+        widgets={[getSearchButton]}
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
       />
@@ -93,7 +112,7 @@ const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo
 }
 
 MapSection.propTypes = {
-  viewState : PropTypes.any,
+  viewState: PropTypes.any,
   setViewState: PropTypes.any,
   iconLayer: PropTypes.any,
   setAlertId: PropTypes.func,
@@ -104,7 +123,8 @@ MapSection.propTypes = {
   setMidpoint: PropTypes.func,
   setZoomLevel: PropTypes.func,
   setPaginatedAlerts: PropTypes.func,
-  setSelectedAlert: PropTypes.func
+  setSelectedAlert: PropTypes.func,
+  getAlertsByArea: PropTypes.func
 }
 
 export default MapSection;

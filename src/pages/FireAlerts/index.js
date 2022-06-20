@@ -41,7 +41,7 @@ const FireAlerts = ({ t }) => {
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [zoomLevel, setZoomLevel] = useState(undefined);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
   const [isEdit, setIsEdit] = useState(false);
@@ -90,7 +90,7 @@ const FireAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
   const getAlertsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, zoomLevel));
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel));
   }
 
   const setFavorite = (id) => {
@@ -143,7 +143,7 @@ const FireAlerts = ({ t }) => {
       start_date: dateRange[0],
       end_date: dateRange[1],
       bbox: boundingBox?.toString(),
-      default_date: false,
+      default_date: (!dateRange[0] && !dateRange[1]),
       default_bbox: !boundingBox
     };
     dispatch(setAlertApiParams(alertParams));
@@ -162,7 +162,7 @@ const FireAlerts = ({ t }) => {
       setViewState(
         getViewState(
           selectedAlert.center,
-          6,
+          currentZoomLevel,
           selectedAlert
         ));
       setIconLayer(getIconLayer(clonedAlerts));
@@ -219,9 +219,9 @@ const FireAlerts = ({ t }) => {
   }, []);
 
   const hideTooltip = (e) => {
-    if (e && e.viewState && alertId) {
+    if (e && e.viewState) {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setZoomLevel(e.viewState.zoom);
+      setCurrentZoomLevel(e.viewState.zoom);
     }
     setIsEdit(false);
     setHoverInfo({});

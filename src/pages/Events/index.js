@@ -13,7 +13,7 @@ import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
 import { getAllEventAlerts, resetEventAlertsResponseState, setNewEventState, } from '../../store/appAction';
-import { getIconLayer, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
@@ -23,7 +23,7 @@ import { MAPTYPES } from '../../constants/common';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allAlerts: alerts, params: eventParams } = useSelector(state => state.eventAlerts);
+  const { allAlerts: alerts } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
   const error = useSelector(state => state.eventAlerts.error);
   // eslint-disable-next-line no-unused-vars
@@ -35,9 +35,8 @@ const EventAlerts = ({ t }) => {
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [status, setStatus] = useState('');
-  // const [boundaryBox, setBoundaryBox] = useState(undefined);
-  const [zoomLevel, setZoomLevel] = useState(undefined);
-  // eslint-disable-next-line no-unused-vars
+  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
@@ -48,38 +47,16 @@ const EventAlerts = ({ t }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (alertSource) {
-      eventParams.source = alertSource;
-    }
-    if (alertSource == 'all') {
-      delete eventParams.source
-    }
-    if (status) {
-      eventParams.status = status;
-    } else {
-      delete eventParams.status
-    }
-    if (dateRange.length === 2) {
-      eventParams.default_date = true
-      eventParams.start_date = dateRange[0]
-      eventParams.end_date = dateRange[1]
-    } else if (dateRange.length === 0) {
-      delete eventParams.start_date
-      delete eventParams.end_date
-      eventParams.default_date = true
-    }
-    if (sortOrder) {
-      eventParams.order = sortOrder
-    }
-
-    dispatch(setEventParams(eventParams))
-    dispatch(getAllEventAlerts(eventParams));
     dispatch(setNewEventState(false, true));
     return () => {
       dispatch(setEventParams(undefined));
       dispatch(setNewEventState(false, false));
     }
-  }, [dateRange, alertSource, sortOrder, status])
+  }, []);
+
+  useEffect(() => {
+    getEvents();
+  }, [dateRange, alertSource, sortOrder, boundingBox, status])
 
   useEffect(() => {
     setFilteredAlerts(alerts);
@@ -117,6 +94,26 @@ const EventAlerts = ({ t }) => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
   }, [filteredAlerts]);
 
+
+  const getEvents = () => {
+    //setAlertId(undefined);
+    const eventParams = {
+      order: sortOrder ? sortOrder : '-date',
+      source: alertSource,
+      start_date: dateRange[0],
+      end_date: dateRange[1],
+      bbox: boundingBox?.toString(),
+      default_date: (!dateRange[0] && !dateRange[1]),
+      default_bbox: !boundingBox
+    };
+    dispatch(setEventParams(eventParams))
+    dispatch(getAllEventAlerts(eventParams));
+  }
+
+  const getAlertsByArea = () => {
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel));
+  }
+
   const handleDateRangePicker = (dates) => {
     let from = moment(dates[0]).format('YYYY-MM-DD');
     let to = moment(dates[1]).format('YYYY-MM-DD');
@@ -133,7 +130,7 @@ const EventAlerts = ({ t }) => {
   const hideTooltip = (e) => {
     if (e && e.viewState) {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setZoomLevel(e.viewState.zoom);
+      setCurrentZoomLevel(e.viewState.zoom);
     }
     setHoverInfo({});
   };
@@ -203,9 +200,9 @@ const EventAlerts = ({ t }) => {
                   paginatedAlerts={paginatedAlerts}
                   currentPage={currentPage}
                   midPoint={midPoint}
-                  zoomLevel={zoomLevel}
+                  zoomLevel={currentZoomLevel}
                   setMidpoint={setMidPoint}
-                  setZoomLevel={setZoomLevel}
+                  setZoomLevel={setCurrentZoomLevel}
                   setHoverInfo={setHoverInfo}
                   setCurrentPage={setCurrentPage}
                   setIconLayer={setIconLayer}
@@ -225,19 +222,18 @@ const EventAlerts = ({ t }) => {
               paginatedAlerts={paginatedAlerts}
               currentPage={currentPage}
               midPoint={midPoint}
-              zoomLevel={zoomLevel}
+              zoomLevel={currentZoomLevel}
               setMidpoint={setMidPoint}
-              setZoomLevel={setZoomLevel}
+              setZoomLevel={setCurrentZoomLevel}
               setCurrentPage={setCurrentPage}
               setAlertId={setAlertId}
               setSelectedAlert={setSelectedAlert}
+              getAlertsByArea={getAlertsByArea}
             />
           </Col>
         </Row>
-
       </div>
     </div >
-
   );
 }
 

@@ -1,42 +1,10 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button } from 'reactstrap'
-import { getAllEventAlerts } from '../../../store/appAction';
-
 import { useTranslation } from 'react-i18next';
+import PropTypes from 'prop-types';
 
-const SearchButton = (index) => {
-  const { midPoint, zoomLevel, params } = useSelector(state => state.eventAlerts);
-  const { dateRange, sortByDate, alertSource } = params; const { t } = useTranslation();
-
-  const dispatch = useDispatch();
-
-  const getAlertsByArea = () => {
-
-    const rangeFactor = (1 / zoomLevel) * 18;
-    const left = midPoint[0] - rangeFactor; //minLong
-    const right = midPoint[0] + rangeFactor; //maxLong
-    const top = midPoint[1] + rangeFactor; //maxLat
-    const bottom = midPoint[1] - rangeFactor; //minLat
-
-    const boundaryBox = [
-      [left, top],
-      [right, top],
-      [right, bottom],
-      [left, bottom]
-    ];
-
-    dispatch(getAllEventAlerts(
-      {
-        sortOrder: sortByDate,
-        source: alertSource,
-        from: dateRange[0],
-        to: dateRange[1],
-        boundaryBox
-      }
-    ));
-  }
-
+const SearchButton = ({ index, getAlertsByArea }) => {
+  const { t } = useTranslation();
   return (
     <Button
       key={index}
@@ -53,6 +21,11 @@ const SearchButton = (index) => {
       {t('Search This Area', { ns: 'common' })}
     </Button >
   )
+}
+
+SearchButton.propTypes = {
+  index: PropTypes.number,
+  getAlertsByArea: PropTypes.func,
 }
 
 export default SearchButton
