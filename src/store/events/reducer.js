@@ -87,12 +87,13 @@ const setFavoriteAlertSuccess = (state, action) => {
   }
   return updateObject(state, updatedState);
 }
-const setFavoriteAlertFail = (state) => {
+const setFavoriteAlertFail = (state, action) => {
   const updatedState = {
-    error: true,
+    error: action.payload
   }
   return updateObject(state, updatedState);
 }
+
 
 const validateAlertSuccess = (state, action) => {
   const updatedState = {

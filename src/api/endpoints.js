@@ -56,6 +56,8 @@ export const endpoints = {
   insitu: {
     cameraList: '/cameras/',
     getMedia: '/cameras/media/',
+    setFavorite: '/cameras/media/:media_id/favorite/',
+    getSources: '/cameras/media/sources',
   },
   reports: {
     getReports: '/chatbot/reports',

@@ -11,7 +11,7 @@ import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import AlertList from './Components/AlertList';
-import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCameraList } from '../../store/insitu/action';
+import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCameraList, getCameraSources } from '../../store/insitu/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 import { getDefaultDateRange } from '../../store/utility';
@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { filteredAlerts, sortByDate, alertSource, dateRange, allAlerts:alerts, success, cameraList } = useSelector(state => state.inSituAlerts);
+  const { filteredAlerts, sortByDate, alertSource, dateRange, allAlerts:alerts, success, error, cameraList } = useSelector(state => state.inSituAlerts);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [checkedStatus, setCheckedStatus] = useState([])
   const {t} = useTranslation();
@@ -31,8 +31,14 @@ const InSituAlerts = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(getCameraList());
-  }, []);
+    dispatch(getCameraSources());
+  }, [])
+
+  useEffect(() => {
+    dispatch(getCameraList({
+      camera_id: alertSource
+    }));
+  }, [alertSource, boundingBox]);
 
   useEffect(() => {
     dispatch(getAllInSituAlerts(
@@ -50,12 +56,14 @@ const InSituAlerts = () => {
   }, [sortByDate, alertSource, dateRange, boundingBox, checkedStatus]);
 
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
+    if (success) {
+      toastr.success(success, '');
+    } else if (error) {
+      toastr.error(error, '');
     }
     dispatch(resetInSituAlertsResponseState());
 
-  }, [success]);
+  }, [success, error]);
   
   useEffect(() => {
     dispatch(setIconLayer(getIconLayer(cameraList.features)));

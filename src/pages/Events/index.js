@@ -25,7 +25,7 @@ const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const { allAlerts: alerts, params: eventParams } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
-  const error = useSelector(state => state.alerts.error);
+  const error = useSelector(state => state.eventAlerts.error);
   // eslint-disable-next-line no-unused-vars
   const { params } = useSelector(state => state.eventAlerts);
 

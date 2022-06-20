@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getIconLayer } from '../../../helpers/mapHelper';
 import { setEventFavoriteAlert } from '../../../store/events/action';
-import { PAGE_SIZE } from '../../../store/events/types';
+import { PAGE_SIZE, SET_FAV_EVENT_ALERT_SUCCESS  } from '../../../store/events/types';
 import Alert from './Alert';
 import PaginationWrapper from '../../../components/Pagination';
 
@@ -14,15 +14,19 @@ const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, curren
   const dispatch = useDispatch();
   
   const setFavorite = (id) => {
-    let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.isFavorite = !selectedAlert.isFavorite;
-    dispatch(setEventFavoriteAlert(id, selectedAlert.isFavorite));
-    const to = PAGE_SIZE * currentPage;
-    const from = to - PAGE_SIZE;
-    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
+    const selectedAlert = _.find(filteredAlerts, { id });
+    dispatch(setEventFavoriteAlert(id, !selectedAlert.favorite)).then((result) => {
+      if (result.type === SET_FAV_EVENT_ALERT_SUCCESS) {
+        selectedAlert.favorite = !selectedAlert.favorite
+        const to = PAGE_SIZE * currentPage;
+        const from = to - PAGE_SIZE;
+        setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
 
-    // updatePage(currentPage);
+      // updatePage(currentPage);
+      }
+    })
   }
+
   const hideTooltip = (e) => {
     if (e && e.viewState) {
       setMidpoint([e.viewState.longitude, e.viewState.latitude]);
