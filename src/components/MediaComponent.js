@@ -11,6 +11,11 @@ const MediaComponent = (props) => {
   const [isFits, setisFits] = useState(false)
   const [isOpen, setisOpen] = useState(false)
   
+  const expandMedia = ()=> {
+    setisOpen(!isOpen);
+    setisFits(!isFits);
+  }
+
   return (
     <>
       {isFits ? (
@@ -38,6 +43,7 @@ const MediaComponent = (props) => {
           src={props.media.url}
           width="100%"
           height="100%"
+          onClick = {expandMedia} 
         />
         <div className='position-absolute bottom-0 end-0 m-2'>
           {props.media.type=='photo' ? <i className='fa fa-eye fa-2x text-danger' onClick={() => setisFits(!isFits)}></i> :
