@@ -30,6 +30,7 @@ const initialState = {
 const eventAlertReducer = (state = initialState, action) => {
   switch (action.type) {
   case actionTypes.GET_EVENT_ALERTS_SUCCESS: return getAlertsSuccess(state, action);
+  case actionTypes.SET_FILTERED_EVENT_ALERTS: return setFilteredAlerts(state, action);
   case actionTypes.GET_EVENT_ALERTS_FAIL: return getAlertsFail(state, action);
   case actionTypes.GET_EVENT_SUCCESS: return getEventAlertSuccess(state, action);
   case actionTypes.GET_EVENT_FAIL: return getEventAlertFail(state, action);
@@ -56,6 +57,12 @@ const getAlertsSuccess = (state, action) => {
   const updatedState = {
     allAlerts: action.payload,
     error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const setFilteredAlerts = (state, action) => {
+  const updatedState = {
+    filteredAlerts: action.payload,
   }
   return updateObject(state, updatedState);
 }

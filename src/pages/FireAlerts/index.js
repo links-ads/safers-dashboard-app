@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card } from 'reactstrap';
-import { FlyToInterpolator, IconLayer } from 'deck.gl';
+import { IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import moment from 'moment';
@@ -21,7 +21,7 @@ import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types'
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
-import { getBoundingBox } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
@@ -111,6 +111,7 @@ const FireAlerts = ({ t }) => {
     selectedAlert.type = 'VALIDATED';
     dispatch(validateAlert(id));
     hideTooltip();
+    console.log('validateEvent')
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -120,6 +121,7 @@ const FireAlerts = ({ t }) => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.information = desc;
     dispatch(editAlertInfo(id, desc));
+    console.log('editInfo')
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -152,38 +154,19 @@ const FireAlerts = ({ t }) => {
 
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
-      if (id === alertId) {
-        hideTooltip();
-      }
-      setAlertId(id);
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      setViewState(
-        getViewState(
-          selectedAlert.center,
-          currentZoomLevel,
-          selectedAlert
-        ));
-      setIconLayer(getIconLayer(clonedAlerts));
       setIsEdit(isEdit);
+      !_.isEqual(viewState.midPoint, selectedAlert.center) ?
+        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo))
+        : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
+      setAlertId(id);
+      setIconLayer(getIconLayer(clonedAlerts));
     } else {
       setAlertId(undefined);
       setIconLayer(getIconLayer(filteredAlerts));
     }
-  }
-
-  const getViewState = (midPoint, zoomLevel = 4, selectedAlert) => {
-    return {
-      longitude: midPoint[0],
-      latitude: midPoint[1],
-      zoom: zoomLevel,
-      pitch: 0,
-      bearing: 0,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator(),
-      onTransitionEnd: () => { selectedAlert && setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center }) }
-    };
   }
 
   const getIconLayer = (alerts) => {
@@ -223,7 +206,6 @@ const FireAlerts = ({ t }) => {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
       setCurrentZoomLevel(e.viewState.zoom);
     }
-    setIsEdit(false);
     setHoverInfo({});
   };
 

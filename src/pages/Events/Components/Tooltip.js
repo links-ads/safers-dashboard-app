@@ -22,7 +22,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getGeneralErrors } from '../../../helpers/errorHelper';
 
 const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
-  const { updateError:genError, event  } = useSelector(state => state.eventAlerts);
+  const { updateError: genError, event } = useSelector(state => state.eventAlerts);
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState('');
 
@@ -31,12 +31,12 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
   const [endDate, setEndDate] = useState('');
   const [peopleAffected, setPeoppleAffected] = useState('');
   const [description, setDescription] = useState('');
-  
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(event){
+    if (event) {
       setFavToggle(event.favorite)
       setCasualties(event.causalties)
       setDamage(event.estimated_damage)
@@ -61,9 +61,9 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
     <Popup
       longitude={coordinate[0]}
       latitude={coordinate[1]}
-      offsetTop={15}
-      dynamicPosition={true}
-      anchor='top-left'
+      offsetTop={-15}
+      offsetLeft={15}
+      anchor='left'
       style={{ borderRadius: '10px' }}
     >
 
@@ -72,19 +72,19 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
         <Col>
           <Row className='mb-2'>
             <Col md={1} sm={1} className='d-flex'>
-           
-              <i 
+
+              <i
                 onClick={(e) => {
                   e.stopPropagation();
                   setFavorite(object.id);
                   setFavToggle(!favToggle);
                 }}
                 className={`mdi mdi-star${!favToggle ? '-outline' : ''} card-title my-auto`}></i>
-           
+
             </Col>
             <Col>
               <CardTitle className="card-title h-100 d-flex">
-                {}
+                { }
                 <p className='my-auto'>{event ? event.title : 'N/A'}</p>
               </CardTitle>
             </Col>
@@ -105,18 +105,18 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             </Col>
             <Col>
               <CardSubtitle className="my-auto">
-                {t('Start', {ns: 'common'})} :&nbsp;{event && event.start_date ? formatDate(event.start_date) : 'N/A'} <br></br>
+                {t('Start', { ns: 'common' })} :&nbsp;{event && event.start_date ? formatDate(event.start_date) : 'N/A'} <br></br>
                 <div className='d-flex text-nowrap'>
-                  {t('End', {ns: 'common'})} : &nbsp;
+                  {t('End', { ns: 'common' })} : &nbsp;
                   {
                     editToggle ?
-                      <DatePicker 
-                        type='text'  
+                      <DatePicker
+                        type='text'
                         setDate={setEndDate}
                         isTooltipInput={true}
-                        date={endDate} 
+                        date={endDate}
                       />
-                      :  event && event.end_date ? formatDate(event.end_date) : 'not set'
+                      : event && event.end_date ? formatDate(event.end_date) : 'not set'
                   }
                 </div>
               </CardSubtitle>
@@ -133,8 +133,8 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
                 {t('People Affected')} : &nbsp;
                 {
                   editToggle ?
-                    <Input type='text' value={peopleAffected ? peopleAffected: '' } className='tootip-input ms-2' onChange={(e) => { setPeoppleAffected(e.target.value) }} />
-                    :  event ? event.people_affected : 'not recorded'
+                    <Input type='text' value={peopleAffected ? peopleAffected : ''} className='tootip-input ms-2' onChange={(e) => { setPeoppleAffected(e.target.value) }} />
+                    : event ? event.people_affected : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
@@ -147,11 +147,11 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             </Col>
             <Col >
               <CardSubtitle className="my-auto d-flex text-nowrap">
-                {t('Casualties')}: &nbsp; 
+                {t('Casualties')}: &nbsp;
                 {
                   editToggle ?
-                    <Input type='text' className='tootip-input ms-2' value={casualties? casualties: ''} onChange={(e) => { setCasualties(e.target.value) }} />
-                    :  event ? event.causalties : 'not recorded'
+                    <Input type='text' className='tootip-input ms-2' value={casualties ? casualties : ''} onChange={(e) => { setCasualties(e.target.value) }} />
+                    : event ? event.causalties : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
@@ -168,7 +168,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
                 {
                   editToggle ?
                     <Input type='text' className='tootip-input ms-2' value={damage ? damage : ''} onChange={(e) => { setDamage(e.target.value) }} />
-                    :  event ?  event.damage : 'not recorded'
+                    : event ? event.damage : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
@@ -177,7 +177,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
           <Row className='mt-3 my-2'>
             <Col md={2} sm={2} className="">
               <CardText className='mb-2 px-0'>
-                <span className='mb-5'>{t('Info', {ns: 'common'})}: </span>
+                <span className='mb-5'>{t('Info', { ns: 'common' })}: </span>
               </CardText>
             </Col>
             <Col>
@@ -195,11 +195,11 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             <Col md={2} sm={2} className='pe-0'>
               <CardText className='mb-2'>
                 <small className="font-italic">
-                  {t('Source', {ns: 'common'})}:
+                  {t('Source', { ns: 'common' })}:
                 </small>
               </CardText>
             </Col>
-            
+
             <Col>
               <CardText className='mb-2'>
                 <small className="font-italic">
@@ -208,7 +208,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
               </CardText>
             </Col>
           </Row>
-            
+
           {editToggle ?
             <>
               <Row>
@@ -218,25 +218,25 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
                   onClick={() => {
                     editInfo(object.id);
                   }} >
-                  {t('save', {ns: 'common'})}
+                  {t('save', { ns: 'common' })}
                 </Button>
               </Row>
               <Row>
                 <Button className='link-button' color="link" onClick={() => setEditToggle(false)} >
-                  {t('cancel', {ns: 'common'})}
+                  {t('cancel', { ns: 'common' })}
                 </Button>
               </Row>
             </>
             : <>
               <Row className='g-0'>
                 {event &&
-                <Button color="secondary" className='create-event-button' onClick={()=>{navigate(`/event-dashboard/${object.id}`);}}>
-                  {t('show-info', {ns: 'common'})}
-                </Button>}
+                  <Button color="secondary" className='create-event-button' onClick={() => { navigate(`/event-dashboard/${object.id}`); }}>
+                    {t('show-info', { ns: 'common' })}
+                  </Button>}
               </Row>
               <Row className='g-0'>
                 <Button className='link-button' color="link" onClick={() => setEditToggle(true)} >
-                  {t('edit', {ns: 'common'})}
+                  {t('edit', { ns: 'common' })}
                 </Button>
               </Row>
             </>

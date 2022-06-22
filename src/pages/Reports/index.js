@@ -15,7 +15,7 @@ import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { getDefaultDateRange } from '../../store/utility';
 
 import { useTranslation } from 'react-i18next';
-import { MAPTYPES } from '../../constants/common';
+import { MAP_TYPES } from '../../constants/common';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -51,7 +51,7 @@ const Reports = () => {
 
   useEffect(() => {
     if (allReports.length > 0) {
-      setIconLayer(getIconLayer(allReports, MAPTYPES.REPORTS));
+      setIconLayer(getIconLayer(allReports, MAP_TYPES.REPORTS));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }

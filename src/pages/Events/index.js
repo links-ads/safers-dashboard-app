@@ -12,18 +12,24 @@ import SortSection from './Components/SortSection';
 import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
-import { getAllEventAlerts, resetEventAlertsResponseState, setNewEventState, } from '../../store/appAction';
+import {
+  getAllEventAlerts,
+  resetEventAlertsResponseState,
+  setNewEventState,
+  getEventInfo,
+  setEventParams,
+  setFilteredAlerts
+} from '../../store/appAction';
 import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
 import { withTranslation } from 'react-i18next'
-import { getEventInfo, setEventParams } from '../../store/events/action';
-import { MAPTYPES } from '../../constants/common';
+import { MAP_TYPES } from '../../constants/common';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allAlerts: alerts } = useSelector(state => state.eventAlerts);
+  const { allAlerts: alerts, filteredAlerts } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
   const error = useSelector(state => state.eventAlerts.error);
   // eslint-disable-next-line no-unused-vars
@@ -40,7 +46,6 @@ const EventAlerts = ({ t }) => {
   const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
-  const [filteredAlerts, setFilteredAlerts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
 
@@ -58,9 +63,9 @@ const EventAlerts = ({ t }) => {
     getEvents();
   }, [dateRange, alertSource, sortOrder, boundingBox, status])
 
-  useEffect(() => {
-    setFilteredAlerts(alerts);
-  }, [alerts]);
+  // useEffect(() => {
+  //   setFilteredAlerts(alerts);
+  // }, [alerts]);
 
   useEffect(() => {
     if (success) {
@@ -72,20 +77,13 @@ const EventAlerts = ({ t }) => {
   }, [success, error]);
 
   useEffect(() => {
-    if (alerts.length > 0 && filteredAlerts.length === 0) {
-      setIconLayer(getIconLayer(alerts, MAPTYPES.EVENTS));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
-      setFilteredAlerts(alerts);
-    }
-    else if (alerts.length > filteredAlerts.length) {
+    if (alerts.length > filteredAlerts.length) {
       toastr.success('New events are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
   }, [alerts]);
 
   useEffect(() => {
-    setIconLayer(getIconLayer(filteredAlerts, MAPTYPES.EVENTS));
+    setIconLayer(getIconLayer(filteredAlerts, MAP_TYPES.EVENTS));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }
@@ -107,7 +105,7 @@ const EventAlerts = ({ t }) => {
       default_bbox: !boundingBox
     };
     dispatch(setEventParams(eventParams))
-    dispatch(getAllEventAlerts(eventParams));
+    dispatch(getAllEventAlerts(eventParams, true));
   }
 
   const getAlertsByArea = () => {
@@ -145,12 +143,13 @@ const EventAlerts = ({ t }) => {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(clonedAlerts, MAPTYPES.EVENTS));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
-      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+      !_.isEqual(viewState.midPoint, selectedAlert.center) ?
+        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo, isEdit))
+        : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
+      setIconLayer(getIconLayer(clonedAlerts, MAP_TYPES.EVENTS));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(filteredAlerts, MAPTYPES.EVENTS));
+      setIconLayer(getIconLayer(filteredAlerts, MAP_TYPES.EVENTS));
     }
   }
 

@@ -35,9 +35,9 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
     <Popup
       longitude={coordinate[0]}
       latitude={coordinate[1]}
-      offsetTop={15}
-      dynamicPosition={true}
-      // anchor='top-left'
+      offsetTop={-15}
+      offsetLeft={15}
+      anchor='left'
       style={{ borderRadius: '10px' }}
     >
 
@@ -95,7 +95,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
               <CardText>
                 {
                   editToggle ?
-                    <Input type='textarea' rows="2" value={information} onChange={(e) => { setInformation(e.target.value) }} />
+                    <Input type='textarea' rows="2" value={information || ''} onChange={(e) => { setInformation(e.target.value) }} />
                     : information
                 }
               </CardText>
@@ -230,11 +230,11 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
               </Row>
             </>
             : <>
-              {object.type == 'UNVALIDATED' && <Row className='g-0'>
+              <Row className={`g-0 ${object.type == 'UNVALIDATED' ? 'd-contents' : 'd-none'}`}>
                 <Button color="primary" className='create-event-button' onClick={() => setConfirmEventToggle(true)}>
                   {t('create-event')}
                 </Button>
-              </Row>}
+              </Row>
               <Row className='g-0'>
                 <Button className='link-button' color="link" onClick={() => setEditToggle(true)} >
                   {t('edit')}

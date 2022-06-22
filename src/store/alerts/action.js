@@ -29,12 +29,12 @@ const getSourceFail = (error) => {
 
 export const getAllFireAlerts = (options, fromPage) => async (dispatch) => {
   const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
-  if (response && response.status === 200) {
-    fromPage && dispatch(setFilteredAlerts(response.data));
-    return dispatch(getAlertsSuccess(response.data, fromPage));
+  if (response && response?.status === 200) {
+    fromPage && dispatch(setFilteredAlerts(response?.data));
+    return dispatch(getAlertsSuccess(response.data));
   }
   else
-    return dispatch(getAlertsFail(response.error));
+    return dispatch(getAlertsFail(response?.error));
 };
 const getAlertsSuccess = (alerts) => {
   return {
@@ -80,7 +80,7 @@ const setFavoriteAlertFail = (error) => {
 export const validateAlert = (alertId) => async (dispatch) => {
   const response = await api.post(endpoints.fireAlerts.validate.replace(':alert_id', alertId), { type: 'VALIDATED' });
   if (response.status === 200 || response.status === 201) {
-    const successMessage = response.data['detail']  
+    const successMessage = response.data['detail']
     return dispatch(validateAlertSuccess(successMessage));
   }
   else
