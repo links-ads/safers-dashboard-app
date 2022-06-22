@@ -62,6 +62,11 @@
   border-radius: 10px !important;
 }
 
+.data-layers-alert-tooltip {
+  max-width: 25rem;
+  overflow-wrap: break-word
+}
+
 .alert-tooltip.place-right::after {
   border-right-color: $primary !important;
 }
