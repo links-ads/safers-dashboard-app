@@ -105,13 +105,15 @@ export const editAlertInfo = (alertId, desc) => async (dispatch) => {
     let successMessage = 'Successfully updated the information';
     return dispatch(editAlertInfoSuccess(successMessage));
   }
-  else
-    return dispatch(editAlertInfoFail(response?.data?.[0]));
+  else {
+    let failureMessage = 'Information update failed';
+    return dispatch(editAlertInfoFail(response?.data?.[0] || failureMessage));
+  }
 };
-const editAlertInfoSuccess = (msg) => {
+const editAlertInfoSuccess = (message) => {
   return {
     type: actionTypes.EDIT_ALERT_INFO_SUCCESS,
-    msg,
+    message,
   };
 };
 const editAlertInfoFail = (error) => {

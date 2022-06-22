@@ -16,13 +16,14 @@ const MapSection = ({
   setHoverInfo,
   filteredAlerts,
   iconLayer,
+  isEdit,
   setMidpoint,
   setZoomLevel,
   setPaginatedAlerts,
   setSelectedAlert,
   getAlertsByArea,
+  setIsEdit
 }) => {
-
   const dispatch = useDispatch();
 
   const hideTooltip = (e) => {
@@ -43,13 +44,14 @@ const MapSection = ({
   };
 
   const renderTooltip = (info) => {
-    const { object, coordinate, isEdit } = info;
+    const { object, coordinate } = info;
     if (object) {
       return <ToolTip
         key={object.id}
         object={object}
         coordinate={coordinate}
         isEdit={isEdit}
+        setIsEdit={setIsEdit}
         setFavorite={setFavorite}
         validateEvent={validateEvent}
         editInfo={editInfo}
@@ -61,8 +63,8 @@ const MapSection = ({
   }
   const setFavorite = (id) => {
     let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.isFavorite = !selectedAlert.isFavorite;
-    dispatch(setEventFavoriteAlert(id, selectedAlert.isFavorite));
+    selectedAlert.favorite = !selectedAlert.favorite;
+    dispatch(setEventFavoriteAlert(id, selectedAlert.favorite));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -118,13 +120,15 @@ MapSection.propTypes = {
   setAlertId: PropTypes.func,
   currentPage: PropTypes.number,
   hoverInfo: PropTypes.any,
+  isEdit: PropTypes.any,
   setHoverInfo: PropTypes.func,
   filteredAlerts: PropTypes.array,
   setMidpoint: PropTypes.func,
   setZoomLevel: PropTypes.func,
   setPaginatedAlerts: PropTypes.func,
   setSelectedAlert: PropTypes.func,
-  getAlertsByArea: PropTypes.func
+  getAlertsByArea: PropTypes.func,
+  setIsEdit: PropTypes.func
 }
 
 export default MapSection;

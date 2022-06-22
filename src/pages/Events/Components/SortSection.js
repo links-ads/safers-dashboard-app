@@ -1,25 +1,26 @@
 import React from 'react';
 import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import _ from 'lodash';
 //i18n
 import { withTranslation } from 'react-i18next'
+import { setFilteredEventAlerts } from '../../../store/appAction';
 
-const SortSection = ({t, setAlertId, setAlertSource, filteredAlerts, setFilterdAlerts, setSortOrder, setStatus}) => {
+const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrder, setStatus }) => {
   const { params } = useSelector(state => state.eventAlerts);
-  const { sortByDate, alertSource } = params;
-
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
   const ongoing = alerts.filter((alert) => alert.status == 'ONGOING').length;
   const closed = alerts.filter((alert) => alert.status == 'CLOSED').length;
+  const { sortByDate, alertSource } = params;
+  const dispatch = useDispatch();
 
   const filterByAlertSource = (alertSource) => {
     setAlertId(undefined);
     setAlertSource(alertSource);
   }
   const filterByStatus = (status, checked) => {
-    if(!checked){
+    if (!checked) {
       status = ''
     }
     setStatus(status)
@@ -32,11 +33,10 @@ const SortSection = ({t, setAlertId, setAlertSource, filteredAlerts, setFilterdA
   const filterBySearchText = (query) => {
     setAlertId(undefined);
     if (query === '')
-      setFilterdAlerts(alerts);
+      dispatch(setFilteredEventAlerts(alerts));
     else
-      setFilterdAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase())));
+      dispatch(setFilteredEventAlerts(_.filter(alerts, (o) => (o.title.toLowerCase()).includes(query.toLowerCase()))));
   };
-
 
   return (
     <>
@@ -54,7 +54,7 @@ const SortSection = ({t, setAlertId, setAlertSource, filteredAlerts, setFilterdA
             check
             for="onGoing"
           >
-            {t('Ongoing', {ns: 'events'})} ({ongoing})
+            {t('Ongoing', { ns: 'events' })} ({ongoing})
           </Label>
         </FormGroup>
         <FormGroup className="form-group d-inline-block ms-4" check>
@@ -70,11 +70,11 @@ const SortSection = ({t, setAlertId, setAlertSource, filteredAlerts, setFilterdA
             check
             for="closedEvents"
           >
-            {t('Closed', {ns: 'events'})} ({closed})
+            {t('Closed', { ns: 'events' })} ({closed})
           </Label>
         </FormGroup>
       </div>
-            
+
       <Row data-testid='results-section'>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
@@ -147,7 +147,6 @@ SortSection.propTypes = {
   alertSource: PropTypes.string,
   setAlertSource: PropTypes.func,
   setAlertId: PropTypes.func,
-  setFilterdAlerts: PropTypes.func,
   setStatus: PropTypes.func,
   filteredAlerts: PropTypes.array,
   t: PropTypes.func,

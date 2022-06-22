@@ -231,12 +231,16 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
             </>
             : <>
               <Row className={`g-0 ${object.type == 'UNVALIDATED' ? 'd-contents' : 'd-none'}`}>
-                <Button color="primary" className='create-event-button' onClick={() => setConfirmEventToggle(true)}>
+                <Button color="primary" className='create-event-button' onClick={() =>
+                  setConfirmEventToggle(true)
+                }>
                   {t('create-event')}
                 </Button>
               </Row>
               <Row className='g-0'>
-                <Button className='link-button' color="link" onClick={() => setEditToggle(true)} >
+                <Button className='link-button' color="link" onClick={() =>
+                  setEditToggle(true)
+                } >
                   {t('edit')}
                 </Button>
               </Row>

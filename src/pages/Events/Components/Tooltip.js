@@ -21,7 +21,7 @@ import { editEventAlertInfo } from '../../../store/events/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { getGeneralErrors } from '../../../helpers/errorHelper';
 
-const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
+const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t }) => {
   const { updateError: genError, event } = useSelector(state => state.eventAlerts);
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState('');
@@ -45,6 +45,14 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
       setDescription(event.description)
     }
   }, [event])
+
+  useEffect(() => {
+    setEditToggle(isEdit);
+  }, [isEdit]);
+
+  useEffect(() => {
+    setFavToggle(event.favorite);
+  }, [event.favorite]);
 
   const editInfo = (id) => {
     const payload = {
@@ -216,13 +224,17 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
                   color="primary"
                   className='save-event-button'
                   onClick={() => {
+                    setEditToggle(false);
                     editInfo(object.id);
                   }} >
                   {t('save', { ns: 'common' })}
                 </Button>
               </Row>
               <Row>
-                <Button className='link-button' color="link" onClick={() => setEditToggle(false)} >
+                <Button className='link-button' color="link" onClick={() => {
+                  setEditToggle(false);
+                  setIsEdit(false);
+                }} >
                   {t('cancel', { ns: 'common' })}
                 </Button>
               </Row>
@@ -230,12 +242,16 @@ const Tooltip = ({ object, coordinate, isEdit = false, setFavorite, t }) => {
             : <>
               <Row className='g-0'>
                 {event &&
-                  <Button color="secondary" className='create-event-button' onClick={() => { navigate(`/event-dashboard/${object.id}`); }}>
+                  <Button color="secondary" className='create-event-button' onClick={() => {
+                    navigate(`/event-dashboard/${object.id}`);
+                  }}>
                     {t('show-info', { ns: 'common' })}
                   </Button>}
               </Row>
               <Row className='g-0'>
-                <Button className='link-button' color="link" onClick={() => setEditToggle(true)} >
+                <Button className='link-button' color="link" onClick={() =>
+                  setEditToggle(true)
+                } >
                   {t('edit', { ns: 'common' })}
                 </Button>
               </Row>
@@ -254,7 +270,8 @@ Tooltip.propTypes = {
   setFavorite: PropTypes.func,
   validateEvent: PropTypes.func,
   editInfo: PropTypes.func,
-  t: PropTypes.func
+  t: PropTypes.func,
+  setIsEdit: PropTypes.func
 }
 
 export default withTranslation(['events'])(Tooltip);

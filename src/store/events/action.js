@@ -89,18 +89,21 @@ export const editEventAlertInfo = (eventId, editInfo) => async (dispatch) => {
   dispatch(InProgress(true, 'Loading..'));
   if (response.status === 200) {
     dispatch(InProgress(false, 'Loading..'));
-    return dispatch(editEventAlertInfoSuccess(response.data));
+    let successMessage = 'Successfully updated the information';
+    return dispatch(editEventAlertInfoSuccess(response.data, successMessage));
   }
   else {
     dispatch(InProgress(false, 'Loading..'));
-    return dispatch(editEventAlertInfoFail(response.data));
+    let failureMessage = 'Information update failed';
+    return dispatch(editEventAlertInfoFail(response?.data || failureMessage));
   }
 };
 
-const editEventAlertInfoSuccess = (payload) => {
+const editEventAlertInfoSuccess = (payload, message) => {
   return {
     type: actionTypes.EDIT_EVENT_ALERT_INFO_SUCCESS,
     payload,
+    message
   };
 };
 

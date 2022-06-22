@@ -18,7 +18,7 @@ import {
   setNewEventState,
   getEventInfo,
   setEventParams,
-  setFilteredAlerts
+  setFilteredEventAlerts
 } from '../../store/appAction';
 import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
@@ -32,9 +32,6 @@ const EventAlerts = ({ t }) => {
   const { allAlerts: alerts, filteredAlerts } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
   const error = useSelector(state => state.eventAlerts.error);
-  // eslint-disable-next-line no-unused-vars
-  const { params } = useSelector(state => state.eventAlerts);
-
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
@@ -48,6 +45,7 @@ const EventAlerts = ({ t }) => {
   const [hoverInfo, setHoverInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -62,10 +60,6 @@ const EventAlerts = ({ t }) => {
   useEffect(() => {
     getEvents();
   }, [dateRange, alertSource, sortOrder, boundingBox, status])
-
-  // useEffect(() => {
-  //   setFilteredAlerts(alerts);
-  // }, [alerts]);
 
   useEffect(() => {
     if (success) {
@@ -94,7 +88,7 @@ const EventAlerts = ({ t }) => {
 
 
   const getEvents = () => {
-    //setAlertId(undefined);
+    setAlertId(undefined);
     const eventParams = {
       order: sortOrder ? sortOrder : '-date',
       source: alertSource,
@@ -143,9 +137,10 @@ const EventAlerts = ({ t }) => {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
+      setIsEdit(isEdit);
       !_.isEqual(viewState.midPoint, selectedAlert.center) ?
-        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo, isEdit))
-        : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
+        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo))
+        : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
       setIconLayer(getIconLayer(clonedAlerts, MAP_TYPES.EVENTS));
     } else {
       setAlertId(undefined);
@@ -164,7 +159,7 @@ const EventAlerts = ({ t }) => {
                 className="btn float-end mt-1 py-0 px-1"
                 aria-label='refresh-events'
                 onClick={() => {
-                  setFilteredAlerts(alerts);
+                  dispatch(setFilteredEventAlerts(alerts));
                 }}
               >
                 <i className="mdi mdi-sync"></i>
@@ -186,7 +181,6 @@ const EventAlerts = ({ t }) => {
               setSortOrder={setSortOrder}
               setAlertSource={setAlertSource}
               filteredAlerts={filteredAlerts}
-              setFilterdAlerts={setFilteredAlerts}
               status={status}
               setStatus={setStatus}
             />
@@ -214,20 +208,24 @@ const EventAlerts = ({ t }) => {
           <Col xl={7} className='mx-auto'>
             <MapSection
               viewState={viewState}
-              setViewState={setViewState}
               hoverInfo={hoverInfo}
               iconLayer={iconLayer}
-              setHoverInfo={setHoverInfo}
               paginatedAlerts={paginatedAlerts}
+              filteredAlerts={filteredAlerts}
               currentPage={currentPage}
               midPoint={midPoint}
               zoomLevel={currentZoomLevel}
+              isEdit={isEdit}
+              setViewState={setViewState}
+              setHoverInfo={setHoverInfo}
               setMidpoint={setMidPoint}
               setZoomLevel={setCurrentZoomLevel}
               setCurrentPage={setCurrentPage}
               setAlertId={setAlertId}
               setSelectedAlert={setSelectedAlert}
               getAlertsByArea={getAlertsByArea}
+              setPaginatedAlerts={setPaginatedAlerts}
+              setIsEdit={setIsEdit}
             />
           </Col>
         </Row>

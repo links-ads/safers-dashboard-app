@@ -15,7 +15,7 @@ const GRAY = [128, 128, 128];
 const RED = [230, 51, 79];
 const DARK_GRAY = [57, 58, 58];
 
-export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction, isEdit) => {
+export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction) => {
   return {
     midPoint: midPoint,
     longitude: selectedAlert ? getShiftedLongitude(midPoint[0], zoomLevel) : midPoint[0],
@@ -28,11 +28,9 @@ export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction
     onTransitionEnd: () => {
       selectedAlert && refFunction({
         object: selectedAlert,
-        coordinate: selectedAlert.center,
-        isEdit
+        coordinate: selectedAlert.center
       })
     }
-
   };
 }
 

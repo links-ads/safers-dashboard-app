@@ -119,6 +119,7 @@ const validateAlertFail = (state) => {
 const editAlertInfoSuccess = (state, action) => {
   const updatedState = {
     event: action.payload,
+    success: action.message,
     error: false,
   }
   return updateObject(state, updatedState);
