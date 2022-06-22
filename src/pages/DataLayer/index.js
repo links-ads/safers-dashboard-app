@@ -309,7 +309,11 @@ const DataLayer = ({ t }) => {
             </Row>
             <Row>
               <Col>
-                <SimpleBar style={{ maxHeight: '500px', margin: '5px' }}>
+                <SimpleBar style={{ 
+                  maxHeight: '500px', 
+                  margin: '5px', 
+                  zIndex: '100' 
+                }}>
                   <TreeView
                     data={dataLayers}
                     setCurrentLayer={setCurrentLayer}
