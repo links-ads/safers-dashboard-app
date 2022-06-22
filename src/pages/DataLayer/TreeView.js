@@ -41,7 +41,9 @@ const TreeView = ({ data, setCurrentLayer}) => {
             onMouseLeave={() => setTooltipInfo(undefined)}
           >
             <>
-              <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
+              {(node.info || node.info_url) &&
+                <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
+              }
               {
                 node.children ?
                   <>
