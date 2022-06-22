@@ -25,6 +25,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
   const mapper = (nodes, parentId, lvl) => {
     return nodes.map((node, index) => {
       const id = node.id;
+      const tooltipDisplay = tooltipInfo || node.info
       const item =
         <>
           <ListGroupItem
@@ -69,7 +70,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
               place='right'
               class="alert-tooltip data-layers-alert-tooltip text-light"
             >
-              {!tooltipInfo ? 'Loading...' : tooltipInfo || node.info}
+              {tooltipDisplay ?? 'Loading...'}
             </ReactTooltip>}
         </>
       return item;
