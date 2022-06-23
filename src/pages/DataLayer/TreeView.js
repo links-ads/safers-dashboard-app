@@ -25,6 +25,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
   const mapper = (nodes, parentId, lvl) => {
     return nodes.map((node, index) => {
       const id = node.id;
+      const tooltipDisplay = tooltipInfo || node.info
       const item =
         <>
           <ListGroupItem
@@ -40,7 +41,9 @@ const TreeView = ({ data, setCurrentLayer}) => {
             onMouseLeave={() => setTooltipInfo(undefined)}
           >
             <>
-              <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
+              {(node.info || node.info_url) &&
+                <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
+              }
               {
                 node.children ?
                   <>
@@ -67,10 +70,9 @@ const TreeView = ({ data, setCurrentLayer}) => {
               aria-haspopup="true"
               role={tooltipInfo || node.info}
               place='right'
-              class="alert-tooltip text-light"
-              multiline={true}
+              class="alert-tooltip data-layers-alert-tooltip text-light"
             >
-              <p className='mb-2'>{tooltipInfo || node.info}</p>
+              {tooltipDisplay ?? 'Loading...'}
             </ReactTooltip>}
         </>
       return item;

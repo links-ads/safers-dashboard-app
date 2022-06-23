@@ -13,10 +13,12 @@ const Report = ({ card, alertId, setSelectedAlert }) => {
 
   const navigate = useNavigate();
 
+  const isSelected = card.report_id === alertId
+
   return (
     <Card
-      onClick={() => setSelectedAlert(card.id)}
-      className={'alerts-card mb-2 ' + (card.id == alertId ? 'alert-card-active' : '')}>
+      onClick={() => setSelectedAlert(!isSelected ? card.report_id : null)}
+      className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
         
         <Row className='mt-4'>
@@ -27,7 +29,7 @@ const Report = ({ card, alertId, setSelectedAlert }) => {
               aria-label='report-favorite-button'
               onClick={(e) => {
                 e.stopPropagation();
-                setFavorite(card.id);
+                setFavorite(card.report_id);
               }}
             >
               <i className={`mdi mdi-star${!card.isFavorite ? '-outline' : ''} card-title`}></i>
