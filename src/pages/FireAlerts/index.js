@@ -45,6 +45,7 @@ const FireAlerts = ({ t }) => {
   const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
   const [isEdit, setIsEdit] = useState(false);
+  const [isViewStateChanged, setIsViewStateChanged] = useState(false);
   const [hoverInfo, setHoverInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
@@ -64,11 +65,12 @@ const FireAlerts = ({ t }) => {
   }, [sortByDate, alertSource, dateRange, boundingBox]);
 
   useEffect(() => {
-    if (success) {
+    if (success)
       toastr.success(success, '');
-    } else if (error)
+    else if (error)
       toastr.error(error, '');
 
+    setIsEdit(false);
     dispatch(resetAlertsResponseState());
   }, [success, error]);
 
@@ -158,8 +160,8 @@ const FireAlerts = ({ t }) => {
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
       setIsEdit(isEdit);
-      !_.isEqual(viewState.midPoint, selectedAlert.center) ?
-        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo))
+      !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged ?
+        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo, setIsViewStateChanged))
         : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
       setAlertId(id);
       setIconLayer(getIconLayer(clonedAlerts));
@@ -206,6 +208,7 @@ const FireAlerts = ({ t }) => {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
       setCurrentZoomLevel(e.viewState.zoom);
     }
+    setIsViewStateChanged(true);
     setHoverInfo({});
   };
 

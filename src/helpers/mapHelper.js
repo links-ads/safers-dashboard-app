@@ -15,10 +15,11 @@ const GRAY = [128, 128, 128];
 const RED = [230, 51, 79];
 const DARK_GRAY = [57, 58, 58];
 
-export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction) => {
+export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction1 = () => { }, refFunction2 = () => { }) => {
+  const shiftedLong = getShiftedLongitude(midPoint[0], zoomLevel);
   return {
     midPoint: midPoint,
-    longitude: selectedAlert ? getShiftedLongitude(midPoint[0], zoomLevel) : midPoint[0],
+    longitude: selectedAlert ? shiftedLong : midPoint[0],
     latitude: midPoint[1],
     zoom: zoomLevel,
     pitch: 0,
@@ -26,10 +27,13 @@ export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction
     transitionDuration: 1000,
     transitionInterpolator: new FlyToInterpolator(),
     onTransitionEnd: () => {
-      selectedAlert && refFunction({
-        object: selectedAlert,
-        coordinate: selectedAlert.center
-      })
+      if (selectedAlert) {
+        refFunction1({
+          object: selectedAlert,
+          coordinate: selectedAlert.center
+        });
+        refFunction2(false);
+      }
     }
   };
 }
@@ -99,7 +103,7 @@ export const getBoundingBox = (midPoint, zoomLevel, width = 600, height = 600) =
   return [lng - shiftDegreesEW, lat - shiftDegreesNS, lng + shiftDegreesEW, lat + shiftDegreesNS];
 }
 
-const getShiftedLongitude = (lng, zoomLevel, width = 100) => {
+const getShiftedLongitude = (lng, zoomLevel, width = 150) => {
   const metersPerPixelEW = EARTH_CIR_METERS / Math.pow(2, zoomLevel + 8);
   const shiftMetersEW = width / 4 * metersPerPixelEW;
 

@@ -1,39 +1,22 @@
-import _ from 'lodash';
 import React from 'react';
 import PropTypes from 'prop-types'
-import { useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getIconLayer } from '../../../helpers/mapHelper';
-import { setEventFavoriteAlert } from '../../../store/events/action';
-import { PAGE_SIZE, SET_FAV_EVENT_ALERT_SUCCESS  } from '../../../store/events/types';
+import { PAGE_SIZE } from '../../../store/events/types';
 import Alert from './Alert';
 import PaginationWrapper from '../../../components/Pagination';
 
-const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, currentPage, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, setSelectedAlert}) => {
-  
-  const dispatch = useDispatch();
-  
-  const setFavorite = (id) => {
-    const selectedAlert = _.find(filteredAlerts, { id });
-    dispatch(setEventFavoriteAlert(id, !selectedAlert.favorite)).then((result) => {
-      if (result.type === SET_FAV_EVENT_ALERT_SUCCESS) {
-        selectedAlert.favorite = !selectedAlert.favorite
-        const to = PAGE_SIZE * currentPage;
-        const from = to - PAGE_SIZE;
-        setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
-
-      // updatePage(currentPage);
-      }
-    })
-  }
-
-  const hideTooltip = (e) => {
-    if (e && e.viewState) {
-      setMidpoint([e.viewState.longitude, e.viewState.latitude]);
-      setZoomLevel(e.viewState.zoom);
-    }
-    setHoverInfo({});
-  };
+const EventList = ({
+  alertId,
+  setAlertId,
+  filteredAlerts,
+  paginatedAlerts,
+  hideTooltip,
+  setFavorite,
+  setIconLayer,
+  setPaginatedAlerts,
+  setSelectedAlert
+}) => {
 
   const setPageData = pageData => {
     setAlertId(undefined);
@@ -41,8 +24,8 @@ const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, curren
     hideTooltip();
     setPaginatedAlerts(pageData);
   };
-  
-  return(
+
+  return (
     <>
       <Row data-testid='event-list'>
         {
@@ -55,8 +38,8 @@ const EventList = ({alertId, setAlertId, filteredAlerts, paginatedAlerts, curren
           />)
         }
       </Row>
-      
-      <Row className='text-center my-1'> 
+
+      <Row className='text-center my-1'>
         <PaginationWrapper pageSize={PAGE_SIZE} list={filteredAlerts} setPageData={setPageData} />
       </Row>
     </>)
@@ -67,13 +50,11 @@ EventList.propTypes = {
   setAlertId: PropTypes.func,
   filteredAlerts: PropTypes.array,
   paginatedAlerts: PropTypes.array,
-  setPaginatedAlerts: PropTypes.func,
   currentPage: PropTypes.number,
+  hideTooltip: PropTypes.func, setPaginatedAlerts: PropTypes.func,
   setCurrentPage: PropTypes.func,
-  setHoverInfo: PropTypes.func,
+  setFavorite: PropTypes.func,
   setIconLayer: PropTypes.func,
-  setMidpoint: PropTypes.func,
-  setZoomLevel: PropTypes.func,
   setSelectedAlert: PropTypes.func,
 }
 

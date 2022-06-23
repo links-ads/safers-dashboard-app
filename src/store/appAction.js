@@ -11,7 +11,7 @@ export {
 export { setDefaultAoi, setAoiSuccess, getInfo, updateInfo, uploadProfImg, deleteAccount, resetProfilePsw } from './user/action'
 export { getOrgList, getRoleList, getAllAreas, generalInProgress, getConfig } from './common/action'
 
-export { getAllEventAlerts, setEventParams, setNewEventState, resetEventAlertsResponseState, getEventInfo, editEventAlertInfo, setFilteredEventAlerts } from './events/action'
+export { getAllEventAlerts, setEventParams, setNewEventState, resetEventAlertsResponseState, getEventInfo, editEventAlertInfo, setFilteredEventAlerts, setEventFavoriteAlert } from './events/action'
 export { getSource, getAllFireAlerts, setFilteredAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, setNewAlertState, resetAlertsResponseState } from './alerts/action'
 
 export { getAllDataLayers, resetDataLayersResponseState } from './datalayer/action'

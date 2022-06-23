@@ -51,8 +51,8 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t
   }, [isEdit]);
 
   useEffect(() => {
-    setFavToggle(event.favorite);
-  }, [event.favorite]);
+    setFavToggle(object.favorite);
+  }, [object.favorite]);
 
   const editInfo = (id) => {
     const payload = {
