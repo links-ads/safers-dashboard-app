@@ -48,8 +48,8 @@ const ReportList = ({setIconLayer}) => {
     <>
       <Row>
         {
-          pageData.map((alert, index) => <Report
-            key={index}
+          pageData.map((alert) => <Report
+            key={alert.report_id}
             card={alert}
             setSelectedAlert={setSelectedReport}
             setFavorite={setFavoriteFlag}
