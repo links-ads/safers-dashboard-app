@@ -22,6 +22,7 @@ import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
+import SearchButton from '../../components/SearchButton';
 
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
@@ -200,6 +201,7 @@ const FireAlerts = ({ t }) => {
   }
 
   const handleResetAOI = useCallback(() => {
+    setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
@@ -253,20 +255,10 @@ const FireAlerts = ({ t }) => {
 
   const getSearchButton = (index) => {
     return (
-      <Button
-        key={index}
-        className="btn-rounded alert-search-area"
-        style={{
-          position: 'absolute',
-          top: 10,
-          textAlign: 'center',
-          marginLeft: '41%'
-        }}
-        onClick={getAlertsByArea}
-      >
-        <i className="bx bx-revision"></i>{' '}
-        {t('Search This Area')}
-      </Button >
+      <SearchButton
+        index={index}
+        getInfoByArea={getAlertsByArea}
+      />
     )
   }
 

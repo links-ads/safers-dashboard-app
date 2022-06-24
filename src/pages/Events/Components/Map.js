@@ -5,9 +5,9 @@ import { Card } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import { editEventAlertInfo, validateEventAlert } from '../../../store/events/action';
 import { PAGE_SIZE } from '../../../store/events/types';
-import SearchButton from './SearchButton';
 import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
+import SearchButton from '../../../components/SearchButton';
 
 const MapSection = ({
   currentPage,
@@ -66,7 +66,7 @@ const MapSection = ({
     return (
       <SearchButton
         index={index}
-        getAlertsByArea={getAlertsByArea}
+        getInfoByArea={getAlertsByArea}
       />
     )
   }

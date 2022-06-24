@@ -23,11 +23,11 @@ const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrd
     if (!checked) {
       status = ''
     }
-    setStatus(status)
+    setStatus(status);
   }
   const filterByDate = (sortByDate) => {
     setAlertId(undefined);
-    setSortOrder(sortByDate)
+    setSortOrder(sortByDate);
   };
 
   const filterBySearchText = (query) => {
@@ -108,7 +108,7 @@ const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrd
             value={alertSource}
             data-testid='eventAlertSource'
           >
-            <option value={'all'} >{t('Source')} : {t('All')}</option>
+            <option value={''} >{t('Source')} : {t('All')}</option>
             <option value={'web'} >{t('Source')} : Web</option>
             <option value={'camera'} >{t('Source')} : Camera</option>
             <option value={'satellite'} >{t('Source')} : Satellite</option>

@@ -2,25 +2,37 @@ import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import PropTypes from 'prop-types';
 import { Row } from 'reactstrap';
-import { getIconLayer } from '../../../helpers/mapHelper';
-import { setAlertId, setCurrentPage, setInSituFavoriteAlert, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCamera } from '../../../store/insitu/action';
+import { getIconLayer, getViewState } from '../../../helpers/mapHelper';
+import { setCurrentPage, setInSituFavoriteAlert, setPaginatedAlerts, getCamera } from '../../../store/appAction';
 import { PAGE_SIZE, SET_FAV_INSITU_ALERT_SUCCESS } from '../../../store/insitu/types';
 import Alert from './Alert';
 
-const AlertList = () => {
-  const { paginatedAlerts, currentPage, filteredAlerts, alertId, cameraList, cameraInfo } = useSelector(state => state.inSituAlerts);
+const AlertList = ({
+  alertId,
+  viewState,
+  setAlertId,
+  currentZoomLevel,
+  isViewStateChanged,
+  setViewState,
+  setIconLayer,
+  setHoverInfo,
+  setIsViewStateChanged,
+  hideTooltip
+}) => {
+  const { paginatedAlerts, currentPage, filteredAlerts, cameraList, cameraInfo } = useSelector(state => state.inSituAlerts);
   const [selCam, setsSelCam] = useState(undefined);
 
   const dispatch = useDispatch();
-  
 
   useEffect(() => {
-    if(selCam){
-      dispatch(setIconLayer(getIconLayer(selCam)));
-      dispatch(setHoverInfo({ object: cameraInfo, coordinate: selCam.geometry.coordinates, isEdit: false }));
-    }
+    if (selCam) {
+      !_.isEqual(viewState.midPoint, cameraInfo?.geometry?.coordinates) || isViewStateChanged ?
+        setViewState(getViewState(cameraInfo?.geometry?.coordinates, currentZoomLevel, cameraInfo, setHoverInfo, setIsViewStateChanged))
+        : setHoverInfo({ object: cameraInfo, coordinate: cameraInfo?.geometry?.coordinates });
 
+    }
   }, [cameraInfo]);
 
   const setFavorite = (id) => {
@@ -32,46 +44,36 @@ const AlertList = () => {
         const from = to - PAGE_SIZE;
         dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
       }
-    })
-    
-    
+    });
   }
-  const hideTooltip = (e) => {
-    if (e && e.viewState) {
-      dispatch(setMidpoint([e.viewState.longitude, e.viewState.latitude]));
-      dispatch(setZoomLevel(e.viewState.zoom));
-    }
-    dispatch(setHoverInfo({}));
-  };
 
   const setSelectedAlert = (id) => {
     if (id) {
-      if (id === alertId) {
-        hideTooltip();
-      }
-      dispatch(setAlertId(id));
+      setAlertId(id);
       let alertsToEdit = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(alertsToEdit, { id });
-      let camera = _.find(cameraList.features, { properties: { id:selectedAlert.camera_id } });
+      let camera = _.find(cameraList.features, { properties: { id: selectedAlert.camera_id } });
       selectedAlert.isSelected = true;
+      camera.isSelected = true;
       setsSelCam(camera);
       dispatch(getCamera(selectedAlert.camera_id));
     } else {
-      dispatch(setAlertId(undefined));
-      dispatch(setIconLayer(getIconLayer(filteredAlerts)));
+      setAlertId(undefined);
+      setIconLayer(getIconLayer(cameraList.features));
     }
   }
+
   const updatePage = page => {
-    dispatch(setAlertId(undefined));
-    dispatch(setIconLayer(getIconLayer(filteredAlerts)));
+    setAlertId(undefined);
+    setIconLayer(getIconLayer(cameraList.features));
     dispatch(setCurrentPage(page));
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
     hideTooltip();
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
   };
-  
-  return(
+
+  return (
     <>
       <Row>
         {
@@ -94,4 +96,16 @@ const AlertList = () => {
     </>)
 }
 
+AlertList.propTypes = {
+  alertId: PropTypes.any,
+  viewState: PropTypes.any,
+  currentZoomLevel: PropTypes.any,
+  isViewStateChanged: PropTypes.any,
+  setViewState: PropTypes.func,
+  setAlertId: PropTypes.func,
+  setIconLayer: PropTypes.func,
+  setHoverInfo: PropTypes.func,
+  hideTooltip: PropTypes.func,
+  setIsViewStateChanged: PropTypes.func,
+}
 export default AlertList;

@@ -7,17 +7,17 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 // const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
-const Report = ({ card, alertId, setSelectedAlert }) => {
+const Report = ({ card, reportId, setSelectedReport }) => {
 
   const {t} = useTranslation();
 
   const navigate = useNavigate();
 
-  const isSelected = card.report_id === alertId
+  const isSelected = card.report_id === reportId
 
   return (
     <Card
-      onClick={() => setSelectedAlert(!isSelected ? card.report_id : null)}
+      onClick={() => setSelectedReport(!isSelected ? card.report_id : null)}
       className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
         
@@ -81,8 +81,8 @@ const Report = ({ card, alertId, setSelectedAlert }) => {
 
 Report.propTypes = {
   card: PropTypes.any,
-  alertId: PropTypes.string,
-  setSelectedAlert: PropTypes.func,
+  reportId: PropTypes.string,
+  setSelectedReport: PropTypes.func,
   setFavorite: PropTypes.func,
 }
 

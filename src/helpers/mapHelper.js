@@ -16,10 +16,9 @@ const RED = [230, 51, 79];
 const DARK_GRAY = [57, 58, 58];
 
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction1 = () => { }, refFunction2 = () => { }) => {
-  const shiftedLong = getShiftedLongitude(midPoint[0], zoomLevel);
   return {
     midPoint: midPoint,
-    longitude: selectedAlert ? shiftedLong : midPoint[0],
+    longitude: selectedAlert ? getShiftedLongitude(midPoint[0], zoomLevel) : midPoint[0],
     latitude: midPoint[1],
     zoom: zoomLevel,
     pitch: 0,
@@ -30,7 +29,7 @@ export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction
       if (selectedAlert) {
         refFunction1({
           object: selectedAlert,
-          coordinate: selectedAlert.center
+          coordinate: selectedAlert?.center || selectedAlert?.geometry?.coordinates
         });
         refFunction2(false);
       }
@@ -63,6 +62,16 @@ export const getIconLayer = (alerts, mapType = 'alerts') => {
   return (new IconLayer({
     data: alerts,
     pickable: true,
+    // getPosition: d => {
+    //   switch (mapType) {
+    //   case MAP_TYPES.EVENTS:
+    //     return d.center
+    //   case MAP_TYPES.REPORTS:
+    //     return d.location
+    //   default:
+    //     return d.geometry.coordinates;
+    //   }
+    // },
     getPosition: d => {
       if (mapType === MAP_TYPES.EVENTS) {
         return d.center

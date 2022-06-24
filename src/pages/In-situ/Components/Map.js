@@ -1,40 +1,24 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Card, Button } from 'reactstrap';
+import { Card } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import { setHoverInfo, setMidpoint, setZoomLevel } from '../../../store/insitu/action';
 import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
 import { getBoundingBox } from '../../../helpers/mapHelper';
+import SearchButton from '../../../components/SearchButton';
 
-//i18n
-import { useTranslation } from 'react-i18next'
-
-
-const MapSection = ({viewState, setBoundingBox}) => {
-  const { iconLayer, hoverInfo, midPoint, zoomLevel } = useSelector(state => state.inSituAlerts);
-  const {t} = useTranslation();
-  
-  const dispatch = useDispatch();
-
-  const hideTooltip = (e) => {
-    if (e && e.viewState) {
-      dispatch(setMidpoint([e.viewState.longitude, e.viewState.latitude]));
-      dispatch(setZoomLevel(e.viewState.zoom));
-    }
-    dispatch(setHoverInfo({}));
-  };
-
-  const showTooltip = info => {
-    if (info.picked && info.object) {
-      dispatch(setHoverInfo(info));
-    } else {
-      dispatch(setHoverInfo({}));
-    }
-  };
+const MapSection = ({
+  viewState,
+  iconLayer,
+  midPoint,
+  currentZoomLevel,
+  hoverInfo,
+  setBoundingBox,
+  showTooltip,
+  hideTooltip
+}) => {
 
   const renderTooltip = (info) => {
-    if(!info) return null
+    if (!info) return null
     const { object, coordinate } = info;
     if (object) {
       return <ToolTip
@@ -48,26 +32,16 @@ const MapSection = ({viewState, setBoundingBox}) => {
     }
   }
 
-  const getAlertsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, zoomLevel));
+  const getCamByArea = () => {
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel));
   }
 
   const getSearchButton = (index) => {
     return (
-      <Button
-        key={index}
-        className="btn-rounded alert-search-area"
-        style={{
-          position: 'absolute',
-          top: 10,
-          textAlign: 'center',
-          marginLeft: '41%'
-        }}
-        onClick={getAlertsByArea}
-      >
-        <i className="bx bx-revision"></i>{' '}
-        {t('Search This Area')}
-      </Button >
+      <SearchButton
+        index={index}
+        getInfoByArea={getCamByArea}
+      />
     )
   }
 
@@ -76,10 +50,10 @@ const MapSection = ({viewState, setBoundingBox}) => {
       <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
-        hoverInfo={hoverInfo} 
+        hoverInfo={hoverInfo}
         renderTooltip={renderTooltip}
         onClick={showTooltip}
-        onViewStateChange={hideTooltip}
+        onViewStateChange={(e) => hideTooltip(e, true)}
         widgets={[getSearchButton]}
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
@@ -89,8 +63,14 @@ const MapSection = ({viewState, setBoundingBox}) => {
 }
 
 MapSection.propTypes = {
-  viewState : PropTypes.any,
-  setBoundingBox : PropTypes.func,
+  viewState: PropTypes.any,
+  iconLayer: PropTypes.any,
+  midPoint: PropTypes.any,
+  currentZoomLevel: PropTypes.any,
+  hoverInfo: PropTypes.any,
+  showTooltip: PropTypes.func,
+  setBoundingBox: PropTypes.func,
+  hideTooltip: PropTypes.func,
 }
 
 export default MapSection;

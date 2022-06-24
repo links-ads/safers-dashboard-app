@@ -71,18 +71,18 @@ const getCameraFail = (error) => {
 export const getAllInSituAlerts = (options) => async (dispatch) => {
   const response = await api.get(endpoints.insitu.getMedia, options);
   if (response.status === 200) {
-    return dispatch(getInSitutAlertsSuccess(response.data));
+    return dispatch(getInSituAlertsSuccess(response.data));
   }
   else
-    return dispatch(getInSitutAlertsFail(response.error));
+    return dispatch(getInSituAlertsFail(response.error));
 };
-const getInSitutAlertsSuccess = (alerts) => {
+const getInSituAlertsSuccess = (alerts) => {
   return {
     type: actionTypes.GET_INSITU_ALERTS_SUCCESS,
     payload: alerts
   };
 };
-const getInSitutAlertsFail = (error) => {
+const getInSituAlertsFail = (error) => {
   return {
     type: actionTypes.GET_INSITU_ALERTS_FAIL,
     payload: error
@@ -117,7 +117,7 @@ export const resetInSituAlertsResponseState = () => {
   }
 };
 
-export const setFilterdAlerts = (payload) => {
+export const setFilteredInSituAlerts = (payload) => {
   return {
     type: actionTypes.SET_INSITU_FILTERED_ALERTS,
     payload,

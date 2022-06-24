@@ -36,7 +36,7 @@ const EventAlerts = ({ t }) => {
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
-  const [alertSource, setAlertSource] = useState(undefined);
+  const [eventSource, setEventSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [status, setStatus] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -61,7 +61,7 @@ const EventAlerts = ({ t }) => {
 
   useEffect(() => {
     getEvents();
-  }, [dateRange, alertSource, sortOrder, boundingBox, status])
+  }, [dateRange, eventSource, sortOrder, boundingBox, status])
 
   useEffect(() => {
     if (success)
@@ -93,7 +93,7 @@ const EventAlerts = ({ t }) => {
     setAlertId(undefined);
     const eventParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: alertSource,
+      source: eventSource,
       start_date: dateRange[0],
       end_date: dateRange[1],
       bbox: boundingBox?.toString(),
@@ -118,6 +118,7 @@ const EventAlerts = ({ t }) => {
   }
 
   const handleResetAOI = useCallback(() => {
+    setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
@@ -201,7 +202,7 @@ const EventAlerts = ({ t }) => {
               setAlertId={setAlertId}
               sortOrder={sortOrder}
               setSortOrder={setSortOrder}
-              setAlertSource={setAlertSource}
+              setEventSource={setEventSource}
               filteredAlerts={filteredAlerts}
               status={status}
               setStatus={setStatus}

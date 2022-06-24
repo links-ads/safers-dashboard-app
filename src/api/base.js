@@ -15,7 +15,8 @@ const whitelistedUrls = [
   endpoints.notifications.getAll,
   endpoints.eventAlerts.getAll,
   endpoints.fireAlerts.getAll,
-  endpoints.dataLayers.metadata
+  endpoints.dataLayers.metadata,
+  endpoints.insitu.cameraList
 ]
 
 axiosApi.interceptors.request.use(async(config) => {

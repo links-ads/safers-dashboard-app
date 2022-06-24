@@ -3,7 +3,7 @@ import { Button } from 'reactstrap'
 import { useTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
 
-const SearchButton = ({ index, getAlertsByArea }) => {
+const SearchButton = ({ index, getInfoByArea }) => {
   const { t } = useTranslation();
   return (
     <Button
@@ -15,7 +15,7 @@ const SearchButton = ({ index, getAlertsByArea }) => {
         textAlign: 'center',
         marginLeft: '41%'
       }}
-      onClick={getAlertsByArea}
+      onClick={getInfoByArea}
     >
       <i className="bx bx-revision"></i>{' '}
       {t('Search This Area', { ns: 'common' })}
@@ -25,7 +25,7 @@ const SearchButton = ({ index, getAlertsByArea }) => {
 
 SearchButton.propTypes = {
   index: PropTypes.number,
-  getAlertsByArea: PropTypes.func,
+  getInfoByArea: PropTypes.func,
 }
 
 export default SearchButton
