@@ -66,8 +66,8 @@ const InSituAlerts = () => {
         start_date: dateRange[0],
         end_date: dateRange[1],
         bbox: boundingBox ? boundingBox.toString() : undefined,
-        default_date: /*(!dateRange[0] && !dateRange[1])*/false,
-        default_bbox: /*!boundingBox*/false
+        default_date: false,
+        default_bbox: !boundingBox
       }
     ));
   }, [sortOrder, inSituSource, dateRange, boundingBox, checkedStatus]);

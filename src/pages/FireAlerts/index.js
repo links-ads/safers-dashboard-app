@@ -148,7 +148,7 @@ const FireAlerts = ({ t }) => {
       start_date: dateRange[0],
       end_date: dateRange[1],
       bbox: boundingBox?.toString(),
-      default_date: (!dateRange[0] && !dateRange[1]),
+      default_date: false,
       default_bbox: !boundingBox
     };
     dispatch(setAlertApiParams(alertParams));

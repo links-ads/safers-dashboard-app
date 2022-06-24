@@ -44,8 +44,8 @@ const Reports = () => {
       start: dateRange[0],
       end: dateRange[1],
       bbox: boundingBox?.toString(),
-      default_date: /*(!dateRange[0] && !dateRange[1])*/false,
-      default_bbox: /*!boundingBox*/false
+      default_date: false,
+      default_bbox: !boundingBox
     };
     dispatch(getAllReports(reportParams));
   }, [dateRange, reportSource, sortOrder, boundingBox])
