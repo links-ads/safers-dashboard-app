@@ -6,8 +6,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';
 
-// const Report = ({ card, alertId, setSelectedAlert, setFavorite }) => {
-const Report = ({ card, reportId, setSelectedReport }) => {
+const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
 
   const {t} = useTranslation();
 
@@ -20,10 +19,9 @@ const Report = ({ card, reportId, setSelectedReport }) => {
       onClick={() => setSelectedReport(!isSelected ? card.report_id : null)}
       className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
-        
         <Row className='mt-4'>
-          <Col md={1}>
-            {/* <button
+          {/* <Col md={1}>
+            <button
               type="button"
               className="btn float-start py-0 px-1"
               aria-label='report-favorite-button'
@@ -33,8 +31,8 @@ const Report = ({ card, reportId, setSelectedReport }) => {
               }}
             >
               <i className={`mdi mdi-star${!card.isFavorite ? '-outline' : ''} card-title`}></i>
-            </button> */}
-          </Col>
+            </button>
+          </Col> */}
           <Col>
             <Row>
               <Col>

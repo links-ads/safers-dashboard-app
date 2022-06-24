@@ -57,26 +57,20 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconLayer = (alerts, mapType = 'alerts') => {
-  const icon = mapType == MAP_TYPES.REPORTS ? locationPin : firePin
+export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts) => {
+  const icon = mapType == MAP_TYPES.REPORTS || MAP_TYPES.IN_SITU ? locationPin : firePin
   return (new IconLayer({
     data: alerts,
     pickable: true,
-    // getPosition: d => {
-    //   switch (mapType) {
-    //   case MAP_TYPES.EVENTS:
-    //     return d.center
-    //   case MAP_TYPES.REPORTS:
-    //     return d.location
-    //   default:
-    //     return d.geometry.coordinates;
-    //   }
-    // },
     getPosition: d => {
-      if (mapType === MAP_TYPES.EVENTS) {
+      switch (mapType) {
+      case MAP_TYPES.EVENTS:
         return d.center
+        // case MAP_TYPES.REPORTS:
+        //   return d.location
+      default:
+        return d.geometry.coordinates;
       }
-      return d.geometry.coordinates;
     },
     iconAtlas: icon,
     iconMapping: ICON_MAPPING,
@@ -84,8 +78,14 @@ export const getIconLayer = (alerts, mapType = 'alerts') => {
     id: 'icon',
     getIcon: () => 'marker',
     getColor: d => {
-      if (mapType == 'reports') return (d.isSelected ? ORANGE : DARK_GRAY)
-      return (d.isSelected ? ORANGE : d.status == 'CLOSED' ? GRAY : RED)
+      switch (mapType) {
+      case MAP_TYPES.REPORTS:
+        return (d.isSelected ? ORANGE : DARK_GRAY);
+      case MAP_TYPES.IN_SITU:
+        return (d.isSelected ? ORANGE : DARK_GRAY);
+      default:
+        return (d.isSelected ? ORANGE : d.status == 'CLOSED' ? GRAY : RED);
+      }
     },
     sizeMinPixels: 80,
     sizeMaxPixels: 100,

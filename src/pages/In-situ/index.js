@@ -25,6 +25,7 @@ import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
 import { useTranslation } from 'react-i18next'
+import { MAP_TYPES } from '../../constants/common';
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -82,7 +83,7 @@ const InSituAlerts = () => {
   }, [success, error]);
 
   useEffect(() => {
-    setIconLayer(getIconLayer(cameraList.features));
+    setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
   }, [cameraList]);
 
   useEffect(() => {

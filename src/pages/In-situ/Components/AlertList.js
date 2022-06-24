@@ -8,6 +8,7 @@ import { getIconLayer, getViewState } from '../../../helpers/mapHelper';
 import { setCurrentPage, setInSituFavoriteAlert, setPaginatedAlerts, getCamera } from '../../../store/appAction';
 import { PAGE_SIZE, SET_FAV_INSITU_ALERT_SUCCESS } from '../../../store/insitu/types';
 import Alert from './Alert';
+import { MAP_TYPES } from '../../../constants/common';
 
 const AlertList = ({
   alertId,
@@ -31,7 +32,7 @@ const AlertList = ({
       !_.isEqual(viewState.midPoint, cameraInfo?.geometry?.coordinates) || isViewStateChanged ?
         setViewState(getViewState(cameraInfo?.geometry?.coordinates, currentZoomLevel, cameraInfo, setHoverInfo, setIsViewStateChanged))
         : setHoverInfo({ object: cameraInfo, coordinate: cameraInfo?.geometry?.coordinates });
-
+      setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
     }
   }, [cameraInfo]);
 
@@ -59,13 +60,13 @@ const AlertList = ({
       dispatch(getCamera(selectedAlert.camera_id));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(cameraList.features));
+      setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
     }
   }
 
   const updatePage = page => {
     setAlertId(undefined);
-    setIconLayer(getIconLayer(cameraList.features));
+    setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
     dispatch(setCurrentPage(page));
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
