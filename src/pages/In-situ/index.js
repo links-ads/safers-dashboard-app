@@ -52,7 +52,9 @@ const InSituAlerts = () => {
 
   useEffect(() => {
     dispatch(getCameraList({
-      camera_id: inSituSource
+      camera_id: inSituSource,
+      bbox: boundingBox ? boundingBox.toString() : undefined,
+      default_bbox: !boundingBox
     }));
   }, [inSituSource, boundingBox]);
 

@@ -1,9 +1,10 @@
 import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
+import queryString from 'query-string';
 
 export const getCameraList = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.insitu.cameraList, options);
+  const response = await api.get(endpoints.insitu.cameraList.concat('?', queryString.stringify(options)));
   if (response.status === 200) {
     return dispatch(getCameraListSuccess(response.data));
   }
