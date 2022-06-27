@@ -16,7 +16,6 @@ const MediaComponent = (props) => {
     setIsFits(!isFits);
   }
 
-  console.log('props', props.media);
   return (
     <>
       {isFits ? (
