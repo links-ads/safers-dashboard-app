@@ -213,7 +213,7 @@ const SignUp = () => {
                       data-testid="sign-up-role"
                     >
                       <option value={''} >--Select your role--</option>
-                      {roles.map((role, index) => { return (<option key={index} value={role.name}>{role.name}</option>) })}
+                      {roles.map((role) => { return (<option key={role.name} value={role.name}>{role.name}</option>) })}
                     </Input>
                     {getError('role', errors, touched, false)}
                   </FormGroup>
@@ -235,7 +235,7 @@ const SignUp = () => {
                       data-testid="sign-up-org"
                     >
                       <option value={''} >--Select organisation--</option>
-                      {orgList.map((org, index) => { return (<option key={index} value={org.name}>{org.name}</option>) })}
+                      {orgList.map((org) => { return (<option key={org.name} value={org.name}>{org.name}</option>) })}
                     </Input>
                     {getError('organization', errors, touched, false)}
                   </FormGroup>
