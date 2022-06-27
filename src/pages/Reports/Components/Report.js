@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
 
-  const {t} = useTranslation();
+  const { t } = useTranslation();
 
   const navigate = useNavigate();
 
@@ -19,20 +19,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
       onClick={() => setSelectedReport(!isSelected ? card.report_id : null)}
       className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
-        <Row className='mt-4'>
-          {/* <Col md={1}>
-            <button
-              type="button"
-              className="btn float-start py-0 px-1"
-              aria-label='report-favorite-button'
-              onClick={(e) => {
-                e.stopPropagation();
-                setFavorite(card.report_id);
-              }}
-            >
-              <i className={`mdi mdi-star${!card.isFavorite ? '-outline' : ''} card-title`}></i>
-            </button>
-          </Col> */}
+        <Row className='mt-2'>
           <Col>
             <Row>
               <Col>
@@ -44,7 +31,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
                 </CardText>
               </Col>
               <Col md={4} className='text-end'>
-                <Button className="btn btn-primary px-3 py-2" onClick={()=>{navigate(`/reports-dashboard/${card.report_id}`);}}>{t('open', {ns: 'common'})}</Button>
+                <Button className="btn btn-primary px-3 py-2" onClick={() => { navigate(`/reports-dashboard/${card.report_id}`); }}>{t('open', { ns: 'common' })}</Button>
               </Col>
             </Row>
             <Row className='mt-2'>
@@ -53,7 +40,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
                   date: {formatDate(card.timestamp, 'YYYY-MM-DD HH:mm')}
                 </p>
               </Col>
-              
+
             </Row>
             <Row className='mt-0'>
               <Col>
@@ -64,7 +51,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
               <Col md={2}>
                 <CardText>
                   <span className='float-end alert-source-text me-2'>
-                    SOURCE: {card.source}
+                    {card.source.toUpperCase()}
                   </span>
                 </CardText>
               </Col>
