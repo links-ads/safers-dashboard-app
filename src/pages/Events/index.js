@@ -38,7 +38,7 @@ const EventAlerts = ({ t }) => {
   const [sortOrder, setSortOrder] = useState(undefined);
   const [eventSource, setEventSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
-  const [status, setStatus] = useState('');
+  const [checkedStatus, setCheckedStatus] = useState([])
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState([undefined, undefined]);
@@ -61,7 +61,7 @@ const EventAlerts = ({ t }) => {
 
   useEffect(() => {
     getEvents();
-  }, [dateRange, eventSource, sortOrder, boundingBox, status])
+  }, [dateRange, eventSource, sortOrder, boundingBox, checkedStatus])
 
   useEffect(() => {
     if (success)
@@ -93,7 +93,8 @@ const EventAlerts = ({ t }) => {
     setAlertId(undefined);
     const eventParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: eventSource,
+      source: eventSource ? eventSource : undefined,
+      status: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
       start_date: dateRange[0],
       end_date: dateRange[1],
       bbox: boundingBox?.toString(),
@@ -199,13 +200,14 @@ const EventAlerts = ({ t }) => {
         <Row>
           <Col xl={5}>
             <SortSection
-              setAlertId={setAlertId}
               sortOrder={sortOrder}
+              filteredAlerts={filteredAlerts}
+              eventSource={eventSource}
+              checkedStatus={checkedStatus}
+              setAlertId={setAlertId}
               setSortOrder={setSortOrder}
               setEventSource={setEventSource}
-              filteredAlerts={filteredAlerts}
-              status={status}
-              setStatus={setStatus}
+              setCheckedStatus={setCheckedStatus}
             />
             <Row>
               <Col xl={12} className='px-3'>

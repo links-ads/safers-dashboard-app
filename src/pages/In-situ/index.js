@@ -62,7 +62,7 @@ const InSituAlerts = () => {
     setAlertId(undefined);
     dispatch(getAllInSituAlerts(
       {
-        type: checkedStatus.length === 1 ? checkedStatus[0] : undefined,
+        type: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
         order: sortOrder ? sortOrder : '-date',
         camera_id: inSituSource,
         start_date: dateRange[0],

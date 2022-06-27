@@ -29,9 +29,9 @@ const getSourceFail = (error) => {
 
 export const getAllFireAlerts = (options, fromPage) => async (dispatch) => {
   const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
-  if (response && response?.status === 200) {
+  if (response && response.status === 200) {
     fromPage && dispatch(setFilteredAlerts(response?.data));
-    return dispatch(getAlertsSuccess(response.data));
+    return dispatch(getAlertsSuccess(response?.data));
   }
   else
     return dispatch(getAlertsFail(response?.error));

@@ -37,15 +37,6 @@ const SortSection = ({ t,
     }
   };
 
-  // useEffect(() => {
-  //   dispatch(setAlertId(undefined));
-  //   if (checkedStatus.length == 0) {
-  //     dispatch(setFilteredInSituAlerts(alerts))
-  //   } else {
-  //     dispatch(setFilteredInSituAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.type))));
-  //   }
-  // }, [checkedStatus]);
-
   return (
     <>
       <div>

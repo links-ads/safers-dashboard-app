@@ -15,7 +15,7 @@ const GRAY = [128, 128, 128];
 const RED = [230, 51, 79];
 const DARK_GRAY = [57, 58, 58];
 
-export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction1 = () => { }, refFunction2 = () => { }) => {
+export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
   return {
     midPoint: midPoint,
     longitude: selectedAlert ? getShiftedLongitude(midPoint[0], zoomLevel) : midPoint[0],
@@ -27,11 +27,11 @@ export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, refFunction
     transitionInterpolator: new FlyToInterpolator(),
     onTransitionEnd: () => {
       if (selectedAlert) {
-        refFunction1({
+        setHoverInfoRef({
           object: selectedAlert,
           coordinate: selectedAlert?.center || selectedAlert?.geometry?.coordinates
         });
-        refFunction2(false);
+        setViewStateChangeRef(false);
       }
     }
   };

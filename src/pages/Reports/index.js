@@ -40,7 +40,7 @@ const Reports = () => {
     setReportId(undefined);
     const reportParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: reportSource,
+      source: reportSource ? reportSource : undefined,
       start: dateRange[0],
       end: dateRange[1],
       bbox: boundingBox?.toString(),

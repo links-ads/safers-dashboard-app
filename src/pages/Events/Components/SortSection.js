@@ -7,27 +7,34 @@ import _ from 'lodash';
 import { withTranslation } from 'react-i18next'
 import { setFilteredEventAlerts } from '../../../store/appAction';
 
-const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrder, setStatus }) => {
-  const { params } = useSelector(state => state.eventAlerts);
+const SortSection = ({ t,
+  checkedStatus,
+  eventSource,
+  sortOrder,
+  filteredAlerts,
+  setCheckedStatus,
+  setAlertId,
+  setEventSource,
+  setSortOrder }) => {
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
   const ongoing = alerts.filter((alert) => alert.status == 'ONGOING').length;
   const closed = alerts.filter((alert) => alert.status == 'CLOSED').length;
-  const { sortByDate, alertSource } = params;
   const dispatch = useDispatch();
 
-  const filterByAlertSource = (alertSource) => {
+  const filterByAlertSource = (eventSource) => {
     setAlertId(undefined);
-    setAlertSource(alertSource);
+    setEventSource(eventSource);
   }
-  const filterByStatus = (status, checked) => {
-    if (!checked) {
-      status = ''
+  const handleChecked = (value) => {
+    if (checkedStatus.includes(value)) {
+      setCheckedStatus(_.without(checkedStatus, value))
+    } else {
+      setCheckedStatus([...checkedStatus, value])
     }
-    setStatus(status);
-  }
-  const filterByDate = (sortByDate) => {
+  };
+  const filterByDate = (sortOrder) => {
     setAlertId(undefined);
-    setSortOrder(sortByDate);
+    setSortOrder(sortOrder);
   };
 
   const filterBySearchText = (query) => {
@@ -48,7 +55,7 @@ const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrd
             name="status"
             type="checkbox"
             value="ONGOING"
-            onChange={(e) => filterByStatus(e.target.value, e.target.checked)}
+            onChange={(e) => handleChecked(e.target.value)}
           />
           <Label
             check
@@ -64,7 +71,7 @@ const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrd
             name="status"
             type="checkbox"
             value="CLOSED"
-            onChange={(e) => filterByStatus(e.target.value, e.target.checked)}
+            onChange={(e) => handleChecked(e.target.value)}
           />
           <Label
             check
@@ -85,13 +92,13 @@ const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrd
       <Row className='my-2'>
         <Col className='mx-0 my-1'>
           <Input
-            id="sortByDate"
+            id="sortOrder"
             className="btn-sm sort-select-input"
-            name="sortByDate"
+            name="sortOrder"
             placeholder="Sort By : Date"
             type="select"
             onChange={(e) => filterByDate(e.target.value)}
-            value={sortByDate}
+            value={sortOrder}
           >
             <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
             <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
@@ -99,13 +106,13 @@ const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrd
         </Col>
         <Col xl={4} className='my-1'>
           <Input
-            id="alertSource"
+            id="eventSource"
             className="btn-sm sort-select-input"
-            name="alertSource"
+            name="eventSource"
             placeholder="Source"
             type="select"
             onChange={(e) => filterByAlertSource(e.target.value)}
-            value={alertSource}
+            value={eventSource}
             data-testid='eventAlertSource'
           >
             <option value={''} >{t('Source')} : {t('All')}</option>
@@ -142,13 +149,14 @@ const SortSection = ({ t, setAlertId, setAlertSource, filteredAlerts, setSortOrd
 }
 
 SortSection.propTypes = {
-  sortOrder: PropTypes.any,
-  setSortOrder: PropTypes.func,
-  alertSource: PropTypes.string,
-  setAlertSource: PropTypes.func,
-  setAlertId: PropTypes.func,
-  setStatus: PropTypes.func,
+  checkedStatus: PropTypes.any,
+  eventSource: PropTypes.string,
+  sortOrder: PropTypes.string,
   filteredAlerts: PropTypes.array,
+  setCheckedStatus: PropTypes.func,
+  setSortOrder: PropTypes.func,
+  setEventSource: PropTypes.func,
+  setAlertId: PropTypes.func,
   t: PropTypes.func,
 }
 
