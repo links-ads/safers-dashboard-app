@@ -1,16 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Formik } from 'formik';
 import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupText, Label, Row } from 'reactstrap';
 import * as Yup from 'yup'
-import { signUp as registration, getOrgList, getRoleList } from '../../store/appAction';
+import { signUpOauth2 as registration, getOrgList, getRoleList } from '../../store/appAction';
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { passwordHelper, pwdRegEx, pwdValidationTxt }  from '../../helpers/passwordHelper';
+import toastr from 'toastr';
 import { endpoints } from '../../api/endpoints';
 import { BASE_URL } from '../../config';
 import _ from 'lodash';
 
 const SignUp = () => {
+  const navigate = useNavigate();
+
   const [passwordToggle, setPasswordToggle] = useState(false);
   const orgList = useSelector(state => state.common.orgList);
   const roles = useSelector(state => state.common.roleList);
@@ -18,6 +22,7 @@ const SignUp = () => {
   const [citizenId, setcitizenId] = useState('');
   const docTNM = BASE_URL +  endpoints.common.termsNconditions;
   const docPP = BASE_URL +  endpoints.common.privacyPolicy;
+  const signUpOauth2Success = useSelector(state => state.auth.signUpOauth2Success);
 
   if(error){
     window.scrollTo(0, 0);
@@ -38,6 +43,13 @@ const SignUp = () => {
       setcitizenId(role.id)
     }
   }, [roles]);
+
+  useEffect(() => {
+    if (signUpOauth2Success) {
+      navigate('/auth/sign-in');
+      toastr.success('Successfully signed up.  Please sign in via SSO now.', '');
+    }
+  }, [signUpOauth2Success]);
 
   const signUpSchema = Yup.object().shape({
     email: Yup.string()
@@ -201,7 +213,7 @@ const SignUp = () => {
                       data-testid="sign-up-role"
                     >
                       <option value={''} >--Select your role--</option>
-                      {roles.map((role, index) => { return (<option key={index} value={role.id}>{role.name}</option>) })}
+                      {roles.map((role, index) => { return (<option key={index} value={role.name}>{role.name}</option>) })}
                     </Input>
                     {getError('role', errors, touched, false)}
                   </FormGroup>
@@ -209,7 +221,7 @@ const SignUp = () => {
                 <Col className={values.role == citizenId ? 'd-none': ''}>
                   <FormGroup className="form-group">
                     <Label for="organization">
-                      SELECT ORGANISATION:
+                      SELECT YOUR ORGANISATION:
                     </Label>
                     <Input
                       id="organization"
@@ -223,7 +235,7 @@ const SignUp = () => {
                       data-testid="sign-up-org"
                     >
                       <option value={''} >--Select organisation--</option>
-                      {orgList.map((org, index) => { return (<option key={index} value={org.id}>{org.name}</option>) })}
+                      {orgList.map((org, index) => { return (<option key={index} value={org.name}>{org.name}</option>) })}
                     </Input>
                     {getError('organization', errors, touched, false)}
                   </FormGroup>

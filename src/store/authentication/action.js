@@ -86,6 +86,28 @@ const signInFail = (error) => {
 
 /* Sign Up */
 
+
+export const signUpOauth2 = (userInfo) => async (dispatch) => {
+  const response = await api.post(endpoints.authentication.oAuth2SignUp, { ...userInfo });
+  console.log(response);
+  if (api.isSuccessResp(response.status)) {
+    return dispatch(signUpOauth2Sucess(response.data));
+  }
+  return dispatch(signUpOauth2Fail(response.data));
+};
+const signUpOauth2Sucess = (res) => {
+  return {
+    type: actionTypes.SIGN_UP_OAUTH2_SUCCESS,
+    payload: res
+  };
+};
+const signUpOauth2Fail = (error) => {
+  return {
+    type: actionTypes.SIGN_UP_OAUTH2_FAIL,
+    payload: error
+  };
+};
+
 export const signUp = (userInfo) => async (dispatch) => {
   const response = await api.post(endpoints.authentication.signUp, { ...userInfo });
   if (api.isSuccessResp(response.status)) {
