@@ -89,7 +89,6 @@ const signInFail = (error) => {
 
 export const signUpOauth2 = (userInfo) => async (dispatch) => {
   const response = await api.post(endpoints.authentication.oAuth2SignUp, { ...userInfo });
-  console.log(response);
   if (api.isSuccessResp(response.status)) {
     return dispatch(signUpOauth2Sucess(response.data));
   }
