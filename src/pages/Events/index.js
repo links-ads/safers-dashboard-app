@@ -57,13 +57,11 @@ const EventAlerts = ({ t }) => {
       delete eventParams.status
     }
     if(dateRange){
-      eventParams.default_date = true
       eventParams.start_date = dateRange[0]
       eventParams.end_date = dateRange[1]
     }else if(!dateRange){
       delete eventParams.start_date
       delete eventParams.end_date
-      eventParams.default_date = true
     }
     if(sortOrder){
       eventParams.order = sortOrder

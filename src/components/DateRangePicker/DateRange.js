@@ -15,7 +15,7 @@ const DateComponent = ({
 }) => {
   const fp = useRef(null);
   const defaultDate = defaultDateRange?.map(date => 
-    moment(date).format('YY/MM/DD')
+    moment(date).format('DD/MM/YY')
   ) ?? []
   return (
     <div className='mb-0'>

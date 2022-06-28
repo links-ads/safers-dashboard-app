@@ -45,13 +45,11 @@ const Notifications = () => {
     }
     
     if(dateRange){
-      notificationParams.default_date = false
       notificationParams.start_date = dateRange[0]
       notificationParams.end_date = dateRange[1]
     }else if(!dateRange){
       delete notificationParams.start_date
       delete notificationParams.end_date
-      notificationParams.default_date = true
     }
     if(sortOrder){
       notificationParams.order = sortOrder

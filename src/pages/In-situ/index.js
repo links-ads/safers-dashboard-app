@@ -49,7 +49,6 @@ const InSituAlerts = () => {
       order: sortByDate,
       camera_id: alertSource,
       bbox: boundingBox ? boundingBox.toString() : undefined,
-      default_date: false,
       default_bbox: false,
       ...dateRangeParams
     }));

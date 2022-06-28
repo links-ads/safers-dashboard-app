@@ -33,7 +33,7 @@ const Reports = () => {
       ? { start: dateRange[0], end: dateRange[1] }
       : {}
 
-    dispatch(getAllReports( {
+    dispatch(getAllReports({
       sortOrder: sortByDate,
       source: alertSource,
       ...dateRangeParams

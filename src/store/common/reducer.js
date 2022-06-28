@@ -1,6 +1,8 @@
 import * as actionTypes from './types';
 import { updateObject } from '../utility';
 
+import {getDefaultDateRange} from '../utility'
+
 const initialState = {
   config: undefined,
   orgList: [],
@@ -11,7 +13,7 @@ const initialState = {
   polygonLayer: undefined,
   isLoading: false,
   loadingMsg: null,
-  dateRange: null
+  dateRange: getDefaultDateRange()
 };
 
 const commonReducer = (state = initialState, action) => {
