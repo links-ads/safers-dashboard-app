@@ -5,7 +5,8 @@ export {
   reqResetPsw,
   resetPsw,
   isRemembered,
-  signInOauth2
+  signInOauth2,
+  signUpOauth2
 }
   from './authentication/action';
 export { setDefaultAoi, setAoiSuccess, getInfo, updateInfo, uploadProfImg, deleteAccount, resetProfilePsw } from './user/action'
