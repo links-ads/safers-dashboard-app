@@ -8,9 +8,14 @@ import ModalVideo from 'react-modal-video'
 import 'react-modal-video/scss/modal-video.scss'
 
 const MediaComponent = (props) => {
-  const [isFits, setisFits] = useState(false)
-  const [isOpen, setisOpen] = useState(false)
+  const [isFits, setIsFits] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
   
+  const expandMedia = ()=> {
+    setIsOpen(!isOpen);
+    setIsFits(!isFits);
+  }
+
   return (
     <>
       {isFits ? (
@@ -24,7 +29,7 @@ const MediaComponent = (props) => {
             </div>
           }
           onCloseRequest={() => {
-            setisFits(!isFits)
+            setIsFits(!isFits)
           }}
         />
       ) : null}
@@ -38,10 +43,12 @@ const MediaComponent = (props) => {
           src={props.media.url}
           width="100%"
           height="100%"
+          onClick={expandMedia} 
+          style={{cursor:'pointer'}}
         />
         <div className='position-absolute bottom-0 end-0 m-2'>
-          {props.media.type=='photo' ? <i className='fa fa-eye fa-2x text-danger' onClick={() => setisFits(!isFits)}></i> :
-            <i className='fas fa-play-circle fa-2x text-danger' onClick={() => setisOpen(!isOpen)}></i>}
+          {props.media.type==='Image' ? <i className='fa fa-eye fa-2x text-danger' ></i> :
+            <i className='fas fa-play-circle fa-2x text-danger'></i>}
         </div>
       </Card>
       {props.media.type == 'video' && <ModalVideo
@@ -49,7 +56,7 @@ const MediaComponent = (props) => {
         channel="youtube"
         isOpen={isOpen}
         onClose={() => {
-          setisOpen(!isOpen)
+          setIsOpen(!isOpen)
         }}
       />}
     </>
