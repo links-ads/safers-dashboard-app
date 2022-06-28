@@ -5,7 +5,6 @@ import { Row, Col, Button, Input, Card } from 'reactstrap';
 import { FlyToInterpolator, IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
-import moment from 'moment';
 import toastr from 'toastr';
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -14,8 +13,6 @@ import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState, getSource, setFilteredAlerts } from '../../store/appAction';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
-import DateRangePicker from '../../components/DateRangePicker/DateRange';
-// import { getDefaultDateRange } from '../../store/utility';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types'
 
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
@@ -35,6 +32,8 @@ const FireAlerts = ({ t }) => {
   const sources = useSelector(state => state.alerts.sources);
   const success = useSelector(state => state.alerts.success);
   const error = useSelector(state => state.alerts.error);
+  const dateRange = useSelector(state => state.common.dateRange)
+
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState('-date');
@@ -42,7 +41,6 @@ const FireAlerts = ({ t }) => {
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [zoomLevel, setZoomLevel] = useState(undefined);
-  const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
   const [isEdit, setIsEdit] = useState(false);
   const [hoverInfo, setHoverInfo] = useState({});
@@ -136,16 +134,20 @@ const FireAlerts = ({ t }) => {
   };
 
   const getAlerts = () => {
+    const dateRangeParams = dateRange
+      ? { start_date: dateRange[0], end_date: dateRange[1] }
+      : {}
+
     setAlertId(undefined);
     const alertParams = {
       order: sortByDate,
       source: alertSource ? alertSource : undefined,
-      start_date: dateRange[0],
-      end_date: dateRange[1],
       bbox: boundingBox ? boundingBox.toString() : undefined,
       default_date: true,
-      default_bbox: false
+      default_bbox: false,
+      ...dateRangeParams
     };
+    
     dispatch(setAlertApiParams(alertParams));
     dispatch(getAllFireAlerts(alertParams, true));
 
@@ -197,17 +199,6 @@ const FireAlerts = ({ t }) => {
       sizeMaxPixels: 100,
       sizeScale: 0.5,
     }))
-  }
-
-  const handleDateRangePicker = (dates) => {
-    if (dates) {
-      let from = moment(dates[0]).format('YYYY-MM-DD');
-      let to = moment(dates[1]).format('YYYY-MM-DD');
-      setDateRange([from, to]);
-    } else {
-      //setDateRange(getDefaultDateRange()); disabled since start/end values won't return data 
-      setDateRange([undefined, undefined]);
-    }
   }
 
   const handleResetAOI = useCallback(() => {
@@ -285,7 +276,7 @@ const FireAlerts = ({ t }) => {
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
-          <Col xl={5} className='d-flex justify-content-between'>
+          <Col xl={12} className='d-flex justify-content-between'>
             <p className='align-self-baseline alert-title'>{t('Alert List', { ns: 'fireAlerts' })}
               <button
                 type="button"
@@ -302,9 +293,6 @@ const FireAlerts = ({ t }) => {
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
               {t('default-aoi')}</Button>
-          </Col>
-          <Col xl={7} className='d-flex justify-content-end'>
-            <DateRangePicker setDates={handleDateRangePicker} clearDates={handleDateRangePicker} />
           </Col>
         </Row>
         <Row>

@@ -60,12 +60,6 @@ export const resetReportResponseState = () => {
     type: actionTypes.RESET_REPORT_STATE,
   }
 };
-export const setDateRange = (payload) => {
-  return {
-    type: actionTypes.SET_REPORT_DATE_RANGE,
-    payload,
-  };
-};
 
 export const getReportDetail = (id) => async (dispatch) => {
   const response = await api.get(endpoints.reports.getReportInfo.replace(':report_id', id));
