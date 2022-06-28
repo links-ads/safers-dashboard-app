@@ -12,7 +12,8 @@ const SummaryContainer = ({reportDetail, t}) => {
 
   if(!reportDetail) 
     return null;
-  
+
+  const dateDisplay = reportDetail?.timestamp ? formatDate(reportDetail.timestamp, 'll, HH:mm') : 'Unknown';
   return (
     <>
       <Row>
@@ -84,7 +85,7 @@ const SummaryContainer = ({reportDetail, t}) => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto font-size-15">
-                  {formatDate(reportDetail.date, 'll, mm:hh')}
+                  {dateDisplay}
                 </CardSubtitle>
               </Col>
             </Row>
