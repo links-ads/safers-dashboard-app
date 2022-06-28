@@ -58,7 +58,7 @@ const MediaComponent = (props) => {
             style={{ cursor: 'pointer' }}
           />}
         <div className='position-absolute bottom-0 end-0 m-2'>
-          {props.media.type === 'Image' ? <i className='fa fa-eye fa-2x text-danger' ></i> :
+          {props.media.type == MEDIA_TYPE.IMAGE ? <i className='fa fa-eye fa-2x text-danger' ></i> :
             <i className='fas fa-play-circle fa-2x text-danger'></i>}
         </div>
       </Card>
