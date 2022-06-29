@@ -4,7 +4,6 @@ import { Card, Modal } from 'reactstrap';
 
 import Lightbox from 'react-image-lightbox'
 import 'react-image-lightbox/style.css'
-import 'react-modal-video/scss/modal-video.scss'
 
 const MEDIA_TYPE = {
   VIDEO: 'Video',
