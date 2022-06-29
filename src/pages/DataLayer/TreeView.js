@@ -24,6 +24,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
 
   const mapper = (nodes, parentId, lvl) => {
     return nodes.map((node, index) => {
+      
       const id = node.id;
       const tooltipDisplay = tooltipInfo || node.info
       const item =
@@ -32,7 +33,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
             key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? 'selected' : ''} mb-2`}
             onClick={() => {
-              node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
+              return node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
             }}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
