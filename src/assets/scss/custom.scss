@@ -64,7 +64,7 @@
 
 .data-layers-alert-tooltip {
   max-width: 25rem;
-  overflow-wrap: break-word
+  overflow-wrap: break-word;
 }
 
 .alert-tooltip.place-right::after {
@@ -88,15 +88,21 @@
 }
 
 .new-info-indicator {
-	width: 30px;
-	height: 20px;
-	background: $red-500;
-	-moz-border-radius: 50px;
-	-webkit-border-radius: 50px;
-	border-radius: 50px;
+  width: 30px;
+  height: 20px;
+  background: $red-500;
+  -moz-border-radius: 50px;
+  -webkit-border-radius: 50px;
+  border-radius: 50px;
   display: block;
   padding-top: 2px;
-  font-size: .75rem;
+  font-size: 0.75rem;
   font-weight: 800;
   text-align: center;
+}
+
+.video-thumbnail {
+  min-width: 100%;
+  min-height: 100%;
+  height: auto;
 }
