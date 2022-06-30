@@ -4,6 +4,19 @@ import ReactTooltip from 'react-tooltip';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 
+const PropsPanel = (node) => {
+  const node2=node.node;
+  if (!node2.params) return null;
+  const parameters = Object.keys(node2.params);
+  // TODO: get a better key once we have node numbering from backend
+  const paramaters = parameters.map((key,ix)=><p className="props-line" key={ix}>{`${key} : ${node2.params[key]}`}</p>);
+  return (
+    <div className="props-box">
+      {paramaters}
+    </div>
+  )
+};
+
 const OnDemandTreeView = ({ data, setCurrentLayer}) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
@@ -25,15 +38,12 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
     return nodes.map((node, index) => {
 
       // set children according to level. Prioritise leaf over branch or root
-      //node.children = [...node.maplayers] || [...node.requests] || [...node] || [];
       if (!node.children) {
         node.children= node?.mapLayers || node?.requests || undefined;
       }
       
       node.text = node.category || node.name || node.id;
       node.info = 'I\'m a tooltip';
-      //setTooltipInfo(node.info);
-      console.log('Node', node);
 
       const id = node.id;
       const tooltipDisplay = tooltipInfo || node.category || node.id;
@@ -64,6 +74,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                   :
                   'Leaf node'
               }
+              { node?.params ?  <PropsPanel node={node} />: null}
             </>
           </ListGroupItem>
           {
@@ -98,7 +109,8 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
 
 OnDemandTreeView.propTypes = {
   data: PropTypes.any,
-  setCurrentLayer: PropTypes.func
+  setCurrentLayer: PropTypes.func,
+  node: PropTypes.any,
 }
 
 
