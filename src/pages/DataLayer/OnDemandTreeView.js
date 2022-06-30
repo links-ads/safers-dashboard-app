@@ -27,14 +27,16 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
       // set children according to level. Prioritise leaf over branch or root
       //node.children = [...node.maplayers] || [...node.requests] || [...node] || [];
       if (!node.children) {
-        node.children=null;
+        node.children= node?.mapLayers || node?.requests || undefined;
       }
       
       node.text = node.category || node.name || node.id;
+      node.info = 'I\'m a tooltip';
+      //setTooltipInfo(node.info);
       console.log('Node', node);
 
       const id = node.id;
-      const tooltipDisplay = tooltipInfo || node.category
+      const tooltipDisplay = tooltipInfo || node.category || node.id;
       const item =
         <>
           <ListGroupItem

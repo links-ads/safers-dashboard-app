@@ -18,13 +18,13 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
-import MOCKDATA2 from './mockdata2';
+import MOCKDATA from './mockdata';
 
 const SLIDER_SPEED = 800;
 const OnDemandDataLayer = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   //const dataLayers = useSelector(state => state.dataLayer.dataLayers);
-  const dataLayers = MOCKDATA2;
+  const dataLayers = MOCKDATA;
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
