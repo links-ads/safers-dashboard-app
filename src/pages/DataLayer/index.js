@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
 import DataLayer from './DataLayer';
+import OnDemandDataLayer from './OnDemandDataLayer';
 
 const DataLayerDashboard = () => {
   const [activeTab, setActiveTab] = useState('0');
@@ -44,7 +45,7 @@ const DataLayerDashboard = () => {
           </TabPane>
           <TabPane tabId="1">
             <div className='mx-2 sign-up-aoi-map-bg'>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisi quis eleifend quam adipiscing. Odio eu feugiat pretium nibh ipsum consequat nisl vel pretium. Imperdiet dui accumsan sit amet nulla facilisi morbi. In nisl nisi scelerisque eu ultrices vitae auctor eu augue. Euismod nisi porta lorem mollis aliquam ut porttitor leo a. Cras fermentum odio eu feugiat pretium nibh ipsum consequat. Suspendisse in est ante in nibh. Bibendum at varius vel pharetra. Quisque non tellus orci ac auctor augue mauris. Quam vulputate dignissim suspendisse in est. Adipiscing elit pellentesque habitant morbi tristique.</p>
+              <OnDemandDataLayer />
             </div>
           </TabPane>
         </TabContent>
