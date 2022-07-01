@@ -1,19 +1,16 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
-import { Badge, Card, CardBody, CardText, Col, Row, Button } from 'reactstrap';
+import { Badge, Card, CardBody, CardText, Col, Row, Button, Modal } from 'reactstrap';
 import { formatDate } from '../../../store/utility';
 import ReactTooltip from 'react-tooltip';
 import Lightbox from 'react-image-lightbox'
 import 'react-image-lightbox/style.css'
-import ModalVideo from 'react-modal-video'
-import 'react-modal-video/scss/modal-video.scss'
-
 //i18n
 import { withTranslation } from 'react-i18next'
 
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
 
-  const [isOpen, setisOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const TAG_VIDEO = 'video';
   const TAG_IMAGE = 'photo';
   const TAG_FIRE = 'fire';
@@ -44,15 +41,21 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
   }
 
   const getMedia = (card) => {
-    if (card.type == 'video') {
-      return <ModalVideo
-        videoId={card.videoId}
-        channel={card.channel}
-        isOpen={isOpen}
-        onClose={() => {
-          setisOpen(!isOpen)
-        }}
-      />
+    if (card.type == 'Video') {
+      return (
+        <Modal
+          centered
+          isOpen={isOpen}
+          toggle={() => {
+            setIsOpen(!isOpen);
+          }}
+          id="staticBackdrop"
+        >
+          <video height={560} controls>
+            <source src={card.url} type={card.format || 'video/mp4'} />
+          </video>
+        </Modal>
+      );
     }
     return (isOpen ? (
       <Lightbox
@@ -65,7 +68,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
           </div>
         }
         onCloseRequest={() => {
-          setisOpen(false)
+          setIsOpen(false)
         }}
       />
     ) : null)
@@ -109,8 +112,8 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
                   {card.fire_classes != null && <p className='mb-1'><i data-tip data-for="smoke-column" className='bx bx-info-circle float-start fs-5 me-2'></i><span >{t('Smoke Column Class')}: {card.fire_classes.join()}</span></p>}
                   {card.direction != null && <p className='mb-1'><i data-tip data-for="geo-direction" className='bx bx-info-circle float-start fs-5 me-2'></i><span>{t('Geographical Direction')}: {card.direction}&deg;</span></p>}
                 </Col>
-                <Col sm={2} md={4} className='text-end'>
-                  <Button className="btn btn-primary px-5 py-2" onClick={() => { setisOpen(true) }}>{t('view', { ns: 'common' })}</Button>
+                <Col md={4} className='text-end'>
+                  <Button className="btn btn-primary px-5 py-2" onClick={() => { setIsOpen(true) }}>{t('view', { ns: 'common' })}</Button>
                   <p></p>
                   <p className='mb-1'>{card.camera_id}</p>
                 </Col>
