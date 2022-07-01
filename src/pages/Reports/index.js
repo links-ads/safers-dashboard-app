@@ -31,6 +31,8 @@ const Reports = () => {
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [dateRange, setDateRange] = useState([undefined, undefined]);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
 
   const dispatch = useDispatch();
 
@@ -68,7 +70,7 @@ const Reports = () => {
   }, [allReports]);
 
   const getReportsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel));
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
   }
 
   const handleViewStateChange = (e) => {
@@ -132,6 +134,8 @@ const Reports = () => {
               setViewState={setViewState}
               getReportsByArea={getReportsByArea}
               handleViewStateChange={handleViewStateChange}
+              setNewWidth={setNewWidth}
+              setNewHeight={setNewHeight}
             />
           </Col>
         </Row>

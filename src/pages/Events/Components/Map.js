@@ -21,7 +21,9 @@ const MapSection = ({
   setFavorite,
   setPaginatedAlerts,
   getAlertsByArea,
-  setIsEdit
+  setIsEdit,
+  setNewWidth,
+  setNewHeight
 }) => {
   const dispatch = useDispatch();
 
@@ -80,6 +82,8 @@ const MapSection = ({
         onClick={showTooltip}
         onViewStateChange={hideTooltip}
         widgets={[getSearchButton]}
+        setWidth={setNewWidth}
+        setHeight={setNewHeight}
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
       />
@@ -101,7 +105,9 @@ MapSection.propTypes = {
   filteredAlerts: PropTypes.array,
   setPaginatedAlerts: PropTypes.func,
   getAlertsByArea: PropTypes.func,
-  setIsEdit: PropTypes.func
+  setIsEdit: PropTypes.func,
+  setNewWidth: PropTypes.func,
+  setNewHeight: PropTypes.func
 }
 
 export default MapSection;

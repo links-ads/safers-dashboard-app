@@ -42,15 +42,18 @@ const BaseMap = ({
 
   useEffect(() => {
     window.addEventListener('resize', getMapSize);
-    getMapSize();
   }, []);
 
-  const getMapSize = () => {
-    const newWidth = mapRef.current.clientWidth;
-    setWidth(newWidth);
+  useEffect(() => {
+    getMapSize();
+  }, [layers]);
 
-    const newHeight = mapRef.current.clientHeight;
-    setHeight(newHeight);
+  const getMapSize = () => {
+    const newWidth = mapRef?.current?.deck?.width;
+    newWidth && setWidth(newWidth);
+
+    const newHeight = mapRef?.current?.deck.height;
+    newHeight && setHeight(newHeight);
   };
 
   const getPosition = (position) => {

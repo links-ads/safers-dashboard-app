@@ -3,18 +3,17 @@ import { Card } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
-import { getBoundingBox } from '../../../helpers/mapHelper';
 import SearchButton from '../../../components/SearchButton';
 
 const MapSection = ({
   viewState,
   iconLayer,
-  midPoint,
-  currentZoomLevel,
   hoverInfo,
-  setBoundingBox,
   showTooltip,
-  hideTooltip
+  hideTooltip,
+  getCamByArea,
+  setNewWidth,
+  setNewHeight
 }) => {
 
   const renderTooltip = (info) => {
@@ -32,9 +31,7 @@ const MapSection = ({
     }
   }
 
-  const getCamByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel));
-  }
+
 
   const getSearchButton = (index) => {
     return (
@@ -55,6 +52,8 @@ const MapSection = ({
         onClick={showTooltip}
         onViewStateChange={(e) => hideTooltip(e, true)}
         widgets={[getSearchButton]}
+        setWidth={setNewWidth}
+        setHeight={setNewHeight}
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
       />
@@ -65,12 +64,12 @@ const MapSection = ({
 MapSection.propTypes = {
   viewState: PropTypes.any,
   iconLayer: PropTypes.any,
-  midPoint: PropTypes.any,
-  currentZoomLevel: PropTypes.any,
   hoverInfo: PropTypes.any,
   showTooltip: PropTypes.func,
-  setBoundingBox: PropTypes.func,
   hideTooltip: PropTypes.func,
+  getCamByArea: PropTypes.func,
+  setNewWidth: PropTypes.func,
+  setNewHeight: PropTypes.func
 }
 
 export default MapSection;

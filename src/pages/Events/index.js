@@ -48,6 +48,8 @@ const EventAlerts = ({ t }) => {
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [isViewStateChanged, setIsViewStateChanged] = useState(false);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
 
   const dispatch = useDispatch();
 
@@ -106,7 +108,7 @@ const EventAlerts = ({ t }) => {
   }
 
   const getAlertsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel));
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
   }
 
   const handleDateRangePicker = (dates) => {
@@ -239,6 +241,8 @@ const EventAlerts = ({ t }) => {
               setPaginatedAlerts={setPaginatedAlerts}
               setIsEdit={setIsEdit}
               setFavorite={setFavorite}
+              setNewWidth={setNewWidth}
+              setNewHeight={setNewHeight}
             />
           </Col>
         </Row>

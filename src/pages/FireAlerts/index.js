@@ -50,6 +50,9 @@ const FireAlerts = ({ t }) => {
   const [hoverInfo, setHoverInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -93,7 +96,7 @@ const FireAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
   const getAlertsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel));
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
   }
 
   const setFavorite = (id) => {
@@ -353,6 +356,8 @@ const FireAlerts = ({ t }) => {
                 onClick={showTooltip}
                 onViewStateChange={hideTooltip}
                 widgets={[getSearchButton]}
+                setWidth={setNewWidth}
+                setHeight={setNewHeight}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
               />

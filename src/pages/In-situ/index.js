@@ -20,7 +20,7 @@ import {
   getCameraList,
   getCameraSources
 } from '../../store/appAction';
-import { getIconLayer, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
@@ -42,6 +42,8 @@ const InSituAlerts = () => {
   const [hoverInfo, setHoverInfo] = useState({});
   const [checkedStatus, setCheckedStatus] = useState([])
   const [isViewStateChanged, setIsViewStateChanged] = useState(false);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -134,6 +136,10 @@ const InSituAlerts = () => {
     setHoverInfo({});
   };
 
+  const getCamByArea = () => {
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
+  }
+
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
@@ -183,15 +189,14 @@ const InSituAlerts = () => {
             <MapSection
               viewState={viewState}
               iconLayer={iconLayer}
-              midPoint={midPoint}
-              currentZoomLevel={currentZoomLevel}
               hoverInfo={hoverInfo}
               setMidPoint={setMidPoint}
-              setCurrentZoomLevel={setCurrentZoomLevel}
               setHoverInfo={setHoverInfo}
               showTooltip={showTooltip}
               hideTooltip={hideTooltip}
-              setBoundingBox={setBoundingBox}
+              getCamByArea={getCamByArea}
+              setNewWidth={setNewWidth}
+              setNewHeight={setNewHeight}
             />
           </Col>
         </Row>

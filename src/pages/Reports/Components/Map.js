@@ -8,7 +8,9 @@ const MapSection = ({
   viewState,
   iconLayer,
   getReportsByArea,
-  handleViewStateChange
+  handleViewStateChange,
+  setNewWidth,
+  setNewHeight
 }) => {
 
   const getSearchButton = (index) => {
@@ -27,6 +29,8 @@ const MapSection = ({
         initialViewState={viewState}
         widgets={[getSearchButton]}
         onViewStateChange={handleViewStateChange}
+        setWidth={setNewWidth}
+        setHeight={setNewHeight}
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
       />
@@ -38,7 +42,9 @@ MapSection.propTypes = {
   viewState: PropTypes.any,
   iconLayer: PropTypes.any,
   getReportsByArea: PropTypes.func,
-  handleViewStateChange: PropTypes.func
+  handleViewStateChange: PropTypes.func,
+  setNewWidth: PropTypes.func,
+  setNewHeight: PropTypes.func
 }
 
 export default MapSection;
