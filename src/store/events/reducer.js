@@ -15,7 +15,11 @@ const initialState = {
   error: false,
   updateError: null,
   success: null,
-  params: { default_bbox: false, order : '-date' },
+  params: {
+    order: '-date',
+    default_bbox: true,
+    default_date: false
+  },
   isNewEvent: false,
   isPageActive: false,
   newItemsCount: 0,
@@ -25,26 +29,27 @@ const initialState = {
 
 const eventAlertReducer = (state = initialState, action) => {
   switch (action.type) {
-  case actionTypes.GET_EVENT_ALERTS_SUCCESS: return getAlertsSuccess(state, action);
-  case actionTypes.GET_EVENT_ALERTS_FAIL: return getAlertsFail(state, action);
-  case actionTypes.GET_EVENT_SUCCESS: return getEventAlertSuccess(state, action);
-  case actionTypes.GET_EVENT_FAIL: return getEventAlertFail(state, action);
-  case actionTypes.SET_FAV_EVENT_ALERT_SUCCESS: return setFavoriteAlertSuccess(state, action);
-  case actionTypes.SET_FAV_EVENT_ALERT_FAIL: return setFavoriteAlertFail(state, action);
-  case actionTypes.EVENTS_CREATE_EVENT_ALERT_SUCCESS: return validateAlertSuccess(state, action);
-  case actionTypes.EVENTS_CREATE_EVENT_ALERT_FAIL: return validateAlertFail(state, action);
-  case actionTypes.EDIT_EVENT_ALERT_INFO_SUCCESS: return editAlertInfoSuccess(state, action);
-  case actionTypes.EDIT_EVENT_ALERT_INFO_FAIL: return editAlertInfoFail(state, action);
-  case actionTypes.RESET_EVENT_ALERT_STATE: return resetAlertsResponseState(state, action);
-  case actionTypes.SET_NEW_EVENT_STATE: return setNewEventState(state, action);
-  case actionTypes.RESET_EVENT_API_PARAMS: return resetEventApiParams(state, action);
-  case actionTypes.EVENTS_IN_SITU_MEDIA_GET_SUCCESS: return getInSituMediaSuccess(state, action);
-  case actionTypes.EVENTS_IN_SITU_MEDIA_GET_FAIL: return getInSituMediaFail(state, action);
-  case actionTypes.EVENTS_TWEETS_GET_SUCCESS: return getTweetsSuccess(state, action);
-  case actionTypes.EVENTS_TWEETS_GET_FAIL: return getTweetsFail(state, action);
+    case actionTypes.GET_EVENT_ALERTS_SUCCESS: return getAlertsSuccess(state, action);
+    case actionTypes.SET_FILTERED_EVENT_ALERTS: return setFilteredAlerts(state, action);
+    case actionTypes.GET_EVENT_ALERTS_FAIL: return getAlertsFail(state, action);
+    case actionTypes.GET_EVENT_SUCCESS: return getEventAlertSuccess(state, action);
+    case actionTypes.GET_EVENT_FAIL: return getEventAlertFail(state, action);
+    case actionTypes.SET_FAV_EVENT_ALERT_SUCCESS: return setFavoriteAlertSuccess(state, action);
+    case actionTypes.SET_FAV_EVENT_ALERT_FAIL: return setFavoriteAlertFail(state, action);
+    case actionTypes.EVENTS_CREATE_EVENT_ALERT_SUCCESS: return validateAlertSuccess(state, action);
+    case actionTypes.EVENTS_CREATE_EVENT_ALERT_FAIL: return validateAlertFail(state, action);
+    case actionTypes.EDIT_EVENT_ALERT_INFO_SUCCESS: return editAlertInfoSuccess(state, action);
+    case actionTypes.EDIT_EVENT_ALERT_INFO_FAIL: return editAlertInfoFail(state, action);
+    case actionTypes.RESET_EVENT_ALERT_STATE: return resetAlertsResponseState(state, action);
+    case actionTypes.SET_NEW_EVENT_STATE: return setNewEventState(state, action);
+    case actionTypes.SET_EVENT_PARAMS: return setEventParams(state, action);
+    case actionTypes.EVENTS_IN_SITU_MEDIA_GET_SUCCESS: return getInSituMediaSuccess(state, action);
+    case actionTypes.EVENTS_IN_SITU_MEDIA_GET_FAIL: return getInSituMediaFail(state, action);
+    case actionTypes.EVENTS_TWEETS_GET_SUCCESS: return getTweetsSuccess(state, action);
+    case actionTypes.EVENTS_TWEETS_GET_FAIL: return getTweetsFail(state, action);
 
-  default:
-    return state;
+    default:
+      return state;
   }
 };
 
@@ -55,9 +60,15 @@ const getAlertsSuccess = (state, action) => {
   }
   return updateObject(state, updatedState);
 }
+const setFilteredAlerts = (state, action) => {
+  const updatedState = {
+    filteredAlerts: action.payload,
+  }
+  return updateObject(state, updatedState);
+}
 const getAlertsFail = (state) => {
   const updatedState = {
-    error: true, 
+    error: true,
   }
   return updateObject(state, updatedState);
 }
@@ -71,7 +82,7 @@ const getEventAlertSuccess = (state, action) => {
 }
 const getEventAlertFail = (state) => {
   const updatedState = {
-    error: true, 
+    error: true,
   }
   return updateObject(state, updatedState);
 }
@@ -108,6 +119,7 @@ const validateAlertFail = (state) => {
 const editAlertInfoSuccess = (state, action) => {
   const updatedState = {
     event: action.payload,
+    success: action.message,
     error: false,
   }
   return updateObject(state, updatedState);
@@ -128,12 +140,12 @@ const resetAlertsResponseState = (state) => {
   return updateObject(state, updatedState);
 }
 
-const resetEventApiParams = (state) => {
+export const setEventParams = (state, action) => {
   const updatedState = {
-    params: initialState.params,
+    params: action.payload ? action.payload : initialState.params
   }
   return updateObject(state, updatedState);
-}
+};
 
 const setNewEventState = (state, action) => {
   const updatedState = {

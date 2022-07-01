@@ -2,14 +2,16 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import { InProgress } from '../authentication/action';
+import queryString from 'query-string';
 
-export const getAllEventAlerts = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.eventAlerts.getAll, options);
-  if (response.status === 200) {
-    return dispatch(getEventAlertsSuccess(response.data));
+export const getAllEventAlerts = (options, fromPage) => async (dispatch) => {
+  const response = await api.get(endpoints.eventAlerts.getAll.concat('?', queryString.stringify(options)));
+  if (response && response?.status === 200) {
+    fromPage && dispatch(setFilteredEventAlerts(response?.data));
+    return dispatch(getEventAlertsSuccess(response?.data));
   }
   else
-    return dispatch(getEventAlertsFail(response.error));
+    return dispatch(getEventAlertsFail(response?.error));
 };
 
 const getEventAlertsSuccess = (alerts) => {
@@ -18,6 +20,14 @@ const getEventAlertsSuccess = (alerts) => {
     payload: alerts
   };
 };
+
+export const setFilteredEventAlerts = (alerts) => {
+  return {
+    type: actionTypes.SET_FILTERED_EVENT_ALERTS,
+    payload: alerts,
+  };
+};
+
 
 const getEventAlertsFail = (error) => {
   return {
@@ -79,18 +89,21 @@ export const editEventAlertInfo = (eventId, editInfo) => async (dispatch) => {
   dispatch(InProgress(true, 'Loading..'));
   if (response.status === 200) {
     dispatch(InProgress(false, 'Loading..'));
-    return dispatch(editEventAlertInfoSuccess(response.data));
+    let successMessage = 'Successfully updated the information';
+    return dispatch(editEventAlertInfoSuccess(response.data, successMessage));
   }
-  else{
+  else {
     dispatch(InProgress(false, 'Loading..'));
-    return dispatch(editEventAlertInfoFail(response.data));
+    let failureMessage = 'Information update failed';
+    return dispatch(editEventAlertInfoFail(response?.data || failureMessage));
   }
 };
 
-const editEventAlertInfoSuccess = (payload) => {
+const editEventAlertInfoSuccess = (payload, message) => {
   return {
     type: actionTypes.EDIT_EVENT_ALERT_INFO_SUCCESS,
     payload,
+    message
   };
 };
 
@@ -108,7 +121,7 @@ export const getEventInfo = (eventId) => async (dispatch) => {
     dispatch(InProgress(false, 'Loading..'));
     return dispatch(getEventAlertInfoSuccess(response.data));
   }
-  else{
+  else {
     dispatch(InProgress(false, 'Loading..'));
     return dispatch(getEventAlertInfoFail(response.data));
   }
@@ -138,12 +151,6 @@ export const setEventParams = (payload) => {
     type: actionTypes.SET_EVENT_PARAMS,
     payload,
   };
-};
-
-export const resetEventApiParams = () => {
-  return {
-    type: actionTypes.RESET_EVENT_API_PARAMS,
-  }
 };
 
 export const setNewEventState = (eventState, pageState, newItemsCount) => {

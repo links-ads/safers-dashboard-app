@@ -3,57 +3,59 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
-import { getIconLayer } from '../../../helpers/mapHelper';
+import { getIconLayer, getViewState } from '../../../helpers/mapHelper';
 import PaginationWrapper from '../../../components/Pagination';
 import { setFavorite } from '../../../store/reports/action';
 import Report from './Report';
 
 const MAP_TYPE = 'reports';
 
-const ReportList = ({setIconLayer}) => {
+const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, setIconLayer }) => {
   const { allReports: OrgReportList, filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
-  const [alertId, setAlertId] = useState([]);
 
   const dispatch = useDispatch();
-  
+
 
   const allReports = filteredReports || OrgReportList;
 
   const setFavoriteFlag = (id) => {
-    let selectedAlert = _.find(pageData, { id });
-    selectedAlert.isFavorite = !selectedAlert.isFavorite;
-    dispatch(setFavorite(id, selectedAlert.isFavorite));
+    let selectedReport = _.find(pageData, { id });
+    selectedReport.isFavorite = !selectedReport.isFavorite;
+    dispatch(setFavorite(id, selectedReport.isFavorite));
   }
 
   const setSelectedReport = (report_id) => {
     if (report_id) {
-      setAlertId(report_id);
-      let alertsToEdit = _.cloneDeep(pageData);
-      let selectedAlert = _.find(alertsToEdit, { report_id });
-      selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(alertsToEdit, MAP_TYPE));
+      setReportId(report_id);
+      let reportList = _.cloneDeep(allReports);
+      let selectedReport = _.find(reportList, { report_id });
+      selectedReport.isSelected = true;
+      setIconLayer(getIconLayer(reportList, MAP_TYPE));
+      setViewState(getViewState(selectedReport.location, currentZoomLevel))
     } else {
-      setAlertId(null);
-      setIconLayer(getIconLayer(pageData, MAP_TYPE));
+      setReportId(undefined);
+      setIconLayer(getIconLayer(allReports, MAP_TYPE));
     }
   }
   const updatePage = data => {
-    setAlertId(null);
+    setReportId(undefined);
     setIconLayer(getIconLayer(data, MAP_TYPE));
     setPageData(data);
   };
-  
-  return(
+
+  return (
     <>
       <Row>
         {
-          pageData.map((alert) => <Report
-            key={alert.report_id}
-            card={alert}
-            setSelectedAlert={setSelectedReport}
-            setFavorite={setFavoriteFlag}
-            alertId={alertId} />)
+          pageData.map((report) =>
+            <Report
+              key={report.report_id}
+              card={report}
+              reportId={reportId}
+              setSelectedReport={setSelectedReport}
+              setFavorite={setFavoriteFlag}
+            />)
         }
       </Row>
       <Row className='text-center'>
@@ -63,6 +65,10 @@ const ReportList = ({setIconLayer}) => {
 }
 
 ReportList.propTypes = {
+  reportId: PropTypes.any,
+  currentZoomLevel: PropTypes.any,
+  setViewState: PropTypes.func,
+  setReportId: PropTypes.func,
   setIconLayer: PropTypes.func,
 }
 

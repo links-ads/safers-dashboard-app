@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card } from 'reactstrap';
-import { FlyToInterpolator, IconLayer } from 'deck.gl';
+import { IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import toastr from 'toastr';
@@ -18,7 +18,8 @@ import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types'
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
-import { getBoundingBox } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
+import SearchButton from '../../components/SearchButton';
 
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
@@ -36,23 +37,27 @@ const FireAlerts = ({ t }) => {
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState('-date');
+  const [sortByDate, setSortByDate] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [zoomLevel, setZoomLevel] = useState(undefined);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
   const [isEdit, setIsEdit] = useState(false);
+  const [isViewStateChanged, setIsViewStateChanged] = useState(false);
   const [hoverInfo, setHoverInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getSource());
     dispatch(setNewAlertState(false, true));
     return () => {
-      dispatch(setAlertApiParams({}));
+      dispatch(setAlertApiParams(undefined));
       dispatch(setNewAlertState(false, false));
     }
   }, []);
@@ -62,11 +67,12 @@ const FireAlerts = ({ t }) => {
   }, [sortByDate, alertSource, dateRange, boundingBox]);
 
   useEffect(() => {
-    if (success) {
+    if (success)
       toastr.success(success, '');
-    } else if (error)
+    else if (error)
       toastr.error(error, '');
 
+    setIsEdit(false);
     dispatch(resetAlertsResponseState());
   }, [success, error]);
 
@@ -88,7 +94,7 @@ const FireAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
   const getAlertsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, zoomLevel));
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
   }
 
   const setFavorite = (id) => {
@@ -109,6 +115,7 @@ const FireAlerts = ({ t }) => {
     selectedAlert.type = 'VALIDATED';
     dispatch(validateAlert(id));
     hideTooltip();
+    console.log('validateEvent')
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -118,6 +125,7 @@ const FireAlerts = ({ t }) => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.information = desc;
     dispatch(editAlertInfo(id, desc));
+    console.log('editInfo')
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -136,51 +144,39 @@ const FireAlerts = ({ t }) => {
   const getAlerts = () => {
     const dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
-      : {}
+      : {};
 
     setAlertId(undefined);
     const alertParams = {
-      order: sortByDate,
+      order: sortByDate ? sortByDate : '-date',
       source: alertSource ? alertSource : undefined,
+      start_date: dateRange[0],
+      end_date: dateRange[1],
+      default_date: false,
+      default_bbox: !boundingBox,
       bbox: boundingBox ? boundingBox.toString() : undefined,
-      default_bbox: false,
       ...dateRangeParams
     };
-    
+
     dispatch(setAlertApiParams(alertParams));
     dispatch(getAllFireAlerts(alertParams, true));
-
   }
 
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
-      if (id === alertId) {
-        hideTooltip();
-      }
-      setAlertId(id);
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(clonedAlerts));
       setIsEdit(isEdit);
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
-      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+      !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged ?
+        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo, setIsViewStateChanged))
+        : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
+      setAlertId(id);
+      setIconLayer(getIconLayer(clonedAlerts));
     } else {
       setAlertId(undefined);
       setIconLayer(getIconLayer(filteredAlerts));
     }
-  }
-
-  const getViewState = (midPoint, zoomLevel = 4) => {
-    return {
-      longitude: midPoint[0],
-      latitude: midPoint[1],
-      zoom: zoomLevel,
-      pitch: 0,
-      bearing: 0,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator()
-    };
   }
 
   const getIconLayer = (alerts) => {
@@ -201,15 +197,16 @@ const FireAlerts = ({ t }) => {
   }
 
   const handleResetAOI = useCallback(() => {
+    setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
   const hideTooltip = (e) => {
     if (e && e.viewState) {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setZoomLevel(e.viewState.zoom);
+      setCurrentZoomLevel(e.viewState.zoom);
     }
-    setIsEdit(false);
+    setIsViewStateChanged(true);
     setHoverInfo({});
   };
 
@@ -254,20 +251,10 @@ const FireAlerts = ({ t }) => {
 
   const getSearchButton = (index) => {
     return (
-      <Button
-        key={index}
-        className="btn-rounded alert-search-area"
-        style={{
-          position: 'absolute',
-          top: 10,
-          textAlign: 'center',
-          marginLeft: '41%'
-        }}
-        onClick={getAlertsByArea}
-      >
-        <i className="bx bx-revision"></i>{' '}
-        {t('Search This Area')}
-      </Button >
+      <SearchButton
+        index={index}
+        getInfoByArea={getAlertsByArea}
+      />
     )
   }
 
@@ -359,6 +346,8 @@ const FireAlerts = ({ t }) => {
                 onClick={showTooltip}
                 onViewStateChange={hideTooltip}
                 widgets={[getSearchButton]}
+                setWidth={setNewWidth}
+                setHeight={setNewHeight}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
               />

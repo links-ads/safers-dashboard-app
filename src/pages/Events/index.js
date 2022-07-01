@@ -10,100 +10,77 @@ import 'rc-pagination/assets/index.css';
 import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
-import { getAllEventAlerts, resetEventAlertsResponseState, resetEventApiParams, setNewEventState, } from '../../store/appAction';
-import { getIconLayer, getViewState } from '../../helpers/mapHelper';
-import { PAGE_SIZE } from '../../store/events/types';
+import {
+  getAllEventAlerts,
+  resetEventAlertsResponseState,
+  setNewEventState,
+  getEventInfo,
+  setEventParams,
+  setFilteredEventAlerts,
+  setEventFavoriteAlert
+} from '../../store/appAction';
+import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
+import { PAGE_SIZE, SET_FAV_EVENT_ALERT_SUCCESS } from '../../store/events/types';
 
 //i18n
 import { withTranslation } from 'react-i18next'
-import { getEventInfo, setEventParams } from '../../store/events/action';
-import { MAPTYPES } from '../../constants/common';
+import { MAP_TYPES } from '../../constants/common';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const  { allAlerts: alerts, params: eventParams } = useSelector(state => state.eventAlerts);
+  const { allAlerts: alerts, filteredAlerts } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
   const error = useSelector(state => state.eventAlerts.error);
-  // eslint-disable-next-line no-unused-vars
-  const { params } = useSelector(state => state.eventAlerts);
   const dateRange = useSelector(state => state.common.dateRange)
- 
+
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
-  const [alertSource, setAlertSource] = useState(undefined);
+  const [eventSource, setEventSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
-  const [status, setStatus] = useState('');
-  // const [boundaryBox, setBoundaryBox] = useState(undefined);
-  const [zoomLevel, setZoomLevel] = useState(undefined);
+  const [checkedStatus, setCheckedStatus] = useState([])
+  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
-  const [filteredAlerts, setFilteredAlerts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
+  const [isEdit, setIsEdit] = useState(false);
+  const [isViewStateChanged, setIsViewStateChanged] = useState(false);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(alertSource){
-      eventParams.source = alertSource;
-    }
-    if(alertSource == 'all'){
-      delete eventParams.source
-    }
-    if(status){
-      eventParams.status = status;
-    }else{
-      delete eventParams.status
-    }
-    if(dateRange){
-      eventParams.start_date = dateRange[0]
-      eventParams.end_date = dateRange[1]
-    }else if(!dateRange){
-      delete eventParams.start_date
-      delete eventParams.end_date
-    }
-    if(sortOrder){
-      eventParams.order = sortOrder
-    }
-  
-    dispatch(setEventParams(eventParams))
-    dispatch(getAllEventAlerts(eventParams));
     dispatch(setNewEventState(false, true));
     return () => {
-      dispatch(resetEventApiParams());
+      dispatch(setEventParams(undefined));
       dispatch(setNewEventState(false, false));
     }
-  }, [dateRange, alertSource, sortOrder, status])
+  }, []);
 
   useEffect(() => {
-    setFilteredAlerts(alerts);
-  }, [alerts]);
+    getEvents();
+  }, [dateRange, eventSource, sortOrder, boundingBox, checkedStatus])
 
   useEffect(() => {
-    if (success) {
+    if (success)
       toastr.success(success, '');
-    } else if (error)
+    else if (error)
       toastr.error(error, '');
-
+    setIsEdit(false);
     dispatch(resetEventAlertsResponseState());
   }, [success, error]);
 
   useEffect(() => {
-    if (alerts.length > 0 && filteredAlerts.length === 0) {
-      setIconLayer(getIconLayer(alerts, MAPTYPES.EVENTS));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
-      setFilteredAlerts(alerts);
-    }
-    else if (alerts.length > filteredAlerts.length) {
+    if (alerts.length > filteredAlerts.length) {
       toastr.success('New events are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
   }, [alerts]);
 
   useEffect(() => {
-    setIconLayer(getIconLayer(filteredAlerts, MAPTYPES.EVENTS));
+    setIconLayer(getIconLayer(filteredAlerts, MAP_TYPES.EVENTS));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }
@@ -112,34 +89,82 @@ const EventAlerts = ({ t }) => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)))
   }, [filteredAlerts]);
 
+
+  const getEvents = () => {
+    const dateRangeParams = dateRange
+      ? { start_date: dateRange[0], end_date: dateRange[1] }
+      : {};
+
+    setAlertId(undefined);
+    const eventParams = {
+      order: sortOrder ? sortOrder : '-date',
+      source: eventSource ? eventSource : undefined,
+      status: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
+      bbox: boundingBox?.toString(),
+      default_date: false,
+      default_bbox: !boundingBox,
+      ...dateRangeParams
+    };
+
+    dispatch(setEventParams(eventParams))
+    dispatch(getAllEventAlerts(eventParams, true));
+  }
+
+  const getAlertsByArea = () => {
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
+  }
+
   const handleResetAOI = useCallback(() => {
+    setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
   const hideTooltip = (e) => {
     if (e && e.viewState) {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setZoomLevel(e.viewState.zoom);
+      setCurrentZoomLevel(e.viewState.zoom);
     }
+    setIsViewStateChanged(true);
     setHoverInfo({});
   };
 
+  const showTooltip = info => {
+    if (info.picked && info.object) {
+      setSelectedAlert(info.object.id);
+      setHoverInfo(info);
+    } else {
+      setHoverInfo({});
+    }
+  };
+
+  const setFavorite = (id) => {
+    const selectedAlert = _.find(filteredAlerts, { id });
+    dispatch(setEventFavoriteAlert(id, !selectedAlert.favorite)).then((result) => {
+      if (result.type === SET_FAV_EVENT_ALERT_SUCCESS) {
+        selectedAlert.favorite = !selectedAlert.favorite
+        hoverInfo.object && setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
+        const to = PAGE_SIZE * currentPage;
+        const from = to - PAGE_SIZE;
+        setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
+      }
+    })
+  }
+
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
-      if (id === alertId) {
-        hideTooltip();
-      }
-      setAlertId(id);
       dispatch(getEventInfo(id))
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(clonedAlerts, MAPTYPES.EVENTS));
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center, isEdit });
-      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+      setIsEdit(isEdit);
+      !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged ?
+        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo, setIsViewStateChanged))
+        : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
+      setAlertId(id);
+      setIconLayer(getIconLayer(clonedAlerts, MAP_TYPES.EVENTS));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(filteredAlerts, MAPTYPES.EVENTS));
+      setIconLayer(getIconLayer(filteredAlerts, MAP_TYPES.EVENTS));
     }
   }
 
@@ -154,7 +179,7 @@ const EventAlerts = ({ t }) => {
                 className="btn float-end mt-1 py-0 px-1"
                 aria-label='refresh-events'
                 onClick={() => {
-                  setFilteredAlerts(alerts);
+                  dispatch(setFilteredEventAlerts(alerts));
                 }}
               >
                 <i className="mdi mdi-sync"></i>
@@ -168,59 +193,52 @@ const EventAlerts = ({ t }) => {
         <Row>
           <Col xl={5}>
             <SortSection
-              setAlertId={setAlertId}
               sortOrder={sortOrder}
-              setSortOrder={setSortOrder}
-              setAlertSource={setAlertSource}
               filteredAlerts={filteredAlerts}
-              setFilterdAlerts={setFilteredAlerts}
-              status={status}
-              setStatus={setStatus}
+              eventSource={eventSource}
+              checkedStatus={checkedStatus}
+              setAlertId={setAlertId}
+              setSortOrder={setSortOrder}
+              setEventSource={setEventSource}
+              setCheckedStatus={setCheckedStatus}
             />
             <Row>
               <Col xl={12} className='px-3'>
-                <EventList 
+                <EventList
                   alertId={alertId}
-                  setAlertId={setAlertId} 
+                  setAlertId={setAlertId}
                   filteredAlerts={filteredAlerts}
                   paginatedAlerts={paginatedAlerts}
-                  currentPage={currentPage}
-                  midPoint={midPoint}
-                  zoomLevel={zoomLevel}
-                  setMidpoint={setMidPoint}
-                  setZoomLevel={setZoomLevel}
-                  setHoverInfo={setHoverInfo}
-                  setCurrentPage={setCurrentPage}
+                  hideTooltip={hideTooltip}
                   setIconLayer={setIconLayer}
                   setPaginatedAlerts={setPaginatedAlerts}
                   setSelectedAlert={setSelectedAlert}
+                  setFavorite={setFavorite}
                 />
               </Col>
             </Row>
           </Col>
           <Col xl={7} className='mx-auto'>
-            <MapSection 
+            <MapSection
               viewState={viewState}
-              setViewState={setViewState}
               hoverInfo={hoverInfo}
               iconLayer={iconLayer}
-              setHoverInfo={setHoverInfo}
-              paginatedAlerts={paginatedAlerts}
+              filteredAlerts={filteredAlerts}
               currentPage={currentPage}
-              midPoint={midPoint}
-              zoomLevel={zoomLevel}
-              setMidpoint={setMidPoint}
-              setZoomLevel={setZoomLevel}
-              setCurrentPage={setCurrentPage}
-              setAlertId={setAlertId}
-              setSelectedAlert={setSelectedAlert}
+              isEdit={isEdit}
+              hideTooltip={hideTooltip}
+              showTooltip={showTooltip}
+              getAlertsByArea={getAlertsByArea}
+              setPaginatedAlerts={setPaginatedAlerts}
+              setIsEdit={setIsEdit}
+              setFavorite={setFavorite}
+              setNewWidth={setNewWidth}
+              setNewHeight={setNewHeight}
             />
           </Col>
         </Row>
-
       </div>
     </div >
-
   );
 }
 

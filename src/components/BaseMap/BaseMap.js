@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { FullscreenControl, NavigationControl, MapContext, StaticMap } from 'react-map-gl';
 import { MapView } from '@deck.gl/core';
 import DeckGL from 'deck.gl';
@@ -27,15 +27,34 @@ const BaseMap = ({
   onClick = () => { },
   onViewStateChange = () => { },
   onViewportLoad = () => { },
+  setWidth = () => { },
+  setHeight = () => { },
   widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
   mapStyle = 'mb_streets'
 }) => {
 
+  const mapRef = useRef();
   const finalLayerSet = [
     ...layers ? layers : null
   ];
+
+  useEffect(() => {
+    window.addEventListener('resize', getMapSize);
+  }, []);
+
+  useEffect(() => {
+    getMapSize();
+  }, [layers]);
+
+  const getMapSize = () => {
+    const newWidth = mapRef?.current?.deck?.width;
+    newWidth && setWidth(newWidth);
+
+    const newHeight = mapRef?.current?.deck.height;
+    newHeight && setHeight(newHeight);
+  };
 
   const getPosition = (position) => {
     const props = position.split('-');
@@ -48,6 +67,7 @@ const BaseMap = ({
   return (
     <>
       <DeckGL
+        ref={mapRef}
         views={new MapView({ repeat: true })}
         onClick={onClick}
         onViewStateChange={onViewStateChange}
