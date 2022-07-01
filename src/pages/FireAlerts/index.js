@@ -150,8 +150,6 @@ const FireAlerts = ({ t }) => {
     const alertParams = {
       order: sortByDate ? sortByDate : '-date',
       source: alertSource ? alertSource : undefined,
-      start_date: dateRange[0],
-      end_date: dateRange[1],
       default_date: false,
       default_bbox: !boundingBox,
       bbox: boundingBox ? boundingBox.toString() : undefined,
