@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import _ from 'lodash';
-import moment from 'moment';
 import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import SortSection from './Components/SortSection';
-import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import EventList from './Components/EventList';
 import {
@@ -33,6 +31,8 @@ const EventAlerts = ({ t }) => {
   const { allAlerts: alerts, filteredAlerts } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
   const error = useSelector(state => state.eventAlerts.error);
+  const dateRange = useSelector(state => state.common.dateRange)
+
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
@@ -41,7 +41,6 @@ const EventAlerts = ({ t }) => {
   const [checkedStatus, setCheckedStatus] = useState([])
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
-  const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -92,32 +91,27 @@ const EventAlerts = ({ t }) => {
 
 
   const getEvents = () => {
+    const dateRangeParams = dateRange
+      ? { start_date: dateRange[0], end_date: dateRange[1] }
+      : {};
+
     setAlertId(undefined);
     const eventParams = {
       order: sortOrder ? sortOrder : '-date',
       source: eventSource ? eventSource : undefined,
       status: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
-      start_date: dateRange[0],
-      end_date: dateRange[1],
       bbox: boundingBox?.toString(),
       default_date: false,
-      default_bbox: !boundingBox
+      default_bbox: !boundingBox,
+      ...dateRangeParams
     };
+
     dispatch(setEventParams(eventParams))
     dispatch(getAllEventAlerts(eventParams, true));
   }
 
   const getAlertsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
-  }
-
-  const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('YYYY-MM-DD');
-    let to = moment(dates[1]).format('YYYY-MM-DD');
-    setDateRange([from, to]);
-  }
-  const clearDates = () => {
-    setDateRange([]);
   }
 
   const handleResetAOI = useCallback(() => {
@@ -178,7 +172,7 @@ const EventAlerts = ({ t }) => {
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
-          <Col xl={5} className='d-flex justify-content-between'>
+          <Col xl={12} className='d-flex justify-content-between'>
             <p className='align-self-baseline alert-title'>{t('Events', { ns: 'common' })}
               <button
                 type="button"
@@ -194,9 +188,6 @@ const EventAlerts = ({ t }) => {
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
               {t('default-aoi')}</Button>
-          </Col>
-          <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates} />
           </Col>
         </Row>
         <Row>

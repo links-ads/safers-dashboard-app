@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Row, Col, Label, Input, FormGroup,  } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import DateRangeComponent from '../../../components/DateRangePicker/DateRange';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { getAllAreas } from '../../../store/appAction';
@@ -10,7 +9,6 @@ import { setPolygonLayer, setSelectedAoi, setViewState } from '../../../store/co
 import { getInSituMedia, getStats, getTweets, getWeatherStats, getWeatherVariables } from '../../../store/dashboard/action';
 
 import { getPolygonLayer, getViewState } from '../../../helpers/mapHelper';
-import moment from 'moment';
 
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -18,11 +16,10 @@ import { withTranslation } from 'react-i18next'
 const SearchContainer = (props) => {
   const dispatch = useDispatch()
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const allAoi = useSelector(state => state.common.aois);
-  
-  const selectedAoi = useSelector(state => state.common.selectedAoi);
-  
-  const [dateRange, setDateRange] = useState([]);
+
+  const {aois: allAoi, selectedAoi, dateRange} = useSelector(
+    state => state.common
+  )
 
   useEffect(() => {
     if(!allAoi.length){
@@ -37,9 +34,9 @@ const SearchContainer = (props) => {
   const getSearchData = () => {
     const searchAoi = selectedAoi ? selectedAoi : defaultAoi.features[0].properties.id
     const params = {};
-    if(dateRange.length>1){
-      params.startDate = moment(dateRange[0])
-      params.endDate = moment(dateRange[1])
+    if(dateRange){
+      params.startDate = dateRange[0]
+      params.endDate = dateRange[1]
     }
     if(searchAoi) {
       params.aoi = searchAoi
@@ -69,11 +66,6 @@ const SearchContainer = (props) => {
     }
   }
 
-  const setDates = (dates) => {
-    setDateRange(dates)
-    getSearchData()
-  }
-
   return(
     <Row className='g-0'>
       <Col >
@@ -100,10 +92,6 @@ const SearchContainer = (props) => {
                 </option>)}
               </Input>
             </FormGroup>
-          </Col>
-          <Col></Col>
-          <Col md={3} className="d-flex justify-content-end">
-            <DateRangeComponent setDates={setDates}/>
           </Col>
         </Row>
       </Col>

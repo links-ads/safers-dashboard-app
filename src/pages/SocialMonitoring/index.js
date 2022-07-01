@@ -3,10 +3,8 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
 import { FlyToInterpolator } from 'deck.gl';
-import moment from 'moment';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TwitterContainer from './TwitterContainer';
 import { getStats, getTweets, } from '../../store/appAction';
 import { formatNumber } from '../../store/utility';
@@ -20,20 +18,15 @@ import { withTranslation } from 'react-i18next'
 const MOCK_DATA =
   'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json';//using this mock data until the tweets API ready with coordinates.
 
-const getDefaultDateRange = () => {
-  const from = moment(new Date()).add(-3, 'days').format('DD-MM-YYYY');
-  const to = moment(new Date()).format('DD-MM-YYYY');
-  return [from, to];
-}
-
 const SocialMonitoring = ({t}) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const stats = useSelector(state => state.dashboard.stats);
+  const dateRange = useSelector(state => state.common.dateRange)
+
   const tweetsTrend = 23;//hard coded text until API available
   const socialStats = MOCK_DATA;
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [dateRange, setDateRange] = useState(getDefaultDateRange());
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -49,9 +42,9 @@ const SocialMonitoring = ({t}) => {
 
   const getSearchData = () => {
     const params = {};
-    if (dateRange.length > 1) {
-      params.startDate = moment(dateRange[0])
-      params.endDate = moment(dateRange[1])
+    if (dateRange) {
+      params.startDate = dateRange[0]
+      params.endDate = dateRange[1]
     }
     if (defaultAoi) {
       params.aoi = defaultAoi
@@ -83,21 +76,13 @@ const SocialMonitoring = ({t}) => {
       iconMapping,
     }))
   }
-  const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('DD-MM-YYYY');
-    let to = moment(dates[1]).format('DD-MM-YYYY');
-    setDateRange([from, to]);
-  }
 
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row className='mb-3'>
-          <Col xl={9}>
+          <Col xl={12}>
             <p className='align-self-baseline alert-title'>{t('Social Monitor')}</p>
-          </Col>
-          <Col xl={3} className="d-flex justify-content-end">
-            <DateRangePicker setDates={handleDateRangePicker} />
           </Col>
         </Row>
         <Row className='mb-3'>

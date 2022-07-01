@@ -1,18 +1,34 @@
 import PropTypes from 'prop-types'
 import React from 'react'
 
+import moment from 'moment'
+
+import { useDispatch, useSelector } from 'react-redux';
+
+import { setDateRange } from '../store/common/action';
+
 import LanguageDropdown from '../components/LanguageDropdown'
 
 // Import menuDropdown
 import ProfileMenu from './TopbarDropdown/ProfileMenu'
 
-
+import DateRangePicker from '../components/DateRangePicker/DateRange';
 
 const Header = () => {
+  const dispatch = useDispatch()
 
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  const dateRange = useSelector(state => state.common.dateRange)
 
+  const clearDates = () => {
+    dispatch(setDateRange(null))
+  }
 
+  const handleDateRangePicker = (dates) => {
+    dispatch(setDateRange(dates.map(date => 
+      moment(date).format('YYYY-MM-DD'))
+    ));
+  }
 
   function toggleFullscreen() {
     if (
@@ -47,7 +63,6 @@ const Header = () => {
     body.classList.toggle('sidebar-enable');
   }
 
-
   return (
     <React.Fragment>
       <header id='page-topbar'>
@@ -65,7 +80,12 @@ const Header = () => {
               <i className='fa fa-fw fa-bars' />
             </button>
           </div>
-          <div className='d-flex'>
+          <div className='d-flex align-items-center'>
+            <DateRangePicker 
+              setDates={handleDateRangePicker}
+              clearDates={clearDates}
+              defaultDateRange={dateRange}
+            />
             <div className='dropdown d-none d-lg-inline-block ms-1'>
               <button
                 type='button'

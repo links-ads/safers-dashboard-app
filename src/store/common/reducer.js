@@ -1,6 +1,8 @@
 import * as actionTypes from './types';
 import { updateObject } from '../utility';
 
+import {getDefaultDateRange} from '../utility'
+
 const initialState = {
   config: undefined,
   orgList: [],
@@ -10,7 +12,8 @@ const initialState = {
   viewState: undefined,
   polygonLayer: undefined,
   isLoading: false,
-  loadingMsg: null
+  loadingMsg: null,
+  dateRange: getDefaultDateRange()
 };
 
 const commonReducer = (state = initialState, action) => {
@@ -26,6 +29,7 @@ const commonReducer = (state = initialState, action) => {
   case actionTypes.SET_SELECTED_AOI: return selectAoi(state, action);
   case actionTypes.SET_VIEW_STATE: return setViewState(state, action);
   case actionTypes.SET_POLYGON_LAYER: return setPolygonLayer(state, action);
+  case actionTypes.SET_DATE_RANGE: return setDateRange(state, action);
   case actionTypes.CM_WIP: return isSiteLoading(state, action);
   default:
     return state;
@@ -115,6 +119,12 @@ const setViewState = (state, action) => {
 const setPolygonLayer = (state, action) => {
   const updatedState = {
     polygonLayer: action.payload,
+  }
+  return updateObject(state, updatedState);
+}
+const setDateRange = (state, action) => {
+  const updatedState = {
+    dateRange: action.payload
   }
   return updateObject(state, updatedState);
 }

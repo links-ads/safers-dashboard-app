@@ -10,7 +10,7 @@ const initialState = {
   params: {
     order: '-date',
     default_bbox: true,
-    default_date: true
+    default_date: false
   },
   isNewNotification: false,
   isPageActive: false,
@@ -19,15 +19,15 @@ const initialState = {
 
 const notificationsReducer = (state = initialState, action) => {
   switch (action.type) {
-  case actionTypes.GET_NOTIFICATIONS_SUCCESS: return getNotificationSuccess(state, action);
-  case actionTypes.GET_NOTIFICATIONS_FAIL: return getNotificationsFail(state, action);
-  case actionTypes.RESET_NOTIFICATION_API_PARAMS: return resetNotificationApiParams(state, action);
-  case actionTypes.SET_NEW_NOTIFICATION_STATE: return setNewNotificationState(state, action);
-  case actionTypes.SET_NOTIFICATION_PARAMS: return setNotificationParams(state, action);
-  case actionTypes.GET_NOTIFICATION_SOURCES_SUCCESS: return getNotificationSourcesSuccess(state, action);
-  case actionTypes.GET_NOTIFICATIONS_SOURCES_FAIL: return getNotificationSourcesFail(state, action);
-  default:
-    return state;
+    case actionTypes.GET_NOTIFICATIONS_SUCCESS: return getNotificationSuccess(state, action);
+    case actionTypes.GET_NOTIFICATIONS_FAIL: return getNotificationsFail(state, action);
+    case actionTypes.RESET_NOTIFICATION_API_PARAMS: return resetNotificationApiParams(state, action);
+    case actionTypes.SET_NEW_NOTIFICATION_STATE: return setNewNotificationState(state, action);
+    case actionTypes.SET_NOTIFICATION_PARAMS: return setNotificationParams(state, action);
+    case actionTypes.GET_NOTIFICATION_SOURCES_SUCCESS: return getNotificationSourcesSuccess(state, action);
+    case actionTypes.GET_NOTIFICATIONS_SOURCES_FAIL: return getNotificationSourcesFail(state, action);
+    default:
+      return state;
   }
 };
 
