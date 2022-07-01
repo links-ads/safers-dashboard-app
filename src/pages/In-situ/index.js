@@ -2,26 +2,25 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import _ from 'lodash';
-import moment from 'moment';
 import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import SortSection from './Components/SortSection';
-import DateComponent from '../../components/DateRangePicker/DateRange';
 import MapSection from './Components/Map';
 import AlertList from './Components/AlertList';
-import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setDateRange, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCameraList, getCameraSources } from '../../store/insitu/action';
+import { getAllInSituAlerts, resetInSituAlertsResponseState, setCurrentPage, setFilterdAlerts, setHoverInfo, setIconLayer, setMidpoint, setPaginatedAlerts, setZoomLevel, getCameraList, getCameraSources } from '../../store/insitu/action';
 import { getIconLayer, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
-import { getDefaultDateRange } from '../../store/utility';
 
 //i18n
 import { useTranslation } from 'react-i18next'
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { filteredAlerts, sortByDate, alertSource, dateRange, allAlerts:alerts, success, error, cameraList } = useSelector(state => state.inSituAlerts);
+  const { filteredAlerts, sortByDate, alertSource, allAlerts:alerts, success, error, cameraList } = useSelector(state => state.inSituAlerts);
+  const dateRange = useSelector(state => state.common.dateRange)
+
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [checkedStatus, setCheckedStatus] = useState([])
   const {t} = useTranslation();
@@ -41,18 +40,18 @@ const InSituAlerts = () => {
   }, [alertSource, boundingBox]);
 
   useEffect(() => {
-    dispatch(getAllInSituAlerts(
-      {
-        type: checkedStatus.length === 1 ? checkedStatus[0] : undefined, 
-        order: sortByDate,
-        camera_id: alertSource,
-        start_date: dateRange[0],
-        end_date: dateRange[1],
-        bbox: boundingBox ? boundingBox.toString() : undefined,
-        default_date: false,
-        default_bbox: false
-      }
-    ));
+    const dateRangeParams = dateRange
+      ? { start_date: dateRange[0], end_date: dateRange[1] }
+      : {}
+
+    dispatch(getAllInSituAlerts({
+      type: checkedStatus.length === 1 ? checkedStatus[0] : undefined, 
+      order: sortByDate,
+      camera_id: alertSource,
+      bbox: boundingBox ? boundingBox.toString() : undefined,
+      default_bbox: false,
+      ...dateRangeParams
+    }));
   }, [sortByDate, alertSource, dateRange, boundingBox, checkedStatus]);
 
   useEffect(() => {
@@ -85,16 +84,6 @@ const InSituAlerts = () => {
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
   }, [filteredAlerts]);
 
-  const handleDateRangePicker = (dates) => {
-    let from = moment(dates[0]).format('YYYY-MM-DD');
-    let to = moment(dates[1]).format('YYYY-MM-DD');
-    dispatch(setDateRange([from, to]));
-  }
-
-  const clearDates = () => {
-    dispatch(setDateRange(getDefaultDateRange()))
-  }
-
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
@@ -112,15 +101,13 @@ const InSituAlerts = () => {
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
-          <Col xl={5} className='d-flex justify-content-between'>
+          <Col xl={12} className='d-flex justify-content-between'>
             <p className='align-self-baseline alert-title'>{t('In Situ Cameras', {ns: 'inSitu'})}</p>
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
               {t('default-aoi', {ns: 'common'})}</Button>
           </Col>
-          <Col xl={7} className='d-flex justify-content-end'>
-            <DateComponent setDates={handleDateRangePicker} clearDates={clearDates} />
-          </Col>
+          
         </Row>
         <Row>
           <Col xl={5}>

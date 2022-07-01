@@ -7,7 +7,7 @@ const initialState = {
   dateRange : getDefaultDateRange(),
   error: false,
   success: null,
-  params: { default_bbox: false, order : '-date', default_date: true },
+  params: { default_bbox: false, order : '-date' },
   isNewNotification: false,
   isPageActive: false,
   newItemsCount: 0,

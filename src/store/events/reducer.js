@@ -15,7 +15,7 @@ const initialState = {
   error: false,
   updateError: null,
   success: null,
-  params: { default_bbox: false, order : '-date', default_date: true },
+  params: { default_bbox: false, order : '-date' },
   isNewEvent: false,
   isPageActive: false,
   newItemsCount: 0,
