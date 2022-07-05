@@ -342,8 +342,8 @@ const DataLayer = ({ t }) => {
   );
 }
 
-DataLayer.propTypes = {
+
+
+export default withTranslation(['common'])(DataLayer);DataLayer.propTypes = {
   t: PropTypes.any,
 }
-
-export default withTranslation(['common'])(DataLayer);

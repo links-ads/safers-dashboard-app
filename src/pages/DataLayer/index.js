@@ -322,8 +322,12 @@ const DataLayer = ({ t }) => {
           </Col>
         </Row>
       </div>
-    </div>
+    </div >
   );
-};
+}
 
-export default DataLayer;
+DataLayer.propTypes = {
+  t: PropTypes.any,
+}
+
+export default withTranslation(['common'])(DataLayer);
