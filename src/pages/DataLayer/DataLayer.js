@@ -92,7 +92,9 @@ const DataLayer = ({ t }) => {
   }, [dataLayers]);
 
   useEffect(() => {
-
+    const dateRangeParams = dateRange 
+      ? { start: dateRange[0], end: dateRange[1] } 
+      : {};
     dispatch(getAllDataLayers(
       {
         order: sortByDate,
@@ -103,7 +105,8 @@ const DataLayer = ({ t }) => {
         // bbox: boundingBox ? boundingBox.toString() : undefined, //disabled since bbox value won't return data 
         default_start: false,
         default_end: false,
-        default_bbox: false
+        default_bbox: false,
+        ...dateRangeParams,
       }
     ));
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
