@@ -219,9 +219,8 @@ const OnDemandDataLayer = ({ t }) => {
   }, []);
 
   return (
-    // <div className='page-content'>
     <div>
-      <div className='mx-2 sign-up-aoi-map-bg'>
+      <div>
         {showLegend ? (
           <div className='legend'>
             <img src={currentLayer.legend_url}/>
@@ -233,6 +232,13 @@ const OnDemandDataLayer = ({ t }) => {
             {/* <Row>
               <p className='align-self-baseline alert-title'>{t('Data Layers', { ns: 'dataLayers' })}</p>
             </Row> */}
+            <Row xl={5}>
+              <Col className=''>
+                <div className='text-right'>
+                  <Button className="request-map btn-orange float-left">Request a map</Button>
+                </div>
+              </Col>
+            </Row>
             <Row>
               <Col xl={10}>
                 <Row>
