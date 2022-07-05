@@ -36,7 +36,6 @@ const EventAlerts = ({ t }) => {
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
-  const [eventSource, setEventSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [checkedStatus, setCheckedStatus] = useState([])
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -62,7 +61,7 @@ const EventAlerts = ({ t }) => {
 
   useEffect(() => {
     getEvents();
-  }, [dateRange, eventSource, sortOrder, boundingBox, checkedStatus])
+  }, [dateRange, sortOrder, boundingBox, checkedStatus])
 
   useEffect(() => {
     if (success)
@@ -98,10 +97,8 @@ const EventAlerts = ({ t }) => {
     setAlertId(undefined);
     const eventParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: eventSource ? eventSource : undefined,
       status: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
       bbox: boundingBox?.toString(),
-      default_date: false,
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
@@ -195,11 +192,9 @@ const EventAlerts = ({ t }) => {
             <SortSection
               sortOrder={sortOrder}
               filteredAlerts={filteredAlerts}
-              eventSource={eventSource}
               checkedStatus={checkedStatus}
               setAlertId={setAlertId}
               setSortOrder={setSortOrder}
-              setEventSource={setEventSource}
               setCheckedStatus={setCheckedStatus}
             />
             <Row>
