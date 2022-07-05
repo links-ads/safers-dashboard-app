@@ -1,39 +1,24 @@
 import React from 'react';
 import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { setFilterdReports } from '../../../store/reports/action';
-import _ from 'lodash';
+import { useSelector } from 'react-redux';
 
 //i18N
 import { withTranslation } from 'react-i18next';
 
-const SortSection = ({t}) => {
+const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder }) => {
   const { allReports } = useSelector(state => state.reports);
 
-  const dispatch = useDispatch();
-
-  const filterByAlertSource = (alertSource) => {
-    if (alertSource === 'all')
-      dispatch(setFilterdReports(allReports));
-    else
-      dispatch(setFilterdReports(_.filter(allReports, (o) => o.source.includes(alertSource ))));
-  }
-  
-  const filterByDate = (sortByDate) => {
-    dispatch(setFilterdReports(_.orderBy(allReports, ['timestamp'], [sortByDate])));
-  };
-
-  return(
+  return (
     <>
-            
+
       <Row className=''>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
           <span className='my-auto alert-report-text'>{t('Results')} {allReports.length}</span>
         </Col>
       </Row>
-      <hr/>
+      <hr />
       <Row className='my-2'>
         <Col className='mx-0 my-1'>
           <Input
@@ -42,10 +27,11 @@ const SortSection = ({t}) => {
             name="sortByDate"
             placeholder="Sort By : Date"
             type="select"
-            onChange={(e) => filterByDate(e.target.value)}
+            onChange={(e) => setSortOrder(e.target.value)}
+            value={sortOrder}
           >
-            <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
-            <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
+            <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
         <Col xl={4} className='my-1'>
@@ -55,14 +41,15 @@ const SortSection = ({t}) => {
             name="alertSource"
             placeholder="Source"
             type="select"
-            onChange={(e) =>filterByAlertSource(e.target.value)}
+            onChange={(e) => setReportSource(e.target.value)}
+            value={reportSource}
             data-testid='reportAlertSource'
           >
-            <option value={'all'} >Source : All</option>
+            <option value={''} >Source : All</option>
           </Input>
         </Col>
         <Col xl={3}>
-                
+
         </Col>
       </Row>
     </>
@@ -70,10 +57,10 @@ const SortSection = ({t}) => {
 }
 
 SortSection.propTypes = {
-  sortByDate: PropTypes.any,
-  setSortByDate: PropTypes.string,
-  alertSource: PropTypes.func,
-  setAlertSource: PropTypes.func,
+  reportSource: PropTypes.any,
+  sortOrder: PropTypes.string,
+  setReportSource: PropTypes.func,
+  setSortOrder: PropTypes.func,
   t: PropTypes.func
 }
 

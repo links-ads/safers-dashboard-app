@@ -1,56 +1,43 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Row, Col, Input, Label, FormGroup } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { setAlertId, setAlertSource, setFilterdAlerts, setSortByDate } from '../../../store/insitu/action';
+import { useSelector } from 'react-redux';
 import _ from 'lodash';
-
 //i18n
 import { withTranslation } from 'react-i18next'
 
-const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
-  const { sortByDate, alertSource, filteredAlerts, allAlerts:alerts, cameraSources } = useSelector(state => state.inSituAlerts);
-  const FILTER_IMAGE = 'IMAGE';
-  const FILTER_VIDEO = 'VIDEO';
+const FILTER_IMAGE = 'IMAGE';
+const FILTER_VIDEO = 'VIDEO';
 
-  const photo  = _.filter(alerts, ({ type }) => type == FILTER_IMAGE);
-  const video  = _.filter(alerts, ({ type }) => type == FILTER_VIDEO);
+const SortSection = ({ t,
+  sortOrder,
+  inSituSource,
+  checkedStatus,
+  setSortOrder,
+  setInSituSource,
+  setCheckedStatus
+}) => {
+  const { filteredAlerts, allAlerts: alerts, cameraSources } = useSelector(state => state.inSituAlerts);
 
-  const dispatch = useDispatch();
+  const photo = _.filter(alerts, ({ type }) => type == FILTER_IMAGE);
+  const video = _.filter(alerts, ({ type }) => type == FILTER_VIDEO);
 
-
-  const filterByAlertSource = (alertSource) => {
-    dispatch(setAlertId(undefined));
-    dispatch(setAlertSource(alertSource));
-    if (alertSource === '')
-      dispatch(setFilterdAlerts(alerts));
-    else
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => o.source.includes(alertSource ))));
+  const filterByAlertSource = (inSituSource) => {
+    setInSituSource(inSituSource);
   }
-  const filterByDate = (sortByDate) => {
-    dispatch(setAlertId(undefined));
-    dispatch(setSortByDate(sortByDate))
-    dispatch(setFilterdAlerts(_.orderBy(filteredAlerts, ['timestamp'], [sortByDate])));
+  const filterByDate = (sortOrder) => {
+    setSortOrder(sortOrder)
   };
 
   const handleChecked = (value) => {
-    if(checkedStatus.includes(value)){
+    if (checkedStatus.includes(value)) {
       setCheckedStatus(_.without(checkedStatus, value))
-    }else{
+    } else {
       setCheckedStatus([...checkedStatus, value])
     }
   };
 
-  useEffect(() => {
-    dispatch(setAlertId(undefined));
-    if(checkedStatus.length == 0){
-      dispatch(setFilterdAlerts(alerts))
-    }else{
-      dispatch(setFilterdAlerts(_.filter(alerts, (o) => checkedStatus.includes(o.type))));
-    }
-  }, [checkedStatus]);
-
-  return(
+  return (
     <>
       <div>
         <FormGroup className="form-group d-inline-block" check>
@@ -60,13 +47,13 @@ const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
             name="status"
             type="checkbox"
             value={FILTER_IMAGE}
-            onChange={(e) => handleChecked(e.target.value)}     
+            onChange={(e) => handleChecked(e.target.value)}
           />
           <Label
             check
             for="photo"
           >
-            {t('Photos', {ns: 'inSitu'})} ({photo.length})
+            {t('Photos', { ns: 'inSitu' })} ({photo.length})
           </Label>
         </FormGroup>
         <FormGroup className="form-group d-inline-block ms-4" check>
@@ -76,17 +63,17 @@ const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
             name="status"
             type="checkbox"
             value={FILTER_VIDEO}
-            onChange={(e) => handleChecked(e.target.value)}      
+            onChange={(e) => handleChecked(e.target.value)}
           />
           <Label
             check
             for="video"
           >
-            {t('Videos', {ns: 'inSitu'})} ({video.length})
+            {t('Videos', { ns: 'inSitu' })} ({video.length})
           </Label>
         </FormGroup>
       </div>
-            
+
       <Row>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
@@ -97,13 +84,13 @@ const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
       <Row className='my-2'>
         <Col className='mx-0 my-1'>
           <Input
-            id="sortByDate"
+            id="sortOrder"
             className="btn-sm sort-select-input"
-            name="sortByDate"
+            name="sortOrder"
             placeholder="Sort By : Date"
             type="select"
             onChange={(e) => filterByDate(e.target.value)}
-            value={sortByDate}
+            value={sortOrder}
           >
             <option value={'-date'} >{t('Sort By')} : {t('Date')} desc</option>
             <option value={'date'} >{t('Sort By')} : {t('Date')} asc</option>
@@ -111,13 +98,13 @@ const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
         </Col>
         <Col xl={4} className='my-1'>
           <Input
-            id="alertSource"
+            id="inSituSource"
             className="btn-sm sort-select-input"
-            name="alertSource"
+            name="inSituSource"
             placeholder="Source"
             type="select"
-            onChange={(e) =>filterByAlertSource(e.target.value)}
-            value={alertSource}
+            onChange={(e) => filterByAlertSource(e.target.value)}
+            value={inSituSource}
           >
             <option value='' key={''}> ---------- {t('Source')} : {t('All')} -----------</option>
             {
@@ -126,7 +113,7 @@ const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
           </Input>
         </Col>
         <Col xl={3}>
-                
+
         </Col>
       </Row>
     </>
@@ -134,7 +121,11 @@ const SortSection = ({t, checkedStatus, setCheckedStatus}) => {
 }
 
 SortSection.propTypes = {
+  sortOrder: PropTypes.any,
+  inSituSource: PropTypes.any,
   checkedStatus: PropTypes.any,
+  setSortOrder: PropTypes.func,
+  setInSituSource: PropTypes.func,
   setCheckedStatus: PropTypes.func,
   t: PropTypes.func,
 }

@@ -1,5 +1,6 @@
-export const MAPTYPES = {
-  REPORTS : 'reports',
-  ALERTS : 'alerts',
-  EVENTS : 'events'
+export const MAP_TYPES = {
+  REPORTS: 'reports',
+  ALERTS: 'alerts',
+  EVENTS: 'events',
+  IN_SITU: 'in-situ'
 }

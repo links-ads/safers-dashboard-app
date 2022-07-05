@@ -3,42 +3,39 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Card } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import { editEventAlertInfo, setEventFavoriteAlert, validateEventAlert } from '../../../store/events/action';
+import { editEventAlertInfo, validateEventAlert } from '../../../store/events/action';
 import { PAGE_SIZE } from '../../../store/events/types';
-import SearchButton from './SearchButton';
 import PropTypes from 'prop-types';
 import ToolTip from './Tooltip';
+import SearchButton from '../../../components/SearchButton';
 
-// eslint-disable-next-line no-unused-vars
-const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo, setHoverInfo, filteredAlerts, iconLayer, setMidpoint, setZoomLevel, setPaginatedAlerts, setSelectedAlert}) => {
-  
+const MapSection = ({
+  currentPage,
+  viewState,
+  hoverInfo,
+  iconLayer,
+  isEdit,
+  filteredAlerts,
+  hideTooltip,
+  showTooltip,
+  setFavorite,
+  setPaginatedAlerts,
+  getAlertsByArea,
+  setIsEdit,
+  setNewWidth,
+  setNewHeight
+}) => {
   const dispatch = useDispatch();
 
-  const hideTooltip = (e) => {
-    if (e && e.viewState) {
-      setMidpoint([e.viewState.longitude, e.viewState.latitude]);
-      setZoomLevel(e.viewState.zoom);
-    }
-    setHoverInfo({});
-  };
-
-  const showTooltip = info => {
-    if (info.picked && info.object) {
-      setSelectedAlert(info.object.id);
-      setHoverInfo(info);
-    } else {
-      setHoverInfo({});
-    }
-  };
-
   const renderTooltip = (info) => {
-    const { object, coordinate, isEdit } = info;
+    const { object, coordinate } = info;
     if (object) {
       return <ToolTip
         key={object.id}
         object={object}
         coordinate={coordinate}
         isEdit={isEdit}
+        setIsEdit={setIsEdit}
         setFavorite={setFavorite}
         validateEvent={validateEvent}
         editInfo={editInfo}
@@ -47,14 +44,6 @@ const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo
     if (!object) {
       return null;
     }
-  }
-  const setFavorite = (id) => {
-    let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.isFavorite = !selectedAlert.isFavorite;
-    dispatch(setEventFavoriteAlert(id, selectedAlert.isFavorite));
-    const to = PAGE_SIZE * currentPage;
-    const from = to - PAGE_SIZE;
-    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   }
 
   const validateEvent = (id) => {
@@ -74,17 +63,27 @@ const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   }
-  
+
+  const getSearchButton = (index) => {
+    return (
+      <SearchButton
+        index={index}
+        getInfoByArea={getAlertsByArea}
+      />
+    )
+  }
   return (
     <Card className='map-card mb-0' style={{ height: 730 }}>
       <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
-        hoverInfo={hoverInfo} 
+        hoverInfo={hoverInfo}
         renderTooltip={renderTooltip}
         onClick={showTooltip}
         onViewStateChange={hideTooltip}
-        widgets={[SearchButton]}
+        widgets={[getSearchButton]}
+        setWidth={setNewWidth}
+        setHeight={setNewHeight}
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
       />
@@ -93,18 +92,22 @@ const MapSection = ({currentPage, setAlertId, viewState, setViewState, hoverInfo
 }
 
 MapSection.propTypes = {
-  viewState : PropTypes.any,
+  viewState: PropTypes.any,
   setViewState: PropTypes.any,
   iconLayer: PropTypes.any,
   setAlertId: PropTypes.func,
   currentPage: PropTypes.number,
   hoverInfo: PropTypes.any,
-  setHoverInfo: PropTypes.func,
+  isEdit: PropTypes.any,
+  setFavorite: PropTypes.func,
+  hideTooltip: PropTypes.func,
+  showTooltip: PropTypes.func,
   filteredAlerts: PropTypes.array,
-  setMidpoint: PropTypes.func,
-  setZoomLevel: PropTypes.func,
   setPaginatedAlerts: PropTypes.func,
-  setSelectedAlert: PropTypes.func
+  getAlertsByArea: PropTypes.func,
+  setIsEdit: PropTypes.func,
+  setNewWidth: PropTypes.func,
+  setNewHeight: PropTypes.func
 }
 
 export default MapSection;

@@ -2,7 +2,6 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-
 export const generalInProgress = (msg) => async (dispatch) => {
   dispatch(InProgress(msg));
 }
@@ -120,3 +119,11 @@ export const setPolygonLayer = (polygonLayer) => {
     payload: polygonLayer
   };
 };
+
+//SET DATE RANGE APP-WIDE
+export const setDateRange = (dateRange) => {
+  return {
+    type: actionTypes.SET_DATE_RANGE,
+    payload: dateRange
+  }
+}

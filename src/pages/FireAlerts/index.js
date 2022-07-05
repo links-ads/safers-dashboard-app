@@ -2,10 +2,9 @@ import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card } from 'reactstrap';
-import { FlyToInterpolator, IconLayer } from 'deck.gl';
+import { IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
-import moment from 'moment';
 import toastr from 'toastr';
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -14,14 +13,13 @@ import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState, getSource, setFilteredAlerts } from '../../store/appAction';
 import Alert from './Alert';
 import Tooltip from './Tooltip';
-import DateRangePicker from '../../components/DateRangePicker/DateRange';
-// import { getDefaultDateRange } from '../../store/utility';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types'
 
 import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
-import { getBoundingBox } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
+import SearchButton from '../../components/SearchButton';
 
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
@@ -35,26 +33,31 @@ const FireAlerts = ({ t }) => {
   const sources = useSelector(state => state.alerts.sources);
   const success = useSelector(state => state.alerts.success);
   const error = useSelector(state => state.alerts.error);
+  const dateRange = useSelector(state => state.common.dateRange)
+
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState('-date');
+  const [sortByDate, setSortByDate] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [zoomLevel, setZoomLevel] = useState(undefined);
-  const [dateRange, setDateRange] = useState([undefined, undefined]);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
   const [isEdit, setIsEdit] = useState(false);
+  const [isViewStateChanged, setIsViewStateChanged] = useState(false);
   const [hoverInfo, setHoverInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(getSource());
     dispatch(setNewAlertState(false, true));
     return () => {
-      dispatch(setAlertApiParams({}));
+      dispatch(setAlertApiParams(undefined));
       dispatch(setNewAlertState(false, false));
     }
   }, []);
@@ -64,11 +67,12 @@ const FireAlerts = ({ t }) => {
   }, [sortByDate, alertSource, dateRange, boundingBox]);
 
   useEffect(() => {
-    if (success) {
+    if (success)
       toastr.success(success, '');
-    } else if (error)
+    else if (error)
       toastr.error(error, '');
 
+    setIsEdit(false);
     dispatch(resetAlertsResponseState());
   }, [success, error]);
 
@@ -90,7 +94,7 @@ const FireAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
   const getAlertsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, zoomLevel));
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
   }
 
   const setFavorite = (id) => {
@@ -111,6 +115,7 @@ const FireAlerts = ({ t }) => {
     selectedAlert.type = 'VALIDATED';
     dispatch(validateAlert(id));
     hideTooltip();
+    console.log('validateEvent')
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -120,6 +125,7 @@ const FireAlerts = ({ t }) => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.information = desc;
     dispatch(editAlertInfo(id, desc));
+    console.log('editInfo')
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -136,50 +142,39 @@ const FireAlerts = ({ t }) => {
   };
 
   const getAlerts = () => {
+    const dateRangeParams = dateRange
+      ? { start_date: dateRange[0], end_date: dateRange[1] }
+      : {};
+
     setAlertId(undefined);
     const alertParams = {
-      order: sortByDate,
+      order: sortByDate ? sortByDate : '-date',
       source: alertSource ? alertSource : undefined,
-      start_date: dateRange[0],
-      end_date: dateRange[1],
+      default_date: false,
+      default_bbox: !boundingBox,
       bbox: boundingBox ? boundingBox.toString() : undefined,
-      default_date: true,
-      default_bbox: false
+      ...dateRangeParams
     };
+
     dispatch(setAlertApiParams(alertParams));
     dispatch(getAllFireAlerts(alertParams, true));
-
   }
 
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
-      if (id === alertId) {
-        hideTooltip();
-      }
-      setAlertId(id);
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      setIconLayer(getIconLayer(clonedAlerts));
       setIsEdit(isEdit);
-      setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
-      // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+      !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged ?
+        setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo, setIsViewStateChanged))
+        : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
+      setAlertId(id);
+      setIconLayer(getIconLayer(clonedAlerts));
     } else {
       setAlertId(undefined);
       setIconLayer(getIconLayer(filteredAlerts));
     }
-  }
-
-  const getViewState = (midPoint, zoomLevel = 4) => {
-    return {
-      longitude: midPoint[0],
-      latitude: midPoint[1],
-      zoom: zoomLevel,
-      pitch: 0,
-      bearing: 0,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator()
-    };
   }
 
   const getIconLayer = (alerts) => {
@@ -199,27 +194,17 @@ const FireAlerts = ({ t }) => {
     }))
   }
 
-  const handleDateRangePicker = (dates) => {
-    if (dates) {
-      let from = moment(dates[0]).format('YYYY-MM-DD');
-      let to = moment(dates[1]).format('YYYY-MM-DD');
-      setDateRange([from, to]);
-    } else {
-      //setDateRange(getDefaultDateRange()); disabled since start/end values won't return data 
-      setDateRange([undefined, undefined]);
-    }
-  }
-
   const handleResetAOI = useCallback(() => {
+    setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
   const hideTooltip = (e) => {
     if (e && e.viewState) {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setZoomLevel(e.viewState.zoom);
+      setCurrentZoomLevel(e.viewState.zoom);
     }
-    setIsEdit(false);
+    setIsViewStateChanged(true);
     setHoverInfo({});
   };
 
@@ -264,20 +249,10 @@ const FireAlerts = ({ t }) => {
 
   const getSearchButton = (index) => {
     return (
-      <Button
-        key={index}
-        className="btn-rounded alert-search-area"
-        style={{
-          position: 'absolute',
-          top: 10,
-          textAlign: 'center',
-          marginLeft: '41%'
-        }}
-        onClick={getAlertsByArea}
-      >
-        <i className="bx bx-revision"></i>{' '}
-        {t('Search This Area')}
-      </Button >
+      <SearchButton
+        index={index}
+        getInfoByArea={getAlertsByArea}
+      />
     )
   }
 
@@ -285,7 +260,7 @@ const FireAlerts = ({ t }) => {
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
-          <Col xl={5} className='d-flex justify-content-between'>
+          <Col xl={12} className='d-flex justify-content-between'>
             <p className='align-self-baseline alert-title'>{t('Alert List', { ns: 'fireAlerts' })}
               <button
                 type="button"
@@ -302,9 +277,6 @@ const FireAlerts = ({ t }) => {
             <Button color='link'
               onClick={handleResetAOI} className='align-self-baseline pe-0'>
               {t('default-aoi')}</Button>
-          </Col>
-          <Col xl={7} className='d-flex justify-content-end'>
-            <DateRangePicker setDates={handleDateRangePicker} clearDates={handleDateRangePicker} />
           </Col>
         </Row>
         <Row>
@@ -372,6 +344,8 @@ const FireAlerts = ({ t }) => {
                 onClick={showTooltip}
                 onViewStateChange={hideTooltip}
                 widgets={[getSearchButton]}
+                setWidth={setNewWidth}
+                setHeight={setNewHeight}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
               />
