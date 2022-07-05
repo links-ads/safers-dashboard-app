@@ -8,7 +8,6 @@ import moment from 'moment';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllDataLayers } from '../../store/appAction';
 
-import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import TreeView from './TreeView';
 // import { getDefaultDateRange } from '../../store/utility';
 
@@ -23,6 +22,7 @@ const SLIDER_SPEED = 800;
 const DataLayer = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const dateRange = useSelector(state => state.common.dateRange);
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -30,7 +30,6 @@ const DataLayer = ({ t }) => {
   const [sortByDate, setSortByDate] = useState(undefined);
   const [layerSource, setLayerSource] = useState(undefined);
   const [dataDomain, setDataDomain] = useState(undefined);
-  const [dateRange, setDateRange] = useState([undefined, undefined]);
   const [sliderValue, setSliderValue] = useState(0);
   const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
@@ -93,6 +92,7 @@ const DataLayer = ({ t }) => {
   }, [dataLayers]);
 
   useEffect(() => {
+
     dispatch(getAllDataLayers(
       {
         order: sortByDate,
@@ -201,17 +201,6 @@ const DataLayer = ({ t }) => {
     }
   }
 
-  const handleDateRangePicker = (dates) => {
-    if (dates) {
-      let from = moment(dates[0]).format('YYYY-MM-DD');
-      let to = moment(dates[1]).format('YYYY-MM-DD');
-      setDateRange([from, to]);
-    } else {
-      //setDateRange(getDefaultDateRange()); disabled since start/end values won't return data 
-      setDateRange([undefined, undefined]);
-    }
-  }
-
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
@@ -291,7 +280,7 @@ const DataLayer = ({ t }) => {
             </Row>
             <hr />
             <Row className='mb-3'>
-              <Col xl={7}>
+              <Col xl={12}>
                 <InputGroup>
                   <InputGroupText className='border-end-0'>
                     <i className='fa fa-search' />
@@ -303,9 +292,6 @@ const DataLayer = ({ t }) => {
                     autoComplete="on"
                   />
                 </InputGroup>
-              </Col>
-              <Col xl={5}>
-                <DateRangePicker setDates={handleDateRangePicker} clearDates={handleDateRangePicker} />
               </Col>
             </Row>
             <Row>
