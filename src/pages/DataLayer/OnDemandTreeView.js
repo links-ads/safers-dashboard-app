@@ -74,6 +74,11 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                   :
                   'Leaf node'
               }
+              { node?.parameters ? 
+                <>
+                  <i className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
+                </> : null
+              }
               { node?.parameters ?  <PropsPanel node={node} />: null}
             </>
           </ListGroupItem>
