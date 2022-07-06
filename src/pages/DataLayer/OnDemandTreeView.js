@@ -6,10 +6,10 @@ import { fetchEndpoint } from '../../helpers/apiHelper';
 
 const PropsPanel = (node) => {
   const node2=node.node;
-  if (!node2.params) return null;
-  const parameters = Object.keys(node2.params);
+  if (!node2.parameters) return null;
+  const parameters = Object.keys(node2.parameters);
   // TODO: get a better key once we have node numbering from backend
-  const paramaters = parameters.map((key,ix)=><p className="props-line" key={ix}>{`${key} : ${node2.params[key]}`}</p>);
+  const paramaters = parameters.map((key,ix)=><p className="props-line" key={ix}>{`${key} : ${node2.parameters[key]}`}</p>);
   return (
     <div className="props-box">
       {paramaters}
@@ -39,7 +39,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
 
       // set children according to level. Prioritise leaf over branch or root
       if (!node.children) {
-        node.children= node?.mapLayers || node?.requests || undefined;
+        node.children= node?.layers || node?.requests || undefined;
       }
       
       node.text = node.category || node.name || node.id;
@@ -74,7 +74,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                   :
                   'Leaf node'
               }
-              { node?.params ?  <PropsPanel node={node} />: null}
+              { node?.parameters ?  <PropsPanel node={node} />: null}
             </>
           </ListGroupItem>
           {
