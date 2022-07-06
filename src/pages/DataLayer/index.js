@@ -9,13 +9,11 @@ const DataLayerDashboard = () => {
   return(
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
-        <container className='col-xl-8'>
-          <Row>
+        <container xs={6} className='col-xl-8'>
+          <Row xs={6} className=''>
             <Col><h4>Data Layers</h4></Col>
-          </Row>
-          <Row>
-            <Col>
-              <Nav pills fill>
+            <Col className='d-flex flex-nowrap'>
+              <Nav className='d-flex' tabs fill>
                 <NavItem>
                   <NavLink
                     className={{'active': activeTab===0}}
@@ -34,9 +32,6 @@ const DataLayerDashboard = () => {
                 </NavItem>
               </Nav>
             </Col>
-            <Col />
-            <Col />
-            <Col />
           </Row> 
         </container>
         <TabContent activeTab={activeTab}>

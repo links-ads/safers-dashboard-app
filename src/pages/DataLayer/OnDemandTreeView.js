@@ -19,6 +19,7 @@ const PropsPanel = (node) => {
 
 const OnDemandTreeView = ({ data, setCurrentLayer}) => {
   const [itemState, setItemState] = useState({});
+  const [itemPropsState, setItemPropsState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
 
@@ -29,6 +30,13 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
 
   const toggleExpandCollapse = id => {
     setItemState(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
+  }
+
+  const toggleExpandCollapseProps = id => {
+    setItemPropsState(prevState => ({
       ...prevState,
       [id]: !prevState[id]
     }));
@@ -76,10 +84,10 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
               }
               { node?.parameters ? 
                 <>
-                  <i className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
+                  <i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
                 </> : null
               }
-              { node?.parameters ?  <PropsPanel node={node} />: null}
+              { node?.parameters &&  itemPropsState[id] ?  <PropsPanel node={node} />: null}
             </>
           </ListGroupItem>
           {

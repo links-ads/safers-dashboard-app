@@ -224,8 +224,8 @@ const OnDemandDataLayer = ({ t }) => {
             {/* <Row>
               <p className='align-self-baseline alert-title'>{t('Data Layers', { ns: 'dataLayers' })}</p>
             </Row> */}
-            <Row xl={5}>
-              <Col >
+            <Row xl={12}>
+              <Col>
                 <div className='d-flex justify-content-end'>
                   <Button className="request-map btn-orange">Request a map</Button>
                 </div>
