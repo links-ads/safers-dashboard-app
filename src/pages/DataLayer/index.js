@@ -16,7 +16,7 @@ const DataLayerDashboard = () => {
               <Nav className='d-flex' tabs fill>
                 <NavItem>
                   <NavLink
-                    className={{'active': activeTab===0}}
+                    className={{'active': activeTab==='0'}}
                     onClick={()=>setActiveTab('0')}
                   >
                 Operational Map Layers
@@ -24,7 +24,7 @@ const DataLayerDashboard = () => {
                 </NavItem>
                 <NavItem>
                   <NavLink
-                    className={{'active': activeTab===1}}
+                    className={{'active': activeTab==='1'}}
                     onClick={()=>setActiveTab('1')}
                   >
                 On-Demand Map Layers
