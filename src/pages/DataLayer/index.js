@@ -11,9 +11,9 @@ const DataLayerDashboard = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <container xs={6} className='col-xl-8'>
           <Row xs={6} className=''>
-            <Col><h4>Data Layers</h4></Col>
-            <Col className='d-flex flex-nowrap'>
-              <Nav className='d-flex' tabs fill>
+            <Col class="col-1"><h4>Data Layers</h4></Col>
+            <Col class="col-4">
+              <Nav className='d-flex flex-nowrap' pills fill>
                 <NavItem>
                   <NavLink
                     className={{'active': activeTab==='0'}}
