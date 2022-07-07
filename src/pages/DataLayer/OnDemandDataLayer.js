@@ -221,9 +221,6 @@ const OnDemandDataLayer = ({ t }) => {
         }
         <Row>
           <Col xl={5}>
-            {/* <Row>
-              <p className='align-self-baseline alert-title'>{t('Data Layers', { ns: 'dataLayers' })}</p>
-            </Row> */}
             <Row xl={12}>
               <Col>
                 <div className='d-flex justify-content-end'>
