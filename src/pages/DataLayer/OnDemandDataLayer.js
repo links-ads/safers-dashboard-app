@@ -20,7 +20,7 @@ import SimpleBar from 'simplebar-react';
 import MOCKDATA from './mockdata';
 
 const SLIDER_SPEED = 800;
-const OnDemandDataLayer = ({ t, setActiveTab }) => {
+const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dateRange = useSelector(state => state.common.dateRange)
   //const dataLayers = useSelector(state => state.dataLayer.dataLayers);
@@ -235,35 +235,35 @@ const OnDemandDataLayer = ({ t, setActiveTab }) => {
           style={{ maxWidth: '50rem' }}
         >
           <div className='d-flex flex-column align-items-center p-5'>
-            <h2>Select Data Type</h2>
+            <h2>{t('Select Data Type')}</h2>
             <div className='d-flex flex-nowrap gap-5 my-5'>
               <button
-                value={2} 
+                value={dataLayerPanels.FIRE_AND_BURNED_AREA} 
                 onClick={handleDialogButtonClick}
                 className='data-layers-dialog-btn'
               >
-                 Fire and Burned Area
+                {t('Fire and Burned Area')}
               </button>
               <button 
-                value={3} 
+                value={dataLayerPanels.POST_EVENT_MONITORING} 
                 onClick={handleDialogButtonClick}
                 className='data-layers-dialog-btn'
               >
-                  Post Event Monitoring
+                {t('Post Event Monitoring')}
               </button>
               <button
-                value={4} 
+                value={dataLayerPanels.WILDfIRE_SIMULATION} 
                 onClick={handleDialogButtonClick}
                 className='data-layers-dialog-btn'
               >
-                  Wildfire Simulation
+                {t('Wildfire Simulation')}
               </button>
             </div>
             <button 
               onClick={toggleModal}
               className='data-layers-dialog-cancel'
             >
-              Cancel
+              {t('Cancel')}
             </button>
           </div>
         </Modal>
@@ -275,7 +275,7 @@ const OnDemandDataLayer = ({ t, setActiveTab }) => {
                   <Button 
                     className="request-map btn-orange" 
                     onClick={toggleModal}>
-                      Request a map
+                    {t('Request a map')}
                   </Button>
                 </div>
               </Col>
@@ -390,7 +390,8 @@ const OnDemandDataLayer = ({ t, setActiveTab }) => {
 
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
-  setActiveTab: PropTypes.func
+  setActiveTab: PropTypes.func,
+  dataLayerPanels: PropTypes.object,
 }
 
 export default withTranslation(['common'])(OnDemandDataLayer);

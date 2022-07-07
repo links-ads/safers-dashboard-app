@@ -95,7 +95,7 @@ a {
 }
 
 .btn-orange.request-map {
-  background-color: #fc9432ff ;
+  background-color: $orange ;
   color: black !important;
   margin-bottom: 1rem;
 }
@@ -108,7 +108,7 @@ a {
   font-size: 1rem;
   border: none;
   &:hover {
-    background-color: #fc9432ff;
+    background-color: $orange;
   }
 }
 
@@ -117,8 +117,8 @@ a {
   border-radius: 5px;
   border: 1px solid transparent;
   &:hover {
-    border: 1px solid #e27b1d;
-    color: #e27b1d;
+    border: 1px solid $orange;
+    color: $orange;
   }
 }
 
