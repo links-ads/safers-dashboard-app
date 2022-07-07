@@ -84,7 +84,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
               }
               { node?.parameters ? 
                 <>
-                  <i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
+                  &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
                 </> : null
               }
               { node?.parameters &&  itemPropsState[id] ?  <PropsPanel node={node} />: null}
