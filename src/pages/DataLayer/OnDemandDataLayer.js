@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
+import { Row, Col, Button, Input, Card, InputGroup, InputGroupText, Modal } from 'reactstrap';
 import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
 
@@ -20,7 +20,7 @@ import SimpleBar from 'simplebar-react';
 import MOCKDATA from './mockdata';
 
 const SLIDER_SPEED = 800;
-const OnDemandDataLayer = ({ t }) => {
+const OnDemandDataLayer = ({ t, setActiveTab }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dateRange = useSelector(state => state.common.dateRange)
   //const dataLayers = useSelector(state => state.dataLayer.dataLayers);
@@ -37,6 +37,8 @@ const OnDemandDataLayer = ({ t }) => {
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+  const [modalIsOpen, setModalIsOpen] = useState(false)
+
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -65,7 +67,6 @@ const OnDemandDataLayer = ({ t }) => {
       }
     }
   }, [sliderValue, sliderChangeComplete]);
-
 
   useEffect(() => {
     let nextValue = sliderValue;
@@ -114,6 +115,13 @@ const OnDemandDataLayer = ({ t }) => {
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
   const getUrls = () => Object.values(currentLayer?.urls);
+
+  const toggleModal = () => setModalIsOpen(prev => !prev);
+
+  const handleDialogButtonClick = ({target: {value}}) => {
+    setActiveTab(+value);
+    toggleModal();
+  }
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -219,12 +227,56 @@ const OnDemandDataLayer = ({ t }) => {
           </div>
         ) : null
         }
+        <Modal
+          centered
+          isOpen={modalIsOpen}
+          toggle={toggleModal}
+          id="data-layer-dialog"
+          style={{ maxWidth: '50rem' }}
+        >
+          <div className='d-flex flex-column align-items-center p-5'>
+            <h2>Select Data Type</h2>
+            <div className='d-flex flex-nowrap gap-5 my-5'>
+              <button
+                value={2} 
+                onClick={handleDialogButtonClick}
+                className='data-layers-dialog-btn'
+              >
+                 Fire and Burned Area
+              </button>
+              <button 
+                value={3} 
+                onClick={handleDialogButtonClick}
+                className='data-layers-dialog-btn'
+              >
+                  Post Event Monitoring
+              </button>
+              <button
+                value={4} 
+                onClick={handleDialogButtonClick}
+                className='data-layers-dialog-btn'
+              >
+                  Wildfire Simulation
+              </button>
+            </div>
+            <button 
+              onClick={toggleModal}
+              className='data-layers-dialog-cancel'
+            >
+              Cancel
+            </button>
+          </div>
+        </Modal>
         <Row>
           <Col xl={5}>
             <Row xl={12}>
               <Col>
                 <div className='d-flex justify-content-end'>
-                  <Button className="request-map btn-orange">Request a map</Button>
+                  <Button 
+                    className="request-map btn-orange" 
+                    onClick={toggleModal}>
+                      Request a map
+                  </Button>
                 </div>
               </Col>
             </Row>
@@ -338,6 +390,7 @@ const OnDemandDataLayer = ({ t }) => {
 
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
+  setActiveTab: PropTypes.func
 }
 
 export default withTranslation(['common'])(OnDemandDataLayer);

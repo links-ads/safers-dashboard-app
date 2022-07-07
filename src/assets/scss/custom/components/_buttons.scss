@@ -100,6 +100,28 @@ a {
   margin-bottom: 1rem;
 }
 
+.data-layers-dialog-btn {
+  background-color: rgba($black, 0.75);
+  color: $white;
+  padding: 1.5rem 1rem;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  font-size: 1rem;
+  &:hover {
+    border: 1px solid $white;
+  }
+}
+
+.data-layers-dialog-cancel {
+  padding: 0.25rem 2rem;
+  border-radius: 5px;
+  border: 1px solid transparent;
+  &:hover {
+    border: 1px solid #e27b1d;
+    color: #e27b1d;
+  }
+}
+
 .full {
   width:100%;
 }

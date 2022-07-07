@@ -42,7 +42,16 @@ const DataLayerDashboard = () => {
             <DataLayer />
           </TabPane>
           <TabPane tabId={1}>
-            <OnDemandDataLayer />
+            <OnDemandDataLayer setActiveTab={setActiveTab} />
+          </TabPane>
+          <TabPane tabId={2}>
+            <div>Fire and Burned Area form.</div>
+          </TabPane>
+          <TabPane tabId={3}>
+            <div>Post Event Monitoring</div>
+          </TabPane>
+          <TabPane tabId={4}>
+            <div>Wildfire Simulation</div>
           </TabPane>
         </TabContent>
       </div>
