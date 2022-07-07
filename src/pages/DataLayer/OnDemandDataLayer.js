@@ -118,7 +118,7 @@ const OnDemandDataLayer = ({ t, setActiveTab }) => {
 
   const toggleModal = () => setModalIsOpen(prev => !prev);
 
-  const handleDialogButtonClick = ({target: {value}}) => {
+  const handleDialogButtonClick = ({ target: { value } }) => {
     setActiveTab(+value);
     toggleModal();
   }
