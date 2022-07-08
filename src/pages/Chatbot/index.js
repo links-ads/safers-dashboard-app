@@ -25,10 +25,11 @@ const Chatbot = () => {
 
     switch(tab) {
     case '1': 
-    case '2':
       return null;
-    case '3':
+    case '2':
       return <Comms />;
+    case '3':
+      return null;
     case '4':
       return <Reports />;
     }
@@ -101,9 +102,9 @@ const Chatbot = () => {
             <TabPane tabId="1">
             </TabPane>
             <TabPane tabId="2">
+              {renderContent('2')}
             </TabPane>
             <TabPane tabId="3">
-              {renderContent('3')}
             </TabPane>
             <TabPane tabId="4">
               {renderContent('4')}

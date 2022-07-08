@@ -1,12 +1,12 @@
 import React from 'react';
-import { Row, Col, Input } from 'reactstrap';
+import { Row, Col, Input, Button } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 
 //i18N
 import { withTranslation } from 'react-i18next';
 
-const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder }) => {
+const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder, setTogglePolygonMap }) => {
   const { allReports } = useSelector(state => state.reports);
 
   return (
@@ -48,8 +48,11 @@ const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder
             <option value={''} >Source : All</option>
           </Input>
         </Col>
-        <Col xl={3}>
-
+        <Col xl={3} className='my-1'>
+          <Button
+            onClick={setTogglePolygonMap} className='align-self-baseline p-0'>
+            Create New Message
+          </Button>
         </Col>
       </Row>
     </>
@@ -61,7 +64,8 @@ SortSection.propTypes = {
   sortOrder: PropTypes.string,
   setReportSource: PropTypes.func,
   setSortOrder: PropTypes.func,
-  t: PropTypes.func
+  t: PropTypes.func,
+  setTogglePolygonMap: PropTypes.func
 }
 
 export default withTranslation(['common'])(SortSection);

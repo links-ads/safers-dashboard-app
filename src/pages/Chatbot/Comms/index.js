@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Button } from 'reactstrap';
+import { Row, Col, Button, Input } from 'reactstrap';
 import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css'
@@ -13,8 +13,9 @@ import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/map
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
+import DateRangePicker from '../../../components/DateRangePicker/DateRange';
 
-const Reports = () => {
+const Comms = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const { allReports: OrgReportList, success, filteredReports } = useSelector(state => state.reports);
   const dateRange = useSelector(state => state.common.dateRange);
@@ -31,6 +32,9 @@ const Reports = () => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
+  const [coordinates, setCoordinates] = useState([]);
+  const [togglePolygonMap, setTogglePolygonMap] = useState(false);
+  const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -90,19 +94,20 @@ const Reports = () => {
     <div className='mx-2 sign-up-aoi-map-bg'>
       <Row>
         <Col xl={12} className='d-flex justify-content-between'>
-          <p className='align-self-baseline alert-title'>{t('Reports List', { ns: 'reports' })}</p>
+          <p className='align-self-baseline alert-title'>{t(toggleCreateNewMessage? 'Create New Message' : 'Comms List', { ns: 'reports' })}</p>
           <Button color='link'
             onClick={handleResetAOI} className='align-self-baseline pe-0'>
             {t('default-aoi', { ns: 'common' })}</Button>
         </Col>
       </Row >
       <Row>
-        <Col xl={5}>
+        {!toggleCreateNewMessage && <Col xl={5}>
           <SortSection
             reportSource={reportSource}
             sortOrder={sortOrder}
             setReportSource={setReportSource}
             setSortOrder={setSortOrder}
+            setTogglePolygonMap={() => { setTogglePolygonMap(true); setToggleCreateNewMessage(true); }}
           />
           <Row>
             <Col xl={12} className='px-3'>
@@ -114,7 +119,59 @@ const Reports = () => {
                 setIconLayer={setIconLayer} />
             </Col>
           </Row>
-        </Col>
+        </Col>}
+        {toggleCreateNewMessage && <Col xl={5}>
+          <DateRangePicker
+            type='text'
+            placeholder='Start Date'
+            isTooltipInput={true}
+            showIcons={true}
+          />
+          <Input
+            id="coordinates-input"
+            className='mt-3'
+            type='textarea'
+            name="coordinates-value"
+            placeholder='Map Selection'
+            rows="10"
+            value={coordinates.map(x => {
+              return '[' + x[0] + ' , ' + x[1] + ']';
+            }).join('\n')}
+          />
+          <div className='mt-3'>
+            <h5>Assign To:</h5>
+            {
+              //Dropdowns goes here
+            }
+          </div>
+          <Input
+            id="message-description-input"
+            className='mt-3'
+            type='textarea'
+            name="message-description"
+            placeholder='Message Description'
+            rows="10"
+          />
+          <div className='mt-3'>
+            <Button
+              type="button"
+              onClick={()=>{
+                setTogglePolygonMap(false);
+                setToggleCreateNewMessage(false);
+                setCoordinates([]);
+              }}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              className="mx-3"
+            >
+              Send
+            </Button>
+          </div>
+
+        </Col>}
         <Col xl={7} className='mx-auto'>
           <MapSection
             viewState={viewState}
@@ -124,6 +181,8 @@ const Reports = () => {
             handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
+            setCoordinates={setCoordinates}
+            togglePolygonMap={togglePolygonMap}
           />
         </Col>
       </Row>
@@ -131,4 +190,4 @@ const Reports = () => {
   );
 }
 
-export default Reports;
+export default Comms;
