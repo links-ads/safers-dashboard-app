@@ -98,9 +98,9 @@ const PolygonMap = ({
     setViewport(tempViewport);
   };
 
-  const testToolbar = () => {
+  const renderToolbar = () => {
 
-    return (
+    return (<>
       <div className="" style={{ position: 'absolute', top: '50px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
           <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={() => { toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates([]); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
@@ -108,7 +108,14 @@ const PolygonMap = ({
           </button>
         </div>
       </div>
-    )
+      <div className="" style={{ position: 'absolute', top: '90px', right: '10px' }}>
+        <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
+          <button onClick={() => { toggleMode(''); setFeatures([]); setCoordinates([]); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+            <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
+          </button>
+        </div>
+      </div>
+    </>)
   }
 
   const handleUpdate = (val) => {
@@ -162,7 +169,7 @@ const PolygonMap = ({
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
         {/* {widgets.map((widget, index) => widget(index))} */}
         {renderTooltip(hoverInfo)}
-        {testToolbar()}
+        {renderToolbar()}
       </MapGL>
     </>
   );
