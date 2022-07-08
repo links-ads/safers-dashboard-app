@@ -1,3 +1,16 @@
 {
-  "Data Layers": "Data Layers"
+  "Data Layers": "Data Layers",
+  "layertype": "Layer type",
+  "fireandburnedareas": "Fire and Burned Areas",
+  "datalayertype": "Layer type:",
+  "requesttitle": "Request Title",
+  "mapselection": "Map selection",
+  "startdate": "Start Date",
+  "enddate": "End Date",
+  "request": "Request",
+  "cancel": "Cancel",
+  "frequency": "Frequency [days]",
+  "frequency_instructions": "Integers only, ≥1",
+  "resolution": "Spatial Resolution",
+  "resolutioninstructions": "Range 10-60 m, default 10m"
 }

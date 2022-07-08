@@ -1,3 +1,16 @@
 {
-  "Data Layers": "Couches de données"
+  "Data Layers": "Couches de données",
+  "layertype": "Types de couches",
+  "fireandburnedareas": "Incendie et zones brûlées",
+  "datalayertype": "Type de couche de données",
+  "requesttitle": "Titre de la demande",
+  "mapselection": "Domaine d’intérêt",
+  "startdate": "Date de début",
+  "enddate": "Date de fin",
+  "request": "Demander",
+  "cancel": "Annuler",
+  "frequency": "Fréquence (en jours)",
+  "frequencyinstructions": "Entre 10 et 60 mètres",
+  "resolution": "Résolution spatiale (m)",
+  "resolutioninstructions": "Entre 10 et 60 mètres,par défaut 10 mètres"
 }
