@@ -68,17 +68,18 @@ const FireAndBurnedArea = ({ t }) => {
                 ) => (
                   <Form onSubmit={handleSubmit} noValidate>
                     <Row>
-                      <h5>Fire and Burned Areas</h5>
+                      <h5>{t('fireandburnedareas')}</h5>
                     </Row>
                     <Row>
                       <FormGroup className="form-group">
                         <Label for="datalayertype">
-                          Layer type:
+                          {t('datalayertype')}
                         </Label>
                         <Input 
                           name="datalayertype"
                           id="datalayertype"
                           type="select"
+                          multiple
                         >
                           <option>
                             1
@@ -101,7 +102,7 @@ const FireAndBurnedArea = ({ t }) => {
                     <Row>
                       <FormGroup className="form-group">
                         <Label for="requesttitle">
-                          Request Title:
+                          {t('requesttitle')}
                         </Label>
                         <Input 
                           name="requesttitle" 
@@ -113,7 +114,7 @@ const FireAndBurnedArea = ({ t }) => {
                     <Row>
                       <FormGroup className='form-group'>
                         <Label for="mapselection">
-                          Map Selection
+                          {t('mapselection')}
                         </Label>
                         <Input
                           id="mapselection"
@@ -129,7 +130,7 @@ const FireAndBurnedArea = ({ t }) => {
                         <Row>
                           <Col>
                             <Label for="startdate">
-                            Start Date
+                              {t('startdate')}
                             </Label>
                             <Input
                               id="startdate"
@@ -139,7 +140,7 @@ const FireAndBurnedArea = ({ t }) => {
                           </Col>
                           <Col>
                             <Label for="enddate">
-                            End Date
+                              {t('enddate')}
                             </Label>
                             <Input
                               id="enddate"
@@ -155,7 +156,7 @@ const FireAndBurnedArea = ({ t }) => {
                         <Row>
                           <Col>
                             <Label for="frequency">
-                              Frequency [days]
+                              {t('frequency')}
                             </Label>
                           </Col>
                           <Col>
@@ -176,7 +177,7 @@ const FireAndBurnedArea = ({ t }) => {
                         <Row>
                           <Col>
                             <Label for="resolution">
-                              Spatial resolution [m]
+                              {t('resolution')}
                             </Label>
                           </Col>
                           <Col>
@@ -188,8 +189,7 @@ const FireAndBurnedArea = ({ t }) => {
                             />
                           </Col>
                           <Col>
-                            <div>Range: 10-60m</div>
-                            <div>(default=10)</div>
+                            <div>{t('resolutioninstructions')}</div>
                           </Col>
                         </Row>
                       </FormGroup>
@@ -199,18 +199,19 @@ const FireAndBurnedArea = ({ t }) => {
                         <Button
                           value={{}} 
                           onClick={handleSubmitRequest}
-                          className='data-layers-dialog-cancel'
+                          className='btn btn-primary'
+                          color="primary"
                         >
-                          Request
+                          {t('request')}
                         </Button>
-                      </Col>
-                      <Col>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
                         <Button
                           value={{}} 
                           onClick={handleCancel}
-                          className='data-layers-dialog-cancel'
+                          className='btn btn-secondary'
+                          color="secondary"
                         >
-                          Cancel
+                          {t('cancel')}
                         </Button>
                       </Col>
                       <Col></Col>
@@ -242,4 +243,4 @@ FireAndBurnedArea.propTypes = {
   t: PropTypes.any,
 }
 
-export default withTranslation(['common'])(FireAndBurnedArea);
+export default withTranslation(['dataLayers','common'])(FireAndBurnedArea);
