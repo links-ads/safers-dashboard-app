@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
+import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { Formik } from 'formik';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import * as Yup from 'yup'
@@ -23,12 +23,16 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
     .required('The field cannot be empty'), 
   frequency: Yup.string()
     .required('The field cannot be empty'), 
-  spatialresolution: Yup.string()
+  resolution: Yup.string()
     .required('The field cannot be empty'), 
 });
 
 const FireAndBurnedArea = ({ t }) => {
   console.log('t',t);
+
+  const handleSubmitRequest = (event) => { alert('Clicked request');};
+  const handleCancel = (event) => { alert('Clicked canel');}
+
   return (
     // <div className='page-content'>
     <div>
@@ -44,7 +48,7 @@ const FireAndBurnedArea = ({ t }) => {
                 startdate: null, 
                 enddate: null, 
                 frequency: null,
-                spatialresolution: null, 
+                resolution: null, 
               }}
               validationSchema={fireAndBurnedAreaSchema}
               onSubmit={(values) => {console.log('values', values)}}
@@ -63,6 +67,9 @@ const FireAndBurnedArea = ({ t }) => {
                   }
                 ) => (
                   <Form onSubmit={handleSubmit} noValidate>
+                    <Row>
+                      <h5>Fire and Burned Areas</h5>
+                    </Row>
                     <Row>
                       <FormGroup className="form-group">
                         <Label for="datalayertype">
@@ -143,10 +150,75 @@ const FireAndBurnedArea = ({ t }) => {
                         </Row>
                       </FormGroup>
                     </Row>
+                    <Row>
+                      <FormGroup>
+                        <Row>
+                          <Col>
+                            <Label for="frequency">
+                              Frequency [days]
+                            </Label>
+                          </Col>
+                          <Col>
+                            <Input
+                              id="frequency"
+                              name="frequency"
+                              type="num"
+                            />
+                          </Col>
+                          <Col>
+                            <p>Integers only, &#x2265;1</p>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                    </Row>
+                    <Row>
+                      <FormGroup>
+                        <Row>
+                          <Col>
+                            <Label for="resolution">
+                              Spatial resolution [m]
+                            </Label>
+                          </Col>
+                          <Col>
+                            <Input
+                              id="resolution"
+                              name="resolution"
+                              type="num"
+                              placeholder='10'
+                            />
+                          </Col>
+                          <Col>
+                            <div>Range: 10-60m</div>
+                            <div>(default=10)</div>
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                    </Row>
+                    <Row>
+                      <Col>
+                        <Button
+                          value={{}} 
+                          onClick={handleSubmitRequest}
+                          className='data-layers-dialog-cancel'
+                        >
+                          Request
+                        </Button>
+                      </Col>
+                      <Col>
+                        <Button
+                          value={{}} 
+                          onClick={handleCancel}
+                          className='data-layers-dialog-cancel'
+                        >
+                          Cancel
+                        </Button>
+                      </Col>
+                      <Col></Col>
+                      <Col></Col>
+                    </Row>
                   </Form>
                 )
               }
-
             </Formik>
           </Row>
         </Col>
@@ -162,7 +234,7 @@ const FireAndBurnedArea = ({ t }) => {
           </Card>
         </Col>
       </Row>
-    </div >
+    </div>
   );
 }
 
