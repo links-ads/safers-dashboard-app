@@ -90,7 +90,6 @@ const Reports = () => {
     <div className='mx-2 sign-up-aoi-map-bg'>
       <Row>
         <Col xl={12} className='d-flex justify-content-between'>
-          <p className='align-self-baseline alert-title'>{t('Reports List', { ns: 'reports' })}</p>
           <Button color='link'
             onClick={handleResetAOI} className='align-self-baseline pe-0'>
             {t('default-aoi', { ns: 'common' })}</Button>

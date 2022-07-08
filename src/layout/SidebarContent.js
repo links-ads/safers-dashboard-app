@@ -137,14 +137,6 @@ const SidebarContent = (props) => {
                 {isNewEvent && <span className='new-info-indicator float-end'>{newEventsCount}</span>}
               </Link>
             </li>
-
-            <li>
-              <Link to='/reports'>
-                <i className='bx bx-clipboard'></i>
-                <span>{props.t('Reports')}</span>
-              </Link>
-            </li>
-
             <li>
               <Link to='/notifications'>
                 <i className='bx bx-bell'></i>
@@ -152,18 +144,22 @@ const SidebarContent = (props) => {
                 {isNewNotification && <span className='new-info-indicator float-end'>{newNotificationsCount}</span>}
               </Link>
             </li>
-
             <li>
               <Link to='/social-monitoring'>
                 <i className='bx bxl-twitter'></i>
                 <span>{props.t('Social Monitoring')}</span>
               </Link>
             </li>
-
             <li>
               <Link to='/insitu-alerts'>
                 <i className='bx bx-image'></i>
                 <span>{props.t('In-Situ Cameras')}</span>
+              </Link>
+            </li>
+            <li>
+              <Link to='/chatbot'>
+                <i className='bx bx-clipboard'></i>
+                <span>{props.t('Chatbot Module')}</span>
               </Link>
             </li>
 
