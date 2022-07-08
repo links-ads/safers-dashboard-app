@@ -3,7 +3,7 @@ import { Container, Row  } from 'reactstrap';
 import MediaContainer from './Containers/MediaContainer';
 import SummaryContainer from './Containers/SummaryContainer';
 import { useDispatch, useSelector } from 'react-redux';
-import { getReportDetail } from '../../../store/reports/action';
+import { getReportDetail } from '../../../../store/reports/action';
 import { useParams } from 'react-router-dom';
 
 const ReportsDashboard = () => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types'
 import { Card, CardBody, CardText, CardTitle, Col, Row, Button } from 'reactstrap';
-import { formatDate } from '../../../store/utility';
+import { formatDate } from '../../../../store/utility';
 import { useNavigate } from 'react-router-dom';
 
 import { useTranslation } from 'react-i18next';

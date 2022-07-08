@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card } from 'reactstrap';
-import BaseMap from '../../../components/BaseMap/BaseMap';
+import BaseMap from '../../../../components/BaseMap/BaseMap';
 import PropTypes from 'prop-types';
-import SearchButton from '../../../components/SearchButton';
+import SearchButton from '../../../../components/SearchButton';
 
 const MapSection = ({
   viewState,

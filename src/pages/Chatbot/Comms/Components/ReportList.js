@@ -3,9 +3,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
-import { getIconLayer, getViewState } from '../../../helpers/mapHelper';
-import PaginationWrapper from '../../../components/Pagination';
-import { setFavorite } from '../../../store/reports/action';
+import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
+import PaginationWrapper from '../../../../components/Pagination';
+import { setFavorite } from '../../../../store/reports/action';
 import Report from './Report';
 
 const MAP_TYPE = 'reports';
