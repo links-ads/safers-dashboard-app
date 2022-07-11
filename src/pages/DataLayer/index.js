@@ -3,6 +3,7 @@ import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap
 import { useTranslation } from 'react-i18next';
 import DataLayer from './DataLayer';
 import OnDemandDataLayer from './OnDemandDataLayer';
+import PostEventMonitoringForm from './PostEventMonitoringForm';
 
 const dataLayerPanels = {
   DATA_LAYER: 0,
@@ -61,7 +62,7 @@ const DataLayerDashboard = () => {
             <div>Fire and Burned Area form.</div>
           </TabPane>
           <TabPane tabId={dataLayerPanels.POST_EVENT_MONITORING}>
-            <div>Post Event Monitoring</div>
+            <PostEventMonitoringForm t={t} />
           </TabPane>
           <TabPane tabId={dataLayerPanels.WILDfIRE_SIMULATION}>
             <div>Wildfire Simulation</div>
