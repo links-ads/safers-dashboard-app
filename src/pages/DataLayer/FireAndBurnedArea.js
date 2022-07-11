@@ -73,6 +73,18 @@ const FireAndBurnedArea = ({ t }) => {
                 ) => (
                   <Form onSubmit={handleSubmit} noValidate>
                     <Row>
+                      <Col><h4>{t('requestamap')}</h4></Col>
+                      <Col>
+                        <div className='d-flex justify-content-end'>
+                          <Button 
+                            className="request-map btn-orange" 
+                            onClick={()=>{}}>
+                            {t('aoilocation')}
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row>
                       {getGeneralErrors(error)}
                     </Row>
                     <Row>
