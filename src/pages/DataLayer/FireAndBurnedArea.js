@@ -79,6 +79,9 @@ const FireAndBurnedArea = ({ t }) => {
                           name="datalayertype"
                           id="datalayertype"
                           type="select"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.datalayertype}
                           multiple
                         >
                           <option>
@@ -107,6 +110,9 @@ const FireAndBurnedArea = ({ t }) => {
                         <Input 
                           name="requesttitle" 
                           id="requesttitle"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.requesttitle}
                           placeholder="[type request title]"
                         />
                       </FormGroup>
@@ -121,6 +127,9 @@ const FireAndBurnedArea = ({ t }) => {
                           name="mapselection"
                           type="textarea"
                           rows="5"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.mapselection}
                           placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
                         />
                       </FormGroup>
@@ -136,6 +145,9 @@ const FireAndBurnedArea = ({ t }) => {
                               id="startdate"
                               name="startdate"
                               type="date"
+                              onChange={handleChange}
+                              onBlur={handleBlur} 
+                              value={values.startdate}
                             />
                           </Col>
                           <Col>
@@ -146,6 +158,9 @@ const FireAndBurnedArea = ({ t }) => {
                               id="enddate"
                               name="enddate"
                               type="date"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.enddate}
                             />
                           </Col>
                         </Row>
@@ -164,6 +179,9 @@ const FireAndBurnedArea = ({ t }) => {
                               id="frequency"
                               name="frequency"
                               type="num"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.frequency}
                             />
                           </Col>
                           <Col>
@@ -186,6 +204,9 @@ const FireAndBurnedArea = ({ t }) => {
                               name="resolution"
                               type="num"
                               placeholder='10'
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.resolution}
                             />
                           </Col>
                           <Col>
