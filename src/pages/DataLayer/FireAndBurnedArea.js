@@ -15,17 +15,16 @@ import 'react-rangeslider/lib/index.css'
 const fireAndBurnedAreaSchema = Yup.object().shape({
   datalayertype: Yup.array()
     .required('This field cannot be empty'),
-  requesttitle: Yup.string()
-    .required('This field cannot be empty'),
+  requesttitle: Yup.string().optional(),
   mapselection: Yup.string()
     .required('This field cannot be empty'),
   startdate: Yup.date()
     .required('This field cannot be empty'),
   enddate: Yup.date()
     .required('This field cannot be empty'), 
-  frequency: Yup.number().min(1).required('Should be >=1'), 
+  frequency: Yup.number().min(1).optional('Should be >=1'), 
   resolution: Yup.number().min(10).max(60)
-    .required('Should be between 10 and 60'), 
+    .optional('Should be between 10 and 60'), 
 });
 
 
@@ -206,7 +205,7 @@ const FireAndBurnedArea = ({ t }) => {
                               type="num"
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              value={values.frequency}
+                              value={values.frequency ?? 1}
                             />
                             {getError('frequency', errors, touched, false)}
                           </Col>
@@ -232,7 +231,7 @@ const FireAndBurnedArea = ({ t }) => {
                               placeholder='10'
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              value={values.resolution}
+                              value={values.resolution ?? 10}
                             />
                             {getError('resolution', errors, touched, false)}
                           </Col>
