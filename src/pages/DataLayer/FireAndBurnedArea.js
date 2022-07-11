@@ -1,34 +1,38 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { Formik } from 'formik';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import * as Yup from 'yup'
+import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 
 //i18n
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 
 const fireAndBurnedAreaSchema = Yup.object().shape({
-  datalayertype: Yup.string()
-    .required('The field cannot be empty'),
+  datalayertype: Yup.array()
+    .required('This field cannot be empty'),
   requesttitle: Yup.string()
-    .required('The field cannot be empty'),
+    .required('This field cannot be empty'),
   mapselection: Yup.string()
-    .required('The field cannot be empty'),
-  startdate: Yup.string()
-    .required('The field cannot be empty'),
-  enddate: Yup.string()
-    .required('The field cannot be empty'), 
-  frequency: Yup.string()
-    .required('The field cannot be empty'), 
-  resolution: Yup.string()
-    .required('The field cannot be empty'), 
+    .required('This field cannot be empty'),
+  startdate: Yup.date()
+    .required('This field cannot be empty'),
+  enddate: Yup.date()
+    .required('This field cannot be empty'), 
+  frequency: Yup.number().min(1).required('Should be >=1'), 
+  resolution: Yup.number().min(10).max(60)
+    .required('Should be between 10 and 60'), 
 });
+
 
 const FireAndBurnedArea = ({ t }) => {
   console.log('t',t);
+
+  const error = useSelector(state => state.auth.error);
 
   const handleSubmitRequest = (event) => { alert('Clicked request');};
   const handleCancel = (event) => { alert('Clicked canel');}
@@ -36,6 +40,7 @@ const FireAndBurnedArea = ({ t }) => {
   return (
     // <div className='page-content'>
     <div>
+    
       <Row>
         <Col xl={5}>
           <Row>
@@ -67,6 +72,9 @@ const FireAndBurnedArea = ({ t }) => {
                   }
                 ) => (
                   <Form onSubmit={handleSubmit} noValidate>
+                    <Row>
+                      {getGeneralErrors(error)}
+                    </Row>
                     <Row>
                       <h5>{t('fireandburnedareas')}</h5>
                     </Row>
@@ -100,6 +108,7 @@ const FireAndBurnedArea = ({ t }) => {
                             5
                           </option>
                         </Input>
+                        {getError('datalayertype', errors, touched, false)}
                       </FormGroup>
                     </Row> 
                     <Row>
@@ -115,6 +124,7 @@ const FireAndBurnedArea = ({ t }) => {
                           value={values.requesttitle}
                           placeholder="[type request title]"
                         />
+                        {getError('requesttitle', errors, touched, false)}
                       </FormGroup>
                     </Row>
                     <Row>
@@ -132,6 +142,7 @@ const FireAndBurnedArea = ({ t }) => {
                           value={values.mapselection}
                           placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
                         />
+                        {getError('mapselection', errors, touched, false)}
                       </FormGroup>
                     </Row>
                     <Row>
@@ -149,6 +160,7 @@ const FireAndBurnedArea = ({ t }) => {
                               onBlur={handleBlur} 
                               value={values.startdate}
                             />
+                            {getError('startdate', errors, touched, false)}
                           </Col>
                           <Col>
                             <Label for="enddate">
@@ -162,6 +174,7 @@ const FireAndBurnedArea = ({ t }) => {
                               onBlur={handleBlur}
                               value={values.enddate}
                             />
+                            {getError('enddate', errors, touched, false)}
                           </Col>
                         </Row>
                       </FormGroup>
@@ -183,6 +196,7 @@ const FireAndBurnedArea = ({ t }) => {
                               onBlur={handleBlur}
                               value={values.frequency}
                             />
+                            {getError('frequency', errors, touched, false)}
                           </Col>
                           <Col>
                             <p>Integers only, &#x2265;1</p>
@@ -208,6 +222,7 @@ const FireAndBurnedArea = ({ t }) => {
                               onBlur={handleBlur}
                               value={values.resolution}
                             />
+                            {getError('resolution', errors, touched, false)}
                           </Col>
                           <Col>
                             <div>{t('resolutioninstructions')}</div>
