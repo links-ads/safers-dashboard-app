@@ -9,7 +9,8 @@ import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllDataLayers } from '../../store/appAction';
 
 import TreeView from './TreeView';
-// import { getDefaultDateRange } from '../../store/utility';
+import { filterNodesByProperty } from '../../store/utility';
+import { fetchEndpoint } from '../../helpers/apiHelper';
 
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -31,12 +32,26 @@ const DataLayer = ({ t }) => {
   const [layerSource, setLayerSource] = useState(undefined);
   const [dataDomain, setDataDomain] = useState(undefined);
   const [sliderValue, setSliderValue] = useState(0);
+  const [selectOptions, setSelectOptions] = useState({})
   const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
   const dispatch = useDispatch();
   const timer = useRef(null);
+
+  const { sourceOptions, domainOptions } = selectOptions;
+
+  //fetch data to populate 'Source' and 'Domain' selects
+  useEffect(() => {
+    (async () => {
+      const [sourceOptions, domainOptions] = await Promise.all([
+        fetchEndpoint('/data/layers/sources'), 
+        fetchEndpoint('/data/layers/domains')
+      ])
+      setSelectOptions({ sourceOptions, domainOptions })
+    })()
+  }, [])
 
   useEffect(() => {
     setBoundingBox(
@@ -249,10 +264,12 @@ const DataLayer = ({ t }) => {
                     onChange={(e) => setLayerSource(e.target.value)}
                     value={layerSource}
                   >
-                    <option value={''} >Source : All</option>
-                    <option value={'web'} >Source : Web</option>
-                    <option value={'camera'} >Source : Camera</option>
-                    <option value={'satellite'} >Source : Satellite</option>
+                    <option value=''>Source : All</option>
+                    {sourceOptions?.map((option) => (
+                      <option key={option} value={option}>
+                          Source: {option}
+                      </option>
+                    )) ?? []}
                   </Input>
                 </Col>
                 <Col xl={4}>
@@ -265,10 +282,12 @@ const DataLayer = ({ t }) => {
                     onChange={(e) => setDataDomain(e.target.value)}
                     value={dataDomain}
                   >
-                    <option value={''} >Data Domain : All</option>
-                    <option value={'fire'} >Data Domain : Fire</option>
-                    <option value={'weather'} >Data Domain : Weather</option>
-                    <option value={'water'} >Data Domain : Water</option>
+                    <option value=''>Domain : All</option>
+                    {domainOptions?.map((option) => (
+                      <option key={option} value={option}>
+                          Data Domain: {option}
+                      </option>
+                    )) ?? []}
                   </Input>
                 </Col>
               </Row>
@@ -304,7 +323,10 @@ const DataLayer = ({ t }) => {
                 zIndex: '100' 
               }}>
                 <TreeView
-                  data={dataLayers}
+                  data={filterNodesByProperty(dataLayers, {
+                    source: layerSource, 
+                    domain: dataDomain
+                  })}
                   setCurrentLayer={setCurrentLayer}
                 />
               </SimpleBar>
