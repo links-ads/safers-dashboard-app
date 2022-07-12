@@ -1,13 +1,13 @@
 /* eslint-disable no-unused-vars */
-import React from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { Formik } from 'formik';
-import BaseMap from '../../components/BaseMap/BaseMap';
+import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
-
+import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
 //i18n
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
@@ -29,12 +29,50 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
 
 
 const FireAndBurnedArea = ({ t }) => {
-  console.log('t',t);
 
   const error = useSelector(state => state.auth.error);
+  const defaultAoi = useSelector(state => state.user.defaultAoi);
 
   const handleSubmitRequest = (event) => { alert('Clicked request');};
   const handleCancel = (event) => { alert('Clicked canel');}
+
+  const [reportId, setReportId] = useState(undefined);
+  const [viewState, setViewState] = useState(undefined);
+  const [iconLayer, setIconLayer] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState(undefined);
+  const [reportSource, setReportSource] = useState(undefined);
+  const [midPoint, setMidPoint] = useState([]);
+  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
+  const [coordinates, setCoordinates] = useState([]);
+  const [togglePolygonMap, setTogglePolygonMap] = useState(false);
+  const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
+
+  const getReportsByArea = () => {
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
+  }
+
+  
+
+  const formatWKT = (coordinates) => {
+    // format coords as WKT
+    const list = coordinates.map(xy => `${xy[0]} ${xy[1]}`);
+    return `POLYGON(${list.join(',\n')})`;
+  }
+
+  const handleViewStateChange = (e) => {
+    if (e && e.viewState) {
+      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
+      setCurrentZoomLevel(e.viewState.zoom);
+    }
+  };
+
+  const handleResetAOI = useCallback(() => {
+    setBoundingBox(undefined);
+    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+  }, []);
 
   return (
     // <div className='page-content'>
@@ -150,7 +188,7 @@ const FireAndBurnedArea = ({ t }) => {
                           rows="5"
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          value={values.mapselection}
+                          value={coordinates.length > 0 ? formatWKT(coordinates) : '' }
                           placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
                         />
                         {getError('mapselection', errors, touched, false)}
@@ -272,12 +310,16 @@ const FireAndBurnedArea = ({ t }) => {
         </Col>
         <Col xl={7} className='mx-auto'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
-            <BaseMap
-              layers={[]}
-              initialViewState={{}}
-              widgets={[]}
-              screenControlPosition='top-right'
-              navControlPosition='bottom-right'
+            <MapSection
+              viewState={viewState}
+              iconLayer={iconLayer}
+              setViewState={setViewState}
+              getReportsByArea={getReportsByArea}
+              handleViewStateChange={handleViewStateChange}
+              setNewWidth={setNewWidth}
+              setNewHeight={setNewHeight}
+              setCoordinates={setCoordinates}
+              togglePolygonMap={true}
             />
           </Card>
         </Col>
