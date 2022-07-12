@@ -273,7 +273,7 @@ const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
               <Col>
                 <div className='d-flex justify-content-end'>
                   <Button 
-                    className="request-map btn-orange" 
+                    className="request-map btn-orange mb-3" 
                     onClick={toggleModal}>
                     {t('Request a map')}
                   </Button>

@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import DataLayer from './DataLayer';
 import OnDemandDataLayer from './OnDemandDataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
+import WildfireSimulation from './wildfire-simulation';
 
 const dataLayerPanels = {
   DATA_LAYER: 0,
@@ -65,7 +66,7 @@ const DataLayerDashboard = () => {
             <div>Post Event Monitoring</div>
           </TabPane>
           <TabPane tabId={dataLayerPanels.WILDfIRE_SIMULATION}>
-            <div>Wildfire Simulation</div>
+            <WildfireSimulation t={t} />
           </TabPane>
         </TabContent>
       </div>
