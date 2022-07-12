@@ -14,5 +14,6 @@
   "frequency": "Fréquence (en jours)",
   "frequencyinstructions": "Entre 10 et 60 mètres",
   "resolution": "Résolution spatiale (m)",
-  "resolutioninstructions": "Entre 10 et 60 mètres,par défaut 10 mètres"
+  "resolutioninstructions": "Entre 10 et 60 mètres,par défaut 10 mètres",
+  "posteventmonitoring": "Surveillance post-événement"
 }

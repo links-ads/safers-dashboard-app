@@ -84,7 +84,7 @@ const PostEventMonitoring = ({ t }) => {
                       {getGeneralErrors(error)}
                     </Row>
                     <Row>
-                      <h5>{t('fireandburnedareas')}</h5>
+                      <h5>{t('posteventmonitoring')}</h5>
                     </Row>
                     <Row>
                       <FormGroup className="form-group">
