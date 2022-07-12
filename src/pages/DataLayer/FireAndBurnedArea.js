@@ -58,8 +58,8 @@ const FireAndBurnedArea = ({ t }) => {
 
   const formatWKT = (coordinates) => {
     // format coords as WKT
-    const list = coordinates.map(xy => `${xy[0]} ${xy[1]}`);
-    return `POLYGON(${list.join(',\n')})`;
+    const list = coordinates.map(xy => `${xy[0].toFixed(6)} ${xy[1].toFixed(6)}`);
+    return `POLYGON((${list.join(',\n')}))`;
   }
 
   const handleViewStateChange = (e) => {
