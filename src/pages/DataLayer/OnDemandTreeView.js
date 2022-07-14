@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 
-const TreeView = ({ data, setCurrentLayer}) => {
+const PropsPanel = (node) => {
+  const node2=node.node;
+  if (!node2.parameters) return null;
+  const parameters = Object.keys(node2.parameters);
+  // TODO: get a better key once we have node numbering from backend
+  const paramaters = parameters.map((key,ix)=><p className="props-line" key={ix}>{`${key} : ${node2.parameters[key]}`}</p>);
+  return (
+    <div className="props-box">
+      {paramaters}
+    </div>
+  )
+};
+
+const OnDemandTreeView = ({ data, setCurrentLayer}) => {
   const [itemState, setItemState] = useState({});
+  const [itemPropsState, setItemPropsState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
 
@@ -22,17 +35,34 @@ const TreeView = ({ data, setCurrentLayer}) => {
     }));
   }
 
+  const toggleExpandCollapseProps = id => {
+    setItemPropsState(prevState => ({
+      ...prevState,
+      [id]: !prevState[id]
+    }));
+  }
+
   const mapper = (nodes, parentId, lvl) => {
     return nodes.map((node, index) => {
+
+      // set children according to level. Prioritise leaf over branch or root
+      if (!node.children) {
+        node.children= node?.layers || node?.requests || undefined;
+      }
       
+      node.text = node.category || node.name || node.id;
+      node.info = 'I\'m a tooltip';
+
       const id = node.id;
-      const tooltipDisplay = tooltipInfo || node.info
+      const tooltipDisplay = tooltipInfo || node.category || node.id;
       const item =
         <>
           <ListGroupItem
             key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? 'selected' : ''} mb-2`}
-            onClick={() => node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)}
+            onClick={() => {
+              return node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
+            }}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
               setTooltipInfo(await fetchEndpoint(node.info_url));
@@ -50,8 +80,14 @@ const TreeView = ({ data, setCurrentLayer}) => {
                     {node.text}
                   </>
                   :
-                  moment(node.text).format('LLL')
+                  'Leaf node'
               }
+              { node?.parameters ? 
+                <>
+                  &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
+                </> : null
+              }
+              { node?.parameters &&  itemPropsState[id] ?  <PropsPanel node={node} />: null}
             </>
           </ListGroupItem>
           {
@@ -84,10 +120,11 @@ const TreeView = ({ data, setCurrentLayer}) => {
   )
 }
 
-TreeView.propTypes = {
+OnDemandTreeView.propTypes = {
   data: PropTypes.any,
-  setCurrentLayer: PropTypes.func
+  setCurrentLayer: PropTypes.func,
+  node: PropTypes.any,
 }
 
 
-export default TreeView;
+export default OnDemandTreeView;
