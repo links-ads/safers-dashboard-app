@@ -188,7 +188,7 @@ const FireAndBurnedArea = ({ t }) => {
                           rows="5"
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          value={coordinates.length > 0 ? formatWKT(coordinates) : '' }
+                          value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapselection }
                           placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
                         />
                         {getError('mapselection', errors, touched, false)}
