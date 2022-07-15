@@ -5,7 +5,7 @@ import {
   Row
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
-import { formatDate } from '../../../store/utility';
+import { formatDate } from '../../../../store/utility';
 
 const Tooltip = ({object, coordinate, }) => {
   return (

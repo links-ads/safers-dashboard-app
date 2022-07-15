@@ -11,8 +11,8 @@ import EventDashboard from '../pages/Events/Dashboard';
 import SocialMonitoring from '../pages/SocialMonitoring';
 import Notifications from '../pages/Notifications';
 import InSituAlerts from '../pages/In-situ';
-import Reports from '../pages/Reports';
-import ReportsDashboard from '../pages/Reports/Dashboard';
+import Chatbot from '../pages/Chatbot';
+import ReportsDashboard from '../pages/Chatbot/Reports/Dashboard';
 import Pages404 from '../Utility/pages-404';
 import Pages500 from '../Utility/pages-500';
 
@@ -35,8 +35,8 @@ const privateRoutes = [
   { path: '/social-monitoring', component: SocialMonitoring },
   { path: '/notifications', component: Notifications },
   { path: '/insitu-alerts', component: InSituAlerts },
-  { path: '/reports', component: Reports },
   { path: '/reports-dashboard/:id', component: ReportsDashboard },
+  { path: '/chatbot', component: Chatbot },
 ]
 
 export { publicRoutes, privateRoutes }
