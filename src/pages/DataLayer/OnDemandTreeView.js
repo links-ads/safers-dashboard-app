@@ -71,7 +71,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
           >
             <>
               {(node.info || node.info_url) &&
-                <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
+                <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx font-size-16 me-1' />
               }
               {
                 node.children ?

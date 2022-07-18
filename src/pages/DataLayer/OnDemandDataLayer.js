@@ -252,7 +252,7 @@ const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
                 {t('Post Event Monitoring')}
               </button>
               <button
-                value={dataLayerPanels.WILDfIRE_SIMULATION} 
+                value={dataLayerPanels.WILDFIRE_SIMULATION} 
                 onClick={handleDialogButtonClick}
                 className='data-layers-dialog-btn'
               >

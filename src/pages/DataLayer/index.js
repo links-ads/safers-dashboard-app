@@ -11,7 +11,7 @@ const dataLayerPanels = {
   ON_DEMAND_DATA_LAYER: 1,
   FIRE_AND_BURNED_AREA:2,
   POST_EVENT_MONITORING: 3,
-  WILDfIRE_SIMULATION: 4,
+  WILDFIRE_SIMULATION: 4,
 }
 
 const DataLayerDashboard = () => {
@@ -28,16 +28,22 @@ const DataLayerDashboard = () => {
                 <Nav className='d-flex flex-nowrap' pills fill>
                   <NavItem>
                     <NavLink
-                      className={{'active': activeTab===0}}
-                      onClick={()=>setActiveTab(0)}
+                      className={{
+                        'active': activeTab === dataLayerPanels.DATA_LAYER
+                      }}
+                      onClick={() => setActiveTab(dataLayerPanels.DATA_LAYER)}
                     >
                       {t('Operational Map Layers')}
                     </NavLink>
                   </NavItem>
                   <NavItem>
                     <NavLink
-                      className={{'active': activeTab===1}}
-                      onClick={()=>setActiveTab(1)}
+                      className={{
+                        'active': activeTab === dataLayerPanels.ON_DEMAND_DATA_LAYER
+                      }}
+                      onClick={() => setActiveTab(
+                        dataLayerPanels.ON_DEMAND_DATA_LAYER
+                      )}
                     >
                       {t('On-Demand Map Layers')}
                     </NavLink>
@@ -65,7 +71,7 @@ const DataLayerDashboard = () => {
           <TabPane tabId={dataLayerPanels.POST_EVENT_MONITORING}>
             <div>Post Event Monitoring</div>
           </TabPane>
-          <TabPane tabId={dataLayerPanels.WILDfIRE_SIMULATION}>
+          <TabPane tabId={dataLayerPanels.WILDFIRE_SIMULATION}>
             <WildfireSimulation t={t} />
           </TabPane>
         </TabContent>
