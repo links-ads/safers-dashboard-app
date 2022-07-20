@@ -10,6 +10,7 @@ import eventAlertReducer from './events/reducer';
 import notificationsReducer from './notifications/reducer';
 import inSituAlertReducer from './insitu/reducer';
 import reportReducer from './reports/reducer';
+import commsReducer from './comms/reducer';
 import missionReducer from './missions/reducer';
 
 import storage from 'redux-persist/lib/storage/session';//or session
@@ -25,6 +26,7 @@ const appReducer = combineReducers({
   inSituAlerts: inSituAlertReducer,
   notifications: notificationsReducer,
   reports: reportReducer,
+  comms: commsReducer,
   missions: missionReducer
 });
 

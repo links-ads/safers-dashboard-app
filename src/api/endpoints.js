@@ -68,5 +68,10 @@ export const endpoints = {
     getReports: '/chatbot/reports',
     getReportInfo: '/chatbot/reports/:report_id',
   },
+  chatbot: {
+    comms: {
+      getAll: '/chatbot/comms'
+    }
+  }
 };
 
