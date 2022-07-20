@@ -18,6 +18,7 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
   const { orgList = [] } = useSelector(state => state.common);
   const { info:user } = useSelector(state => state.user);
   const [orgName, setorgName] = useState('');
+  const [scope, setScope] = useState('');
 
   useEffect(() => {
     if(orgList.length && user?.organization){
@@ -54,20 +55,26 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
             className="btn-sm sort-select-input me-2 mb-2"
             name="scope"
             type="select"
+            onChange={(e)=>{setScope(e.target.value)}}
           >
             <option value="">--{t('Scope')}--</option>
+            <option value="public">{t('Public')}</option>
+            <option value="restricted">{t('Restricted')}</option>
           </Input>
         </Col>
-        <Col xl={5}>
+        { scope === 'restricted' && <Col xl={5}>
           <Input
-            id="scope"
+            id="restrictions"
             className="btn-sm sort-select-input"
-            name="scope"
+            name="restrictions"
             type="select"
           >
             <option value="">--{t('Restrictions')}--</option>
+            <option value="citizen">{t('Citizen')}</option>
+            <option value="professional">{t('Professional')}</option>
+            <option value="organisation">{t('Organisation')}</option>
           </Input>
-        </Col>
+        </Col>}
       </Row>
       <Input
         id="message-description-input"

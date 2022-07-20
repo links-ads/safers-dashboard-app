@@ -9,7 +9,7 @@ import Comms from './Comms';
 
 const Chatbot = () => {
 
-  const [customActiveTab, setCustomActiveTab] = useState('1');
+  const [customActiveTab, setCustomActiveTab] = useState('4');
   const { t } = useTranslation();
 
   const toggleCustom = (tab) => {

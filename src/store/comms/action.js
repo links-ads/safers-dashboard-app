@@ -3,7 +3,9 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 export const getAllComms = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.chatbot.comms.getAll, options);
+  //To Do - remove this and use api.get when actual APIs are ready
+  const custOption = {...options, baseURL: 'https://safers-dashboard-mock.herokuapp.com/api/',}
+  const response = await api.getCustom(endpoints.chatbot.comms.getAll, custOption);
   if (response.status === 200) {
     return dispatch(getCommsSuccess(response.data));
   }
