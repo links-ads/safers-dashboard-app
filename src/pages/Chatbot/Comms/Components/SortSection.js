@@ -6,16 +6,20 @@ import { useSelector } from 'react-redux';
 //i18N
 import { withTranslation } from 'react-i18next';
 
-const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder, setTogglePolygonMap }) => {
-  const { allReports } = useSelector(state => state.reports);
+const SortSection = ({ t, commStatus, sortOrder, setcommStatus, setSortOrder, target, setTarget, setTogglePolygonMap }) => {
+  const { allComms } = useSelector(state => state.comms);
 
   return (
     <>
 
       <Row className=''>
-        <Col></Col>
-        <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {allReports.length}</span>
+        <Col>          
+          <Button onClick={setTogglePolygonMap}>
+            Create New Message
+          </Button>
+        </Col>
+        <Col className="d-flex justify-content-end">
+          <span className='my-auto alert-report-text'>{t('Results')} {allComms.length}</span>
         </Col>
       </Row>
       <hr />
@@ -36,23 +40,35 @@ const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder
         </Col>
         <Col xl={4} className='my-1'>
           <Input
-            id="alertSource"
+            id="commStatus"
             className="btn-sm sort-select-input"
-            name="alertSource"
+            name="commStatus"
             placeholder="Source"
             type="select"
-            onChange={(e) => setReportSource(e.target.value)}
-            value={reportSource}
-            data-testid='reportAlertSource'
+            onChange={(e) => setcommStatus(e.target.value)}
+            value={commStatus}
+            data-testid='commStatus'
           >
-            <option value={''} >Source : All</option>
+            <option value={''} >--Status--</option>
+            <option value="ongoing" >{t('ongoing').toUpperCase()}</option>
+            <option value="expired" >{t('expired').toUpperCase()}</option>
           </Input>
         </Col>
-        <Col xl={3} className='my-1'>
-          <Button
-            onClick={setTogglePolygonMap} className='align-self-baseline p-0'>
-            Create New Message
-          </Button>
+        <Col xl={4} className='my-1'>
+          <Input
+            id="target"
+            className="btn-sm sort-select-input"
+            name="target"
+            placeholder="Source"
+            type="select"
+            onChange={(e) => setTarget(e.target.value)}
+            value={target}
+            data-testid='target'
+          >
+            <option value={''} >--Target--</option>
+            <option value="scope" >{t('scope')}</option>
+            <option value="restrictions" >{t('restrictions')}</option>
+          </Input>
         </Col>
       </Row>
     </>
@@ -60,12 +76,14 @@ const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder
 }
 
 SortSection.propTypes = {
-  reportSource: PropTypes.any,
+  commStatus: PropTypes.string,
   sortOrder: PropTypes.string,
-  setReportSource: PropTypes.func,
+  setcommStatus: PropTypes.func,
   setSortOrder: PropTypes.func,
   t: PropTypes.func,
-  setTogglePolygonMap: PropTypes.func
+  setTogglePolygonMap: PropTypes.func,
+  target: PropTypes.string,
+  setTarget: PropTypes.func
 }
 
 export default withTranslation(['common'])(SortSection);

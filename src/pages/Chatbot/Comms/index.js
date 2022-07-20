@@ -7,8 +7,8 @@ import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
-import ReportList from './Components/ReportList';
-import { getAllReports, resetReportResponseState } from '../../../store/reports/action';
+import CommsList from './Components/CommsList';
+import { getAllComms, resetCommsResponseState } from '../../../store/comms/action';
 import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
 
 import { useTranslation } from 'react-i18next';
@@ -17,7 +17,7 @@ import DateRangePicker from '../../../components/DateRangePicker/DateRange';
 
 const Comms = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allReports: OrgReportList, success, filteredReports } = useSelector(state => state.reports);
+  const { allComms, success, filteredComms } = useSelector(state => state.comms);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const { t } = useTranslation();
@@ -26,7 +26,8 @@ const Comms = () => {
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
-  const [reportSource, setReportSource] = useState(undefined);
+  const [commStatus, setcommStatus] = useState(undefined);
+  const [target, setTarget] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
@@ -38,7 +39,7 @@ const Comms = () => {
 
   const dispatch = useDispatch();
 
-  const allReports = filteredReports || OrgReportList;
+  const allReports = filteredComms || allComms;
 
   useEffect(() => {
     const dateRangeParams = dateRange
@@ -48,20 +49,21 @@ const Comms = () => {
     setReportId(undefined);
     const reportParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: reportSource ? reportSource : undefined,
+      status: commStatus ? commStatus : undefined,
+      target: target ? target : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
-    dispatch(getAllReports(reportParams));
-  }, [dateRange, reportSource, sortOrder, boundingBox])
+    dispatch(getAllComms(reportParams));
+  }, [dateRange, commStatus, sortOrder, boundingBox, target])
 
   useEffect(() => {
     if (success?.detail) {
       toastr.success(success.detail, '');
     }
-    dispatch(resetReportResponseState());
+    dispatch(resetCommsResponseState());
 
   }, [success]);
 
@@ -91,27 +93,28 @@ const Comms = () => {
   }, []);
 
   return (
-    <div className='mx-2 sign-up-aoi-map-bg'>
-      <Row>
-        <Col xl={12} className='d-flex justify-content-between'>
-          <p className='align-self-baseline alert-title'>{t(toggleCreateNewMessage? 'Create New Message' : 'Comms List', { ns: 'reports' })}</p>
+    <div className='mx-2'>
+      <Row className="justify-content-end mb-2">
+        <Col xl={7}>
           <Button color='link'
-            onClick={handleResetAOI} className='align-self-baseline pe-0'>
+            onClick={handleResetAOI} className='p-0'>
             {t('default-aoi', { ns: 'common' })}</Button>
         </Col>
       </Row >
       <Row>
         {!toggleCreateNewMessage && <Col xl={5}>
           <SortSection
-            reportSource={reportSource}
+            commStatus={commStatus}
             sortOrder={sortOrder}
-            setReportSource={setReportSource}
+            setcommStatus={setcommStatus}
             setSortOrder={setSortOrder}
             setTogglePolygonMap={() => { setTogglePolygonMap(true); setToggleCreateNewMessage(true); }}
+            target={target}
+            setTarget={setTarget}
           />
           <Row>
             <Col xl={12} className='px-3'>
-              <ReportList
+              <CommsList
                 reportId={reportId}
                 currentZoomLevel={currentZoomLevel}
                 setViewState={setViewState}
