@@ -11,8 +11,7 @@ const SortSection = ({ t, commStatus, sortOrder, setcommStatus, setSortOrder, ta
 
   return (
     <>
-
-      <Row className=''>
+      <Row>
         <Col>          
           <Button onClick={setTogglePolygonMap}>
             Create New Message

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
-import { Card, CardBody, CardText, Col, Row } from 'reactstrap';
+import { Card, CardBody, CardText, Col, Row, Badge } from 'reactstrap';
 import { formatDate } from '../../../../store/utility';
 
 import { useTranslation } from 'react-i18next';
@@ -21,11 +21,23 @@ const Comm = ({ card, reportId, setSelectedComm }) => {
     return <>{msg} <a href="javascript:void(0)" onClick={() => {setSeeMore(true)}}>See less</a></>;
   }
 
+  const getBadge = () => {
+    let iconColor = card.status == 'ONGOING' ? 'fa-retweet' : 'fa-hourglass-end';
+    
+    return (
+      <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
+        <i className={`fa ${iconColor} text-danger fa-lg me-1`}></i> 
+        <span>{card.status}</span>
+      </Badge>
+    )
+  }
+
   return (
     <Card
       onClick={() => setSelectedComm(!isSelected ? card.mission_id : null)}
       className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
-      <CardBody className='p-0 m-2'>
+      <CardBody className='py-2 px-0 m-2'>
+        {getBadge()}
         <Row className='mt-2'>
           <Col>
             <Row className='mt-2'>
