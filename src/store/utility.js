@@ -64,3 +64,10 @@ export const filterNodesByProperty = (layers, params = {}) => {
     })
   )
 }
+
+// TODO: needs tests
+//format coords as Well-Known Text
+export const formatWKT = (coordinates) => {
+  const list = coordinates.map(([x, y]) => `${x.toFixed(6)} ${y.toFixed(6)}`);
+  return `POLYGON((${list.join(',\n')}))`;
+}
