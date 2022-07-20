@@ -9,22 +9,16 @@ import { setFilteredEventAlerts } from '../../../store/appAction';
 
 const SortSection = ({ t,
   checkedStatus,
-  eventSource,
   sortOrder,
   filteredAlerts,
   setCheckedStatus,
   setAlertId,
-  setEventSource,
   setSortOrder }) => {
   const alerts = useSelector(state => state.eventAlerts.allAlerts);
   const ongoing = alerts.filter((alert) => alert.status == 'ONGOING').length;
   const closed = alerts.filter((alert) => alert.status == 'CLOSED').length;
   const dispatch = useDispatch();
 
-  const filterByAlertSource = (eventSource) => {
-    setAlertId(undefined);
-    setEventSource(eventSource);
-  }
   const handleChecked = (value) => {
     if (checkedStatus.includes(value)) {
       setCheckedStatus(_.without(checkedStatus, value))
@@ -104,26 +98,7 @@ const SortSection = ({ t,
             <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
-        <Col xl={4} className='my-1'>
-          <Input
-            id="eventSource"
-            className="btn-sm sort-select-input"
-            name="eventSource"
-            placeholder="Source"
-            type="select"
-            onChange={(e) => filterByAlertSource(e.target.value)}
-            value={eventSource}
-            data-testid='eventAlertSource'
-          >
-            <option value={''} >{t('Source')} : {t('All')}</option>
-            <option value={'web'} >{t('Source')} : Web</option>
-            <option value={'camera'} >{t('Source')} : Camera</option>
-            <option value={'satellite'} >{t('Source')} : Satellite</option>
-          </Input>
-        </Col>
-        <Col xl={3}>
-
-        </Col>
+        <Col xl={7} />
       </Row>
       <Row className='mt-3'>
         <Col xs={12}>
@@ -150,12 +125,10 @@ const SortSection = ({ t,
 
 SortSection.propTypes = {
   checkedStatus: PropTypes.any,
-  eventSource: PropTypes.string,
   sortOrder: PropTypes.string,
   filteredAlerts: PropTypes.array,
   setCheckedStatus: PropTypes.func,
   setSortOrder: PropTypes.func,
-  setEventSource: PropTypes.func,
   setAlertId: PropTypes.func,
   t: PropTypes.func,
 }
