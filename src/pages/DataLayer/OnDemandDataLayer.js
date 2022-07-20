@@ -1,120 +1,34 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useState,  } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText, Modal } from 'reactstrap';
-import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
-import moment from 'moment';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllDataLayers } from '../../store/appAction';
 
 import OnDemandTreeView from './OnDemandTreeView';
-// import { getDefaultDateRange } from '../../store/utility';
 
-//i18n
 import { withTranslation } from 'react-i18next'
-import Slider from 'react-rangeslider';
-import 'react-rangeslider/lib/index.css'
-import { getBoundingBox } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
+import { DATA_LAYERS_PANELS } from './constants';
 import MOCKDATA from './mockdata';
 
-const SLIDER_SPEED = 800;
-const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const dateRange = useSelector(state => state.common.dateRange)
-  //const dataLayers = useSelector(state => state.dataLayer.dataLayers);
-  const dataLayers = MOCKDATA;
-  const [currentLayer, setCurrentLayer] = useState(undefined);
-  const [bitmapLayer, setBitmapLayer] = useState(undefined);
-  const [boundingBox, setBoundingBox] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
-  const [sortByDate, setSortByDate] = useState(undefined);
-  const [layerSource, setLayerSource] = useState(undefined);
-  const [dataDomain, setDataDomain] = useState(undefined);
-  const [sliderValue, setSliderValue] = useState(0);
-  const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
-  const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [showLegend, setShowLegend] = useState(false);
+const OnDemandDataLayer = ({ 
+  t,
+  dataLayers,
+  setActiveTab,
+  setCurrentLayer,
+  layerSource,
+  setLayerSource,
+  dataDomain,
+  setDataDomain,
+  sortByDate,
+  setSortByDate,
+  handleResetAOI, 
+  getSlider,
+  getLegend,
+  bitmapLayer,
+  viewState
+}) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
-
-  const dispatch = useDispatch();
-  const timer = useRef(null);
-
-  useEffect(() => {
-    setBoundingBox(
-      getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel, 300, 300));
-  }, [defaultAoi]);
-
-  useEffect(() => {
-    setSliderValue(0);
-    setIsPlaying(false);
-    if (currentLayer && currentLayer.urls) {
-      const urls = getUrls();
-      const imageUrl = urls[0].replace('{bbox}', boundingBox);
-      setBitmapLayer(getBitmapLayer(imageUrl));
-      setSliderRangeLimit(urls.length - 1);
-    }
-  }, [currentLayer]);
-
-  useEffect(() => {
-    if (sliderChangeComplete && currentLayer && currentLayer.urls) {
-      const urls = getUrls();
-      if (urls[sliderValue]) {
-        const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
-        setBitmapLayer(getBitmapLayer(imageUrl));
-      }
-    }
-  }, [sliderValue, sliderChangeComplete]);
-
-  useEffect(() => {
-    let nextValue = sliderValue;
-    if (isPlaying) {
-      timer.current = setInterval(() => {
-        if (nextValue < getUrls().length) {
-          nextValue += 1;
-          setSliderValue(nextValue);
-        } else {
-          clearInterval(timer.current);
-          setIsPlaying(false);
-        }
-      }, SLIDER_SPEED);
-    }
-    else {
-      clearInterval(timer.current);
-    }
-  }, [isPlaying]);
-
-  useEffect(() => {
-    if (dataLayers.length > 0) {
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
-    }
-  }, [dataLayers]);
-
-  useEffect(() => {
-    const dateRangeParams = dateRange 
-      ? { start: dateRange[0], end: dateRange[1] } 
-      : {};
-    dispatch(getAllDataLayers(
-      {
-        order: sortByDate,
-        source: layerSource ? layerSource : undefined,
-        domain: dataDomain ? dataDomain : undefined,
-        start: dateRange[0],
-        end: dateRange[1],
-        // bbox: boundingBox ? boundingBox.toString() : undefined, //disabled since bbox value won't return data 
-        default_start: false,
-        default_end: false,
-        default_bbox: false,
-        ...dateRangeParams
-      }
-    ));
-  }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
-
-  const getUrls = () => Object.values(currentLayer?.urls);
 
   const toggleModal = () => setModalIsOpen(prev => !prev);
 
@@ -123,110 +37,9 @@ const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
     toggleModal();
   }
 
-  const getViewState = (midPoint, zoomLevel = 4) => {
-    return {
-      longitude: midPoint[0],
-      latitude: midPoint[1],
-      zoom: zoomLevel,
-      pitch: 0,
-      bearing: 0,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator()
-    };
-  }
-
-  const getBitmapLayer = (url) => {
-    return (new BitmapLayer({
-      id: 'bitmap-layer',
-      bounds: boundingBox,
-      image: url
-    }))
-  }
-
-  const formatTooltip = value => moment(Object.assign({}, Object.keys(currentLayer?.urls))[value]).format('LLL');
-
-  const getSlider = (index) => {
-    if (currentLayer?.urls) {
-      return (
-        <div style={{
-          position: 'absolute',
-          zIndex: 1,
-          bottom: '70px',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-          <button
-            type="button"
-            className="btn btn-layers-slider-play float-start me-2 p-0"
-            onClick={() => setIsPlaying(!isPlaying)}
-            aria-label='play-data-layers'
-          >
-            <i className={`h4 mdi ${isPlaying ? 'mdi-play' : 'mdi-stop'}`} />
-          </button>
-          <Slider
-            key={index}
-            value={sliderValue}
-            orientation="horizontal"
-            format={formatTooltip}
-            min={0}
-            max={sliderRangeLimit}
-            tooltip={true}
-            onClick={() => {
-              setSliderChangeComplete(true)
-            }}
-            onChangeStart={() => {
-              setIsPlaying(false);
-              setSliderChangeComplete(false);
-            }}
-            onChange={value => setSliderValue(value)}
-            onChangeComplete={() => {
-              setIsPlaying(false);
-              setSliderChangeComplete(true)
-            }}
-          />
-        </div>
-      );
-    }
-  }
-
-  const getLegend = () => {
-    if (currentLayer?.legend_url) {
-      return (
-        <div style={{
-          position: 'absolute',
-          zIndex: 1,
-          bottom: '30px',
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center'
-        }}>
-          <button
-            type="button"
-            className="btn btn-layers-slider-play float-start me-2 p-0"
-            onClick={() => setShowLegend(!showLegend)}
-          >
-            <i className="h4 mdi mdi-map-legend">legend</i>
-          </button>     
-        </div>
-      );
-    }
-  }
-
-  const handleResetAOI = useCallback(() => {
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-  }, []);
-
   return (
     <div>
       <div>
-        {showLegend ? (
-          <div className='legend'>
-            <img src={currentLayer.legend_url}/>
-          </div>
-        ) : null
-        }
         <Modal
           centered
           isOpen={modalIsOpen}
@@ -238,21 +51,21 @@ const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
             <h2>{t('Select Data Type')}</h2>
             <div className='d-flex flex-nowrap gap-5 my-5'>
               <button
-                value={dataLayerPanels.FIRE_AND_BURNED_AREA} 
+                value={DATA_LAYERS_PANELS.fireAndBurnedAreas} 
                 onClick={handleDialogButtonClick}
                 className='data-layers-dialog-btn'
               >
                 {t('Fire and Burned Area')}
               </button>
               <button 
-                value={dataLayerPanels.POST_EVENT_MONITORING} 
+                value={DATA_LAYERS_PANELS.postEventMonitoring} 
                 onClick={handleDialogButtonClick}
                 className='data-layers-dialog-btn'
               >
                 {t('Post Event Monitoring')}
               </button>
               <button
-                value={dataLayerPanels.WILDfIRE_SIMULATION} 
+                value={DATA_LAYERS_PANELS.wildfireSimulation} 
                 onClick={handleDialogButtonClick}
                 className='data-layers-dialog-btn'
               >
@@ -331,9 +144,9 @@ const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
                   </Col>
                 </Row>
               </Col>
-              <Col xl={2} className="d-flex justify-content-end">
+              <Col xl={2} className="d-flex justify-content-end align-items-center">
                 <Button color='link'
-                  onClick={handleResetAOI} className='align-self-baseline p-0'>
+                  onClick={handleResetAOI} className='p-0'>
                   {t('default-aoi')}
                 </Button>
               </Col>
@@ -362,7 +175,7 @@ const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
                   zIndex: '100' 
                 }}>
                   <OnDemandTreeView
-                    data={dataLayers}
+                    data={MOCKDATA ?? dataLayers}
                     setCurrentLayer={setCurrentLayer}
                   />
                 </SimpleBar>
@@ -390,8 +203,20 @@ const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
 
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
+  dataLayers: PropTypes.any,
   setActiveTab: PropTypes.func,
-  dataLayerPanels: PropTypes.object,
+  setCurrentLayer: PropTypes.any,
+  layerSource: PropTypes.any,
+  setLayerSource: PropTypes.any,
+  dataDomain: PropTypes.any,
+  setDataDomain: PropTypes.any,
+  sortByDate: PropTypes.any,
+  setSortByDate: PropTypes.any,
+  getSlider: PropTypes.any,
+  getLegend: PropTypes.any,
+  bitmapLayer: PropTypes.any,
+  viewState: PropTypes.any,
+  handleResetAOI: PropTypes.function
 }
 
 export default withTranslation(['common'])(OnDemandDataLayer);
