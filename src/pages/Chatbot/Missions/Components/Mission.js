@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { Badge, Card, CardBody, CardText, CardTitle, Col, Row, Button } from 'reactstrap';
 import { formatDate } from '../../../../store/utility';
@@ -11,8 +11,18 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();
+  const [seeMore, setSeeMore] = useState(true);
 
-  const isSelected = card.mission_id === missionId
+  const isSelected = card.mission_id === missionId;
+
+  const getMsg = (msg) => {
+    if(seeMore){
+      return (
+        <>{msg.substr(0, 80)}... <a href="javascript:void(0)" onClick={() => {setSeeMore(false)}}>See more</a></>
+      )
+    }
+    return <>{msg} <a href="javascript:void(0)" onClick={() => {setSeeMore(true)}}>See less</a></>;
+  }
 
   return (
     <Card
@@ -29,32 +39,29 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
                 <CardTitle>
                   <span className='card-title'>{card.name}</span>
                 </CardTitle>
-                <CardText className='card-desc'>
-                  {card.description}
-                </CardText>
               </Col>
             </Row>
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  Start Date: {formatDate(card.start_date, 'DD-MM-YYYY')} | End Date: {formatDate(card.end_date, 'DD-MM-YYYY')}
+                  {t('Start date', { ns: 'common' })}: {formatDate(card.start_date, 'DD-MM-YYYY')} | {t('End date', { ns: 'common' })}: {formatDate(card.end_date, 'DD-MM-YYYY')}
                 </p>
                 <p className="text-muted no-wrap">
-                  Assigned To: 
+                  {t('Assigned to', { ns: 'chatBot' })}: {(card.assignedTo.organization)}/{(card.assignedTo.organization)}/{(card.assignedTo.name)}
                 </p>
               </Col>
             </Row>
             <Row className='mt-0'>
               <Col md={10}>
-                <p className="text-muted no-wrap">
-                  Associated files: <Button color='link' onClick={() => { navigate(`/reports-dashboard/${card.mission_id}`); }} className='align-self-baseline pe-0'>{t(card.report_id, { ns: 'common' })}</Button>
+                <p className="text-muted no-wrap mb-0">
+                  {t('Associated files', { ns: 'common' })}: <Button color='link' onClick={() => { navigate(`/reports-dashboard/${card.report_id}`); }} className='align-self-baseline pe-0'>{t(card.report_title, { ns: 'common' })}</Button>
                 </p>
               </Col>
-              <Col md={2}>
+            </Row>
+            <Row className='mt-0'>
+              <Col>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>
-                    {card.source.toUpperCase()}
-                  </span>
+                  {t('Description', { ns: 'common' })}: {getMsg(card.description)}
                 </CardText>
               </Col>
             </Row>

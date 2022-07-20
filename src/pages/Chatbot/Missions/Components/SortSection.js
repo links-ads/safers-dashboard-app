@@ -6,14 +6,19 @@ import { useSelector } from 'react-redux';
 //i18N
 import { withTranslation } from 'react-i18next';
 
-const SortSection = ({ t, missionSource, sortOrder, setMissionSource, setSortOrder, setTogglePolygonMap }) => {
+const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrder, setTogglePolygonMap }) => {
   const { allMissions } = useSelector(state => state.missions);
 
   return (
     <>
 
       <Row className=''>
-        <Col></Col>
+        <Col>
+          <Button
+            onClick={setTogglePolygonMap}>
+            Create New Mission
+          </Button>
+        </Col>
         <Col xl={3} className="d-flex justify-content-end">
           <span className='my-auto alert-mission-text'>{t('Results')} {allMissions.length}</span>
         </Col>
@@ -34,25 +39,22 @@ const SortSection = ({ t, missionSource, sortOrder, setMissionSource, setSortOrd
             <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
-        <Col xl={4} className='my-1'>
+        <Col xl={6} className='my-1'>
           <Input
-            id="alertSource"
+            id="missionStatus"
             className="btn-sm sort-select-input"
-            name="alertSource"
+            name="missionStatus"
             placeholder="Source"
             type="select"
-            onChange={(e) => setMissionSource(e.target.value)}
-            value={missionSource}
-            data-testid='missionAlertSource'
+            onChange={(e) => setMissionStatus(e.target.value)}
+            value={missionStatus}
+            data-testid='missionStatus'
           >
-            <option value={''} >Source : All</option>
+            <option value={''} >--Status--</option>
+            <option value="created" >{t('created').toUpperCase()}</option>
+            <option value="taken_in_charge" >{t('taken in charge').toUpperCase()}</option>
+            <option value="completed" >{t('completed').toUpperCase()}</option>
           </Input>
-        </Col>
-        <Col xl={3} className='my-1'>
-          <Button
-            onClick={setTogglePolygonMap} className='align-self-baseline p-0'>
-            Create New Mission
-          </Button>
         </Col>
       </Row>
     </>
@@ -60,9 +62,9 @@ const SortSection = ({ t, missionSource, sortOrder, setMissionSource, setSortOrd
 }
 
 SortSection.propTypes = {
-  missionSource: PropTypes.any,
+  missionStatus: PropTypes.any,
   sortOrder: PropTypes.string,
-  setMissionSource: PropTypes.func,
+  setMissionStatus: PropTypes.func,
   setSortOrder: PropTypes.func,
   t: PropTypes.func,
   setTogglePolygonMap: PropTypes.func

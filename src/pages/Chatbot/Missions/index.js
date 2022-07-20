@@ -26,7 +26,7 @@ const Missions = () => {
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
-  const [missionSource, setMissionSource] = useState(undefined);
+  const [missionStatus, setMissionStatus] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
@@ -48,14 +48,14 @@ const Missions = () => {
     setMissionId(undefined);
     const missionParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: missionSource ? missionSource : undefined,
+      Status: missionStatus ? missionStatus : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
     dispatch(getAllMissions(missionParams));
-  }, [dateRange, missionSource, sortOrder, boundingBox])
+  }, [dateRange, missionStatus, sortOrder, boundingBox])
 
   useEffect(() => {
     if (success?.detail) {
@@ -91,21 +91,21 @@ const Missions = () => {
   }, []);
 
   return (
-    <div className='mx-2 sign-up-aoi-map-bg'>
-      <Row>
-        <Col xl={12} className='d-flex justify-content-between'>
-          <p className='align-self-baseline alert-title'>{t(toggleCreateNewMission? 'Create New Message' : 'Missions List', { ns: 'missions' })}</p>
+    <div className='mx-2'>
+      <Row className="justify-content-end mb-2">
+        <Col xl={7}>
           <Button color='link'
-            onClick={handleResetAOI} className='align-self-baseline pe-0'>
+            onClick={handleResetAOI} className='p-0'>
             {t('default-aoi', { ns: 'common' })}</Button>
         </Col>
       </Row >
       <Row>
         {!toggleCreateNewMission && <Col xl={5}>
           <SortSection
-            missionSource={missionSource}
+            t={t}
+            missionStatus={missionStatus}
             sortOrder={sortOrder}
-            setMissionSource={setMissionSource}
+            setMissionStatus={setMissionStatus}
             setSortOrder={setSortOrder}
             setTogglePolygonMap={() => { setTogglePolygonMap(true); setToggleCreateNewMission(true); }}
           />
@@ -125,7 +125,7 @@ const Missions = () => {
             setTogglePolygonMap(false);
             setToggleCreateNewMission(false);
             setCoordinates([]);
-          }} coordinates={coordinates} />
+          }} t={t} coordinates={coordinates} />
 
         </Col>}
         <Col xl={7} className='mx-auto'>
