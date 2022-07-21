@@ -11,6 +11,8 @@ import notificationsReducer from './notifications/reducer';
 import inSituAlertReducer from './insitu/reducer';
 import reportReducer from './reports/reducer';
 import commsReducer from './comms/reducer';
+import missionReducer from './missions/reducer';
+// import peopleReducer from './people/reducer';
 
 import storage from 'redux-persist/lib/storage/session';//or session
 
@@ -26,6 +28,8 @@ const appReducer = combineReducers({
   notifications: notificationsReducer,
   reports: reportReducer,
   comms: commsReducer,
+  missions: missionReducer,
+  // people: peopleReducer,
 });
 
 const rootReducer = (state, action) => {

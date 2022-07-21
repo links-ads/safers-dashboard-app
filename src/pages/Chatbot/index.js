@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 
 import Reports from './Reports';
 import Comms from './Comms';
+import Missions from './Missions';
 
 const Chatbot = () => {
 
@@ -29,7 +30,7 @@ const Chatbot = () => {
     case '2':
       return <Comms />;
     case '3':
-      return null;
+      return <Missions />;
     case '4':
       return <Reports />;
     }
@@ -105,6 +106,7 @@ const Chatbot = () => {
               {renderContent('2')}
             </TabPane>
             <TabPane tabId="3">
+              {renderContent('3')}
             </TabPane>
             <TabPane tabId="4">
               {renderContent('4')}
