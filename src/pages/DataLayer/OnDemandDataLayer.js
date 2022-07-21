@@ -9,11 +9,12 @@ import OnDemandTreeView from './OnDemandTreeView';
 import { withTranslation } from 'react-i18next'
 import SimpleBar from 'simplebar-react';
 import { DATA_LAYERS_PANELS } from './constants';
-import MOCKDATA from './mockdata';
 
 const OnDemandDataLayer = ({ 
   t,
-  dataLayers,
+  onDemandMapLayers,
+  sourceOptions,
+  domainOptions,
   setActiveTab,
   setCurrentLayer,
   layerSource,
@@ -29,6 +30,8 @@ const OnDemandDataLayer = ({
   viewState
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
+
+  console.log('onDemandMapLayers: ', onDemandMapLayers)
 
   const toggleModal = () => setModalIsOpen(prev => !prev);
 
@@ -120,10 +123,12 @@ const OnDemandDataLayer = ({
                       onChange={(e) => setLayerSource(e.target.value)}
                       value={layerSource}
                     >
-                      <option value={''} >Source : All</option>
-                      <option value={'web'} >Source : Web</option>
-                      <option value={'camera'} >Source : Camera</option>
-                      <option value={'satellite'} >Source : Satellite</option>
+                      <option value={''} >Source: All</option>
+                      {sourceOptions?.map((option) => (
+                        <option key={option} value={option}>
+                          Source: {option}
+                        </option>
+                      )) ?? []}
                     </Input>
                   </Col>
                   <Col xl={4}>
@@ -136,10 +141,12 @@ const OnDemandDataLayer = ({
                       onChange={(e) => setDataDomain(e.target.value)}
                       value={dataDomain}
                     >
-                      <option value={''} >Data Domain : All</option>
-                      <option value={'fire'} >Data Domain : Fire</option>
-                      <option value={'weather'} >Data Domain : Weather</option>
-                      <option value={'water'} >Data Domain : Water</option>
+                      <option value={''} >Domain : All</option>
+                      {domainOptions?.map((option) => (
+                        <option key={option} value={option}>
+                          Domain: {option}
+                        </option>
+                      )) ?? []}
                     </Input>
                   </Col>
                 </Row>
@@ -175,7 +182,7 @@ const OnDemandDataLayer = ({
                   zIndex: '100' 
                 }}>
                   <OnDemandTreeView
-                    data={MOCKDATA ?? dataLayers}
+                    data={onDemandMapLayers}
                     setCurrentLayer={setCurrentLayer}
                   />
                 </SimpleBar>
@@ -203,7 +210,9 @@ const OnDemandDataLayer = ({
 
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
-  dataLayers: PropTypes.any,
+  onDemandMapLayers: PropTypes.any,
+  sourceOptions: PropTypes.array,
+  domainOptions: PropTypes.array,
   setActiveTab: PropTypes.func,
   setCurrentLayer: PropTypes.any,
   layerSource: PropTypes.any,
@@ -216,7 +225,7 @@ OnDemandDataLayer.propTypes = {
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
-  handleResetAOI: PropTypes.function
+  handleResetAOI: PropTypes.any
 }
 
 export default withTranslation(['common'])(OnDemandDataLayer);

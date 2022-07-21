@@ -13,8 +13,10 @@ import SimpleBar from 'simplebar-react';
 const DataLayer = ({ 
   t,
   setLayerSource,
+  sourceOptions,
+  domainOptions,
   layerSource,
-  dataLayers,
+  operationalMapLayers,
   dataDomain,
   setDataDomain,
   sortByDate,
@@ -55,10 +57,12 @@ const DataLayer = ({
                 onChange={(e) => setLayerSource(e.target.value)}
                 value={layerSource}
               >
-                <option value={''} >Source : All</option>
-                <option value={'web'} >Source : Web</option>
-                <option value={'camera'} >Source : Camera</option>
-                <option value={'satellite'} >Source : Satellite</option>
+                <option value={''} >Source: All</option>
+                {sourceOptions?.map((option) => (
+                  <option key={option} value={option}>
+                    Source: {option}
+                  </option>
+                )) ?? []}
               </Input>
             </Col>
             <Col xl={4}>
@@ -71,10 +75,12 @@ const DataLayer = ({
                 onChange={(e) => setDataDomain(e.target.value)}
                 value={dataDomain}
               >
-                <option value={''} >Data Domain : All</option>
-                <option value={'fire'} >Data Domain : Fire</option>
-                <option value={'weather'} >Data Domain : Weather</option>
-                <option value={'water'} >Data Domain : Water</option>
+                <option value={''} >Domain: All</option>
+                {domainOptions?.map((option) => (
+                  <option key={option} value={option}>
+                    Domain: {option}
+                  </option>
+                )) ?? []}
               </Input>
             </Col>
           </Row>
@@ -110,7 +116,7 @@ const DataLayer = ({
             zIndex: '100' 
           }}>
             <TreeView
-              data={dataLayers}
+              data={operationalMapLayers}
               setCurrentLayer={setCurrentLayer}
             />
           </SimpleBar>
@@ -136,8 +142,10 @@ const DataLayer = ({
 export default withTranslation(['common'])(DataLayer);DataLayer.propTypes = {
   t: PropTypes.any,
   setLayerSource: PropTypes.any,
+  sourceOptions: PropTypes.array,
+  domainOptions: PropTypes.array,
   layerSource: PropTypes.any,
-  dataLayers: PropTypes.any,
+  operationalMapLayers: PropTypes.any,
   dataDomain: PropTypes.any,
   setDataDomain: PropTypes.any,
   sortByDate: PropTypes.any,

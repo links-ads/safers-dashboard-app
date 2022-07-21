@@ -12,6 +12,9 @@ import FireAndBurnedArea from './FireAndBurnedArea';
 import { getAllDataLayers } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
+import { filterNodesByProperty } from '../../store/utility';
+import { fetchEndpoint } from '../../helpers/apiHelper';
+import { onDemandMapLayers } from './mock-data';
 
 //TODO: correct types
 // style tabs like designs
@@ -30,6 +33,7 @@ const DataLayerDashboard = () => {
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
+  const [selectOptions, setSelectOptions] = useState({})
   const [dataDomain, setDataDomain] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
   const [layerSource, setLayerSource] = useState(undefined);
@@ -40,6 +44,19 @@ const DataLayerDashboard = () => {
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
+
+  const { sourceOptions, domainOptions } = selectOptions;
+
+  //fetch data to populate 'Source' and 'Domain' selects
+  useEffect(() => {
+    (async () => {
+      const [sourceOptions, domainOptions] = await Promise.all([
+        fetchEndpoint('/data/layers/sources'), 
+        fetchEndpoint('/data/layers/domains')
+      ])
+      setSelectOptions({ sourceOptions, domainOptions })
+    })()
+  }, [])
 
   useEffect(() => {
     setBoundingBox(
@@ -210,7 +227,8 @@ const DataLayerDashboard = () => {
     t,
     layerSource,
     setLayerSource,
-    dataLayers,
+    sourceOptions,
+    domainOptions,
     setCurrentLayer,
     dataDomain,
     setDataDomain,
@@ -265,10 +283,20 @@ const DataLayerDashboard = () => {
         </Row>
         <TabContent activeTab={activeTab}>
           <TabPane tabId={DATA_LAYERS_PANELS.mapLayers}>
-            <DataLayer {...mapLayersProps} />
+            <DataLayer
+              operationalMapLayers={filterNodesByProperty(dataLayers, {
+                source: layerSource, 
+                domain: dataDomain
+              })}
+              {...mapLayersProps}
+            />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
             <OnDemandDataLayer
+              onDemandMapLayers={filterNodesByProperty(onDemandMapLayers, {
+                source: layerSource, 
+                domain: dataDomain
+              })}
               setActiveTab={setActiveTab}
               {...mapLayersProps}
             />
