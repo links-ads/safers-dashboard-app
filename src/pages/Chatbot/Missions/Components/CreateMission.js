@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
-import { Input, Button, Row, Col } from 'reactstrap';
+import { Input, Button, Row, Col, Label } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 
 const CreateMission = ({ t, onCancel, coordinates }) => {
@@ -34,7 +34,7 @@ const CreateMission = ({ t, onCancel, coordinates }) => {
       }).join('\n')}
     />
     <div className='mt-3'>
-      <h5>Assign To:</h5>
+      <Label htmlFor="target">{t('Assign To')}: </Label>
       <Row>
         <Col>
           <Input

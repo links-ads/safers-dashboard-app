@@ -3,7 +3,7 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 export const getAllReports = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.reports.getReports, options);
+  const response = await api.get(endpoints.chatbot.reports.getReports, options);
   if (response.status === 200) {
     return dispatch(getReportsSuccess(response.data));
   }
@@ -62,7 +62,7 @@ export const resetReportResponseState = () => {
 };
 
 export const getReportDetail = (id) => async (dispatch) => {
-  const response = await api.get(endpoints.reports.getReportInfo.replace(':report_id', id));
+  const response = await api.get(endpoints.chatbot.reports.getReportInfo.replace(':report_id', id));
   if (response.status === 200) {
     return dispatch(getReportDetailSuccess(response.data));
   }
