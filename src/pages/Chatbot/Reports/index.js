@@ -87,11 +87,11 @@ const Reports = () => {
   }, []);
 
   return (
-    <div className='mx-2 sign-up-aoi-map-bg'>
-      <Row>
-        <Col xl={12} className='d-flex justify-content-between'>
+    <div className='mx-2'>
+      <Row className='justify-content-end mb-2'>
+        <Col xl={7} className='d-flex'>
           <Button color='link'
-            onClick={handleResetAOI} className='align-self-baseline pe-0'>
+            onClick={handleResetAOI} className='p-0'>
             {t('default-aoi', { ns: 'common' })}</Button>
         </Col>
       </Row >

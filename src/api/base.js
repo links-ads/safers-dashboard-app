@@ -40,6 +40,14 @@ axiosApi.interceptors.response.use(
 
 export const axiosInstance = axiosApi;
 
+export async function getCustom(url, config) {
+  return await axios({
+    method:'get',
+    url,
+    ...config
+  }).then(response => response)
+}
+
 export async function get(url, config = {}) {
   return await axiosApi.get(url, { params: config, headers: authHeader()}).then(response => response)
 }
