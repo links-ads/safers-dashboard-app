@@ -12,7 +12,7 @@ const DateComponent = ({
   setDates = () => { }, 
   clearDates = () => { }, 
   defaultDateRange,
-  placeholder = 'dd/mm/yy'
+  placeholder=null
 }) => {
   const fp = useRef(null);
   const defaultDate = defaultDateRange?.map(date => 
@@ -27,7 +27,7 @@ const DateComponent = ({
 
         <Flatpickr
           className="form-control d-block"
-          placeholder={placeholder}
+          placeholder={placeholder ? placeholder : 'dd/mm/yy'}
           ref={fp}
           onChange={(dates) => {
             dates.length > 1 && setDates(dates);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Button, Input } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css'
@@ -8,12 +8,12 @@ import 'rc-pagination/assets/index.css';
 import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import CommsList from './Components/CommsList';
+import CreateMessage from './Components/CreateMessage';
 import { getAllComms, resetCommsResponseState } from '../../../store/comms/action';
 import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
-import DateRangePicker from '../../../components/DateRangePicker/DateRange';
 
 const Comms = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -124,56 +124,7 @@ const Comms = () => {
           </Row>
         </Col>}
         {toggleCreateNewMessage && <Col xl={5}>
-          <DateRangePicker
-            type='text'
-            placeholder='Start Date'
-            isTooltipInput={true}
-            showIcons={true}
-          />
-          <Input
-            id="coordinates-input"
-            className='mt-3'
-            type='textarea'
-            name="coordinates-value"
-            placeholder='Map Selection'
-            rows="10"
-            value={coordinates.map(x => {
-              return '[' + x[0] + ' , ' + x[1] + ']';
-            }).join('\n')}
-          />
-          <div className='mt-3'>
-            <h5>Assign To:</h5>
-            {
-              //Dropdowns goes here
-            }
-          </div>
-          <Input
-            id="message-description-input"
-            className='mt-3'
-            type='textarea'
-            name="message-description"
-            placeholder='Message Description'
-            rows="10"
-          />
-          <div className='mt-3'>
-            <Button
-              type="button"
-              onClick={()=>{
-                setTogglePolygonMap(false);
-                setToggleCreateNewMessage(false);
-                setCoordinates([]);
-              }}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              className="mx-3"
-            >
-              Send
-            </Button>
-          </div>
-
+          <CreateMessage coordinates={coordinates} setTogglePolygonMap={setTogglePolygonMap} setToggleCreateNewMessage={setToggleCreateNewMessage} setCoordinates={setCoordinates} />
         </Col>}
         <Col xl={7} className='mx-auto'>
           <MapSection

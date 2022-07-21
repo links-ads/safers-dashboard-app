@@ -11,8 +11,7 @@ const SortSection = ({ t, commStatus, sortOrder, setcommStatus, setSortOrder, ta
 
   return (
     <>
-
-      <Row className=''>
+      <Row>
         <Col>          
           <Button onClick={setTogglePolygonMap}>
             Create New Message
@@ -66,8 +65,9 @@ const SortSection = ({ t, commStatus, sortOrder, setcommStatus, setSortOrder, ta
             data-testid='target'
           >
             <option value={''} >--Target--</option>
-            <option value="scope" >{t('scope')}</option>
-            <option value="restrictions" >{t('restrictions')}</option>
+            <option value="citizen">{t('Citizen')}</option>
+            <option value="professional">{t('Professional')}</option>
+            <option value="organisation">{t('Organisation')}</option>
           </Input>
         </Col>
       </Row>

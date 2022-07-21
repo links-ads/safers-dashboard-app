@@ -10,7 +10,7 @@ import Missions from './Missions';
 
 const Chatbot = () => {
 
-  const [customActiveTab, setCustomActiveTab] = useState('1');
+  const [customActiveTab, setCustomActiveTab] = useState('4');
   const { t } = useTranslation();
 
   const toggleCustom = (tab) => {
@@ -66,7 +66,7 @@ const Chatbot = () => {
                 }}
                 data-testid="updateProfilePasswordBtn"
               >
-                <span className='d-none d-sm-block me-2'><i className='fas fa-lock'></i></span>
+                <span className='d-none d-sm-block me-2'><i className='fas fa-envelope'></i></span>
                 <span className='d-block'>{t('Comms')}</span>
               </NavLink>
             </NavItem>
@@ -94,7 +94,7 @@ const Chatbot = () => {
                   toggleCustom('4')
                 }}
               >
-                <span className='d-none d-sm-block me-2'><i className='fas fa-flag-checkered'></i></span>
+                <span className='d-none d-sm-block me-2'><i className='fas fa-file-image'></i></span>
                 <span className='d-block'>{t('Reports', { ns: 'common' })}</span>
               </NavLink>
             </NavItem>
