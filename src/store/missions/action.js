@@ -3,7 +3,10 @@ import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
 export const getAllMissions = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.missions.getMissions, options);
+  // const response = await api.get(endpoints.chatbot.missions.getMissions, options);
+  //To Do - remove this and use api.get when actual APIs are ready
+  const custOption = {...options, baseURL: 'https://safers-dashboard-mock.herokuapp.com/api/',}
+  const response = await api.getCustom(endpoints.chatbot.missions.getMissions, custOption);
   if (response.status === 200) {
     return dispatch(getMissionsSuccess(response.data));
   }
@@ -62,7 +65,7 @@ export const resetMissionResponseState = () => {
 };
 
 export const getMissionDetail = (id) => async (dispatch) => {
-  const response = await api.get(endpoints.missions.getMissionInfo.replace(':mission_id', id));
+  const response = await api.get(endpoints.chatbot.missions.getMissionInfo.replace(':mission_id', id));
   if (response.status === 200) {
     return dispatch(getMissionDetailSuccess(response.data));
   }

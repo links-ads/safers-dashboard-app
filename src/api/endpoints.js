@@ -60,10 +60,7 @@ export const endpoints = {
     setFavorite: '/cameras/media/:media_id/favorite/',
     getSources: '/cameras/media/sources',
   },
-  missions: {
-    getMissions: '/chatbot/missions',
-    getMissionInfo: '/chatbot/missions/:mission_id',
-  },
+  
   reports: {
     getReports: '/chatbot/reports',
     getReportInfo: '/chatbot/reports/:report_id',
@@ -71,6 +68,13 @@ export const endpoints = {
   chatbot: {
     comms: {
       getAll: '/chatbot/comms'
+    },
+    missions: {
+      getMissions: '/chatbot/missions',
+      getMissionInfo: '/chatbot/missions/:mission_id',
+    },
+    people: {
+      getAll: '/chatbot/people'
     }
   }
 };
