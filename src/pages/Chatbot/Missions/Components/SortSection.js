@@ -20,7 +20,7 @@ const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrd
           </Button>
         </Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-mission-text'>{t('Results')} {allMissions.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {allMissions.length}</span>
         </Col>
       </Row>
       <hr />

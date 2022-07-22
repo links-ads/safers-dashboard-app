@@ -3,7 +3,7 @@ import { Nav, NavItem, NavLink, TabContent, TabPane, Container } from 'reactstra
 
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
-
+import People from './People';
 import Reports from './Reports';
 import Comms from './Comms';
 import Missions from './Missions';
@@ -26,7 +26,7 @@ const Chatbot = () => {
 
     switch(tab) {
     case '1': 
-      return null;
+      return <People />;
     case '2':
       return <Comms />;
     case '3':
@@ -100,7 +100,8 @@ const Chatbot = () => {
             </NavItem>
           </Nav>
           <TabContent activeTab={customActiveTab} className="p-3">
-            <TabPane tabId="1">
+            <TabPane tabId="1">              
+              {renderContent('1')}
             </TabPane>
             <TabPane tabId="2">
               {renderContent('2')}

@@ -51,7 +51,7 @@ const CreateMission = ({ t, onCancel, coordinates }) => {
             }}
             value={team}
           >
-            <option value={''} >--{t('TEAM')}--</option>
+            <option value={''} >--{t('Team')}--</option>
             <option value={'team1'} >{t('Team1')}</option>
             <option value={'team2'} >{t('Team2')}</option>
             <option value={'team3'} >{t('Team3')}</option>

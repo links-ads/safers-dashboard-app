@@ -24,6 +24,19 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
     return <>{msg} <a href="javascript:void(0)" onClick={() => {setSeeMore(true)}}>See less</a></>;
   }
 
+  const getBadge = () => {
+    let iconStatus = card.status === 'Created' ? 'fa-plus' : (card.status === 'Completed'? 'fa-check' : 'fa-hourglass-end');
+    
+    return (
+      <>
+        <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-2'>
+          <i className={`fa ${iconStatus} text-danger me-1`}></i> 
+          <span className='text-capitalize'>{card.status}</span>
+        </Badge>
+      </>
+    )
+  }
+
   return (
     <Card
       onClick={() => setSelectedMission(!isSelected ? card.mission_id : null)}
@@ -31,9 +44,7 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
       <CardBody className='p-0 m-2'>
         <Row className='mt-2'>
           <Col>
-            <Badge className="me-1 rounded-pill alert-badge py-0 px-2 pb-0 mb-2">
-              <span>{card.status}</span>
-            </Badge>
+            {getBadge()}
             <Row>
               <Col>
                 <CardTitle>
@@ -44,7 +55,7 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  {t('Start date', { ns: 'common' })}: {formatDate(card.start_date, 'DD-MM-YYYY')} | {t('End date', { ns: 'common' })}: {formatDate(card.end_date, 'DD-MM-YYYY')}
+                  {t('Start date', { ns: 'common' })}: {formatDate(card.start_date, 'YYYY-MM-DD hh:mm')} | {t('End date', { ns: 'common' })}: {formatDate(card.end_date, 'YYYY-MM-DD hh:mm')}
                 </p>
                 <p className="text-muted no-wrap">
                   {t('Assigned to', { ns: 'chatBot' })}: {(card.assignedTo.organization)}/{(card.assignedTo.organization)}/{(card.assignedTo.name)}
