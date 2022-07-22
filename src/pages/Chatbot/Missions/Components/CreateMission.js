@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { Input, Button, Row, Col, Label } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 
-const CreateMission = ({ t, onCancel, coordinates }) => {
+const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   const [team, setTeam] = useState();
   const [chatbotUser, setChatbotUser] = useState();
@@ -29,6 +29,19 @@ const CreateMission = ({ t, onCancel, coordinates }) => {
       name="coordinates-value"
       placeholder='Map Selection'
       rows="10"
+      onChange={(e)=>{
+        var tempValue = e.target.value;
+        tempValue = tempValue.replaceAll('\n','');   
+        tempValue = tempValue.replaceAll('[','');  
+        var newValue = tempValue.split(']');    
+        for (let index = 0; index < newValue.length; index++) {
+          const temp = newValue[index].split(' , ');
+          console.log(temp);
+          newValue[index] =  [parseFloat(temp[0]), parseFloat(temp[1])];
+        }
+        newValue.pop();
+        setCoordinates(newValue);
+      }}
       value={coordinates.map(x => {
         return '[' + x[0] + ' , ' + x[1] + ']';
       }).join('\n')}
@@ -105,7 +118,8 @@ const CreateMission = ({ t, onCancel, coordinates }) => {
 CreateMission.propTypes = {
   coordinates: PropTypes.array,
   onCancel: PropTypes.func,
-  t: PropTypes.any
+  t: PropTypes.any,
+  setCoordinates: PropTypes.func
 }
 
 export default CreateMission;

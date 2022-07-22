@@ -42,7 +42,8 @@ const PolygonMap = ({
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
   mapStyle = 'mb_streets',
-  setCoordinates
+  setCoordinates,
+  coordinates
 }) => {
 
   const mapRef = useRef();
@@ -119,14 +120,34 @@ const PolygonMap = ({
   }
 
   const handleUpdate = (val) => {
-    setFeatures(val.data);
+    console.log(val.data);
     if (val.editType === 'addFeature') {
+      setFeatures(val.data);
       const polygon = val.data[0].geometry.coordinates[0];
       console.log(polygon);
       setCoordinates(polygon);
       toggleMode('');
+    } else {
+      setFeatures([])
     }
   };
+
+  useEffect(()=> {
+    console.log(coordinates);
+    const tempFeatures = [{
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'Polygon',
+        coordinates: [
+          coordinates
+        ]
+      }
+    }]
+    // tempFeatures[0].geometry.coordinates=coordinates;
+    setFeatures(tempFeatures);
+    console.log(tempFeatures);
+  },[coordinates])
 
   return (
     <>

@@ -125,7 +125,7 @@ const Missions = () => {
             setTogglePolygonMap(false);
             setToggleCreateNewMission(false);
             setCoordinates([]);
-          }} t={t} coordinates={coordinates} />
+          }} t={t} coordinates={coordinates} setCoordinates={setCoordinates} />
 
         </Col>}
         <Col xl={7} className='mx-auto'>
@@ -139,6 +139,7 @@ const Missions = () => {
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
+            coordinates={coordinates}
           />
         </Col>
       </Row>
