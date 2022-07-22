@@ -14,6 +14,9 @@ import ProfileMenu from './TopbarDropdown/ProfileMenu'
 
 import DateRangePicker from '../components/DateRangePicker/DateRange';
 
+import { getDefaultDateRange } from '../store/utility'
+
+
 const Header = () => {
   const dispatch = useDispatch()
 
@@ -21,7 +24,7 @@ const Header = () => {
   const dateRange = useSelector(state => state.common.dateRange)
 
   const clearDates = () => {
-    dispatch(setDateRange(null))
+    dispatch(setDateRange(getDefaultDateRange()))
   }
 
   const handleDateRangePicker = (dates) => {

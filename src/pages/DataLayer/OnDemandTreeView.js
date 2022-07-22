@@ -43,7 +43,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
   }
 
   const mapper = (nodes, parentId, lvl) => {
-    return nodes.map((node, index) => {
+    return nodes?.map((node, index) => {
 
       // set children according to level. Prioritise leaf over branch or root
       if (!node.children) {

@@ -25,3 +25,49 @@ export const formatDefaultDate = (date, format='L') => {
 export const formatDate = (date, format='ll') => {
   return moment(date).format(format)
 }
+
+export const getPropertyValue = (searchObject = {}, targetProperty) => {
+  const match = searchObject[targetProperty];
+  const children = searchObject?.children;
+  if (match) return match;
+  if (children) {
+    //traditional for-loop to end the loop if valid value returned
+    for (let i = 0; i < children.length; i++) {
+      const nestedTargetProperty = children[i][targetProperty];
+      if (nestedTargetProperty) return nestedTargetProperty;
+
+      const childrenTargetProperty = getPropertyValue(
+        children[i], 
+        targetProperty
+      );
+      if (childrenTargetProperty) return childrenTargetProperty;
+    }
+  }
+  return null;
+}
+
+export const filterNodesByProperty = (layers, params = {}) => {
+  //params are key/value pairs of target properties and their
+  //values to be searched, such as: { domain: 'Weather' }
+  const paramsEntries = Object.entries(params);
+
+  //if all filters are inactive, return all layers
+  if (paramsEntries.every(([key]) => !params[key])) return layers;
+
+  return layers?.filter((parent) => 
+    paramsEntries.every(([targetProperty, matchValue]) => {
+      //if some filters are inactive, ignore, as that means they're not applied
+      if (!matchValue) return true;
+
+      const targetPropertyValue = getPropertyValue(parent, targetProperty);
+      return targetPropertyValue === matchValue;
+    })
+  )
+}
+
+// TODO: needs tests
+//format coords as Well-Known Text
+export const formatWKT = (coordinates) => {
+  const list = coordinates.map(([x, y]) => `${x.toFixed(6)} ${y.toFixed(6)}`);
+  return `POLYGON((${list.join(',\n')}))`;
+}

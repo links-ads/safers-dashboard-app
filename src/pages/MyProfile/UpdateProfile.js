@@ -242,7 +242,7 @@ const UpdateProfile = ({t}) => {
                         </div>
                       </Col>
                       <Col md={6}>
-                        <div className="mb-3">
+                        <div className="clearfix mb-3">
                           <Label htmlFor="formrow-password-Input">{t('Last Name')}</Label>
                           <Input
                             type="text"

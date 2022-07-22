@@ -176,5 +176,7 @@ $value in $theme-colors {
   margin-bottom: 0px;
 }
 
-
-
+.required-asterisk {
+  color: $danger;
+  font-size: 1rem;
+}

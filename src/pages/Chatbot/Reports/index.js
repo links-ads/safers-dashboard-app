@@ -8,11 +8,11 @@ import 'rc-pagination/assets/index.css';
 import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
-import { getAllReports, resetReportResponseState } from '../../store/reports/action';
-import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
+import { getAllReports, resetReportResponseState } from '../../../store/reports/action';
+import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
 
 import { useTranslation } from 'react-i18next';
-import { MAP_TYPES } from '../../constants/common';
+import { MAP_TYPES } from '../../../constants/common';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -87,51 +87,46 @@ const Reports = () => {
   }, []);
 
   return (
-    <div className='page-content'>
-      <div className='mx-2 sign-up-aoi-map-bg'>
-        <Row>
-          <Col xl={12} className='d-flex justify-content-between'>
-            <p className='align-self-baseline alert-title'>{t('Reports List', { ns: 'reports' })}</p>
-            <Button color='link'
-              onClick={handleResetAOI} className='align-self-baseline pe-0'>
-              {t('default-aoi', { ns: 'common' })}</Button>
-          </Col>
-        </Row >
-        <Row>
-          <Col xl={5}>
-            <SortSection
-              reportSource={reportSource}
-              sortOrder={sortOrder}
-              setReportSource={setReportSource}
-              setSortOrder={setSortOrder}
-            />
-            <Row>
-              <Col xl={12} className='px-3'>
-                <ReportList
-                  reportId={reportId}
-                  currentZoomLevel={currentZoomLevel}
-                  setViewState={setViewState}
-                  setReportId={setReportId}
-                  setIconLayer={setIconLayer} />
-              </Col>
-            </Row>
-          </Col>
-          <Col xl={7} className='mx-auto'>
-            <MapSection
-              viewState={viewState}
-              iconLayer={iconLayer}
-              setViewState={setViewState}
-              getReportsByArea={getReportsByArea}
-              handleViewStateChange={handleViewStateChange}
-              setNewWidth={setNewWidth}
-              setNewHeight={setNewHeight}
-            />
-          </Col>
-        </Row>
-
-      </div >
+    <div className='mx-2'>
+      <Row className='justify-content-end mb-2'>
+        <Col xl={7} className='d-flex'>
+          <Button color='link'
+            onClick={handleResetAOI} className='p-0'>
+            {t('default-aoi', { ns: 'common' })}</Button>
+        </Col>
+      </Row >
+      <Row>
+        <Col xl={5}>
+          <SortSection
+            reportSource={reportSource}
+            sortOrder={sortOrder}
+            setReportSource={setReportSource}
+            setSortOrder={setSortOrder}
+          />
+          <Row>
+            <Col xl={12} className='px-3'>
+              <ReportList
+                reportId={reportId}
+                currentZoomLevel={currentZoomLevel}
+                setViewState={setViewState}
+                setReportId={setReportId}
+                setIconLayer={setIconLayer} />
+            </Col>
+          </Row>
+        </Col>
+        <Col xl={7} className='mx-auto'>
+          <MapSection
+            viewState={viewState}
+            iconLayer={iconLayer}
+            setViewState={setViewState}
+            getReportsByArea={getReportsByArea}
+            handleViewStateChange={handleViewStateChange}
+            setNewWidth={setNewWidth}
+            setNewHeight={setNewHeight}
+          />
+        </Col>
+      </Row>
     </div >
-
   );
 }
 

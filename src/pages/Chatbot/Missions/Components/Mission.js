@@ -1,0 +1,83 @@
+import React, { useState } from 'react';
+import PropTypes from 'prop-types'
+import { Badge, Card, CardBody, CardText, CardTitle, Col, Row, Button } from 'reactstrap';
+import { formatDate } from '../../../../store/utility';
+import { useNavigate } from 'react-router-dom';
+
+import { useTranslation } from 'react-i18next';
+
+const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
+
+  const { t } = useTranslation();
+
+  const navigate = useNavigate();
+  const [seeMore, setSeeMore] = useState(true);
+
+  const isSelected = card.mission_id === missionId;
+
+  const getMsg = (msg) => {
+    if(seeMore){
+      return (
+        <>{msg.substr(0, 80)}... <a href="javascript:void(0)" onClick={() => {setSeeMore(false)}}>See more</a></>
+      )
+    }
+    return <>{msg} <a href="javascript:void(0)" onClick={() => {setSeeMore(true)}}>See less</a></>;
+  }
+
+  return (
+    <Card
+      onClick={() => setSelectedMission(!isSelected ? card.mission_id : null)}
+      className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
+      <CardBody className='p-0 m-2'>
+        <Row className='mt-2'>
+          <Col>
+            <Badge className="me-1 rounded-pill alert-badge py-0 px-2 pb-0 mb-2">
+              <span>{card.status}</span>
+            </Badge>
+            <Row>
+              <Col>
+                <CardTitle>
+                  <span className='card-title'>{card.name}</span>
+                </CardTitle>
+              </Col>
+            </Row>
+            <Row className='mt-2'>
+              <Col>
+                <p className="text-muted no-wrap mb-0">
+                  {t('Start date', { ns: 'common' })}: {formatDate(card.start_date, 'DD-MM-YYYY')} | {t('End date', { ns: 'common' })}: {formatDate(card.end_date, 'DD-MM-YYYY')}
+                </p>
+                <p className="text-muted no-wrap">
+                  {t('Assigned to', { ns: 'chatBot' })}: {(card.assignedTo.organization)}/{(card.assignedTo.organization)}/{(card.assignedTo.name)}
+                </p>
+              </Col>
+            </Row>
+            <Row className='mt-0'>
+              <Col md={10}>
+                <p className="text-muted no-wrap mb-0">
+                  {t('Associated files', { ns: 'common' })}: <Button color='link' onClick={() => { navigate(`/reports-dashboard/${card.report_id}`); }} className='align-self-baseline pe-0'>{t(card.report_title, { ns: 'common' })}</Button>
+                </p>
+              </Col>
+            </Row>
+            <Row className='mt-0'>
+              <Col>
+                <CardText>
+                  {t('Description', { ns: 'common' })}: {getMsg(card.description)}
+                </CardText>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+
+      </CardBody>
+    </Card>
+  )
+}
+
+Mission.propTypes = {
+  card: PropTypes.any,
+  missionId: PropTypes.string,
+  setSelectedMission: PropTypes.func,
+  setFavorite: PropTypes.func,
+}
+
+export default Mission;

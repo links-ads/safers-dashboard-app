@@ -60,9 +60,22 @@ export const endpoints = {
     setFavorite: '/cameras/media/:media_id/favorite/',
     getSources: '/cameras/media/sources',
   },
+  
   reports: {
     getReports: '/chatbot/reports',
     getReportInfo: '/chatbot/reports/:report_id',
+  },
+  chatbot: {
+    comms: {
+      getAll: '/chatbot/comms'
+    },
+    missions: {
+      getMissions: '/chatbot/missions',
+      getMissionInfo: '/chatbot/missions/:mission_id',
+    },
+    people: {
+      getAll: '/chatbot/people'
+    }
   }
 };
 
