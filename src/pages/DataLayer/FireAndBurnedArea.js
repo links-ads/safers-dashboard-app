@@ -58,7 +58,7 @@ const FireAndBurnedArea = ({
 
   return (
     <Row>
-      <Col xl={5}>
+      <Col xl={5} className='d-flex flex-column justify-content-between'>
         <Row className='mb-3'>
           <Col className='d-flex align-items-center'>
             <h4 className='m-0'>{t('requestMap')}</h4>
@@ -70,7 +70,7 @@ const FireAndBurnedArea = ({
             </Button>
           </Col>
         </Row>
-        <Row>
+        <Row className='h-100'>
           <Formik
             initialValues={{ 
               dataLayerType: '', 
@@ -100,7 +100,7 @@ const FireAndBurnedArea = ({
                   isSubmitting,
                 }
               ) => (
-                <Form onSubmit={handleSubmit} noValidate>
+                <Form onSubmit={handleSubmit} noValidate className='d-flex flex-column justify-content-between'>
                   <Row>
                     {getGeneralErrors(error)}
                   </Row>
@@ -121,7 +121,7 @@ const FireAndBurnedArea = ({
                         value={values.dataLayerType}
                       >
                         <option disabled value=''>
-                            Select Data Layer Type
+                          Select Data Layer Type
                         </option>
                         {['1', '2', '3', '4', '5'].map(num => (
                           <option key={num} value={num}>{num}</option>
@@ -142,7 +142,6 @@ const FireAndBurnedArea = ({
                         onBlur={handleBlur}
                         value={values.requestTitle}
                         placeholder="[Type Request Title]"
-                        className="data-layer-form"
                       />
                       {getError('requestTitle', errors, touched, false)}
                     </FormGroup>
@@ -159,7 +158,6 @@ const FireAndBurnedArea = ({
                         rows="5"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        className="data-layer-form"
                         value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapSelection }
                         placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
                       />
@@ -202,9 +200,9 @@ const FireAndBurnedArea = ({
                   </Row>
                   <Row>
                     <FormGroup>
-                      <Row>
+                      <Row className='d-flex align-items-baseline'>
                         <Col>
-                          <Label for="frequency">
+                          <Label for="frequency" className='mb-0'>
                             {t('frequency')}
                           </Label>
                         </Col>
@@ -217,7 +215,6 @@ const FireAndBurnedArea = ({
                             onBlur={handleBlur}
                             placeholder='[type here]'
                             value={values.frequency}
-                            className="data-layer-form"
                           />
                           {getError('frequency', errors, touched, false)}
                         </Col>
@@ -229,9 +226,9 @@ const FireAndBurnedArea = ({
                   </Row>
                   <Row>
                     <FormGroup>
-                      <Row>
+                      <Row className='d-flex align-items-baseline'>
                         <Col>
-                          <Label for="resolution">
+                          <Label for="resolution" className='mb-0'>
                             {t('resolution')}
                           </Label>
                         </Col>
@@ -244,7 +241,6 @@ const FireAndBurnedArea = ({
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.resolution ?? 10}
-                            className="data-layer-form"
                           />
                           {getError('resolution', errors, touched, false)}
                         </Col>
@@ -307,4 +303,5 @@ FireAndBurnedArea.propTypes = {
   handleResetAOI: PropTypes.function
 }
 
-export default withTranslation(['dataLayers','common'])(FireAndBurnedArea);
+// TODO: multiple translation files does not work
+export default withTranslation(['dataLayers', 'common'])(FireAndBurnedArea);

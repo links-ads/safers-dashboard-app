@@ -18,8 +18,6 @@ import { onDemandMapLayers } from './mock-data';
 
 //TODO: correct types
 // style tabs like designs
-// default-aoi button label broken
-// fix form height, maybe put back inside form
 
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
@@ -223,7 +221,7 @@ const DataLayerDashboard = () => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
-  const mapLayersProps = {
+  const sharedMapLayersProps = {
     t,
     layerSource,
     setLayerSource,
@@ -251,13 +249,17 @@ const DataLayerDashboard = () => {
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='mb-3'>
-            <Row>
-              <Col xl={4}><h4>{t('Data Layers')}</h4></Col>
+            <Row className='d-flex align-items-baseline'>
+              <Col xl={4}>
+                <p className='align-self-baseline alert-title'>
+                  {t('Data Layers')}
+                </p>
+              </Col>
               <Col xl={8}>
                 <Nav className='d-flex flex-nowrap' pills fill>
                   <NavItem>
                     <NavLink
-                      className={{ 
+                      className={{
                         'active': activeTab === DATA_LAYERS_PANELS.mapLayers 
                       }}
                       onClick={() => setActiveTab(DATA_LAYERS_PANELS.mapLayers)}
@@ -288,7 +290,7 @@ const DataLayerDashboard = () => {
                 source: layerSource, 
                 domain: dataDomain
               })}
-              {...mapLayersProps}
+              {...sharedMapLayersProps}
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
@@ -298,7 +300,7 @@ const DataLayerDashboard = () => {
                 domain: dataDomain
               })}
               setActiveTab={setActiveTab}
-              {...mapLayersProps}
+              {...sharedMapLayersProps}
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.fireAndBurnedAreas}>
