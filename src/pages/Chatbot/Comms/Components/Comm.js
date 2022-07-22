@@ -9,6 +9,8 @@ const Comm = ({ card, reportId, setSelectedComm }) => {
 
   const { t } = useTranslation();
   const [seeMore, setSeeMore] = useState(true);
+  const TAG_ONGOING = 'ONGOING';
+  const TAG_PUBLIC = 'Public';
 
   const isSelected = card.mission_id === reportId
 
@@ -22,13 +24,20 @@ const Comm = ({ card, reportId, setSelectedComm }) => {
   }
 
   const getBadge = () => {
-    let iconColor = card.status == 'ONGOING' ? 'fa-retweet' : 'fa-hourglass-end';
+    let iconStatus = card.status === TAG_ONGOING ? 'fa-retweet' : 'fa-hourglass-end';
+    let iconTarget = card.scope === TAG_PUBLIC ? 'fa-users' : 'fa-user';
     
     return (
-      <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
-        <i className={`fa ${iconColor} text-danger fa-lg me-1`}></i> 
-        <span>{card.status}</span>
-      </Badge>
+      <>
+        <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
+          <i className={`fa ${iconStatus} text-danger me-1`}></i> 
+          <span className='text-capitalize'>{card.status}</span>
+        </Badge>
+        <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
+          <i className={`fa ${iconTarget}  text-danger me-1`}></i> 
+          <span className='text-capitalize'>{(card.scope === TAG_PUBLIC ? card.scope : card.target)}</span>
+        </Badge>
+      </>
     )
   }
 
