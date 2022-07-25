@@ -170,14 +170,14 @@ const WildfireSimulation = ({
                     data-tip 
                     className='bx bx-info-circle font-size-8 me-3 p-0 w-auto'
                   />
-                  <h5 className='m-0'>Simulation Fire Spotting:</h5>
+                  <h5 className='m-0'>{t('simulationFireSpotting')}</h5>
                   <button>Y</button>
                   <button>N</button>
                   {getError('simulationFireSpotting', errors, touched, false)}
                 </Row>
 
                 <Row className='mb-3 w-100'>
-                  <h5 className='m-0'>Boundary Conditions:</h5>
+                  <h5 className='m-0'>{t('boundaryConditions')}</h5>
                 </Row>
                 <Row>
                   <FormGroup className="form-group">
@@ -188,12 +188,13 @@ const WildfireSimulation = ({
                         justifyContent: 'space-between',
                         marginRight: '1rem'
                       }}>
-                        <tr>Time [hours]</tr>
-                        <tr>Wind Direction [°]<RequiredAsterisk /></tr>
-                        <tr>Wind Speed [km/h]<RequiredAsterisk /></tr>
-                        <tr>Fuel Moisture Content [%]<RequiredAsterisk /></tr>
+                        <tr>{t('timeHours')}</tr>
+                        <tr>{t('windDirection')}<RequiredAsterisk /></tr>
+                        <tr>{t('windSpeed')}<RequiredAsterisk /></tr>
+                        <tr>{t('fuelMoistureContent')}<RequiredAsterisk /></tr>
                       </thead>
                       <tbody style={{
+                        maxwidth:'2048px',
                         display: 'flex',
                         overflowX: 'scroll',
                       }}>

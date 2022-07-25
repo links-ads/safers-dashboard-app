@@ -106,14 +106,11 @@ const PostEventMonitoring = ({ t }) => {
                   <Form onSubmit={handleSubmit} noValidate>
                     <Row>
                       <Col><h4>{t('requestMap')}</h4></Col>
-                      <Col>
-                        <div className='d-flex justify-content-end'>
-                          <Button 
-                            className="request-map btn-orange" 
-                            onClick={()=>{}}>
-                            {t('aoilocation')}
-                          </Button>
-                        </div>
+                      <Col className="d-flex justify-content-end align-items-center">
+                        <Button color='link'
+                          onClick={handleResetAOI} className='p-0'>
+                          {t('default-aoi')}
+                        </Button>
                       </Col>
                     </Row>
                     <Row>

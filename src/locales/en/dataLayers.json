@@ -21,5 +21,11 @@
   "simulationTitle": "Simulation Title",
   "probabilityRange": "Probability Range",
   "simulationTimeLimit": "Simulation Time Limit",
-  "ignitionDateTime": "Ignition Date &amp; Time:"
+  "ignitionDateTime": "Ignition Date & Time:",
+  "simulationFireSpotting": "Simulation Fire Spotting:",
+  "boundaryConditions": "Boundary Conditions:",
+  "timeHours": "Time [hours]",
+  "windDirection": "Wind Direction [°]",
+  "windSpeed": "Wind Speed [km/h]",
+  "fuelMoistureContent": "Fuel Moisture Content [%]"
 }
