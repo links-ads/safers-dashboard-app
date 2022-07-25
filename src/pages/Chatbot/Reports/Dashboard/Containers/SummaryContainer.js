@@ -18,7 +18,7 @@ const SummaryContainer = ({reportDetail, t}) => {
     <>
       <Row>
         <Col className=''>
-          <Button onClick={() => navigate(-1)} className='back-arrow px-0 py-0'>
+          <Button onClick={() => navigate('/chatbot?tab=4')} className='back-arrow px-0 py-0'>
             <i className='bx bx-arrow-back fa-2x'></i>
           </Button>
         </Col> 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
-import { Input, Button, Row, Col } from 'reactstrap';
+import { Input, Button, Row, Col, Label } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 
 const CreateMission = ({ t, onCancel, coordinates }) => {
@@ -34,7 +34,7 @@ const CreateMission = ({ t, onCancel, coordinates }) => {
       }).join('\n')}
     />
     <div className='mt-3'>
-      <h5>Assign To:</h5>
+      <Label htmlFor="target">{t('Assign To')}: </Label>
       <Row>
         <Col>
           <Input
@@ -51,7 +51,7 @@ const CreateMission = ({ t, onCancel, coordinates }) => {
             }}
             value={team}
           >
-            <option value={''} >--{t('TEAM')}--</option>
+            <option value={''} >--{t('Team')}--</option>
             <option value={'team1'} >{t('Team1')}</option>
             <option value={'team2'} >{t('Team2')}</option>
             <option value={'team3'} >{t('Team3')}</option>

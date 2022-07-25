@@ -22,7 +22,7 @@ export const formatDefaultDate = (date, format='L') => {
   return moment(date).format(format);
 }
 
-export const formatDate = (date, format='ll') => {
+export const formatDate = (date, format='YYYY-MM-DD hh-mm-ss') => {
   return moment(date).format(format)
 }
 
