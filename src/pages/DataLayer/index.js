@@ -9,6 +9,7 @@ import Slider from 'react-rangeslider';
 import DataLayer from './DataLayer';
 import OnDemandDataLayer from './OnDemandDataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
+import PostEventMonitoringForm from './PostEventMonitoringForm'
 import WildfireSimulation from './WildfireSimulation'
 import { getAllDataLayers } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
@@ -312,7 +313,7 @@ const DataLayerDashboard = () => {
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.postEventMonitoring}>
-            <div>Post Event Monitoring</div>
+            <PostEventMonitoringForm t={t} />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.wildfireSimulation}>
             <WildfireSimulation 
