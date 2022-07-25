@@ -257,7 +257,6 @@ const FireAndBurnedArea = ({
                     >
                       {t('request')}
                     </button>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
                     <Button
                       onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
                       className='btn btn-secondary'
@@ -266,8 +265,6 @@ const FireAndBurnedArea = ({
                       {t('cancel')}
                     </Button>
                   </Col>
-                  <Col></Col>
-                  <Col></Col>
                 </Row>
               </Form>
             )

@@ -232,7 +232,6 @@ const PostEventMonitoring = ({ t }) => {
                         >
                           {t('request')}
                         </Button>
-                        &nbsp;&nbsp;&nbsp;&nbsp;
                         <Button
                           value={{}} 
                           onClick={handleCancel}
@@ -242,8 +241,6 @@ const PostEventMonitoring = ({ t }) => {
                           {t('cancel')}
                         </Button>
                       </Col>
-                      <Col></Col>
-                      <Col></Col>
                     </Row>
                   </Form>
                 )

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
@@ -9,6 +9,7 @@ import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { withTranslation } from 'react-i18next'
 import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import RequiredAsterisk from '../../components/required-asterisk'
+import { DATA_LAYERS_PANELS } from './constants';
 import 'react-rangeslider/lib/index.css'
 
 const PROBABILITY_RANGES = ['50%', '75%','90%']
@@ -18,11 +19,13 @@ const WildfireSimulationSchema = Yup.object().shape({
 });
 
 const WildfireSimulation = ({ 
-  t ,
+  t,
   setActiveTab,
   handleResetAOI,
 }) => {
   const error = useSelector(state => state.auth.error);
+
+  const [tableEntries, setTableEntries] = useState([1])
 
   const handleSubmitRequest = (event) => { alert('Clicked request');};
 
@@ -163,7 +166,7 @@ const WildfireSimulation = ({
                 <Row className='mb-3 w-100'>
                   <h5 className='m-0'>Ignition Date &amp; Time:</h5>
                 </Row>
-                <Row className='d-flex-row align-items-center flex-nowrap mb-3 w-100'>
+                <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
                   <i 
                     data-tip 
                     className='bx bx-info-circle font-size-8 me-3 p-0 w-auto'
@@ -171,11 +174,114 @@ const WildfireSimulation = ({
                   <h5 className='m-0'>Simulation Fire Spotting:</h5>
                   <button>Y</button>
                   <button>N</button>
+                  {getError('simulationFireSpotting', errors, touched, false)}
                 </Row>
 
-                <div>
-                  <div>Boundary conditions (table)</div>
-                </div>
+                <Row className='mb-3 w-100'>
+                  <h5 className='m-0'>Boundary Conditions:</h5>
+                </Row>
+                <Row>
+                  <FormGroup className="form-group">
+                    <table style={{ display: 'flex' }}>
+                      <thead style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        marginRight: '1rem'
+                      }}>
+                        <tr>Time [hours]</tr>
+                        <tr>Wind Direction [°]<RequiredAsterisk /></tr>
+                        <tr>Wind Speed [km/h]<RequiredAsterisk /></tr>
+                        <tr>Fuel Moisture Content [%]<RequiredAsterisk /></tr>
+                      </thead>
+                      <tbody style={{
+                        display: 'flex',
+                        overflowX: 'scroll',
+                      }}>
+                        {tableEntries.map((position) => {
+                          return (
+                            <tr key={position} style={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              justifyContent: 'space-between'
+                            }}>
+                              <td 
+                                style={{
+                                  display: 'flex'
+                                }}
+                              >
+                                {position}
+                                &nbsp;
+                                <div
+                                  onClick={() => setTableEntries(
+                                    tableEntries.filter(
+                                      entry => entry !== position
+                                    )
+                                  )}
+                                  style={{
+                                    fontSize: '2rem',
+                                    cursor: 'pointer'
+                                  }}
+                                >
+                                  X
+                                </div>
+                              </td>
+                              <td>
+                                <Input
+                                  name={`windDirection${position}`} 
+                                  id={`windDirection${position}`}
+                                  placeholder='[type here]'
+                                />
+                              </td>
+                              <td>
+                                <Input
+                                  name={`windSpeed${position}`} 
+                                  id={`windSpeed${position}`}
+                                  placeholder='[type here]'
+                                />
+                              </td>
+                              <td>
+                                <Input
+                                  name={`fuelMoistureContent${position}`} 
+                                  id={`fuelMoistureContent${position}`}
+                                  placeholder='[type here]'
+                                />
+                              </td>
+                            </tr>
+                          )
+                        })}
+                      </tbody>
+                      <div 
+                        onClick={() => setTableEntries(
+                          [...tableEntries, tableEntries.length + 1]
+                        )}
+                        style={{ fontSize: '2.5rem', cursor: 'pointer', alignSelf: 'center' }}
+                      >
+                        +
+                      </div>
+                    </table>
+                    {getError('boundaryConditions', errors, touched, false)}
+                  </FormGroup>
+                </Row>
+                <Row>
+                  <Col>
+                    <button 
+                      type="submit"
+                      disabled={isSubmitting}
+                      className='btn btn-primary'
+                      color="primary"
+                    >
+                      {t('request')}
+                    </button>
+                    <Button
+                      onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
+                      className='btn btn-secondary'
+                      color="secondary"
+                    >
+                      {t('cancel')}
+                    </Button>
+                  </Col>
+                </Row>
               </Form>
             )}
           </Formik>
@@ -200,6 +306,7 @@ const WildfireSimulation = ({
 WildfireSimulation.PropTypes = {
   t: PropTypes.any,
   setActiveTab: PropTypes.any,
+  handleResetAOI: PropTypes.function
 }
 
 export default withTranslation(['dataLayers','common'])(WildfireSimulation);
