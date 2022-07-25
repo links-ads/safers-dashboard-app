@@ -16,41 +16,46 @@ const MapSection = ({
   togglePolygonMap = false,
 }) => {
 
-  const getSearchButton = (index) => {
-    return (
-      <SearchButton
-        index={index}
-        getInfoByArea={getReportsByArea}
-      />
-    )
-  }
+  const getSearchButton = (index) => (
+    <SearchButton
+      index={index}
+      getInfoByArea={getReportsByArea}
+    />
+  )
 
   return (
-    <Card className='map-card mb-0' style={{ height: 730 }}>
-      {!togglePolygonMap && <BaseMap
-        layers={[iconLayer]}
-        initialViewState={viewState}
-        widgets={[getSearchButton]}
-        onViewStateChange={handleViewStateChange}
-        setWidth={setNewWidth}
-        setHeight={setNewHeight}
-        screenControlPosition='top-right'
-        navControlPosition='bottom-right'
-        key='comm-base-map'
-      />}
+    <Card 
+      className='map-card mb-0' 
+      style={{ height: 730 }}
+    >
+      {!togglePolygonMap ? (
+        <BaseMap
+          layers={[iconLayer]}
+          initialViewState={viewState}
+          widgets={[getSearchButton]}
+          onViewStateChange={handleViewStateChange}
+          setWidth={setNewWidth}
+          setHeight={setNewHeight}
+          screenControlPosition='top-right'
+          navControlPosition='bottom-right'
+          key='comm-base-map'
+        />
+      ) : null}
 
-      {togglePolygonMap && <PolygonMap
-        layers={[iconLayer]}
-        initialViewState={viewState}
-        widgets={[getSearchButton]}
-        onViewStateChange={handleViewStateChange}
-        setWidth={setNewWidth}
-        setHeight={setNewHeight}
-        screenControlPosition='top-right'
-        navControlPosition='bottom-right'
-        setCoordinates={setCoordinates}
-        key='comm-polygon-map'
-      />}
+      {togglePolygonMap ? (
+        <PolygonMap
+          layers={[iconLayer]}
+          initialViewState={viewState}
+          widgets={[getSearchButton]}
+          onViewStateChange={handleViewStateChange}
+          setWidth={setNewWidth}
+          setHeight={setNewHeight}
+          screenControlPosition='top-right'
+          navControlPosition='bottom-right'
+          setCoordinates={setCoordinates}
+          key='comm-polygon-map'
+        />
+      ) : null}
     </Card>
   )
 }

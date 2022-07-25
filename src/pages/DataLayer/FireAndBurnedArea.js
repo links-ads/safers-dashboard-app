@@ -31,12 +31,12 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
 
 const FireAndBurnedArea = ({ 
   t, 
-  setActiveTab, 
-  handleResetAOI
+  setActiveTab,
+  handleResetAOI,
+  viewState,
 }) => {
   const error = useSelector(state => state.auth.error);
 
-  const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -49,10 +49,10 @@ const FireAndBurnedArea = ({
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
   }
 
-  const handleViewStateChange = (e) => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
+  const handleViewStateChange = ({ viewState }) => {
+    if (viewState) {
+      setMidPoint([viewState.longitude, viewState.latitude]);
+      setCurrentZoomLevel(viewState.zoom);
     }
   };
 
@@ -88,192 +88,189 @@ const FireAndBurnedArea = ({
             }}
             id="fireAndBurnedAreaForm"
           >
-            {
-              (
-                {
-                  values,
-                  errors,
-                  touched,
-                  handleChange,
-                  handleBlur,
-                  handleSubmit,
-                  isSubmitting,
-                }
-              ) => (
-                <Form onSubmit={handleSubmit} noValidate className='d-flex flex-column justify-content-between'>
-                  <Row>
-                    {getGeneralErrors(error)}
-                  </Row>
-                  <Row>
-                    <h5>{t('fireAndBurnedAreas')}</h5>
-                  </Row>
-                  <Row>
-                    <FormGroup className="form-group">
-                      <Label for="dataLayerType">
-                        {t('dataLayerType')}<RequiredAsterisk />
-                      </Label>
-                      <Input 
-                        name="dataLayerType"
-                        id="dataLayerType"
-                        type="select"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.dataLayerType}
-                      >
-                        <option disabled value=''>
+            {({
+              values,
+              errors,
+              touched,
+              handleChange,
+              handleBlur,
+              handleSubmit,
+              isSubmitting,
+            }) => (
+              <Form onSubmit={handleSubmit} noValidate className='d-flex flex-column justify-content-between'>
+                <Row>
+                  {getGeneralErrors(error)}
+                </Row>
+                <Row>
+                  <h5>{t('fireAndBurnedAreas')}</h5>
+                </Row>
+                <Row>
+                  <FormGroup className="form-group">
+                    <Label for="dataLayerType">
+                      {t('dataLayerType')}<RequiredAsterisk />
+                    </Label>
+                    <Input 
+                      name="dataLayerType"
+                      id="dataLayerType"
+                      type="select"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.dataLayerType}
+                    >
+                      <option disabled value=''>
                           Select Data Layer Type
-                        </option>
-                        {['1', '2', '3', '4', '5'].map(num => (
-                          <option key={num} value={num}>{num}</option>
-                        ))}
-                      </Input>
-                      {getError('dataLayerType', errors, touched, false)}
-                    </FormGroup>
-                  </Row> 
-                  <Row>
-                    <FormGroup className="form-group">
-                      <Label for="requestTitle">
-                        {t('requestTitle')}
-                      </Label>
-                      <Input 
-                        name="requestTitle" 
-                        id="requestTitle"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.requestTitle}
-                        placeholder="[Type Request Title]"
-                      />
-                      {getError('requestTitle', errors, touched, false)}
-                    </FormGroup>
-                  </Row>
-                  <Row>
-                    <FormGroup className='form-group'>
-                      <Label for="mapSelection">
-                        {t('mapSelection')}<RequiredAsterisk />
-                      </Label>
-                      <Input
-                        id="mapSelection"
-                        name="mapSelection"
-                        type="textarea"
-                        rows="5"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapSelection }
-                        placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
-                      />
-                      {getError('mapSelection', errors, touched, false)}
-                    </FormGroup>
-                  </Row>
-                  <Row>
-                    <FormGroup className='form-group'>
-                      <Row>
-                        <Col>
-                          <Label for="startDate">
-                            {t('startDate')}<RequiredAsterisk />
-                          </Label>
-                          <Input
-                            id="startDate"
-                            name="startDate"
-                            type="date"
-                            onChange={handleChange}
-                            onBlur={handleBlur} 
-                            value={values.startDate}
-                          />
-                          {getError('startDate', errors, touched, false)}
-                        </Col>
-                        <Col>
-                          <Label for="endDate">
-                            {t('endDate')}<RequiredAsterisk />
-                          </Label>
-                          <Input
-                            id="endDate"
-                            name="endDate"
-                            type="date"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.endDate}
-                          />
-                          {getError('endDate', errors, touched, false)}
-                        </Col>
-                      </Row>
-                    </FormGroup>
-                  </Row>
-                  <Row>
-                    <FormGroup>
-                      <Row className='d-flex align-items-baseline'>
-                        <Col>
-                          <Label for="frequency" className='mb-0'>
-                            {t('frequency')}
-                          </Label>
-                        </Col>
-                        <Col>
-                          <Input
-                            id="frequency"
-                            name="frequency"
-                            type="num"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            placeholder='[type here]'
-                            value={values.frequency}
-                          />
-                          {getError('frequency', errors, touched, false)}
-                        </Col>
-                        <Col>
-                          {t('frequencyInstructions')}
-                        </Col>
-                      </Row>
-                    </FormGroup>
-                  </Row>
-                  <Row>
-                    <FormGroup>
-                      <Row className='d-flex align-items-baseline'>
-                        <Col>
-                          <Label for="resolution" className='mb-0'>
-                            {t('resolution')}
-                          </Label>
-                        </Col>
-                        <Col>
-                          <Input
-                            id="resolution"
-                            name="resolution"
-                            type="num"
-                            placeholder='10'
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.resolution ?? 10}
-                          />
-                          {getError('resolution', errors, touched, false)}
-                        </Col>
-                        <Col>
-                          <div>{t('resolutionInstructions')}</div>
-                        </Col>
-                      </Row>
-                    </FormGroup>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <button 
-                        type="submit"
-                        disabled={isSubmitting}
-                        className='btn btn-primary'
-                        color="primary"
-                      >
-                        {t('request')}
-                      </button>
+                      </option>
+                      {['1', '2', '3', '4', '5'].map(num => (
+                        <option key={num} value={num}>{num}</option>
+                      ))}
+                    </Input>
+                    {getError('dataLayerType', errors, touched, false)}
+                  </FormGroup>
+                </Row> 
+                <Row>
+                  <FormGroup className="form-group">
+                    <Label for="requestTitle">
+                      {t('requestTitle')}
+                    </Label>
+                    <Input 
+                      name="requestTitle" 
+                      id="requestTitle"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={values.requestTitle}
+                      placeholder="[Type Request Title]"
+                    />
+                    {getError('requestTitle', errors, touched, false)}
+                  </FormGroup>
+                </Row>
+                <Row>
+                  <FormGroup className='form-group'>
+                    <Label for="mapSelection">
+                      {t('mapSelection')}<RequiredAsterisk />
+                    </Label>
+                    <Input
+                      id="mapSelection"
+                      name="mapSelection"
+                      type="textarea"
+                      rows="5"
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapSelection }
+                      placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
+                    />
+                    {getError('mapSelection', errors, touched, false)}
+                  </FormGroup>
+                </Row>
+                <Row>
+                  <FormGroup className='form-group'>
+                    <Row>
+                      <Col>
+                        <Label for="startDate">
+                          {t('startDate')}<RequiredAsterisk />
+                        </Label>
+                        <Input
+                          id="startDate"
+                          name="startDate"
+                          type="date"
+                          onChange={handleChange}
+                          onBlur={handleBlur} 
+                          value={values.startDate}
+                        />
+                        {getError('startDate', errors, touched, false)}
+                      </Col>
+                      <Col>
+                        <Label for="endDate">
+                          {t('endDate')}<RequiredAsterisk />
+                        </Label>
+                        <Input
+                          id="endDate"
+                          name="endDate"
+                          type="date"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.endDate}
+                        />
+                        {getError('endDate', errors, touched, false)}
+                      </Col>
+                    </Row>
+                  </FormGroup>
+                </Row>
+                <Row>
+                  <FormGroup>
+                    <Row className='d-flex align-items-baseline'>
+                      <Col>
+                        <Label for="frequency" className='mb-0'>
+                          {t('frequency')}
+                        </Label>
+                      </Col>
+                      <Col>
+                        <Input
+                          id="frequency"
+                          name="frequency"
+                          type="num"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          placeholder='[type here]'
+                          value={values.frequency}
+                        />
+                        {getError('frequency', errors, touched, false)}
+                      </Col>
+                      <Col>
+                        {t('frequencyInstructions')}
+                      </Col>
+                    </Row>
+                  </FormGroup>
+                </Row>
+                <Row>
+                  <FormGroup>
+                    <Row className='d-flex align-items-baseline'>
+                      <Col>
+                        <Label for="resolution" className='mb-0'>
+                          {t('resolution')}
+                        </Label>
+                      </Col>
+                      <Col>
+                        <Input
+                          id="resolution"
+                          name="resolution"
+                          type="num"
+                          placeholder='10'
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.resolution ?? 10}
+                        />
+                        {getError('resolution', errors, touched, false)}
+                      </Col>
+                      <Col>
+                        <div>{t('resolutionInstructions')}</div>
+                      </Col>
+                    </Row>
+                  </FormGroup>
+                </Row>
+                <Row>
+                  <Col>
+                    <button 
+                      type="submit"
+                      disabled={isSubmitting}
+                      className='btn btn-primary'
+                      color="primary"
+                    >
+                      {t('request')}
+                    </button>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                      <Button
-                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
-                        className='btn btn-secondary'
-                        color="secondary"
-                      >
-                        {t('cancel')}
-                      </Button>
-                    </Col>
-                    <Col></Col>
-                    <Col></Col>
-                  </Row>
-                </Form>
-              )
+                    <Button
+                      onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
+                      className='btn btn-secondary'
+                      color="secondary"
+                    >
+                      {t('cancel')}
+                    </Button>
+                  </Col>
+                  <Col></Col>
+                  <Col></Col>
+                </Row>
+              </Form>
+            )
             }
           </Formik>
         </Row>
@@ -283,7 +280,6 @@ const FireAndBurnedArea = ({
           <MapSection
             viewState={viewState}
             iconLayer={iconLayer}
-            setViewState={setViewState}
             getReportsByArea={getReportsByArea}
             handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
@@ -300,7 +296,8 @@ const FireAndBurnedArea = ({
 FireAndBurnedArea.propTypes = {
   t: PropTypes.any,
   setActiveTab: PropTypes.function,
-  handleResetAOI: PropTypes.function
+  handleResetAOI: PropTypes.function,
+  viewState: PropTypes.object
 }
 
 // TODO: multiple translation files does not work

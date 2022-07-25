@@ -9,7 +9,7 @@ import Slider from 'react-rangeslider';
 import DataLayer from './DataLayer';
 import OnDemandDataLayer from './OnDemandDataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
-import WildfireSimulation from './wildfire-simulation'
+import WildfireSimulation from './WildfireSimulation'
 import { getAllDataLayers } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
@@ -18,7 +18,6 @@ import { fetchEndpoint } from '../../helpers/apiHelper';
 import { onDemandMapLayers } from './mock-data';
 
 //TODO: correct types
-// style tabs like designs
 
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
@@ -307,14 +306,19 @@ const DataLayerDashboard = () => {
           <TabPane tabId={DATA_LAYERS_PANELS.fireAndBurnedAreas}>
             <FireAndBurnedArea 
               t={t} 
-              setActiveTab={setActiveTab} 
+              setActiveTab={setActiveTab}
+              handleResetAOI={handleResetAOI}
+              viewState={viewState}
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.postEventMonitoring}>
             <div>Post Event Monitoring</div>
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.wildfireSimulation}>
-            <WildfireSimulation t={t} />
+            <WildfireSimulation 
+              t={t} 
+              setActiveTab={setActiveTab}
+            />
           </TabPane>
         </TabContent>
       </div>
