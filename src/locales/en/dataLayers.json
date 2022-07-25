@@ -4,7 +4,7 @@
   "aoiLocation": "AOI Location",
   "layerType": "Layer type",
   "fireAndBurnedAreas": "Fire and Burned Areas",
-  "dataLayerType": "Layer type",
+  "datalayertype": "Layer type",
   "requestTitle": "Request Title",
   "mapSelection": "Map selection",
   "startDate": "Start Date",
@@ -14,5 +14,12 @@
   "frequency": "Frequency [days]",
   "frequencyInstructions": "Integers only, ≥1",
   "resolution": "Spatial Resolution [m]",
-  "resolutionInstructions": "Range 10-60 m, default 10m"
+  "resolutionInstructions": "Range 10-60 m, default 10m",
+  "posteventmonitoring": "Post-Event monitoring",
+  "default-aoi": "Default AOI",
+  "wildfireSimulation": "Wildfire Simulation",
+  "simulationTitle": "Simulation Title",
+  "probabilityRange": "Probability Range",
+  "simulationTimeLimit": "Simulation Time Limit",
+  "ignitionDateTime": "Ignition Date &amp; Time:"
 }

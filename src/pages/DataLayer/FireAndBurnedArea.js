@@ -107,7 +107,7 @@ const FireAndBurnedArea = ({
                 <Row>
                   <FormGroup className="form-group">
                     <Label for="dataLayerType">
-                      {t('dataLayerType')}<RequiredAsterisk />
+                      {t('datalayertype')}<RequiredAsterisk />
                     </Label>
                     <Input 
                       name="dataLayerType"

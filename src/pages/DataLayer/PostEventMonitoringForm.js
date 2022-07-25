@@ -8,6 +8,7 @@ import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
+import RequiredAsterisk from '../../components/required-asterisk'
 
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -104,7 +105,7 @@ const PostEventMonitoring = ({ t }) => {
                 ) => (
                   <Form onSubmit={handleSubmit} noValidate>
                     <Row>
-                      <Col><h4>{t('requestamap')}</h4></Col>
+                      <Col><h4>{t('requestMap')}</h4></Col>
                       <Col>
                         <div className='d-flex justify-content-end'>
                           <Button 
@@ -124,7 +125,7 @@ const PostEventMonitoring = ({ t }) => {
                     <Row>
                       <FormGroup className="form-group">
                         <Label for="datalayertype">
-                          {t('datalayertype')}
+                          {t('datalayertype')}<RequiredAsterisk />
                         </Label>
                         <Input 
                           name="datalayertype"
@@ -156,8 +157,8 @@ const PostEventMonitoring = ({ t }) => {
                     </Row> 
                     <Row>
                       <FormGroup className="form-group">
-                        <Label for="requesttitle">
-                          {t('requesttitle')}
+                        <Label for="requestitle">
+                          {t('requestTitle')}
                         </Label>
                         <Input 
                           name="requesttitle" 
@@ -173,7 +174,7 @@ const PostEventMonitoring = ({ t }) => {
                     <Row>
                       <FormGroup className='form-group'>
                         <Label for="mapselection">
-                          {t('mapselection')}
+                          {t('mapSelection')}<RequiredAsterisk />
                         </Label>
                         <Input
                           id="mapselection"
@@ -193,7 +194,7 @@ const PostEventMonitoring = ({ t }) => {
                         <Row>
                           <Col>
                             <Label for="startdate">
-                              {t('startdate')}
+                              {t('startDate')}<RequiredAsterisk />
                             </Label>
                             <Input
                               id="startdate"
@@ -207,7 +208,7 @@ const PostEventMonitoring = ({ t }) => {
                           </Col>
                           <Col>
                             <Label for="enddate">
-                              {t('enddate')}
+                              {t('endDate')}<RequiredAsterisk />
                             </Label>
                             <Input
                               id="enddate"

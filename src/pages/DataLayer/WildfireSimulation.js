@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux';
@@ -27,7 +28,7 @@ const WildfireSimulation = ({
 
   const [tableEntries, setTableEntries] = useState([1])
 
-  const handleSubmitRequest = (event) => { alert('Clicked request');};
+  //const handleSubmitRequest = (event) => { alert('Clicked request');};
 
   return (
     <Row>
@@ -98,7 +99,7 @@ const WildfireSimulation = ({
                       data-tip 
                       className='bx bx-info-circle font-size-8 me-3 p-0'
                     />
-                    <h5 className='m-0'>Probability Range:</h5>
+                    <h5 className='m-0'>{t('probabilityRange')}:</h5>
                   </FormGroup>
                 </Row>
                 <Row>
@@ -125,7 +126,7 @@ const WildfireSimulation = ({
                 </Row>
 
                 <Row className='mb-3 w-100'>
-                  <h5 className='m-0'>Simulation Time Limit:</h5>
+                  <h5 className='m-0'>{t('simulationTimeLimit')}</h5>
                 </Row>
                 <Row>
                   <FormGroup className="form-group">
@@ -142,6 +143,7 @@ const WildfireSimulation = ({
                 </Row>
                 <Row>
                   <FormGroup className="form-group">
+                    <h5 className='m-0'>{t('mapSelection')}</h5>
                     <Input 
                       name="mapSelection" 
                       id="mapSelection"
@@ -157,15 +159,12 @@ const WildfireSimulation = ({
                 </Row>
 
                 <Row className='mb-3 w-100'>
-                  <h5 className='m-0'>Ignition Date &amp; Time:</h5>
+                  <h5 className='m-0'>{t('ignitionDateTime')}</h5>
                 </Row>
                 <Row className='mb-3 w-100'>
                   <DateRangePicker />
                 </Row>
 
-                <Row className='mb-3 w-100'>
-                  <h5 className='m-0'>Ignition Date &amp; Time:</h5>
-                </Row>
                 <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
                   <i 
                     data-tip 
@@ -307,6 +306,6 @@ WildfireSimulation.PropTypes = {
   t: PropTypes.any,
   setActiveTab: PropTypes.any,
   handleResetAOI: PropTypes.function
-}
+} 
 
 export default withTranslation(['dataLayers','common'])(WildfireSimulation);
