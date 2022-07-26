@@ -1,11 +1,10 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
-import { setFavorite } from '../../../../store/people/action';
 import People from './People';
 
 const MAP_TYPE = 'people';
@@ -14,16 +13,7 @@ const PeopleList = ({ peopleId, currentZoomLevel, setViewState, setPeopleId, set
   const { allPeople: OrgPeopleList, filteredPeople } = useSelector(state => {console.log(state); return state.people});
   const [pageData, setPageData] = useState([]);
 
-  const dispatch = useDispatch();
-
-
   const allPeople = filteredPeople || OrgPeopleList;
-
-  const setFavoriteFlag = (id) => {
-    let selectedPeople = _.find(pageData, { id });
-    selectedPeople.isFavorite = !selectedPeople.isFavorite;
-    dispatch(setFavorite(id, selectedPeople.isFavorite));
-  }
 
   const setSelectedPeople = (people_id) => {
     if (people_id) {
@@ -54,7 +44,6 @@ const PeopleList = ({ peopleId, currentZoomLevel, setViewState, setPeopleId, set
               card={people}
               peopleId={peopleId}
               setSelectedPeople={setSelectedPeople}
-              setFavorite={setFavoriteFlag}
             />)
         }
       </Row>

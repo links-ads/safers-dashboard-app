@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { Input, Button, Row, Col, Label } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 
+const MOCK_ORG = 'Test Organization'
+
 const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   const [team, setTeam] = useState();
@@ -49,6 +51,16 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     <div className='mt-3'>
       <Label htmlFor="target">{t('Assign To')}: </Label>
       <Row>
+        <Col>
+          <Input
+            id="organization-input"
+            className='mb-3'
+            name="organization"
+            placeholder='Organization'
+            disabled={true}
+            value={MOCK_ORG}
+          />
+        </Col>
         <Col>
           <Input
             id="team"

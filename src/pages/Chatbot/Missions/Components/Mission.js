@@ -55,7 +55,7 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  {t('Start date', { ns: 'common' })}: {formatDate(card.start_date)} | {t('End date', { ns: 'common' })}: {formatDate(card.end_date)}
+                  {t('Start date', { ns: 'common' })}: {formatDate(card.start_date, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.end_date, 'YYYY-MM-DD')}
                 </p>
                 <p className="text-muted no-wrap">
                   {t('Assigned to', { ns: 'chatBot' })}: {(card.assignedTo.organization)}/{(card.assignedTo.organization)}/{(card.assignedTo.name)}
