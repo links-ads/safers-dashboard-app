@@ -33,7 +33,7 @@ const Comms = () => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState([]);
+  const [coordinates, setCoordinates] = useState('');
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
 
@@ -137,6 +137,7 @@ const Comms = () => {
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
+            coordinates={coordinates}
           />
         </Col>
       </Row>

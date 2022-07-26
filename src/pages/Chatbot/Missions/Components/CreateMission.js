@@ -32,21 +32,9 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       placeholder='Map Selection'
       rows="10"
       onChange={(e)=>{
-        var tempValue = e.target.value;
-        tempValue = tempValue.replaceAll('\n','');   
-        tempValue = tempValue.replaceAll('[','');  
-        var newValue = tempValue.split(']');    
-        for (let index = 0; index < newValue.length; index++) {
-          const temp = newValue[index].split(' , ');
-          console.log(temp);
-          newValue[index] =  [parseFloat(temp[0]), parseFloat(temp[1])];
-        }
-        newValue.pop();
-        setCoordinates(newValue);
+        setCoordinates(e.target.value);
       }}
-      value={coordinates.map(x => {
-        return '[' + x[0] + ' , ' + x[1] + ']';
-      }).join('\n')}
+      value={coordinates}
     />
     <div className='mt-3'>
       <Label htmlFor="target">{t('Assign To')}: </Label>
@@ -128,7 +116,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 }
 
 CreateMission.propTypes = {
-  coordinates: PropTypes.array,
+  coordinates: PropTypes.any,
   onCancel: PropTypes.func,
   t: PropTypes.any,
   setCoordinates: PropTypes.func

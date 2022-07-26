@@ -9,6 +9,7 @@ import {
   // EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
+import wkt from 'wkt';
 
 const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
@@ -104,14 +105,14 @@ const PolygonMap = ({
     return (<>
       <div className="" style={{ position: 'absolute', top: '50px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={() => { toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates([]); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={() => { toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates(''); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
       </div>
       <div className="" style={{ position: 'absolute', top: '90px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button onClick={() => { toggleMode(''); setFeatures([]); setCoordinates([]); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button onClick={() => { toggleMode(''); setFeatures([]); setCoordinates(''); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
@@ -123,9 +124,7 @@ const PolygonMap = ({
     console.log(val.data);
     if (val.editType === 'addFeature') {
       setFeatures(val.data);
-      const polygon = val.data[0].geometry.coordinates[0];
-      console.log(polygon);
-      setCoordinates(polygon);
+      setCoordinates(wkt.stringify(val.data[0].geometry));
       toggleMode('');
     } else {
       setFeatures([])
@@ -137,12 +136,7 @@ const PolygonMap = ({
     const tempFeatures = [{
       type: 'Feature',
       properties: {},
-      geometry: {
-        type: 'Polygon',
-        coordinates: [
-          coordinates
-        ]
-      }
+      geometry: wkt.parse(coordinates)
     }]
     // tempFeatures[0].geometry.coordinates=coordinates;
     setFeatures(tempFeatures);

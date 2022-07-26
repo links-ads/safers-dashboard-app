@@ -13,6 +13,7 @@ const MapSection = ({
   setNewWidth,
   setNewHeight,
   setCoordinates,
+  coordinates,
   togglePolygonMap = false,
 }) => {
 
@@ -49,6 +50,7 @@ const MapSection = ({
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
         setCoordinates={setCoordinates}
+        coordinates={coordinates}
         key='comm-polygon-map'
       />}
     </Card>
@@ -56,6 +58,7 @@ const MapSection = ({
 }
 
 MapSection.propTypes = {
+  coordinates: PropTypes.any,
   viewState: PropTypes.any,
   iconLayer: PropTypes.any,
   getReportsByArea: PropTypes.func,

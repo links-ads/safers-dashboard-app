@@ -32,7 +32,7 @@ const Missions = () => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState([]);
+  const [coordinates, setCoordinates] = useState('');
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMission, setToggleCreateNewMission] = useState(false);
 
@@ -124,7 +124,7 @@ const Missions = () => {
           <CreateMission onCancel={()=>{
             setTogglePolygonMap(false);
             setToggleCreateNewMission(false);
-            setCoordinates([]);
+            setCoordinates('');
           }} t={t} coordinates={coordinates} setCoordinates={setCoordinates} />
 
         </Col>}

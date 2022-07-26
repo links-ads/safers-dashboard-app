@@ -42,9 +42,10 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
         name="coordinates-value"
         placeholder='Map Selection, please edit and draw on the map'
         rows="10"
-        value={coordinates.map(x => {
-          return '[' + x[0] + ' , ' + x[1] + ']';
-        }).join('\n')}
+        onChange={(e)=>{
+          setCoordinates(e.target.value);
+        }}
+        value={coordinates}
       />
       <Label className='form-label mt-3 mb-0'>{t('Organisation')}: {orgName}</Label>
       <Row className='my-3'>
@@ -90,7 +91,7 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
           onClick={()=>{
             setTogglePolygonMap(false);
             setToggleCreateNewMessage(false);
-            setCoordinates([]);
+            setCoordinates('');
           }}
         >
           Cancel
@@ -107,7 +108,7 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
 }
 
 CreateMessage.propTypes = {
-  coordinates: PropTypes.array,
+  coordinates: PropTypes.any,
   setTogglePolygonMap: PropTypes.func,
   setToggleCreateNewMessage: PropTypes.func,
   setCoordinates: PropTypes.func
