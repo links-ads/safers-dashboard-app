@@ -18,10 +18,17 @@ import { getBoundingBox } from '../../helpers/mapHelper';
 const PROBABILITY_RANGES = ['50%', '75%','90%']
 
 const WildfireSimulationSchema = Yup.object().shape({
-
+  simulationTitle: Yup.string()
+    .required('This field cannot be empty'),
+  simulationTimeLimit: Yup.number().min(1).max(48)
+    .required('Simulation time limit should be between 1 and 48'),
+  probabilityRange: Yup.string()
+    .required('This field cannot be empty'),
+  mapSelection: Yup.string()
+    .required('This field cannot be empty'),
+  startDate: Yup.date()
+    .required('This field cannot be empty'),
 });
-
-
   
 const WildfireSimulation = ({ 
   t,
@@ -78,14 +85,13 @@ const WildfireSimulation = ({
         <Row xl={12}>
           <Formik
             initialValues={{ 
-              datalayertype: '', 
-              requesttitle: '', 
+              simulationTitle: '', 
               probabilityRange: '75%',
               mapselection: '', 
+              simulationTimeLimit: '',
               startdate: null, 
-              enddate: null, 
-              frequency: null,
-              resolution: null, 
+              ignitionDateTime: null,
+              simulationFireSpotting: false,
             }}
             validationSchema={WildfireSimulationSchema}
             onSubmit={(values) => {console.log('values', values)}}
@@ -104,9 +110,11 @@ const WildfireSimulation = ({
                 <Row>
                   {getGeneralErrors(error)}
                 </Row>
+
                 <Row xl={12}>
                   <h5>{t('wildfireSimulation')}</h5>
                 </Row>
+                
                 <Row>
                   <FormGroup className="form-group">
                     <Label for="dataLayerType">
@@ -135,6 +143,7 @@ const WildfireSimulation = ({
                     </Label>
                   </FormGroup>
                 </Row>
+
                 <Row>
                   <FormGroup className='d-flex flex-nowrap align-items-center gap-3'>
                     {PROBABILITY_RANGES.map(range => (
@@ -157,6 +166,7 @@ const WildfireSimulation = ({
                     ))}
                   </FormGroup>
                 </Row>
+
                 <Row>
                   <FormGroup className="form-group">
                     <Label for="simulationTimeLimit">
@@ -173,6 +183,7 @@ const WildfireSimulation = ({
                     {getError('simulationTimeLimit', errors, touched, false)}
                   </FormGroup>
                 </Row>
+
                 <Row>
                   <FormGroup className="form-group">
                     <Label for="mapSelection">
@@ -192,29 +203,42 @@ const WildfireSimulation = ({
                   </FormGroup>
                 </Row>
 
-                <Label for="ignitionDateTime">
-                  {t('ignitionDateTime')}<RequiredAsterisk />
-                </Label>
+                
 
                 <Row className='mb-3 w-100'>
+                  <Label for="ignitionDateTime">
+                    {t('ignitionDateTime')}<RequiredAsterisk />
+                  </Label>
                   <DateRangePicker />
                 </Row>
 
                 <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
-                  <Label for="simulationFireSpotting">
-                    {t('simulationFireSpotting')}<RequiredAsterisk />
-                  </Label>
-                  <button>Y</button>
-                  <button>N</button>
-                  {getError('simulationFireSpotting', errors, touched, false)}
+                  <FormGroup>
+                    <Row>
+                      <Col>
+                        <Label for="simulationFireSpotting">
+                          {t('simulationFireSpotting')}<RequiredAsterisk />
+                        </Label>
+                      </Col>
+                      <Col>
+                        <Input
+                          id="simulationFireSpotting"
+                          name="simulationFireSpotting"
+                          type="checkbox"
+                          value={values.simulationFireSpotting}
+                        />
+                      </Col>
+                    </Row>
+                    {getError('simulationFireSpotting', errors, touched, false)}
+                  </FormGroup>
                 </Row>
 
-                <Label for="boundaryConditions">
-                  {t('boundaryConditions')}<RequiredAsterisk />
-                </Label>
-
+                
                 <Row>
                   <FormGroup className="form-group">
+                    <Label for="boundaryConditions">
+                      {t('boundaryConditions')}<RequiredAsterisk />
+                    </Label>
                     <table style={{ display: 'flex' }}>
                       <thead style={{
                         display: 'flex',
@@ -296,6 +320,7 @@ const WildfireSimulation = ({
                     {getError('boundaryConditions', errors, touched, false)}
                   </FormGroup>
                 </Row>
+
                 <Row>
                   <Col>
                     <button 
@@ -315,6 +340,7 @@ const WildfireSimulation = ({
                     </Button>
                   </Col>
                 </Row>
+
               </Form>
             )}
           </Formik>
