@@ -9,11 +9,11 @@ import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { withTranslation } from 'react-i18next'
-import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import RequiredAsterisk from '../../components/required-asterisk'
 import { DATA_LAYERS_PANELS } from './constants';
 import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
+import moment from 'moment';
 
 const PROBABILITY_RANGES = ['50%', '75%','90%']
 
@@ -42,20 +42,22 @@ const WildfireSimulation = ({
   //const defaultAoi = useSelector(state => state.user.defaultAoi);
 
   //const handleSubmitRequest = (event) => { alert('Clicked request');};
-  //const handleCancel = (event) => { alert('Clicked canel');}
+  //
 
   const [viewState, setViewState] = useState(undefined);
-  const [iconLayer, setIconLayer] = useState(undefined);
+  const [iconLayer,] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
-  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [,setBoundingBox] = useState(undefined); // useful! can ignore in this case as we use getter from other component
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState([]);
-  //const [togglePolygonMap, setTogglePolygonMap] = useState(false);
-  //const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
 
-  //const handleSubmitRequest = (event) => { alert('Clicked request');};
+  const handleSubmitRequest = (event) => { alert('Clicked request'); console.log(event)};
+  
+  const handleCancel = () => { 
+    setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
+  }
 
   const getReportsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -67,6 +69,21 @@ const WildfireSimulation = ({
       setCurrentZoomLevel(e.viewState.zoom);
     }
   };
+
+  const formatWKT = (coordinates) => {
+    // format coords as WKT
+    const list = coordinates.map(xy => `${xy[0].toFixed(6)} ${xy[1].toFixed(6)}`);
+    return `POLYGON((${list.join(',\n')}))`;
+  }
+
+  const getDateOffset = (startTime, numberHours) => {
+    // used to compute end date from start date and number of hours
+    if (!startTime || !numberHours) {
+      return undefined;
+    }
+    const endtime = moment(startTime).add(numberHours,'hours').toISOString().slice(0, 19);
+    return endtime;
+  }
 
   return (
     <Row>
@@ -89,7 +106,6 @@ const WildfireSimulation = ({
               probabilityRange: '75%',
               mapselection: '', 
               simulationTimeLimit: '',
-              startdate: null, 
               ignitionDateTime: null,
               simulationFireSpotting: false,
             }}
@@ -114,7 +130,7 @@ const WildfireSimulation = ({
                 <Row xl={12}>
                   <h5>{t('wildfireSimulation')}</h5>
                 </Row>
-                
+
                 <Row>
                   <FormGroup className="form-group">
                     <Label for="dataLayerType">
@@ -190,14 +206,14 @@ const WildfireSimulation = ({
                       {t('mapSelection')}<RequiredAsterisk />
                     </Label>
                     <Input 
-                      name="mapSelection" 
-                      id="mapSelection"
+                      id="mapselection"
+                      name="mapSelection"
                       type="textarea"
                       rows="5"
                       onChange={handleChange}
                       onBlur={handleBlur}
-                      value={values.mapSelection}
-                      placeholder="Map Selection (Ignition zone/ point)"
+                      value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapselection }
+                      placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
                     />
                     {getError('mapSelection', errors, touched, false)}
                   </FormGroup>
@@ -206,10 +222,39 @@ const WildfireSimulation = ({
                 
 
                 <Row className='mb-3 w-100'>
-                  <Label for="ignitionDateTime">
-                    {t('ignitionDateTime')}<RequiredAsterisk />
-                  </Label>
-                  <DateRangePicker />
+                  <FormGroup className="form-group">
+                    <Row>
+                      <Col>
+                        <Label for="ignitionDateTime">
+                          {t('ignitionDateTime')}<RequiredAsterisk />
+                        </Label>
+                        <Input
+                          id="ignitionDateTime"
+                          name="ignitionDateTime"
+                          type="datetime-local"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.ignitionDateTime}
+                        />
+                      </Col>
+                      <Col>
+                        <Label for="ignitionEndTime">
+                          {t('ignitionEndTime')}<RequiredAsterisk />
+                        </Label>
+                        <Input
+                          id="ignitionDateTime"
+                          name="ignitionDateTime"
+                          type="datetime-local"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          // disabled
+                          value={
+                            getDateOffset(values.ignitionDateTime, values.simulationTimeLimit)
+                          }
+                        />
+                      </Col>
+                    </Row>
+                  </FormGroup>
                 </Row>
 
                 <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
@@ -328,13 +373,14 @@ const WildfireSimulation = ({
                       disabled={isSubmitting}
                       className='btn btn-primary'
                       color="primary"
+                      onClick={handleSubmitRequest}
                     >
                       {t('request')}
                     </button>
                     <Button
-                      onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
                       className='btn btn-secondary'
                       color="secondary"
+                      onClick={handleCancel}
                     >
                       {t('cancel')}
                     </Button>
