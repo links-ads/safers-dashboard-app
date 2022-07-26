@@ -80,6 +80,7 @@ const WildfireSimulation = ({
             initialValues={{ 
               datalayertype: '', 
               requesttitle: '', 
+              probabilityRange: '75%',
               mapselection: '', 
               startdate: null, 
               enddate: null, 
@@ -104,7 +105,6 @@ const WildfireSimulation = ({
                   {getGeneralErrors(error)}
                 </Row>
                 <Row xl={12}>
-                  {/* // TODO: add translation */}
                   <h5>{t('wildfireSimulation')}</h5>
                 </Row>
                 <Row>
@@ -126,11 +126,13 @@ const WildfireSimulation = ({
 
                 <Row>
                   <FormGroup>
-                    <i 
-                      data-tip 
-                      className='bx bx-info-circle font-size-8 me-3 p-0'
-                    />
-                    <h5 className='m-0'>{t('probabilityRange')}:</h5>
+                    <Label for="probabilityRange">
+                      {t('probabilityRange')}<RequiredAsterisk />&nbsp;
+                      <i 
+                        data-tip 
+                        className='bx bx-info-circle font-size-8 me-3 p-0'
+                      />
+                    </Label>
                   </FormGroup>
                 </Row>
                 <Row>
@@ -155,12 +157,11 @@ const WildfireSimulation = ({
                     ))}
                   </FormGroup>
                 </Row>
-
-                <Row className='mb-3 w-100'>
-                  <h5 className='m-0'>{t('simulationTimeLimit')}</h5>
-                </Row>
                 <Row>
                   <FormGroup className="form-group">
+                    <Label for="simulationTimeLimit">
+                      {t('simulationTimeLimit')}<RequiredAsterisk />
+                    </Label>
                     <Input 
                       name="simulationTimeLimit" 
                       id="simulationTimeLimit"
@@ -174,7 +175,9 @@ const WildfireSimulation = ({
                 </Row>
                 <Row>
                   <FormGroup className="form-group">
-                    <h5 className='m-0'>{t('mapSelection')}</h5>
+                    <Label for="mapSelection">
+                      {t('mapSelection')}<RequiredAsterisk />
+                    </Label>
                     <Input 
                       name="mapSelection" 
                       id="mapSelection"
@@ -189,27 +192,27 @@ const WildfireSimulation = ({
                   </FormGroup>
                 </Row>
 
-                <Row className='mb-3 w-100'>
-                  <h5 className='m-0'>{t('ignitionDateTime')}</h5>
-                </Row>
+                <Label for="ignitionDateTime">
+                  {t('ignitionDateTime')}<RequiredAsterisk />
+                </Label>
+
                 <Row className='mb-3 w-100'>
                   <DateRangePicker />
                 </Row>
 
                 <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
-                  <i 
-                    data-tip 
-                    className='bx bx-info-circle font-size-8 me-3 p-0 w-auto'
-                  />
-                  <h5 className='m-0'>{t('simulationFireSpotting')}</h5>
+                  <Label for="simulationFireSpotting">
+                    {t('simulationFireSpotting')}<RequiredAsterisk />
+                  </Label>
                   <button>Y</button>
                   <button>N</button>
                   {getError('simulationFireSpotting', errors, touched, false)}
                 </Row>
 
-                <Row className='mb-3 w-100'>
-                  <h5 className='m-0'>{t('boundaryConditions')}</h5>
-                </Row>
+                <Label for="boundaryConditions">
+                  {t('boundaryConditions')}<RequiredAsterisk />
+                </Label>
+
                 <Row>
                   <FormGroup className="form-group">
                     <table style={{ display: 'flex' }}>
@@ -250,11 +253,10 @@ const WildfireSimulation = ({
                                     )
                                   )}
                                   style={{
-                                    fontSize: '2rem',
                                     cursor: 'pointer'
                                   }}
                                 >
-                                  X
+                                  <i className="bx bx-trash font-size-24 me-3 p-0 w-auto"></i>
                                 </div>
                               </td>
                               <td>
@@ -286,9 +288,9 @@ const WildfireSimulation = ({
                         onClick={() => setTableEntries(
                           [...tableEntries, tableEntries.length + 1]
                         )}
-                        style={{ fontSize: '2.5rem', cursor: 'pointer', alignSelf: 'center' }}
+                        style={{  cursor: 'pointer', alignSelf: 'center' }}
                       >
-                        +
+                        <i className="bx bx-plus-circle font-size-24 me-3 p-0 w-auto"></i>
                       </div>
                     </table>
                     {getError('boundaryConditions', errors, touched, false)}
