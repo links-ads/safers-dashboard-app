@@ -15,7 +15,7 @@ import 'react-rangeslider/lib/index.css'
 import { DATA_LAYERS_PANELS } from './constants';
 
 const fireAndBurnedAreaSchema = Yup.object().shape({
-  dataLayerType: Yup.string()
+  datalayertype: Yup.array()
     .required('This field cannot be empty'),
   requestTitle: Yup.string().optional(),
   mapSelection: Yup.string()
@@ -116,6 +116,7 @@ const FireAndBurnedArea = ({
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.dataLayerType}
+                      multiple
                     >
                       <option disabled value=''>
                           Select Data Layer Type

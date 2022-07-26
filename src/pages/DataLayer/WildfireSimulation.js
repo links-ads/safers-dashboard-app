@@ -1,10 +1,11 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { Formik } from 'formik';
-import BaseMap from '../../components/BaseMap/BaseMap';
+import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { withTranslation } from 'react-i18next'
@@ -12,6 +13,7 @@ import DateRangePicker from '../../components/DateRangePicker/DateRange';
 import RequiredAsterisk from '../../components/required-asterisk'
 import { DATA_LAYERS_PANELS } from './constants';
 import 'react-rangeslider/lib/index.css'
+import { getBoundingBox } from '../../helpers/mapHelper';
 
 const PROBABILITY_RANGES = ['50%', '75%','90%']
 
@@ -19,6 +21,8 @@ const WildfireSimulationSchema = Yup.object().shape({
 
 });
 
+
+  
 const WildfireSimulation = ({ 
   t,
   setActiveTab,
@@ -28,7 +32,34 @@ const WildfireSimulation = ({
 
   const [tableEntries, setTableEntries] = useState([1])
 
+  //const defaultAoi = useSelector(state => state.user.defaultAoi);
+
   //const handleSubmitRequest = (event) => { alert('Clicked request');};
+  //const handleCancel = (event) => { alert('Clicked canel');}
+
+  const [viewState, setViewState] = useState(undefined);
+  const [iconLayer, setIconLayer] = useState(undefined);
+  const [midPoint, setMidPoint] = useState([]);
+  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
+  const [coordinates, setCoordinates] = useState([]);
+  //const [togglePolygonMap, setTogglePolygonMap] = useState(false);
+  //const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
+
+  //const handleSubmitRequest = (event) => { alert('Clicked request');};
+
+  const getReportsByArea = () => {
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
+  }
+
+  const handleViewStateChange = (e) => {
+    if (e && e.viewState) {
+      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
+      setCurrentZoomLevel(e.viewState.zoom);
+    }
+  };
 
   return (
     <Row>
@@ -290,12 +321,16 @@ const WildfireSimulation = ({
       </Col>
       <Col xl={7} className='mx-auto'>
         <Card className='map-card mb-0' style={{ height: 670 }}>
-          <BaseMap
-            layers={[]}
-            initialViewState={{}}
-            widgets={[]}
-            screenControlPosition='top-right'
-            navControlPosition='bottom-right'
+          <MapSection
+            viewState={viewState}
+            iconLayer={iconLayer}
+            setViewState={setViewState}
+            getReportsByArea={getReportsByArea}
+            handleViewStateChange={handleViewStateChange}
+            setNewWidth={setNewWidth}
+            setNewHeight={setNewHeight}
+            setCoordinates={setCoordinates}
+            togglePolygonMap={true}
           />
         </Card>
       </Col>
