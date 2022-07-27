@@ -87,7 +87,7 @@ const WildfireSimulation = ({
 
   return (
     <Row>
-      <Col xl={5}>
+      <Col xl={12}>
         <Row className='mb-3'>
           <Col className='d-flex align-items-center'>
             <h4 className='m-0'>{t('requestMap')}</h4>
@@ -123,166 +123,193 @@ const WildfireSimulation = ({
               isSubmitting,
             }) => (
               <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-between'>
-                <Row>
-                  {getGeneralErrors(error)}
-                </Row>
 
-                <Row xl={12}>
-                  <h5>{t('wildfireSimulation')}</h5>
-                </Row>
+                {/* start */}
 
-                <Row>
-                  <FormGroup className="form-group">
-                    <Label for="dataLayerType">
-                      {t('simulationTitle')}<RequiredAsterisk />
-                    </Label>
-                    <Input 
-                      name="simulationTitle" 
-                      className={getError('simulationTitle',errors,touched)}
-                      id="simulationTitle"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.simulationTitle}
-                      placeholder="[Type Simulation Title]"
-                    />
-                    {getError('simulationTitle', errors, touched, false)}
-                  </FormGroup>
-                </Row>
+                <Row style={{width: '100%',}}>
 
-                <Row>
-                  <FormGroup>
-                    <Label for="probabilityRange">
-                      {t('probabilityRange')}<RequiredAsterisk />&nbsp;
-                      <i 
-                        data-tip 
-                        className='bx bx-info-circle font-size-8 me-3 p-0'
+                  <Col>
+
+                    <Row>
+                      {getGeneralErrors(error)}
+                    </Row>
+
+                    <Row xl={12}>
+                      <h5>{t('wildfireSimulation')}</h5>
+                    </Row>
+
+                    <Row>
+                      <FormGroup className="form-group">
+                        <Label for="dataLayerType">
+                          {t('simulationTitle')}<RequiredAsterisk />
+                        </Label>
+                        <Input 
+                          name="simulationTitle" 
+                          className={getError('simulationTitle',errors,touched)}
+                          id="simulationTitle"
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.simulationTitle}
+                          placeholder="[Type Simulation Title]"
+                        />
+                        {getError('simulationTitle', errors, touched, false)}
+                      </FormGroup>
+                    </Row>
+
+                    <Row>
+                      <FormGroup>
+                        <Label for="probabilityRange">
+                          {t('probabilityRange')}<RequiredAsterisk />&nbsp;
+                          <i 
+                            data-tip 
+                            className='bx bx-info-circle font-size-8 me-3 p-0'
+                          />
+                        </Label>
+                      </FormGroup>
+                    </Row>
+
+                    <Row>
+                      <FormGroup className='d-flex flex-nowrap align-items-center gap-3'>
+                        {PROBABILITY_RANGES.map(range => (
+                          <Label
+                            key={range}
+                            id={range}
+                            check
+                          >
+                            <Input
+                              id={range}
+                              name='probabilityRange'
+                              type="radio"
+                              onChange={handleChange}
+                              checked={values.probabilityRange === range}
+                              value={range}
+                              className='me-2'
+                            />
+                            {range}
+                          </Label>
+                        ))}
+                      </FormGroup>
+                    </Row>
+
+                    <Row>
+                      <FormGroup className="form-group">
+                        <Label for="simulationTimeLimit">
+                          {t('simulationTimeLimit')}<RequiredAsterisk />
+                        </Label>
+                        <Input 
+                          name="simulationTimeLimit" 
+                          id="simulationTimeLimit"
+                          className={getError('simulationTimeLimit',errors,touched)}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.simulationTimeLimit}
+                          placeholder="Type Limit [hours]"
+                        />
+                        {getError('simulationTimeLimit', errors, touched, false)}
+                      </FormGroup>
+                    </Row>
+
+                    <Row>
+                      <FormGroup className="form-group">
+                        <Label for="mapSelection">
+                          {t('mapSelection')}<RequiredAsterisk />
+                        </Label>
+                        <Input 
+                          id="mapselection"
+                          name="mapSelection"
+                          type="textarea"
+                          rows="5"
+                          className={getError('mapSelection',errors,touched)}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapselection }
+                          placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
+                        />
+                        {getError('mapSelection', errors, touched, false)}
+                      </FormGroup>
+                    </Row>
+
+                
+
+                    <Row className='mb-3 w-100'>
+                      <FormGroup className="form-group">
+                        <Row>
+                          <Col>
+                            <Label for="ignitionDateTime">
+                              {t('ignitionDateTime')}<RequiredAsterisk />
+                            </Label>
+                            <Input
+                              id="ignitionDateTime"
+                              name="ignitionDateTime"
+                              type="datetime-local"
+                              className={getError('ignitionDateTime',errors,touched)}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.ignitionDateTime}
+                            />
+                          </Col>
+                          <Col>
+                            <Label for="ignitionEndTime">
+                              {t('ignitionEndTime')}<RequiredAsterisk />
+                            </Label>
+                            <Input
+                              id="ignitionDateTime"
+                              name="ignitionDateTime"
+                              type="datetime-local"
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              // disabled
+                              value={
+                                getDateOffset(values.ignitionDateTime, values.simulationTimeLimit)
+                              }
+                            />
+                          </Col>
+                        </Row>
+                      </FormGroup>
+                    </Row>
+
+                    <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
+                      <FormGroup>
+                        <Row>
+                          <Col>
+                            <Label for="simulationFireSpotting">
+                              {t('simulationFireSpotting')}
+                            </Label>
+                          </Col>
+                          <Col>
+                            <Input
+                              id="simulationFireSpotting"
+                              name="simulationFireSpotting"
+                              type="checkbox"
+                              value={values.simulationFireSpotting}
+                            />
+                          </Col>
+                        </Row>
+                        {getError('simulationFireSpotting', errors, touched, false)}
+                      </FormGroup>
+                    </Row>
+                  </Col>
+
+                  <Col xl={7} className='mx-auto'>
+                    <Card className='map-card mb-0' style={{ height: 670 }}>
+                      <MapSection
+                        viewState={viewState}
+                        iconLayer={iconLayer}
+                        setViewState={setViewState}
+                        getReportsByArea={getReportsByArea}
+                        handleViewStateChange={handleViewStateChange}
+                        setNewWidth={setNewWidth}
+                        setNewHeight={setNewHeight}
+                        setCoordinates={setCoordinates}
+                        togglePolygonMap={true}
                       />
-                    </Label>
-                  </FormGroup>
-                </Row>
+                    </Card>
+                  </Col>
 
-                <Row>
-                  <FormGroup className='d-flex flex-nowrap align-items-center gap-3'>
-                    {PROBABILITY_RANGES.map(range => (
-                      <Label
-                        key={range}
-                        id={range}
-                        check
-                      >
-                        <Input
-                          id={range}
-                          name='probabilityRange'
-                          type="radio"
-                          onChange={handleChange}
-                          checked={values.probabilityRange === range}
-                          value={range}
-                          className='me-2'
-                        />
-                        {range}
-                      </Label>
-                    ))}
-                  </FormGroup>
                 </Row>
-
-                <Row>
-                  <FormGroup className="form-group">
-                    <Label for="simulationTimeLimit">
-                      {t('simulationTimeLimit')}<RequiredAsterisk />
-                    </Label>
-                    <Input 
-                      name="simulationTimeLimit" 
-                      id="simulationTimeLimit"
-                      className={getError('simulationTimeLimit',errors,touched)}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.simulationTimeLimit}
-                      placeholder="Type Limit [hours]"
-                    />
-                    {getError('simulationTimeLimit', errors, touched, false)}
-                  </FormGroup>
-                </Row>
-
-                <Row>
-                  <FormGroup className="form-group">
-                    <Label for="mapSelection">
-                      {t('mapSelection')}<RequiredAsterisk />
-                    </Label>
-                    <Input 
-                      id="mapselection"
-                      name="mapSelection"
-                      type="textarea"
-                      rows="5"
-                      className={getError('mapSelection',errors,touched)}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapselection }
-                      placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
-                    />
-                    {getError('mapSelection', errors, touched, false)}
-                  </FormGroup>
-                </Row>
-
+                {/* end  */}
                 
 
-                <Row className='mb-3 w-100'>
-                  <FormGroup className="form-group">
-                    <Row>
-                      <Col>
-                        <Label for="ignitionDateTime">
-                          {t('ignitionDateTime')}<RequiredAsterisk />
-                        </Label>
-                        <Input
-                          id="ignitionDateTime"
-                          name="ignitionDateTime"
-                          type="datetime-local"
-                          className={getError('ignitionDateTime',errors,touched)}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.ignitionDateTime}
-                        />
-                      </Col>
-                      <Col>
-                        <Label for="ignitionEndTime">
-                          {t('ignitionEndTime')}<RequiredAsterisk />
-                        </Label>
-                        <Input
-                          id="ignitionDateTime"
-                          name="ignitionDateTime"
-                          type="datetime-local"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          // disabled
-                          value={
-                            getDateOffset(values.ignitionDateTime, values.simulationTimeLimit)
-                          }
-                        />
-                      </Col>
-                    </Row>
-                  </FormGroup>
-                </Row>
-
-                <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
-                  <FormGroup>
-                    <Row>
-                      <Col>
-                        <Label for="simulationFireSpotting">
-                          {t('simulationFireSpotting')}
-                        </Label>
-                      </Col>
-                      <Col>
-                        <Input
-                          id="simulationFireSpotting"
-                          name="simulationFireSpotting"
-                          type="checkbox"
-                          value={values.simulationFireSpotting}
-                        />
-                      </Col>
-                    </Row>
-                    {getError('simulationFireSpotting', errors, touched, false)}
-                  </FormGroup>
-                </Row>
-
-                
                 <Row>
                   <FormGroup className="form-group">
                     <Label for="boundaryConditions">
@@ -405,21 +432,7 @@ const WildfireSimulation = ({
         </Row>
 
       </Col>
-      <Col xl={7} className='mx-auto'>
-        <Card className='map-card mb-0' style={{ height: 670 }}>
-          <MapSection
-            viewState={viewState}
-            iconLayer={iconLayer}
-            setViewState={setViewState}
-            getReportsByArea={getReportsByArea}
-            handleViewStateChange={handleViewStateChange}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
-            setCoordinates={setCoordinates}
-            togglePolygonMap={true}
-          />
-        </Card>
-      </Col>
+     
     </Row>
   )
 }
