@@ -295,7 +295,8 @@ const WildfireSimulation = ({
                         justifyContent: 'space-between',
                         marginRight: '1rem'
                       }}>
-                        <tr>{t('timeHours')}</tr>
+                        <tr>&nbsp;</tr>
+                        <tr>{t('timeHours')}<RequiredAsterisk /></tr>
                         <tr>{t('windDirection')}<RequiredAsterisk /></tr>
                         <tr>{t('windSpeed')}<RequiredAsterisk /></tr>
                         <tr>{t('fuelMoistureContent')}<RequiredAsterisk /></tr>
@@ -331,6 +332,13 @@ const WildfireSimulation = ({
                                 >
                                   <i className="bx bx-trash font-size-24 me-3 p-0 w-auto"></i>
                                 </div>
+                              </td>
+                              <td>
+                                <Input
+                                  name={`timeOffset${position}`} 
+                                  id={`timeOffset${position}`}
+                                  placeholder='[type here]'
+                                />
                               </td>
                               <td>
                                 <Input
