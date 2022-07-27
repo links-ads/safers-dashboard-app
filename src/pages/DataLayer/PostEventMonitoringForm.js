@@ -128,6 +128,7 @@ const PostEventMonitoring = ({ t }) => {
                           name="datalayertype"
                           id="datalayertype"
                           type="select"
+                          className={getError('datalayertype',errors,touched)}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           value={values.datalayertype}
@@ -178,12 +179,13 @@ const PostEventMonitoring = ({ t }) => {
                           name="mapselection"
                           type="textarea"
                           rows="5"
+                          className={coordinates && coordinates.length>0 ? '' : getError('mapselection',errors,touched)}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapselection }
                           placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
                         />
-                        {getError('mapselection', errors, touched, false)}
+                        {coordinates && coordinates.length>0 ? '' : getError('mapselection', errors, touched, false)}
                       </FormGroup>
                     </Row>
                     <Row>
@@ -197,6 +199,7 @@ const PostEventMonitoring = ({ t }) => {
                               id="startdate"
                               name="startdate"
                               type="date"
+                              className={getError('startdate',errors,touched)}
                               onChange={handleChange}
                               onBlur={handleBlur} 
                               value={values.startdate}
@@ -211,6 +214,7 @@ const PostEventMonitoring = ({ t }) => {
                               id="enddate"
                               name="enddate"
                               type="date"
+                              className={getError('enddate',errors,touched,true)}
                               onChange={handleChange}
                               onBlur={handleBlur}
                               value={values.enddate}

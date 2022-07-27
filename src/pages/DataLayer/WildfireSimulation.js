@@ -138,6 +138,7 @@ const WildfireSimulation = ({
                     </Label>
                     <Input 
                       name="simulationTitle" 
+                      className={getError('simulationTitle',errors,touched)}
                       id="simulationTitle"
                       onChange={handleChange}
                       onBlur={handleBlur}
@@ -191,6 +192,7 @@ const WildfireSimulation = ({
                     <Input 
                       name="simulationTimeLimit" 
                       id="simulationTimeLimit"
+                      className={getError('simulationTimeLimit',errors,touched)}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.simulationTimeLimit}
@@ -210,6 +212,7 @@ const WildfireSimulation = ({
                       name="mapSelection"
                       type="textarea"
                       rows="5"
+                      className={getError('mapSelection',errors,touched)}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapselection }
@@ -232,6 +235,7 @@ const WildfireSimulation = ({
                           id="ignitionDateTime"
                           name="ignitionDateTime"
                           type="datetime-local"
+                          className={getError('ignitionDateTime',errors,touched)}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           value={values.ignitionDateTime}
@@ -262,7 +266,7 @@ const WildfireSimulation = ({
                     <Row>
                       <Col>
                         <Label for="simulationFireSpotting">
-                          {t('simulationFireSpotting')}<RequiredAsterisk />
+                          {t('simulationFireSpotting')}
                         </Label>
                       </Col>
                       <Col>

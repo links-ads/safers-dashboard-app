@@ -113,6 +113,7 @@ const FireAndBurnedArea = ({
                       name="dataLayerType"
                       id="dataLayerType"
                       type="select"
+                      className={getError('dataLayerType',errors,touched)}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.dataLayerType}
@@ -125,7 +126,7 @@ const FireAndBurnedArea = ({
                         <option key={num} value={num}>{num}</option>
                       ))}
                     </Input>
-                    {getError('dataLayerType', errors, touched, false)}
+                    {getError('dataLayerType', errors, touched)}
                   </FormGroup>
                 </Row> 
                 <Row>
@@ -136,6 +137,7 @@ const FireAndBurnedArea = ({
                     <Input 
                       name="requestTitle" 
                       id="requestTitle"
+                      className={getError('requestTitle',errors,touched)}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={values.requestTitle}
@@ -154,12 +156,13 @@ const FireAndBurnedArea = ({
                       name="mapSelection"
                       type="textarea"
                       rows="5"
+                      className={coordinates && coordinates.length>0 ? '' : getError('mapSelection',errors,touched)}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapSelection }
                       placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
                     />
-                    {getError('mapSelection', errors, touched, false)}
+                    {coordinates && coordinates.length>0 ? '' : getError('mapSelection', errors, touched, false)}
                   </FormGroup>
                 </Row>
                 <Row>
@@ -173,6 +176,7 @@ const FireAndBurnedArea = ({
                           id="startDate"
                           name="startDate"
                           type="date"
+                          className={getError('startDate',errors,touched)}
                           onChange={handleChange}
                           onBlur={handleBlur} 
                           value={values.startDate}
@@ -187,6 +191,7 @@ const FireAndBurnedArea = ({
                           id="endDate"
                           name="endDate"
                           type="date"
+                          className={getError('endDate',errors,touched)}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           value={values.endDate}
@@ -209,6 +214,7 @@ const FireAndBurnedArea = ({
                           id="frequency"
                           name="frequency"
                           type="num"
+                          className={getError('frequency',errors,touched)}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           placeholder='[type here]'
@@ -236,6 +242,7 @@ const FireAndBurnedArea = ({
                           name="resolution"
                           type="num"
                           placeholder='10'
+                          className={getError('resolution',errors,touched)}
                           onChange={handleChange}
                           onBlur={handleBlur}
                           value={values.resolution ?? 10}
