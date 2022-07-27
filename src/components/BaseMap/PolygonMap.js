@@ -124,7 +124,11 @@ const PolygonMap = ({
     console.log(val.data);
     if (val.editType === 'addFeature') {
       setFeatures(val.data);
-      setCoordinates(wkt.stringify(val.data[0].geometry));
+      const tempStr = wkt.stringify(val.data[0].geometry);
+      const tempStr2 = tempStr.replace(/\d+\.\d+/g, function(match) {
+        return Number(match).toFixed(6);
+      });
+      setCoordinates(tempStr2);
       toggleMode('');
     } else {
       setFeatures([])
