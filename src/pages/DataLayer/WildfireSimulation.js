@@ -85,6 +85,23 @@ const WildfireSimulation = ({
     return endtime;
   }
 
+  const deleteIcon = (position) => {
+    return (
+      <div
+        onClick={() => setTableEntries(
+          tableEntries.filter(
+            entry => entry !== position
+          )
+        )}
+        style={{
+          cursor: 'pointer'
+        }}
+      >
+        <i className="bx bx-trash font-size-24 me-3 p-0 w-auto"></i>
+      </div>
+    );
+  }
+
   return (
     <Row>
       <Col xl={12}>
@@ -333,7 +350,7 @@ const WildfireSimulation = ({
                         display: 'flex',
                         overflowX: 'scroll',
                       }}>
-                        {tableEntries.map((position) => {
+                        {tableEntries.map((position, index) => {
                           return (
                             <tr key={position} style={{
                               display: 'flex',
@@ -346,19 +363,9 @@ const WildfireSimulation = ({
                                 }}
                               >
                                 {position}
-                                &nbsp;
-                                <div
-                                  onClick={() => setTableEntries(
-                                    tableEntries.filter(
-                                      entry => entry !== position
-                                    )
-                                  )}
-                                  style={{
-                                    cursor: 'pointer'
-                                  }}
-                                >
-                                  <i className="bx bx-trash font-size-24 me-3 p-0 w-auto"></i>
-                                </div>
+                                { index ===0 ? 
+                                  <i className="font-size-18 me-3 p-0 w-auto">&nbsp;</i> : 
+                                  deleteIcon(position) }
                               </td>
                               <td>
                                 <Input
