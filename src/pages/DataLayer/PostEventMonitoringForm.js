@@ -69,6 +69,16 @@ const PostEventMonitoring = ({ t }) => {
     return `POLYGON((${list.join(',\n')}))`;
   }
 
+  // TODO:  hard wired for now, this will be replaced with an API call in time
+  const layerTypes = [
+    {id:37006, name: 'Generate vegetation recovery map'},
+    {id:37005, name: 'Generate historical severity map (dNBR)'},
+    {id:37004, name: 'Provide landslide susceptibility information'},
+    {id:37003, name: 'Generate soil recovery map (Vegetation Index)'},
+    {id:37002, name: 'Generate burn severity map (dNBR)'},
+    {id:32005, name: 'Get critical points of infrastructure, e.g. airports, motorways, hospitals, etc.'}
+  ];
+
   return (
     // <div className='page-content'>
     <div>
@@ -134,21 +144,12 @@ const PostEventMonitoring = ({ t }) => {
                           value={values.datalayertype}
                           multiple
                         >
-                          <option>
-                            1
+                          <option disabled value=''>
+                          Select Data Layer Type(s)
                           </option>
-                          <option>
-                            2
-                          </option>
-                          <option>
-                            3
-                          </option>
-                          <option>
-                            4
-                          </option>
-                          <option>
-                            5
-                          </option>
+                          {layerTypes.map(item => (
+                            <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
+                          ))}
                         </Input>
                         {getError('datalayertype', errors, touched, false)}
                       </FormGroup>

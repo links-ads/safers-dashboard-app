@@ -27,5 +27,6 @@
   "timeHours": "Time [hours]",
   "windDirection": "Wind Direction [°]",
   "windSpeed": "Wind Speed [km/h]",
-  "fuelMoistureContent": "Fuel Moisture Content [%]"
+  "fuelMoistureContent": "Fuel Moisture Content [%]",
+  "selectlayertypes": "Select Data Layer Type(s)"
 }

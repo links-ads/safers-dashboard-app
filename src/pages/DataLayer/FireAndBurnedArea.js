@@ -56,6 +56,15 @@ const FireAndBurnedArea = ({
     }
   };
 
+  // TODO:  hard wired for now, this will be replaced with an API call in time
+  const layerTypes = [
+    {id: 36004, name:'Impact quantification'},
+    {id: 36005, name:'Fire front and smoke'},
+    {id: 36003, name:'Burned area geospatial image'},
+    {id: 36002, name:'Burned area severity map'},
+    {id: 36001, name:'Burned area delineation map'}
+  ];
+
   return (
     <Row>
       <Col xl={5} className='d-flex flex-column justify-content-between'>
@@ -120,10 +129,10 @@ const FireAndBurnedArea = ({
                       multiple
                     >
                       <option disabled value=''>
-                          Select Data Layer Type
+                        {t('selectlayertypes')}
                       </option>
-                      {['1', '2', '3', '4', '5'].map(num => (
-                        <option key={num} value={num}>{num}</option>
+                      {layerTypes.map(item => (
+                        <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
                       ))}
                     </Input>
                     {getError('dataLayerType', errors, touched)}
