@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { Formik } from 'formik';
@@ -13,6 +13,9 @@ import RequiredAsterisk from '../../components/required-asterisk'
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import { DATA_LAYERS_PANELS } from './constants';
+import {
+  getMapRequests
+} from '../../store/appAction';
 
 const fireAndBurnedAreaSchema = Yup.object().shape({
   datalayertype: Yup.array()
@@ -35,7 +38,11 @@ const FireAndBurnedArea = ({
   handleResetAOI,
   viewState,
 }) => {
+
+  const dispatch = useDispatch();
+
   const error = useSelector(state => state.auth.error);
+  const mapRequest = useSelector(state => state.dataLayer.mapRequest);
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
@@ -44,6 +51,12 @@ const FireAndBurnedArea = ({
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState([]);
+  const [maprequest, setMapRequest] = useState({});
+
+  const submitMe = (formData) => {
+    console.log('formData', formData);
+    alert('clicked submit');
+  }
 
   const getReportsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -268,6 +281,7 @@ const FireAndBurnedArea = ({
                   <Col>
                     <button 
                       type="submit"
+                      onClick={()=>submitMe(values)}
                       disabled={isSubmitting}
                       className='btn btn-primary'
                       color="primary"

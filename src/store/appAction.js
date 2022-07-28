@@ -47,7 +47,8 @@ export {
 } from './alerts/action'
 export {
   getAllDataLayers,
-  resetDataLayersResponseState
+  resetDataLayersResponseState,
+  getMapRequests
 } from './datalayer/action'
 export {
   getAllInSituAlerts,

@@ -5,7 +5,8 @@ const initialState = {
   dataLayers: [],
   currentLayer: {},
   error: false,
-  success: null
+  success: null,
+  mapRequest: {},
 };
 
 const dataLayerReducer = (state = initialState, action) => {
@@ -13,6 +14,8 @@ const dataLayerReducer = (state = initialState, action) => {
   case actionTypes.GET_DATA_LAYERS_SUCCESS: return getDataLayersSuccess(state, action);
   case actionTypes.GET_DATA_LAYERS_FAIL: return getDataLayersFail(state, action);
   case actionTypes.RESET_DATA_LAYER_STATE: return resetDataLayersResponseState(state, action);
+  case actionTypes.GET_MAP_REQUESTS_SUCCESS: return getMapRequestsSuccess(state, action);
+  case actionTypes.GET_MAP_REQUESTS_FAIL: return getMapRequestsFail(state, action);
   default:
     return state;
   }
@@ -39,5 +42,22 @@ const resetDataLayersResponseState = (state) => {
   }
   return updateObject(state, updatedState);
 }
+
+// Map requests
+
+const getMapRequestsSuccess = (state, action) => {
+  const updatedState = {
+    mapRequest: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const getMapRequestsFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
+
 
 export default dataLayerReducer;
