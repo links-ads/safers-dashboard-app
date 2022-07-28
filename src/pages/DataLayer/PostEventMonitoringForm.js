@@ -28,7 +28,6 @@ const postEventMonitoringSchema = Yup.object().shape({
 
 
 const PostEventMonitoring = ({ t }) => {
-  console.log('t',t);
 
   const error = useSelector(state => state.auth.error);
   const defaultAoi = useSelector(state => state.user.defaultAoi);

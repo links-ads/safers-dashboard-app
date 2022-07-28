@@ -31,8 +31,6 @@ const OnDemandDataLayer = ({
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
 
-  console.log('onDemandMapLayers: ', onDemandMapLayers)
-
   const toggleModal = () => setModalIsOpen(prev => !prev);
 
   const handleDialogButtonClick = ({ target: { value } }) => {
