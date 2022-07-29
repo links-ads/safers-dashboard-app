@@ -44,6 +44,7 @@ const DataLayerDashboard = () => {
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
 
+
   const { sourceOptions, domainOptions } = selectOptions;
 
   //fetch data to populate 'Source' and 'Domain' selects

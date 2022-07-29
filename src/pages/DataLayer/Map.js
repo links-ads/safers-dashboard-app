@@ -13,6 +13,7 @@ const MapSection = ({
   setNewWidth,
   setNewHeight,
   setCoordinates,
+  coordinates,
   togglePolygonMap = false,
 }) => {
 
@@ -53,6 +54,7 @@ const MapSection = ({
           screenControlPosition='top-right'
           navControlPosition='bottom-right'
           setCoordinates={setCoordinates}
+          coordinates={coordinates}
           key='comm-polygon-map'
         />
       ) : null}
@@ -69,6 +71,7 @@ MapSection.propTypes = {
   setNewHeight: PropTypes.func,
   setCoordinates: PropTypes.func,
   togglePolygonMap: PropTypes.any,
+  coordinates: PropTypes.string,
 }
 
 export default MapSection;

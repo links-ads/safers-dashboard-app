@@ -42,9 +42,14 @@ const PostEventMonitoring = ({ t }) => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState([]);
+  const [coordinates, setCoordinates] = useState('');
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
+
+  const submitMe = (formData) => {
+    console.log('formData', formData);
+    alert('clicked submit');
+  }
 
   const getReportsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -93,8 +98,6 @@ const PostEventMonitoring = ({ t }) => {
                 mapselection: '', 
                 startdate: null, 
                 enddate: null, 
-                frequency: null,
-                resolution: null, 
               }}
               validationSchema={postEventMonitoringSchema}
               onSubmit={(values) => {console.log('values', values)}}
@@ -175,15 +178,17 @@ const PostEventMonitoring = ({ t }) => {
                           {t('mapSelection')}<RequiredAsterisk />
                         </Label>
                         <Input
-                          id="mapselection"
-                          name="mapselection"
+                          id="mapSelection"
+                          name="mapSelection"
                           type="textarea"
                           rows="5"
-                          className={coordinates && coordinates.length>0 ? '' : getError('mapselection',errors,touched)}
-                          onChange={handleChange}
+                          className={coordinates && coordinates.length>0 ? '' : getError('mapSelection',errors,touched)}
+                          onChange={(e)=>{
+                            setCoordinates(e.target.value);
+                          }}
                           onBlur={handleBlur}
-                          value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapselection }
-                          placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
+                          value={coordinates}
+                          placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {coordinates && coordinates.length>0 ? '' : getError('mapselection', errors, touched, false)}
                       </FormGroup>
@@ -226,9 +231,10 @@ const PostEventMonitoring = ({ t }) => {
                     </Row>
                     <Row>
                       <Col>
-                        <Button
-                          value={{}} 
-                          onClick={handleSubmitRequest}
+                        <Button 
+                          type="submit"
+                          onClick={()=>submitMe({...values, wkt:coordinates})}
+                          disabled={isSubmitting}
                           className='btn btn-primary'
                           color="primary"
                         >
@@ -261,6 +267,7 @@ const PostEventMonitoring = ({ t }) => {
               setNewWidth={setNewWidth}
               setNewHeight={setNewHeight}
               setCoordinates={setCoordinates}
+              coordinates={coordinates}
               togglePolygonMap={true}
             />
           </Card>

@@ -50,7 +50,7 @@ const FireAndBurnedArea = ({
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState([]);
+  const [coordinates, setCoordinates] = useState('');
   const [maprequest, setMapRequest] = useState({});
 
   const submitMe = (formData) => {
@@ -179,10 +179,12 @@ const FireAndBurnedArea = ({
                       type="textarea"
                       rows="5"
                       className={coordinates && coordinates.length>0 ? '' : getError('mapSelection',errors,touched)}
-                      onChange={handleChange}
+                      onChange={(e)=>{
+                        setCoordinates(e.target.value);
+                      }}
                       onBlur={handleBlur}
-                      value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapSelection }
-                      placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
+                      value={coordinates}
+                      placeholder='Enter Well Known Text or draw a polygon on the map'
                     />
                     {coordinates && coordinates.length>0 ? '' : getError('mapSelection', errors, touched, false)}
                   </FormGroup>
@@ -279,15 +281,15 @@ const FireAndBurnedArea = ({
                 </Row>
                 <Row>
                   <Col>
-                    <button 
+                    <Button 
                       type="submit"
-                      onClick={()=>submitMe(values)}
+                      onClick={()=>submitMe({...values, wkt:coordinates})}
                       disabled={isSubmitting}
                       className='btn btn-primary'
                       color="primary"
                     >
                       {t('request')}
-                    </button>
+                    </Button>
                     <Button
                       onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
                       className='btn btn-secondary'
@@ -313,6 +315,7 @@ const FireAndBurnedArea = ({
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
+            coordinates={coordinates}
             togglePolygonMap={true}
           />
         </Card>

@@ -51,7 +51,12 @@ const WildfireSimulation = ({
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState([]);
+  const [coordinates, setCoordinates] = useState('');
+
+  const submitMe = (formData) => {
+    console.log('formData', formData);
+    alert('clicked submit');
+  }
 
   const handleSubmitRequest = (event) => { alert('Clicked request'); console.log(event)};
   
@@ -231,16 +236,18 @@ const WildfireSimulation = ({
                         <Label for="mapSelection">
                           {t('mapSelection')}<RequiredAsterisk />
                         </Label>
-                        <Input 
-                          id="mapselection"
+                        <Input
+                          id="mapSelection"
                           name="mapSelection"
                           type="textarea"
                           rows="5"
-                          className={getError('mapSelection',errors,touched)}
-                          onChange={handleChange}
+                          className={coordinates && coordinates.length>0 ? '' : getError('mapSelection',errors,touched)}
+                          onChange={(e)=>{
+                            setCoordinates(e.target.value);
+                          }}
                           onBlur={handleBlur}
-                          value={coordinates.length > 0 ? formatWKT(coordinates) : values.mapselection }
-                          placeholder='Enter a comma-separated list of vertices, or draw a polygon on the map. If you enter coordinates these should be in WSG84, longitude then latitude.'
+                          value={coordinates}
+                          placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {getError('mapSelection', errors, touched, false)}
                       </FormGroup>
@@ -318,6 +325,7 @@ const WildfireSimulation = ({
                         setNewWidth={setNewWidth}
                         setNewHeight={setNewHeight}
                         setCoordinates={setCoordinates}
+                        coordinates={coordinates}
                         togglePolygonMap={true}
                       />
                     </Card>
@@ -414,15 +422,15 @@ const WildfireSimulation = ({
 
                 <Row>
                   <Col>
-                    <button 
+                    <Button 
                       type="submit"
+                      onClick={()=>submitMe({...values, wkt:coordinates})}
                       disabled={isSubmitting}
                       className='btn btn-primary'
                       color="primary"
-                      onClick={handleSubmitRequest}
                     >
                       {t('request')}
-                    </button>
+                    </Button>
                     <Button
                       className='btn btn-secondary'
                       color="secondary"

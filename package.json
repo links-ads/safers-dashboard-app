@@ -51,6 +51,7 @@
     "simplebar-react": "^2.3.0",
     "toastr": "^2.1.4",
     "web-vitals": "^2.1.4",
+    "wkt": "^0.1.1",
     "yup": "^0.32.11"
   },
   "scripts": {
