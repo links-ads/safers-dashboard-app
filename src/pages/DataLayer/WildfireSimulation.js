@@ -28,6 +28,14 @@ const WildfireSimulationSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   startDate: Yup.date()
     .required('This field cannot be empty'),
+  boundaryConditions: Yup.array().of(
+    Yup.object().shape({
+      timeOffset: Yup.number().min(0).max(48),
+      windDirection: Yup.number().min(0).max(360),
+      windSpeed: Yup.number().min(0).max(300),
+      fuelMoistureContent: Yup.number().min(0).max(100)
+    })
+  ),
 });
   
 const WildfireSimulation = ({ 
@@ -37,7 +45,7 @@ const WildfireSimulation = ({
 }) => {
   const error = useSelector(state => state.auth.error);
 
-  const [tableEntries, setTableEntries] = useState([1])
+  const [tableEntries, setTableEntries] = useState([0])
 
   //const defaultAoi = useSelector(state => state.user.defaultAoi);
 
@@ -130,6 +138,8 @@ const WildfireSimulation = ({
               simulationTimeLimit: '',
               ignitionDateTime: null,
               simulationFireSpotting: false,
+              fuelMoistureContent0: '',
+              boundaryConditions:[],
             }}
             validationSchema={WildfireSimulationSchema}
             onSubmit={(values) => {console.log('values', values)}}
@@ -380,13 +390,18 @@ const WildfireSimulation = ({
                                   name={`timeOffset${position}`} 
                                   id={`timeOffset${position}`}
                                   placeholder='[type here]'
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
                                 />
+                                {getError('boundaryConditions.timeOffset', errors, touched, false)}
                               </td>
                               <td>
                                 <Input
                                   name={`windDirection${position}`} 
                                   id={`windDirection${position}`}
                                   placeholder='[type here]'
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
                                 />
                               </td>
                               <td>
@@ -394,6 +409,8 @@ const WildfireSimulation = ({
                                   name={`windSpeed${position}`} 
                                   id={`windSpeed${position}`}
                                   placeholder='[type here]'
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
                                 />
                               </td>
                               <td>
@@ -401,6 +418,8 @@ const WildfireSimulation = ({
                                   name={`fuelMoistureContent${position}`} 
                                   id={`fuelMoistureContent${position}`}
                                   placeholder='[type here]'
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
                                 />
                               </td>
                             </tr>
@@ -409,7 +428,7 @@ const WildfireSimulation = ({
                       </tbody>
                       <div 
                         onClick={() => setTableEntries(
-                          [...tableEntries, tableEntries.length + 1]
+                          [...tableEntries, tableEntries.length]
                         )}
                         style={{  cursor: 'pointer', alignSelf: 'center' }}
                       >
