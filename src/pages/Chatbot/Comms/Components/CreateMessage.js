@@ -8,6 +8,7 @@ import {
   Col
 } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
+import MapInput from '../../../../components/BaseMap/MapInput';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
@@ -35,17 +36,15 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
         isTooltipInput={true}
         showIcons={true}
       />
-      <Input
+      <MapInput
         id="coordinates-input"
         className='mt-3'
         type='textarea'
         name="coordinates-value"
         placeholder='Map Selection, please edit and draw on the map'
         rows="10"
-        onChange={(e)=>{
-          setCoordinates(e.target.value);
-        }}
-        value={coordinates}
+        coordinates={coordinates}
+        setCoordinates={setCoordinates}
       />
       <Label className='form-label mt-3 mb-0'>{t('Organisation')}: {orgName}</Label>
       <Row className='my-3'>

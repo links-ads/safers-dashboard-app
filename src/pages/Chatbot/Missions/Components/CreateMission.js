@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { Input, Button, Row, Col, Label } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
+import MapInput from '../../../../components/BaseMap/MapInput';
 
 const MOCK_ORG = 'Test Organization'
 
@@ -24,17 +25,15 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       isTooltipInput={true}
       showIcons={true}
     />
-    <Input
+    <MapInput
       id="coordinates-input"
       className='mt-3'
       type='textarea'
       name="coordinates-value"
       placeholder='Map Selection'
       rows="10"
-      onChange={(e)=>{
-        setCoordinates(e.target.value);
-      }}
-      value={coordinates}
+      coordinates={coordinates}
+      setCoordinates={setCoordinates}
     />
     <div className='mt-3'>
       <Label htmlFor="target">{t('Assign To')}: </Label>

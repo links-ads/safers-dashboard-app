@@ -121,7 +121,6 @@ const PolygonMap = ({
   }
 
   const handleUpdate = (val) => {
-    console.log(val.data);
     if (val.editType === 'addFeature') {
       setFeatures(val.data);
       const tempStr = wkt.stringify(val.data[0].geometry);
@@ -135,16 +134,14 @@ const PolygonMap = ({
     }
   };
 
-  useEffect(()=> {
-    console.log(coordinates);
+  useEffect(() => {
     const tempFeatures = [{
       type: 'Feature',
       properties: {},
-      geometry: wkt.parse(coordinates)
+      geometry: coordinates ? wkt.parse(coordinates) : '',
     }]
     // tempFeatures[0].geometry.coordinates=coordinates;
     setFeatures(tempFeatures);
-    console.log(tempFeatures);
   },[coordinates])
 
   return (
