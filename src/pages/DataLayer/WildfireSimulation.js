@@ -1,5 +1,3 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
@@ -10,7 +8,6 @@ import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { withTranslation } from 'react-i18next'
 import RequiredAsterisk from '../../components/required-asterisk'
-import { DATA_LAYERS_PANELS } from './constants';
 import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
 import moment from 'moment';
@@ -30,39 +27,30 @@ const WildfireSimulationSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   mapSelection: Yup.string()
     .required('This field cannot be empty'),
-  startDate: Yup.date()
-    .required('This field cannot be empty'),
-  boundaryConditions: Yup.array().of(
-    Yup.object().shape({
-      timeOffset: Yup.number().min(0).max(48),
-      windDirection: Yup.number().min(0).max(360),
-      windSpeed: Yup.number().min(0).max(300),
-      fuelMoistureContent: Yup.number().min(0).max(100)
-    })
-  ),
+  startDate: Yup.date().required('This field cannot be empty'),
+  [/^timeOffset\/*$/]: Yup.number().min(0).max(48),
+  [/^windDirection\/*$/]: Yup.number().min(0).max(360),
+  [/^windSpeed\/*$/]: Yup.number().min(0).max(300),
+  [/^fuelMoistureContent\/*$/]: Yup.number().min(0).max(100)
 });
   
 const WildfireSimulation = ({ 
   t,
-  setActiveTab,
+  handleCancel,
   handleResetAOI,
+  setBoundingBox,
+  viewState,
+  setViewState,
 }) => {
 
   const dispatch = useDispatch();
   
   const error = useSelector(state => state.auth.error);
 
-  const [tableEntries, setTableEntries] = useState([0])
+  // for dynamic (vertical) table rows in `Boundary Conditions`
+  const [tableEntries, setTableEntries] = useState([0]);
 
-  //const defaultAoi = useSelector(state => state.user.defaultAoi);
-
-  //const handleSubmitRequest = (event) => { alert('Clicked request');};
-  //
-
-  const [viewState, setViewState] = useState(undefined);
-  const [iconLayer,] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
-  const [,setBoundingBox] = useState(undefined); // useful! can ignore in this case as we use getter from other component
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
@@ -102,13 +90,13 @@ const WildfireSimulation = ({
     dispatch(getMapRequests(shapedData));
     dispatch(setNewOnDemandState(true,true));
   }
+  const handleSubmitRequest = (values) => {
+    // must reshape data to expected API shape
+    console.log('FORM DATA', { ...values, wkt: coordinates });
+  };
 
-  const handleSubmitRequest = (event) => { alert('Clicked request'); console.log(event)};
-  
-  const handleCancel = () => { 
-    setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
-  }
 
+  // TODO: what is this for? is it shared across panels?
   const getReportsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
   }
@@ -120,42 +108,22 @@ const WildfireSimulation = ({
     }
   };
 
-  const formatWKT = (coordinates) => {
-    // format coords as WKT
-    const list = coordinates.map(xy => `${xy[0].toFixed(6)} ${xy[1].toFixed(6)}`);
-    return `POLYGON((${list.join(',\n')}))`;
-  }
-
+  // used to compute end date from start date and number of hours
   const getDateOffset = (startTime, numberHours) => {
-    // used to compute end date from start date and number of hours
-    if (!startTime || !numberHours) {
-      return undefined;
-    }
-    const endtime = moment(startTime).add(numberHours,'hours').toISOString().slice(0, 19);
-    return endtime;
-  }
+    if (!startTime || !numberHours) return;
 
-  const deleteIcon = (position) => {
-    return (
-      <div
-        onClick={() => setTableEntries(
-          tableEntries.filter(
-            entry => entry !== position
-          )
-        )}
-        style={{
-          cursor: 'pointer'
-        }}
-      >
-        <i className="bx bx-trash font-size-24 me-3 p-0 w-auto"></i>
-      </div>
-    );
+    const endTime = moment(startTime)
+      .add(numberHours, 'hours')
+      .toISOString()
+      .slice(0, 19);
+
+    return endTime;
   }
 
   return (
     <Row>
       <Col xl={12}>
-        <Row className='mb-3'>
+        <Row xl={5} className='mb-3'>
           <Col className='d-flex align-items-center'>
             <h4 className='m-0'>{t('requestMap')}</h4>
           </Col>
@@ -175,11 +143,10 @@ const WildfireSimulation = ({
               simulationTimeLimit: '',
               ignitionDateTime: null,
               simulationFireSpotting: false,
-              fuelMoistureContent0: '',
               boundaryConditions:[],
             }}
             validationSchema={WildfireSimulationSchema}
-            onSubmit={(values) => {console.log('values', values)}}
+            onSubmit={values => handleSubmitRequest(values)}
             id="wildfireSimulationForm"
           >
             {({
@@ -190,247 +157,235 @@ const WildfireSimulation = ({
               handleBlur,
               handleSubmit,
               isSubmitting,
-            }) => (
-              <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-between'>
-
-                {/* start */}
-
-                <Row style={{width: '100%',}}>
-
-                  <Col>
-
-                    <Row>
-                      {getGeneralErrors(error)}
-                    </Row>
-
-                    <Row xl={12}>
-                      <h5>{t('wildfireSimulation')}</h5>
-                    </Row>
-
-                    <Row>
-                      <FormGroup className="form-group">
-                        <Label for="dataLayerType">
-                          {t('simulationTitle')}<RequiredAsterisk />
-                        </Label>
-                        <Input 
-                          name="simulationTitle" 
-                          className={getError('simulationTitle',errors,touched)}
-                          id="simulationTitle"
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.simulationTitle}
-                          placeholder="[Type Simulation Title]"
-                        />
-                        {getError('simulationTitle', errors, touched, false)}
-                      </FormGroup>
-                    </Row>
-
-                    <Row>
-                      <FormGroup>
-                        <Label for="probabilityRange">
-                          {t('probabilityRange')}<RequiredAsterisk />&nbsp;
-                          <i 
-                            data-tip 
-                            className='bx bx-info-circle font-size-8 me-3 p-0'
-                          />
-                        </Label>
-                      </FormGroup>
-                    </Row>
-
-                    <Row>
-                      <FormGroup className='d-flex flex-nowrap align-items-center gap-3'>
-                        {PROBABILITY_RANGES.map(range => (
-                          <Label
-                            key={range}
-                            id={range}
-                            check
-                          >
-                            <Input
-                              id={range}
-                              name='probabilityRange'
-                              type="radio"
-                              onChange={handleChange}
-                              checked={values.probabilityRange === range}
-                              value={range}
-                              className='me-2'
-                            />
-                            {range}
+            }) => {
+              console.log('ERRORS: ', errors);
+              return (
+                <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-between'>
+                  <Row className='w-100'>
+                    <Col className='d-flex flex-column justify-content-between'>
+                      <Row>
+                        {getGeneralErrors(error)}
+                      </Row>
+  
+                      <Row xl={12}>
+                        <h5>{t('wildfireSimulation')}</h5>
+                      </Row>
+  
+                      <Row>
+                        <FormGroup className="form-group">
+                          <Label for="dataLayerType">
+                            {t('simulationTitle')}:<RequiredAsterisk />
                           </Label>
-                        ))}
-                      </FormGroup>
-                    </Row>
-
-                    <Row>
-                      <FormGroup className="form-group">
-                        <Label for="simulationTimeLimit">
-                          {t('simulationTimeLimit')}<RequiredAsterisk />
-                        </Label>
-                        <Input 
-                          name="simulationTimeLimit" 
-                          id="simulationTimeLimit"
-                          className={getError('simulationTimeLimit',errors,touched)}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          value={values.simulationTimeLimit}
-                          placeholder="Type Limit [hours]"
-                        />
-                        {getError('simulationTimeLimit', errors, touched, false)}
-                      </FormGroup>
-                    </Row>
-
-                    <Row>
-                      <FormGroup className="form-group">
-                        <Label for="mapSelection">
-                          {t('mapSelection')}<RequiredAsterisk />
-                        </Label>
-                        <Input
-                          id="mapSelection"
-                          name="mapSelection"
-                          type="textarea"
-                          rows="5"
-                          className={coordinates && coordinates.length>0 ? '' : getError('mapSelection',errors,touched)}
-                          onChange={(e)=>{
-                            setCoordinates(e.target.value);
-                          }}
-                          onBlur={handleBlur}
-                          value={coordinates}
-                          placeholder='Enter Well Known Text or draw a polygon on the map'
-                        />
-                        {getError('mapSelection', errors, touched, false)}
-                      </FormGroup>
-                    </Row>
-
-                
-
-                    <Row className='mb-3 w-100'>
-                      <FormGroup className="form-group">
-                        <Row>
-                          <Col>
-                            <Label for="ignitionDateTime">
-                              {t('ignitionDateTime')}<RequiredAsterisk />
+                          <Input 
+                            name="simulationTitle" 
+                            className={getError('simulationTitle',errors,touched)}
+                            id="simulationTitle"
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.simulationTitle}
+                            placeholder="[Type Simulation Title]"
+                          />
+                          {getError('simulationTitle', errors, touched, false)}
+                        </FormGroup>
+                      </Row>
+  
+                      <Row>
+                        <FormGroup className='d-flex-column'>
+                          <Row>
+                            <Label for="probabilityRange" className='d-flex align-items-center'>
+                              <i 
+                                data-tip 
+                                className='bx bx-info-circle font-size-8 p-0 me-1'
+                                style={{ cursor: 'pointer' }}
+                              />
+                              {t('probabilityRange')}:<RequiredAsterisk />
                             </Label>
-                            <Input
-                              id="ignitionDateTime"
-                              name="ignitionDateTime"
-                              type="datetime-local"
-                              className={getError('ignitionDateTime',errors,touched)}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              value={values.ignitionDateTime}
-                            />
-                          </Col>
-                          <Col>
-                            <Label for="ignitionEndTime">
-                              {t('ignitionEndTime')}<RequiredAsterisk />
-                            </Label>
-                            <Input
-                              id="ignitionDateTime"
-                              name="ignitionDateTime"
-                              type="datetime-local"
-                              onChange={handleChange}
-                              onBlur={handleBlur}
-                              // disabled
-                              value={
-                                getDateOffset(values.ignitionDateTime, values.simulationTimeLimit)
-                              }
-                            />
-                          </Col>
-                        </Row>
-                      </FormGroup>
-                    </Row>
-
-                    <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
-                      <FormGroup>
-                        <Row>
-                          <Col>
-                            <Label for="simulationFireSpotting">
-                              {t('simulationFireSpotting')}
-                            </Label>
-                          </Col>
-                          <Col>
-                            <Input
-                              id="simulationFireSpotting"
-                              name="simulationFireSpotting"
-                              type="checkbox"
-                              value={values.simulationFireSpotting}
-                            />
-                          </Col>
-                        </Row>
-                        {getError('simulationFireSpotting', errors, touched, false)}
-                      </FormGroup>
-                    </Row>
-                  </Col>
-
-                  <Col xl={7} className='mx-auto'>
-                    <Card className='map-card mb-0' style={{ height: 670 }}>
-                      <MapSection
-                        viewState={viewState}
-                        iconLayer={iconLayer}
-                        setViewState={setViewState}
-                        getReportsByArea={getReportsByArea}
-                        handleViewStateChange={handleViewStateChange}
-                        setNewWidth={setNewWidth}
-                        setNewHeight={setNewHeight}
-                        setCoordinates={setCoordinates}
-                        coordinates={coordinates}
-                        togglePolygonMap={true}
-                      />
-                    </Card>
-                  </Col>
-
-                </Row>
-                {/* end  */}
-                
-
-                <Row>
-                  <FormGroup className="form-group">
-                    <Label for="boundaryConditions">
-                      {t('boundaryConditions')}<RequiredAsterisk />
-                    </Label>
-                    <table style={{ display: 'flex' }}>
-                      <thead style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        marginRight: '1rem'
-                      }}>
-                        <tr>&nbsp;</tr>
-                        <tr>{t('timeHours')}<RequiredAsterisk /></tr>
-                        <tr>{t('windDirection')}<RequiredAsterisk /></tr>
-                        <tr>{t('windSpeed')}<RequiredAsterisk /></tr>
-                        <tr>{t('fuelMoistureContent')}<RequiredAsterisk /></tr>
-                      </thead>
-                      <tbody style={{
-                        maxwidth:'2048px',
-                        display: 'flex',
-                        overflowX: 'scroll',
-                      }}>
-                        {tableEntries.map((position, index) => {
-                          return (
-                            <tr key={position} style={{
-                              display: 'flex',
-                              flexDirection: 'column',
-                              justifyContent: 'space-between'
-                            }}>
-                              <td 
-                                style={{
-                                  display: 'flex'
-                                }}
+                          </Row>
+                          <Row className='d-flex justify-content-start flex-nowrap gap-2'>
+                            {PROBABILITY_RANGES.map(range => (
+                              <Label
+                                key={range}
+                                id={range}
+                                check
+                                className='w-auto'
                               >
-                                {position}
-                                { index ===0 ? 
-                                  <i className="font-size-18 me-3 p-0 w-auto">&nbsp;</i> : 
-                                  deleteIcon(position) }
+                                <Input
+                                  id={range}
+                                  name='probabilityRange'
+                                  type="radio"
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  checked={values.probabilityRange === range}
+                                  value={range}
+                                  className='me-2'
+                                />
+                                {range}
+                              </Label>
+                            ))}
+                          </Row>
+                        </FormGroup>
+                      </Row>
+  
+                      <Row>
+                        <FormGroup className="form-group">
+                          <Label for="simulationTimeLimit">
+                            {t('simulationTimeLimit')}:<RequiredAsterisk />
+                          </Label>
+                          <Input 
+                            name="simulationTimeLimit" 
+                            id="simulationTimeLimit"
+                            className={getError('simulationTimeLimit',errors,touched)}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.simulationTimeLimit}
+                            placeholder="Type Limit [hours]"
+                          />
+                          {getError('simulationTimeLimit', errors, touched, false)}
+                        </FormGroup>
+                      </Row>
+  
+                      <Row>
+                        <FormGroup className="form-group">
+                          <Label for="mapSelection">
+                            {t('mapSelection')}:<RequiredAsterisk />
+                          </Label>
+                          <Input
+                            id="mapSelection"
+                            name="mapSelection"
+                            type="textarea"
+                            rows="5"
+                            className={coordinates && coordinates.length>0 ? '' : getError('mapSelection',errors,touched)}
+                            onChange={(e)=>{
+                              setCoordinates(e.target.value);
+                            }}
+                            onBlur={handleBlur}
+                            value={coordinates}
+                            placeholder='Enter Well Known Text or draw a polygon on the map'
+                          />
+                          {getError('mapSelection', errors, touched, false)}
+                        </FormGroup>
+                      </Row>
+  
+                      <Row className='mb-3 w-100'>
+                        <FormGroup className="form-group">
+                          <Row>
+                            <Col>
+                              <Label for="ignitionDateTime">
+                                {t('ignitionDateTime')}:<RequiredAsterisk />
+                              </Label>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col>
+                              <Input
+                                id="ignitionDateTime"
+                                name="ignitionDateTime"
+                                type="datetime-local"
+                                className={getError('ignitionDateTime',errors,touched)}
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={values.ignitionDateTime}
+                              />
+                            </Col>
+                            <Col>
+                              <Input
+                                id="ignitionDateTime"
+                                name="ignitionDateTime"
+                                type="datetime-local"
+                                onChange={handleChange}
+                                onBlur={handleBlur}
+                                value={
+                                  getDateOffset(values.ignitionDateTime, values.simulationTimeLimit)
+                                }
+                              />
+                            </Col>
+                          </Row>
+                        </FormGroup>
+                      </Row>
+  
+                      <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
+                        <FormGroup className='d-flex flex-nowrap align-items-center w-100'>
+                          <Label 
+                            for="simulationFireSpotting" 
+                            className='mb-0 me-3'
+                          >
+                            {t('simulationFireSpotting')}:
+                          </Label>
+                          <Input
+                            id="simulationFireSpotting"
+                            name="simulationFireSpotting"
+                            type="checkbox"
+                            value={values.simulationFireSpotting}
+                            className='m-0'
+                            style={{ cursor: 'pointer' }}
+                          />
+                          {getError('simulationFireSpotting', errors, touched, false)}
+                        </FormGroup>
+                      </Row>
+                    </Col>
+  
+                    <Col xl={7} className='mx-auto'>
+                      <Card className='map-card mb-0' style={{ height: 670 }}>
+                        <MapSection
+                          viewState={viewState}
+                          setViewState={setViewState}
+                          getReportsByArea={getReportsByArea}
+                          handleViewStateChange={handleViewStateChange}
+                          setNewWidth={setNewWidth}
+                          setNewHeight={setNewHeight}
+                          setCoordinates={setCoordinates}
+                          coordinates={coordinates}
+                          togglePolygonMap={true}
+                        />
+                      </Card>
+                    </Col>
+                  </Row>
+  
+                  <Row>
+                    <FormGroup className="form-group">
+                      <Label for="boundaryConditions" className='m-0'>
+                        {t('boundaryConditions')}:<RequiredAsterisk />
+                      </Label>
+                      <table className='on-demand-table'
+                      >
+                        <thead>
+                          <tr></tr>
+                          <tr>{t('timeHours')}</tr>
+                          <tr>{t('windDirection')}</tr>
+                          <tr>{t('windSpeed')}</tr>
+                          <tr>{t('fuelMoistureContent')}</tr>
+                        </thead>
+                        <tbody>
+                          {tableEntries.map((position) => (
+                            <tr key={position}>
+                              <td>
+                                {<i 
+                                  className="bx bx-trash font-size-24 p-0 w-auto"
+                                  onClick={() => setTableEntries(
+                                    tableEntries.filter(
+                                      entry => entry !== position
+                                    )
+                                  )}
+                                  style={{ 
+                                    cursor: 'pointer', 
+                                    visibility: position === 0 ? 'hidden' : 'visible' 
+                                  }} 
+                                />}
                               </td>
                               <td>
                                 <Input
                                   name={`timeOffset${position}`} 
                                   id={`timeOffset${position}`}
                                   placeholder='[type here]'
+                                  value={position === 0 
+                                    ? 0 
+                                    : values[`timeOffset${position}`]
+                                  }
+                                  readOnly={position === 0}
                                   onChange={handleChange}
                                   onBlur={handleBlur}
                                 />
-                                {getError('boundaryConditions.timeOffset', errors, touched, false)}
+                                {getError('timeOffset', errors, touched, false)}
                               </td>
                               <td>
                                 <Input
@@ -460,58 +415,57 @@ const WildfireSimulation = ({
                                 />
                               </td>
                             </tr>
-                          )
-                        })}
-                      </tbody>
-                      <div 
-                        onClick={() => setTableEntries(
-                          [...tableEntries, tableEntries.length]
-                        )}
-                        style={{  cursor: 'pointer', alignSelf: 'center' }}
+                          ))}
+                        </tbody>
+                        <i
+                          onClick={() => setTableEntries(
+                            [...tableEntries, tableEntries.length]
+                          )}
+                          className="bx bx-plus-circle p-0 w-auto"
+                          style={{ cursor: 'pointer', alignSelf: 'center', fontSize: '2.5rem' }}
+                        />
+                      </table>
+                      {getError('boundaryConditions', errors, touched, false)}
+                    </FormGroup>
+                  </Row>
+  
+                  <Row>
+                    <Col>
+                      <Button 
+                        type="submit"
+                        disabled={isSubmitting}
+                        className='btn btn-primary'
+                        color="primary"
                       >
-                        <i className="bx bx-plus-circle font-size-24 me-3 p-0 w-auto"></i>
-                      </div>
-                    </table>
-                    {getError('boundaryConditions', errors, touched, false)}
-                  </FormGroup>
-                </Row>
-
-                <Row>
-                  <Col>
-                    <Button 
-                      type="submit"
-                      onClick={()=>submitMe({...values, wkt:coordinates})}
-                      disabled={isSubmitting}
-                      className='btn btn-primary'
-                      color="primary"
-                    >
-                      {t('request')}
-                    </Button>
-                    <Button
-                      className='btn btn-secondary'
-                      color="secondary"
-                      onClick={handleCancel}
-                    >
-                      {t('cancel')}
-                    </Button>
-                  </Col>
-                </Row>
-
-              </Form>
-            )}
+                        {t('request')}
+                      </Button>
+                      <Button
+                        className='btn btn-secondary ms-3'
+                        color="secondary"
+                        onClick={handleCancel}
+                      >
+                        {t('cancel')}
+                      </Button>
+                    </Col>
+                  </Row>
+  
+                </Form>
+              )
+            }}
           </Formik>
         </Row>
-
       </Col>
-     
     </Row>
   )
 }
 
 WildfireSimulation.PropTypes = {
   t: PropTypes.any,
-  setActiveTab: PropTypes.any,
-  handleResetAOI: PropTypes.function
+  handleCancel: PropTypes.function,
+  handleResetAOI: PropTypes.function,
+  setBoundingBox: PropTypes.function,
+  viewState: PropTypes.object,
+  setViewState: PropTypes.function,
 } 
 
 export default withTranslation(['dataLayers','common'])(WildfireSimulation);

@@ -59,7 +59,7 @@ const UpdateProfile = ({t}) => {
   useEffect(() => {
     if(user && roles.length) {
       const role = _.find(roles, { id: user.role });
-      setCurrentRole(role.name);
+      if (role) setCurrentRole(role.name);
     }  
   }, [user, roles]);
 

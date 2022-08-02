@@ -20,6 +20,9 @@ import { fetchEndpoint } from '../../helpers/apiHelper';
 //import { onDemandMapLayers } from './mock-data';
 
 //TODO: correct types
+// style tabs like designs
+// default-aoi button label broken
+// check domain/source filtering is still working
 
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
@@ -135,6 +138,10 @@ const DataLayerDashboard = () => {
       clearInterval(timer.current);
     }
   }, [isPlaying]);
+
+  const handleCancel = () => { 
+    setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
+  }
 
   const getUrls = () => Object.values(currentLayer?.urls);
 
@@ -320,16 +327,20 @@ const DataLayerDashboard = () => {
               t={t} 
               setActiveTab={setActiveTab}
               handleResetAOI={handleResetAOI}
+              handleCancel={handleCancel}
               viewState={viewState}
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.postEventMonitoring}>
-            <PostEventMonitoringForm t={t} />
+            <PostEventMonitoringForm 
+              t={t} 
+              handleCancel={handleCancel}
+            />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.wildfireSimulation}>
             <WildfireSimulation 
-              t={t} 
-              setActiveTab={setActiveTab}
+              t={t}
+              handleCancel={handleCancel}
             />
           </TabPane>
         </TabContent>

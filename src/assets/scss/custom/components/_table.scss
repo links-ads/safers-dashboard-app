@@ -34,4 +34,36 @@
   }
 }
 
+.on-demand-table {
+  display: flex;
+  align-items: space-between;
 
+  thead {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+  }
+
+  tbody {
+    max-width: 2048px;
+    display: flex;
+    overflow-x: auto;
+  }
+
+  tr {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-right: 0.5rem;
+    width: 15rem;
+  }
+
+  td {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 15rem;
+    margin-bottom: 0.25rem;
+  }
+}
