@@ -1,14 +1,17 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
-import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import RequiredAsterisk from '../../components/required-asterisk'
+import {
+  getMapRequests
+} from '../../store/appAction';
 
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -29,26 +32,39 @@ const postEventMonitoringSchema = Yup.object().shape({
 
 const PostEventMonitoring = ({ t }) => {
 
+  const dispatch = useDispatch();
+
   const error = useSelector(state => state.auth.error);
   const defaultAoi = useSelector(state => state.user.defaultAoi);
 
-  const handleSubmitRequest = (event) => { alert('Clicked request');};
-  const handleCancel = (event) => { alert('Clicked canel');}
+  const handleCancel = () => { alert('Clicked canel');}
 
   const [viewState, setViewState] = useState(undefined);
-  const [iconLayer, setIconLayer] = useState(undefined);
+  const [iconLayer, ] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
-  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState('');
-  const [togglePolygonMap, setTogglePolygonMap] = useState(false);
-  const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
+
+  const shapeFormData = (formData) => {
+    console.log('formdata', formData);
+    return({
+      title: formData.requesttitle,
+      parameters: {
+        start: `${formData.startDate}T00:00:00.000`,
+        end: `${formData.endDate}T00:00:00.000`,
+      },
+      data_types: formData.datalayertype,
+      geometry: formData.wkt,
+    });
+  };
 
   const submitMe = (formData) => {
-    console.log('formData', formData);
-    alert('clicked submit');
+    const shapedData = shapeFormData(formData);
+    console.log('shapedData', shapedData);
+    dispatch(getMapRequests(shapedData));
   }
 
   const getReportsByArea = () => {
@@ -67,11 +83,6 @@ const PostEventMonitoring = ({ t }) => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
-  const formatWKT = (coordinates) => {
-    // format coords as WKT
-    const list = coordinates.map(xy => `${xy[0].toFixed(6)} ${xy[1].toFixed(6)}`);
-    return `POLYGON((${list.join(',\n')}))`;
-  }
 
   // TODO:  hard wired for now, this will be replaced with an API call in time
   const layerTypes = [
