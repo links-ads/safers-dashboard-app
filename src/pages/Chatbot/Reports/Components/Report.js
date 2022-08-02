@@ -37,7 +37,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  date: {formatDate(card.timestamp, 'YYYY-MM-DD HH:mm')}
+                  date: {formatDate(card.timestamp)}
                 </p>
               </Col>
 
