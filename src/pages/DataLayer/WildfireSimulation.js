@@ -2,7 +2,7 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { Formik } from 'formik';
 import MapSection from './Map';
@@ -14,6 +14,9 @@ import { DATA_LAYERS_PANELS } from './constants';
 import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
 import moment from 'moment';
+import {
+  getMapRequests
+} from '../../store/appAction';
 
 const PROBABILITY_RANGES = ['50%', '75%','90%']
 
@@ -43,6 +46,9 @@ const WildfireSimulation = ({
   setActiveTab,
   handleResetAOI,
 }) => {
+
+  const dispatch = useDispatch();
+  
   const error = useSelector(state => state.auth.error);
 
   const [tableEntries, setTableEntries] = useState([0])
@@ -61,9 +67,38 @@ const WildfireSimulation = ({
   const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState('');
 
+  // The other two forms allow user to select these from a dropdown. 
+  // For this form we hard-code the list and pass along to the API
+  // when we reshape the form data for submission
+
+  const layerTypes = [
+    {id: 35006, name:'Fire Simulation'},
+    {id: 35011, name:'Max rate of spread'},
+    {id: 35010, name:'Mean rate of spread'},
+    {id: 35009, name:'Max fireline intensity'},
+    {id: 35008, name:'Mean fireline intensity'},
+    {id: 35007, name:'Fire perimeter simulation as isochrones maps'},
+  ];
+
+  const shapeFormData = (formData) => {
+    return({
+      title: formData.simulationTitle,
+      parameters: {
+        start: `${formData.startDate}T00:00:00.000`,
+        simulationTimeLimit: formData.simulationTimeLimit,
+        probabilityRange: formData.probabilityRange,
+        boundaryConditions: formData.boundaryConditions,
+      },
+      data_types: layerTypes.map(item=>item.id),
+      geometry: formData.wkt,
+    });
+  };
+
+
   const submitMe = (formData) => {
-    console.log('formData', formData);
-    alert('clicked submit');
+    const shapedData = shapeFormData(formData);
+    console.log('shapedData', shapedData);
+    dispatch(getMapRequests(shapedData));
   }
 
   const handleSubmitRequest = (event) => { alert('Clicked request'); console.log(event)};
