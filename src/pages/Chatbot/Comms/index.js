@@ -124,7 +124,15 @@ const Comms = () => {
           </Row>
         </Col>}
         {toggleCreateNewMessage && <Col xl={5}>
-          <CreateMessage coordinates={coordinates} setTogglePolygonMap={setTogglePolygonMap} setToggleCreateNewMessage={setToggleCreateNewMessage} setCoordinates={setCoordinates} />
+          <CreateMessage
+            onCancel={() => {
+              setTogglePolygonMap(false);
+              setToggleCreateNewMessage(false);
+              setCoordinates('');
+            }}
+            coordinates={coordinates}
+            setCoordinates={setCoordinates}
+          />
         </Col>}
         <Col xl={7} className='mx-auto'>
           <MapSection

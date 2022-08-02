@@ -13,7 +13,7 @@ import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 
-const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMessage, setCoordinates  }) => {
+const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
 
   const { t } = useTranslation();  
   const { orgList = [] } = useSelector(state => state.common);
@@ -87,11 +87,7 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
       <div className='mt-3'>
         <Button
           type="button"
-          onClick={()=>{
-            setTogglePolygonMap(false);
-            setToggleCreateNewMessage(false);
-            setCoordinates('');
-          }}
+          onClick={onCancel}
         >
           Cancel
         </Button>
@@ -108,8 +104,7 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
 
 CreateMessage.propTypes = {
   coordinates: PropTypes.any,
-  setTogglePolygonMap: PropTypes.func,
-  setToggleCreateNewMessage: PropTypes.func,
+  onCancel: PropTypes.func,
   setCoordinates: PropTypes.func
 }
 
