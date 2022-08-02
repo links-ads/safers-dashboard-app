@@ -22,7 +22,7 @@ export const endpoints = {
   dataLayers: {
     getAll: '/data/layers',
     metadata:'/data/layers/metadata/',
-    mapRequests:'/data/maprequests',
+    mapRequests:'/data/maprequests/',
   },
   eventAlerts: {
     getAll: '/events/',

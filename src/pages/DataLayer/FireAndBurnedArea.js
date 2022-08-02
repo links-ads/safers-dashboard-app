@@ -7,7 +7,6 @@ import { Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
-import {formatWKT} from '../../store/utility'
 import { getBoundingBox } from '../../helpers/mapHelper';
 import RequiredAsterisk from '../../components/required-asterisk'
 import { withTranslation } from 'react-i18next'
@@ -16,6 +15,7 @@ import { DATA_LAYERS_PANELS } from './constants';
 import {
   getMapRequests
 } from '../../store/appAction';
+import { formatDefaultDate } from '../../store/utility';
 
 const fireAndBurnedAreaSchema = Yup.object().shape({
   datalayertype: Yup.array()
@@ -53,9 +53,25 @@ const FireAndBurnedArea = ({
   const [coordinates, setCoordinates] = useState('');
   const [maprequest, setMapRequest] = useState({});
 
+
+  const shapeFormData = (formData) => {
+    return({
+      title: formData.requestTitle,
+      parameters: {
+        start: `${formData.startDate}T00:00:00.000`,
+        end: `${formData.endDate}T00:00:00.000`,
+        frequency: formData.frequency,
+        resolution: formData.resolution,
+      },
+      data_types: formData.dataLayerType,
+      geometry: formData.wkt,
+    });
+  };
+
   const submitMe = (formData) => {
-    console.log('formData', formData);
-    alert('clicked submit');
+    const shapedData = shapeFormData(formData);
+    console.log('shapedData', shapedData);
+    dispatch(getMapRequests(shapedData));
   }
 
   const getReportsByArea = () => {

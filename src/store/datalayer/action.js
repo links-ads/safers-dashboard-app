@@ -34,8 +34,8 @@ export const resetDataLayersResponseState = () => {
 
 // Map requests
 
-export const getMapRequests = () => async (dispatch) => {
-  const response = await api.post(endpoints.dataLayers.mapRequests);
+export const getMapRequests = (body) => async (dispatch) => {
+  const response = await api.post(endpoints.dataLayers.mapRequests, body);
   if (response.status === 200) {
     return dispatch(getMapRequestsSuccess(response.data));
   }
