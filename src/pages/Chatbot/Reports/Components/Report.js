@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Card, CardBody, CardText, CardTitle, Col, Row, Button } from 'reactstrap';
+import { Card, CardBody, CardText, CardTitle, Col, Row, Button, Badge } from 'reactstrap';
 import { formatDate } from '../../../../store/utility';
 import { useNavigate } from 'react-router-dom';
 
@@ -14,11 +14,38 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
 
   const isSelected = card.report_id === reportId
 
+  const getBadge = () => {
+    let iconStatus = '';
+    switch(card.additional_info){
+    case 'effects':
+      iconStatus = 'fa-dice';
+      break;
+    case 'people':
+      iconStatus = 'fa-users';
+      break;
+    case 'damages':
+      iconStatus = 'fa-dumpster-fire';
+      break;
+    case 'measurements':
+      iconStatus = 'fa-ruler';
+    }
+    
+    return (
+      <>
+        <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
+          <i className={`fa ${iconStatus} text-danger me-1`}></i> 
+          <span className='text-capitalize'>{card.additional_info}</span>
+        </Badge>
+      </>
+    )
+  }
+
   return (
     <Card
       onClick={() => setSelectedReport(!isSelected ? card.report_id : null)}
       className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
+        {getBadge()}
         <Row className='mt-2'>
           <Col>
             <Row>
