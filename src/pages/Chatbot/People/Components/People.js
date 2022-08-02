@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types'
-import { Card, CardBody, CardText, CardTitle, Col, Row } from 'reactstrap';
+import { Card, CardBody, CardText, CardTitle, Col, Row, Badge } from 'reactstrap';
 import { formatDate } from '../../../../store/utility';
 import { useTranslation } from 'react-i18next';
 
@@ -9,6 +9,16 @@ const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
   const { t } = useTranslation();
 
   const isSelected = card.people_id === peopleId
+
+  const getBadge = () => {    
+    return (
+      <>
+        <Badge color={card.status === 'Active' ? 'success' : 'secondary'} className='me-1 rounded-pill alert-badge py-0 px-2 pb-0 mb-0'>
+          <span className='text-capitalize'>{card.status}</span>
+        </Badge>
+      </>
+    )
+  }
 
   return (
     <Card
@@ -23,7 +33,7 @@ const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
                   <span className='card-title'>{card.username}</span>
                 </CardTitle>
                 <CardText className='card-desc'>
-                  {t('Status')}: {card.status}
+                  {t('Status')}: {getBadge()}
                 </CardText>
                 <CardText className='card-desc'>
                   {t('Activity')}: {card.activity}
@@ -32,13 +42,13 @@ const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
             </Row>
             <Row className='mt-0'>
               <Col>
-                <p className="text-muted no-wrap">
+                <p className="text-muted no-wrap text-capitalize mb-1">
                   {t('location')}: {(card.location).join(', ')}
                 </p>
               </Col>
               <Col>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>
+                  <span className='float-end alert-source-text me-2 mb-1'>
                     {t('Last Updated')}: {formatDate(card.timestamp)}
                   </span>
                 </CardText>
