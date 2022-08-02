@@ -100,19 +100,27 @@ const PolygonMap = ({
     setViewport(tempViewport);
   };
 
+  const editToggle = () => {
+    toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates('');
+  }
+
+  const clearMap = () => {
+    toggleMode(''); setFeatures([]); setCoordinates('');
+  }
+
   const renderToolbar = () => {
 
     return (<>
       <div className="" style={{ position: 'absolute', top: '50px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={() => { toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates(''); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={editToggle} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
       </div>
       <div className="" style={{ position: 'absolute', top: '90px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button onClick={() => { toggleMode(''); setFeatures([]); setCoordinates(''); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button onClick={clearMap} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
