@@ -84,7 +84,7 @@ const WildfireSimulation = ({
     return({
       title: formData.simulationTitle,
       parameters: {
-        start: `${formData.startDate}T00:00:00.000`,
+        start: `${formData.ignitionDateTime}T00:00:00.000`,
         simulationTimeLimit: formData.simulationTimeLimit,
         probabilityRange: formData.probabilityRange,
         boundaryConditions: formData.boundaryConditions,
