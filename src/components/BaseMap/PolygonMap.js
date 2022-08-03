@@ -148,7 +148,6 @@ const PolygonMap = ({
       properties: {},
       geometry: coordinates ? wkt.parse(coordinates) : '',
     }]
-    // tempFeatures[0].geometry.coordinates=coordinates;
     setFeatures(tempFeatures);
   },[coordinates])
 
@@ -191,7 +190,6 @@ const PolygonMap = ({
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
-        {/* {widgets.map((widget, index) => widget(index))} */}
         {renderTooltip(hoverInfo)}
         {renderToolbar()}
       </MapGL>

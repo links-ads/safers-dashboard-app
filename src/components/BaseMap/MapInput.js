@@ -8,7 +8,6 @@ const MapInput = (props) => {
   const [showError, setShowError] = useState(false);
 
   useEffect(() => {
-    console.log(checkWKTFormate(props.coordinates));
     setShowError(!checkWKTFormate(props.coordinates));
   }, [props.coordinates])
 
@@ -23,7 +22,7 @@ const MapInput = (props) => {
         }
         value={props.coordinates}
       />
-      <div className='error-message'>{showError && props.coordinates != '' && 'Error 003'}</div>
+      <div className='error-message'>{showError && props.coordinates != '' && 'Incorrect Format'}</div>
     </div>
     <style jsx>{`
       .polygon-edit-input textarea {
