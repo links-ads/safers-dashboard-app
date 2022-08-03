@@ -33,7 +33,7 @@ const Comms = () => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState([]);
+  const [coordinates, setCoordinates] = useState('');
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
 
@@ -124,7 +124,15 @@ const Comms = () => {
           </Row>
         </Col>}
         {toggleCreateNewMessage && <Col xl={5}>
-          <CreateMessage coordinates={coordinates} setTogglePolygonMap={setTogglePolygonMap} setToggleCreateNewMessage={setToggleCreateNewMessage} setCoordinates={setCoordinates} />
+          <CreateMessage
+            onCancel={() => {
+              setTogglePolygonMap(false);
+              setToggleCreateNewMessage(false);
+              setCoordinates('');
+            }}
+            coordinates={coordinates}
+            setCoordinates={setCoordinates}
+          />
         </Col>}
         <Col xl={7} className='mx-auto'>
           <MapSection
@@ -137,6 +145,7 @@ const Comms = () => {
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
+            coordinates={coordinates}
           />
         </Col>
       </Row>
