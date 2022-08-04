@@ -1,12 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types'
 import { Input, Button, Row, Col, Label } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
+import MapInput from '../../../../components/BaseMap/MapInput';
 
-const CreateMission = ({ t, onCancel, coordinates }) => {
+import _ from 'lodash';
+
+
+const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   const [team, setTeam] = useState();
+  const { orgList = [] } = useSelector(state => state.common);
+  const { info:user } = useSelector(state => state.user);
+  const [orgName, setorgName] = useState('');
   const [chatbotUser, setChatbotUser] = useState();
+
+  useEffect(() => {
+    if(orgList.length && user?.organization){
+      const organization = _.find(orgList, { id: user.organization });
+      setorgName(organization.name.split('-')[0])
+    }
+  }, [orgList, user]);
 
   return (<>
     <Input
@@ -22,20 +37,20 @@ const CreateMission = ({ t, onCancel, coordinates }) => {
       isTooltipInput={true}
       showIcons={true}
     />
-    <Input
+    <MapInput
       id="coordinates-input"
       className='mt-3'
       type='textarea'
       name="coordinates-value"
       placeholder='Map Selection'
       rows="10"
-      value={coordinates.map(x => {
-        return '[' + x[0] + ' , ' + x[1] + ']';
-      }).join('\n')}
+      coordinates={coordinates}
+      setCoordinates={setCoordinates}
     />
     <div className='mt-3'>
-      <Label htmlFor="target">{t('Assign To')}: </Label>
+      <Label className='fw-bold' htmlFor="target">{t('Assign To')}: </Label>
       <Row>
+        <Col><Label className='form-label mt-3 mb-0'>{t('Organisation')}: {orgName}</Label></Col>
         <Col>
           <Input
             id="team"
@@ -103,9 +118,10 @@ const CreateMission = ({ t, onCancel, coordinates }) => {
 }
 
 CreateMission.propTypes = {
-  coordinates: PropTypes.array,
+  coordinates: PropTypes.any,
   onCancel: PropTypes.func,
-  t: PropTypes.any
+  t: PropTypes.any,
+  setCoordinates: PropTypes.func
 }
 
 export default CreateMission;

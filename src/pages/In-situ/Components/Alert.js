@@ -63,7 +63,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
         enableZoom={true}
         imageCaption={
           <div className='position-fixed top-0 start-0 m-2'>
-            <h5 className='mb-1'>{formatDate(card.timestamp, 'YYYY-MM-DD HH:mm')}</h5>
+            <h5 className='mb-1'>{formatDate(card.timestamp)}</h5>
             <h5>{card.camera_id}</h5>
           </div>
         }

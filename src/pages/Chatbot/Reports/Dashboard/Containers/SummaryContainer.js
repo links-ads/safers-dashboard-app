@@ -13,7 +13,7 @@ const SummaryContainer = ({reportDetail, t}) => {
   if(!reportDetail) 
     return null;
 
-  const dateDisplay = reportDetail?.timestamp ? formatDate(reportDetail.timestamp, 'll, HH:mm') : 'Unknown';
+  const dateDisplay = reportDetail?.timestamp ? formatDate(reportDetail.timestamp) : 'Unknown';
   return (
     <>
       <Row>

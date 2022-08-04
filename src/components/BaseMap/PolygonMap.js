@@ -9,6 +9,7 @@ import {
   // EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
+import wkt from 'wkt';
 
 const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
@@ -42,7 +43,8 @@ const PolygonMap = ({
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
   mapStyle = 'mb_streets',
-  setCoordinates
+  setCoordinates,
+  coordinates
 }) => {
 
   const mapRef = useRef();
@@ -98,19 +100,27 @@ const PolygonMap = ({
     setViewport(tempViewport);
   };
 
+  const editToggle = () => {
+    toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates('');
+  }
+
+  const clearMap = () => {
+    toggleMode(''); setFeatures([]); setCoordinates('');
+  }
+
   const renderToolbar = () => {
 
     return (<>
       <div className="" style={{ position: 'absolute', top: '50px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={() => { toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates([]); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={editToggle} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
       </div>
       <div className="" style={{ position: 'absolute', top: '90px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button onClick={() => { toggleMode(''); setFeatures([]); setCoordinates([]); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button onClick={clearMap} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
@@ -119,14 +129,27 @@ const PolygonMap = ({
   }
 
   const handleUpdate = (val) => {
-    setFeatures(val.data);
     if (val.editType === 'addFeature') {
-      const polygon = val.data[0].geometry.coordinates[0];
-      console.log(polygon);
-      setCoordinates(polygon);
+      setFeatures(val.data);
+      const tempStr = wkt.stringify(val.data[0].geometry);
+      const tempStr2 = tempStr.replace(/\d+\.\d+/g, function(match) {
+        return Number(match).toFixed(6);
+      });
+      setCoordinates(tempStr2);
       toggleMode('');
+    } else {
+      setFeatures([])
     }
   };
+
+  useEffect(() => {
+    const tempFeatures = [{
+      type: 'Feature',
+      properties: {},
+      geometry: coordinates ? wkt.parse(coordinates) : '',
+    }]
+    setFeatures(tempFeatures);
+  },[coordinates])
 
   return (
     <>
@@ -167,7 +190,6 @@ const PolygonMap = ({
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
-        {/* {widgets.map((widget, index) => widget(index))} */}
         {renderTooltip(hoverInfo)}
         {renderToolbar()}
       </MapGL>

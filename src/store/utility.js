@@ -1,4 +1,5 @@
 import moment from 'moment';
+import wkt from 'wkt';
 
 export const updateObject = (oldObject, updatedProperties) => {
   return {
@@ -22,7 +23,7 @@ export const formatDefaultDate = (date, format='L') => {
   return moment(date).format(format);
 }
 
-export const formatDate = (date, format='YYYY-MM-DD hh-mm-ss') => {
+export const formatDate = (date, format='YYYY-MM-DD HH:mm:ss') => {
   return moment(date).format(format)
 }
 
@@ -63,4 +64,9 @@ export const filterNodesByProperty = (layers, params = {}) => {
       return targetPropertyValue === matchValue;
     })
   )
+}
+
+export const checkWKTFormate = (str) => {
+  const check = wkt.parse(str);
+  return !!check;
 }
