@@ -7,6 +7,7 @@ import {
 import { getAllFireAlerts, setNewAlertState, getAllEventAlerts, setNewEventState } from '../store/appAction';
 // eslint-disable-next-line no-unused-vars
 import { getAllNotifications, setNewNotificationState } from '../store/notifications/action';
+import { getAllMapRequests } from '../store/datalayer/action';
 
 const MILLISECONDS = 1000;
 const pollingHelper = (props) => {
@@ -31,6 +32,7 @@ const pollingHelper = (props) => {
     dispatch(getAllFireAlerts(alertParams));
     dispatch(getAllEventAlerts(eventParams));
     dispatch(getAllNotifications(notificationParams));
+    dispatch(getAllMapRequests());
   };
 
   useEffect(() => {

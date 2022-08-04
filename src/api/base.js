@@ -16,10 +16,11 @@ const whitelistedUrls = [
   endpoints.eventAlerts.getAll,
   endpoints.fireAlerts.getAll,
   endpoints.dataLayers.metadata,
+  endpoints.dataLayers.getAllMapRequests,
 ]
 
 axiosApi.interceptors.request.use(async(config) => {
-  if(!isWhitelisted(config.url)){
+  if(!isWhitelisted(config.url) || (isWhitelisted(config.url) && config.method==='post')){
     store.dispatch(InProgress(true, 'Please wait..'));
   }
   return config
