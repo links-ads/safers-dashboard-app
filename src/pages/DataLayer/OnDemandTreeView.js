@@ -50,10 +50,17 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
         node.children= node?.layers || node?.requests || undefined;
       }
       
-      node.text = node.category || node.name || node.id;
+      // use tree level to define main text
+      const nodeTextByLevel = [
+        `${node.key} : ${node.category}`,
+        `${node.key} : ${node.title || node.id}`,
+        `${node.key} : ${node.datatype} [${node.status}]`
+      ]
+      node.text = nodeTextByLevel[lvl];
+      console.log(`Node ${node.key} : ${node.text}`)
       node.info = 'I\'m a tooltip';
 
-      const id = node.id;
+      const id = node.id ?? node.key;
       const tooltipDisplay = tooltipInfo || node.category || node.id;
       const item =
         <>
@@ -80,7 +87,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                     {node.text}
                   </>
                   :
-                  'Leaf node'
+                  node.text
               }
               { node?.parameters ? 
                 <>
@@ -115,7 +122,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
   }
   return (
     <ListGroup>
-      {mapper(data)}
+      {mapper(data, undefined, 0)}
     </ListGroup>
   )
 }

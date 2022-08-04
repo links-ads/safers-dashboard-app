@@ -16,7 +16,7 @@ import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
-import { onDemandMapLayers } from './mock-data';
+//import { onDemandMapLayers } from './mock-data';
 
 //TODO: correct types
 
@@ -27,6 +27,7 @@ const DataLayerDashboard = () => {
 
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const onDemandMapLayers = useSelector(state=>state.dataLayer.allMapRequests);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const [viewState, setViewState] = useState(undefined);
@@ -297,10 +298,12 @@ const DataLayerDashboard = () => {
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
             <OnDemandDataLayer
-              onDemandMapLayers={filterNodesByProperty(onDemandMapLayers, {
-                source: layerSource, 
-                domain: dataDomain
-              })}
+              // TODO: Disabled for now as data not yet provided by API
+              // onDemandMapLayers={filterNodesByProperty(onDemandMapLayers, {
+              //   source: layerSource, 
+              //   domain: dataDomain
+              // })}
+              onDemandMapLayers={onDemandMapLayers}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
             />
