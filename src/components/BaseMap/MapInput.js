@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Input, Modal } from 'reactstrap';
+import { Input, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import PropTypes from 'prop-types'
 import { checkWKTFormate } from '../../store/utility';
 
@@ -7,6 +7,8 @@ const MapInput = (props) => {
 
   const [showError, setShowError] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
 
   useEffect(() => {
     setShowError(!checkWKTFormate(props.coordinates));
@@ -29,52 +31,23 @@ const MapInput = (props) => {
     <Modal
       centered
       isOpen={isOpen}
-      toggle={() => {
-        setIsOpen(!isOpen);
-      }}
+      toggle={toggle}
       id="staticBackdrop"
     >
-      <div className='p-5'>
-        Follow the standard pattern displayed in the link below.<br />
-        <a href='https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry' target='_blank' rel="noreferrer" >https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry</a>
-        <br /><br />
-        P.S: Currently the map does not support MULTIPOINT and MULTIPOLYGON.
-      </div>
+      <ModalHeader style={{borderColor: 'gray'}} toggle={toggle}>WKT Guidance</ModalHeader>
+      <ModalBody>
+        <div className='px-3 mb-3'>
+          Sample of supporting format of WKT<br/><br/>
+          <b>POINT (1 2)<br />
+          POINT (1 2 3)<br />
+          LINESTRING (100 0, 101 1)<br />
+          POLYGON ((1 2, 3 4, 0 5, 1 2))<br />
+          POLYGON ((20.3 28.6, 20.3 19.6, 8.5 19.6, 8.5 28.6, 20.3 28.6))</b><br />
+          <br /><br />
+          P.S: Currently the map does not support MULTIPOINT and MULTIPOLYGON.
+        </div>
+      </ModalBody>
     </Modal>
-    <style jsx>{`
-      .polygon-edit-input {
-        position: relative;
-      }
-      
-      .polygon-edit-input i.fa-question-circle {
-        position: absolute;
-        right: 7.5px;
-        top: 10px;
-        font-size: 20px;
-      }
-      .polygon-edit-input textarea {
-        border-radius: 0.25rem;
-        border-bottom: none;
-        resize: none;
-        padding-right: 25px;
-        padding-bottom: 25px;
-      }
-
-      .polygon-edit-input .error-message {
-        background-color: white;
-        border: 1px solid #6F7070;
-        border-top: none;
-        border-bottom: none;
-        border-right: none;
-        border-radius: 0 0 0.25rem 0.25rem;
-        height: 21px;
-        padding: 0 5px;
-        color: red;
-        position: absolute;
-        width: calc(100% - 16px);
-        bottom: 0;
-      }
-    `}</style>
   </>);
 }
 
