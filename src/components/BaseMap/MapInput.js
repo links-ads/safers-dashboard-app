@@ -42,7 +42,8 @@ const MapInput = (props) => {
           POINT (1 2 3)<br />
           LINESTRING (100 0, 101 1)<br />
           POLYGON ((1 2, 3 4, 0 5, 1 2))<br />
-          POLYGON ((20.3 28.6, 20.3 19.6, 8.5 19.6, 8.5 28.6, 20.3 28.6))</b><br />
+          POLYGON ((20.3 28.6, 20.3 19.6, 8.5 19.6, 8.5 28.6, 20.3 28.6))</b><br /><br />
+          For more info , please refer wiki link (<a href='https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry' target='_blank' rel="noreferrer" >https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry</a>)
           <br /><br />
           P.S: Currently the map does not support MULTIPOINT and MULTIPOLYGON.
         </div>
