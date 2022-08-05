@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Input } from 'reactstrap';
+import { Input, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import PropTypes from 'prop-types'
 import { checkWKTFormate } from '../../store/utility';
 
 const MapInput = (props) => {
 
   const [showError, setShowError] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const toggle = () => setIsOpen(!isOpen);
 
   useEffect(() => {
     setShowError(!checkWKTFormate(props.coordinates));
@@ -22,25 +25,30 @@ const MapInput = (props) => {
         }
         value={props.coordinates}
       />
+      <i onClick={() => setIsOpen(true)} className={`fa fa-question-circle fa-2x ${showError && props.coordinates != '' ? 'text-danger' : ''}`}></i>
       <div className='error-message'>{showError && props.coordinates != '' && 'Incorrect Format'}</div>
     </div>
-    <style jsx>{`
-      .polygon-edit-input textarea {
-        border-radius: 0.25rem 0.25rem 0px 0px;
-        border-bottom: none;
-        resize: none;
-      }
-
-      .polygon-edit-input .error-message {
-        background-color: white;
-        border: 1px solid #6F7070;
-        border-top: none;
-        border-radius: 0 0 0.25rem 0.25rem;
-        height: 21px;
-        padding: 0 5px;
-        color: red;
-      }
-    `}</style>
+    <Modal
+      centered
+      isOpen={isOpen}
+      toggle={toggle}
+      id="staticBackdrop"
+    >
+      <ModalHeader style={{borderColor: 'gray'}} toggle={toggle}>WKT Guidance</ModalHeader>
+      <ModalBody>
+        <div className='px-3 mb-3'>
+          Sample of supporting format of WKT<br/><br/>
+          <b>POINT (1 2)<br />
+          POINT (1 2 3)<br />
+          LINESTRING (100 0, 101 1)<br />
+          POLYGON ((1 2, 3 4, 0 5, 1 2))<br />
+          POLYGON ((20.3 28.6, 20.3 19.6, 8.5 19.6, 8.5 28.6, 20.3 28.6))</b><br /><br />
+          For more info , please refer wiki link (<a href='https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry' target='_blank' rel="noreferrer" >https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry</a>)
+          <br /><br />
+          P.S: Currently the map does not support MULTIPOINT and MULTIPOLYGON.
+        </div>
+      </ModalBody>
+    </Modal>
   </>);
 }
 
