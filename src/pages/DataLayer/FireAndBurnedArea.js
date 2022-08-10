@@ -13,7 +13,8 @@ import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import { DATA_LAYERS_PANELS } from './constants';
 import {
-  getMapRequests
+  getMapRequests,
+  getAllMapRequests
 } from '../../store/appAction';
 import { formatDefaultDate } from '../../store/utility';
 
@@ -72,6 +73,7 @@ const FireAndBurnedArea = ({
     const shapedData = shapeFormData(formData);
     console.log('shapedData', shapedData);
     dispatch(getMapRequests(shapedData));
+    dispatch(getAllMapRequests())
   }
 
   const getReportsByArea = () => {
@@ -299,7 +301,11 @@ const FireAndBurnedArea = ({
                   <Col>
                     <Button 
                       type="submit"
-                      onClick={()=>submitMe({...values, wkt:coordinates})}
+                      onClick={()=>{
+                        submitMe({...values, wkt:coordinates});
+                        setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
+                      }
+                      }
                       disabled={isSubmitting}
                       className='btn btn-primary'
                       color="primary"

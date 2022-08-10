@@ -95,7 +95,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
         `${node.key} : ${node.datatype_id}: ${mockleafnode.name} [${mockleafnode.status}]`
       ]
       node.text = nodeTextByLevel[lvl];
-      console.log('Node', node);
+      //console.log('Node', node);
       node.info = 'I\'m a tooltip';
 
       const id = node.id ?? node.key;

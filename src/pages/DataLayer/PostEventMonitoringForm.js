@@ -9,8 +9,10 @@ import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import RequiredAsterisk from '../../components/required-asterisk'
+import { DATA_LAYERS_PANELS } from './constants';
 import {
-  getMapRequests
+  getMapRequests,
+  getAllMapRequests
 } from '../../store/appAction';
 
 //i18n
@@ -30,7 +32,12 @@ const postEventMonitoringSchema = Yup.object().shape({
 });
 
 
-const PostEventMonitoring = ({ t }) => {
+const PostEventMonitoring = ({
+  t, 
+  setActiveTab,
+  handleResetAOI,
+  viewState,
+}) => {
 
   const dispatch = useDispatch();
 
@@ -39,7 +46,7 @@ const PostEventMonitoring = ({ t }) => {
 
   const handleCancel = () => { alert('Clicked canel');}
 
-  const [viewState, setViewState] = useState(undefined);
+  //const [viewState, setViewState] = useState(undefined);
   const [iconLayer, ] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [, setBoundingBox] = useState(undefined);
@@ -65,6 +72,7 @@ const PostEventMonitoring = ({ t }) => {
     const shapedData = shapeFormData(formData);
     console.log('shapedData', shapedData);
     dispatch(getMapRequests(shapedData));
+    dispatch(getAllMapRequests());
   }
 
   const getReportsByArea = () => {
@@ -78,10 +86,10 @@ const PostEventMonitoring = ({ t }) => {
     }
   };
 
-  const handleResetAOI = useCallback(() => {
-    setBoundingBox(undefined);
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-  }, []);
+  // const handleResetAOI = useCallback(() => {
+  //   setBoundingBox(undefined);
+  //   setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+  // }, []);
 
 
   // TODO:  hard wired for now, this will be replaced with an API call in time
@@ -244,7 +252,12 @@ const PostEventMonitoring = ({ t }) => {
                       <Col>
                         <Button 
                           type="submit"
-                          onClick={()=>submitMe({...values, wkt:coordinates})}
+                          onClick={()=>{
+                            submitMe({...values, wkt:coordinates});
+                            setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
+                          }
+                          }
+
                           disabled={isSubmitting}
                           className='btn btn-primary'
                           color="primary"
@@ -272,7 +285,7 @@ const PostEventMonitoring = ({ t }) => {
             <MapSection
               viewState={viewState}
               iconLayer={iconLayer}
-              setViewState={setViewState}
+              //setViewState={setViewState}
               getReportsByArea={getReportsByArea}
               handleViewStateChange={handleViewStateChange}
               setNewWidth={setNewWidth}
@@ -290,6 +303,9 @@ const PostEventMonitoring = ({ t }) => {
 
 PostEventMonitoring.propTypes = {
   t: PropTypes.any,
+  setActiveTab: PropTypes.function,
+  handleResetAOI: PropTypes.function,
+  viewState: PropTypes.object
 }
 
 export default withTranslation(['dataLayers','common'])(PostEventMonitoring);
