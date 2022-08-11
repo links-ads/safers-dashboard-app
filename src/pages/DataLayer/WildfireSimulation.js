@@ -11,10 +11,13 @@ import RequiredAsterisk from '../../components/required-asterisk'
 import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
 import moment from 'moment';
+<<<<<<< HEAD
 import {
   getMapRequests,
   setNewOnDemandState
 } from '../../store/appAction';
+=======
+>>>>>>> fix(frontend): Fix validation and types
 
 const TABLE_HEADERS = [
   'timeHours',
@@ -29,6 +32,7 @@ const WildfireSimulationSchema = Yup.object().shape({
   simulationTitle: Yup.string()
     .required('This field cannot be empty'),
   simulationTimeLimit: Yup.number()
+    .typeError('This field must be a number')
     .min(1, 'Simulation time limit must be between 1 and 48')
     .max(48, 'Simulation time limit must be between 1 and 48')
     .required('This field cannot be empty'),
@@ -40,18 +44,22 @@ const WildfireSimulationSchema = Yup.object().shape({
   boundaryConditions: Yup.array().of(
     Yup.object().shape({
       timeOffset: Yup.number()
+        .typeError('This field must be a number')
         .min(0, 'Time offset must be between 1 and 48 hours')
         .max(48, 'Time offset must be between 1 and 48 hours')
         .required('This field cannot be empty'),
       windDirection: Yup.number('This field must be a number')
+        .typeError('This field must be a number')
         .min(0, 'Wind direction must be between 0 and 360 degrees')
         .max(360, 'Wind direction must be between 0 and 360 degrees')
         .required('This field cannot be empty'),
       windSpeed: Yup.number('This field must be a number')
+        .typeError('This field must be a number')
         .min(0, 'Wind speed must be between 0 and 300 km/h')
         .max(300, 'Wind speed must be between 0 and 300 km/h')
         .required('This field cannot be empty'),
       fuelMoistureContent: Yup.number('This field must be a number')
+        .typeError('This field must be a number')
         .min(0, 'Fuel moisture must be between 0% and 100%')
         .max(100, 'Fuel moisture must be between 0% and 100%')
         .required('This field cannot be empty')
@@ -75,7 +83,6 @@ const WildfireSimulation = ({
   viewState,
   setViewState,
 }) => {
-
   const dispatch = useDispatch();
   
   const error = useSelector(state => state.auth.error);
@@ -101,38 +108,32 @@ const WildfireSimulation = ({
     {id: 35007, name:'Fire perimeter simulation as isochrones maps'},
   ];
 
-  const shapeFormData = (formData) => {
-    return({
-      title: formData.simulationTitle,
+
+  const handleSubmitRequest = (formData) => {
+    const boundary_conditions = Object.values(formData.boundaryConditions)
+      .reduce((acc, obj) => ([...acc, {
+        time: obj.timeOffset,
+        w_dir: obj.windDirection,
+        w_speed: obj.windSpeed,
+        moisture: obj.fuelMoistureContent
+      }]), []);
+
+    const payload = {
+      name: formData.simulationTitle,
       parameters: {
         start: `${formData.ignitionDateTime}T00:00:00.000`,
-        simulationTimeLimit: formData.simulationTimeLimit,
+        time_limit: formData.simulationTimeLimit,
         probabilityRange: formData.probabilityRange,
-        boundaryConditions: formData.boundaryConditions,
+        do_spotting: formData.simulationFireSpotting,
+        boundary_conditions,
       },
-      data_types: layerTypes.map(item=>item.id),
-      geometry: formData.wkt,
-    });
-  };
+      data_types: layerTypes.map(item => item.id),
+      geometry: formData.mapSelection,
+    }
 
-
-  const submitMe = (formData) => {
-    const shapedData = shapeFormData(formData);
-    console.log('shapedData', shapedData);
-    dispatch(getMapRequests(shapedData));
-    dispatch(setNewOnDemandState(true,true));
+    console.log('payload', payload);
+    // dispatch(getMapRequests(payload))
   }
-  const handleSubmitRequest = (values) => {
-    // const boundary_conditions = Object.values(values.boundaryConditions)
-    //   .reduce((acc, obj) => ([...acc, {
-    //     time: obj.timeOffset,
-    //     w_dir: obj.windDirection,
-    //     w_speed: obj.windSpeed,
-    //     moisture: obj.fuelMoistureContent
-    //   }]), []);
-
-    console.log('values: ', values);
-  };
 
   const getReportsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -512,15 +513,15 @@ const WildfireSimulation = ({
       </Col>
     </Row>
   )
-}
+};
 
-WildfireSimulation.PropTypes = {
+WildfireSimulation.propTypes = {
   t: PropTypes.any,
-  handleCancel: PropTypes.function,
-  handleResetAOI: PropTypes.function,
-  setBoundingBox: PropTypes.function,
+  handleCancel: PropTypes.func,
+  handleResetAOI: PropTypes.func,
+  setBoundingBox: PropTypes.func,
   viewState: PropTypes.object,
-  setViewState: PropTypes.function,
+  setViewState: PropTypes.func,
 } 
 
 export default withTranslation(['dataLayers','common'])(WildfireSimulation);
