@@ -5,7 +5,7 @@ import SelectArea from '../pages/Authentication/SelectArea';
 import MyProfile from '../pages/MyProfile';
 import FireAlerts from '../pages/FireAlerts';
 import DataLayerDashboard from '../pages/DataLayer';
-import Dashboard from '../pages/Dashboard';
+// import Dashboard from '../pages/Dashboard';
 import EventAlerts from '../pages/Events';
 import EventDashboard from '../pages/Events/Dashboard';
 import SocialMonitoring from '../pages/SocialMonitoring';
@@ -25,8 +25,7 @@ const publicRoutes = [
 ]
 
 const privateRoutes = [
-  { path: '/', component: Dashboard },
-  { path: '/dashboard', component: Dashboard },
+  { path: '/', component: FireAlerts },
   { path: '/my-profile/:operation', component: MyProfile },
   { path: '/fire-alerts', component: FireAlerts },
   { path: '/data-layer', component: DataLayerDashboard },
