@@ -81,3 +81,11 @@ const getAllMapRequestsFail = (error) => {
     payload: error
   };
 };
+
+export const setNewOnDemandState = (alertState, pageState) => {
+  return {
+    type: actionTypes.SET_NEW_ON_DEMAND_STATE,
+    isNewAlert: alertState,  // has data changed since last time?
+    isPageActive: pageState, // has user navigated to the form?
+  }
+};

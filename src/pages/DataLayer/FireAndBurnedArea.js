@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -16,7 +15,7 @@ import {
   getMapRequests,
   getAllMapRequests
 } from '../../store/appAction';
-import { formatDefaultDate } from '../../store/utility';
+//import { formatDefaultDate } from '../../store/utility';
 
 const fireAndBurnedAreaSchema = Yup.object().shape({
   datalayertype: Yup.array()
@@ -43,16 +42,16 @@ const FireAndBurnedArea = ({
   const dispatch = useDispatch();
 
   const error = useSelector(state => state.auth.error);
-  const mapRequest = useSelector(state => state.dataLayer.mapRequest);
+  //const mapRequest = useSelector(state => state.dataLayer.mapRequest);
 
-  const [iconLayer, setIconLayer] = useState(undefined);
+  //const [iconLayer, setIconLayer] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
-  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState('');
-  const [maprequest, setMapRequest] = useState({});
+  //const [maprequest, setMapRequest] = useState({});
 
 
   const shapeFormData = (formData) => {
@@ -331,7 +330,7 @@ const FireAndBurnedArea = ({
         <Card className='map-card mb-0' style={{ height: 670 }}>
           <MapSection
             viewState={viewState}
-            iconLayer={iconLayer}
+            //iconLayer={}
             getReportsByArea={getReportsByArea}
             handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}

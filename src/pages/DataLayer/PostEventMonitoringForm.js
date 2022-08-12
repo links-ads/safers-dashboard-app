@@ -1,5 +1,4 @@
-/* eslint-disable no-unused-vars */
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
@@ -7,7 +6,7 @@ import { Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
-import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox } from '../../helpers/mapHelper';
 import RequiredAsterisk from '../../components/required-asterisk'
 import { DATA_LAYERS_PANELS } from './constants';
 import {
@@ -42,7 +41,7 @@ const PostEventMonitoring = ({
   const dispatch = useDispatch();
 
   const error = useSelector(state => state.auth.error);
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  //const defaultAoi = useSelector(state => state.user.defaultAoi);
 
   const handleCancel = () => { alert('Clicked canel');}
 
@@ -85,12 +84,6 @@ const PostEventMonitoring = ({
       setCurrentZoomLevel(e.viewState.zoom);
     }
   };
-
-  // const handleResetAOI = useCallback(() => {
-  //   setBoundingBox(undefined);
-  //   setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-  // }, []);
-
 
   // TODO:  hard wired for now, this will be replaced with an API call in time
   const layerTypes = [

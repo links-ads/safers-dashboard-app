@@ -1,13 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
+//import _ from 'lodash';
 import {
   useDispatch,
   useSelector
 } from 'react-redux';
-// eslint-disable-next-line no-unused-vars
-import { getAllFireAlerts, setNewAlertState, getAllEventAlerts, setNewEventState } from '../store/appAction';
+import { 
+  getAllFireAlerts, 
+  setNewAlertState, 
+  getAllEventAlerts, 
+  setNewEventState 
+  //setNewOnDemandState
+} from '../store/appAction';
 // eslint-disable-next-line no-unused-vars
 import { getAllNotifications, setNewNotificationState } from '../store/notifications/action';
 import { getAllMapRequests } from '../store/datalayer/action';
+ 
 
 const MILLISECONDS = 1000;
 const pollingHelper = (props) => {
@@ -19,6 +26,7 @@ const pollingHelper = (props) => {
   const alertParams = useSelector(state => state.alerts.params);
   const isAlertPageActive = useSelector(state => state.alerts.isPageActive);
   const [currentAlertCount, setCurrentAlertCount] = useState(undefined);
+  //const allMapRequests = useSelector(state=> state.datalayers.allMapRequests);
 
   const allEvents = useSelector(state => state.eventAlerts.allAlerts);
   const eventParams = useSelector(state => state.eventAlerts.params);
@@ -27,6 +35,10 @@ const pollingHelper = (props) => {
   const { allNotifications, params:notificationParams } = useSelector(state => state.notifications);
   const isNotificationPageActive = useSelector(state => state.notifications.isPageActive);
   const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
+  
+  //const [lastOnDemandResponse, setLastOnDemandResponse] = useState({});
+  //const isOnDemandPageActive = useSelector(state => state.datalayers.isPageActive);
+
 
   const callAPIs = () => {
     dispatch(getAllFireAlerts(alertParams));
@@ -41,6 +53,26 @@ const pollingHelper = (props) => {
       return () => clearInterval(timer.current);
     }
   }, []);
+
+  // This is intented to watch for data coming back from the allMapRequests polling
+  // We compare the JSON coming back (deep equality in lodash) to the previous value,
+  // held in local state, and only do the dispatch if the object has changed (we're polling
+  // every few seconds and in reality status changes will happen over minutes or hours)
+  // However, any use of this useEffect causes an application hang with no errors, even if it's just
+  // the console.log
+  // useEffect(() => {
+  //   console.log('all Map Requests', allMapRequests);
+  //   if (pollingFrequency && pollingFrequency > 0) {
+  //     clearInterval(timer.current);
+  //     timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
+  //     if (!_.isEqual(lastOnDemandResponse, mapRequest)) {
+  //       if (!isOnDemandPageActive) {
+  //         dispatch(setNewOnDemandState(true, isOnDemandPageActive));
+  //       }
+  //       setLastOnDemandResponse(mapRequest); 
+  //     } 
+  //   }
+  // }, [allMapRequests]);
 
   useEffect(() => {
     if (pollingFrequency && pollingFrequency > 0) {
@@ -59,6 +91,10 @@ const pollingHelper = (props) => {
     setCurrentAlertCount(newAlertsCount);
   }, [allAlerts]);
 
+
+  // useEffect(() => {
+  // }, []);
+  
   useEffect(() => {
     var newEventsCount = allEvents.length
     if (currentEventCount && newEventsCount > currentEventCount) {
