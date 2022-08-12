@@ -26,7 +26,8 @@ const MAP_STYLE = {
 };
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
-const POLYGON_LINE_DASH = '10,2'
+const POLYGON_LINE_DASH = '10,2';
+const POINT_RADIUS = 8;
 
 
 const PolygonMap = ({
@@ -190,12 +191,14 @@ const PolygonMap = ({
               return {
                 stroke: POLYGON_LINE_COLOR,
                 fill: POLYGON_FILL_COLOR,
+                r: POINT_RADIUS,
               };
             }
             return {
               stroke: POLYGON_LINE_COLOR,
               fill: POLYGON_FILL_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
+              r: POINT_RADIUS,
             };
           }}
         />

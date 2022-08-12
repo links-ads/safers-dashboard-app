@@ -121,6 +121,19 @@ export const getGeoFeatures = (wktString) => {
       });
       break;
 
+    case 'MultiPoint':
+      tempGeoJSON.coordinates.forEach(element => {
+        tempFeatures.push({
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Point',
+            coordinates: element
+          },
+        })
+      });
+      break;
+
     case 'GeometryCollection':
       tempGeoJSON.geometries.forEach(element => {
         tempFeatures.push({
@@ -142,6 +155,6 @@ export const getGeoFeatures = (wktString) => {
 
     return tempFeatures
   } else {
-    return null;
+    return [];
   }
 }
