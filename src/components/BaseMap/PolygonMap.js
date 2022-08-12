@@ -89,11 +89,13 @@ const PolygonMap = ({
   }
 
   const toggleMode = (evt) => {
-    const tempModeId = evt === modeId ? null : evt;
-    const mode = MODES.find((m) => m.id === tempModeId);
-    const modeHandler = mode ? new mode.handler() : null;
-    setModeId(tempModeId);
-    setModeHandler(modeHandler);
+    if(evt !== modeId) {
+      const tempModeId = evt? evt : null;
+      const mode = MODES.find((m) => m.id === tempModeId);
+      const modeHandler = mode ? new mode.handler() : null;
+      setModeId(tempModeId);
+      setModeHandler(modeHandler);
+    }
   };
 
 
@@ -153,6 +155,8 @@ const PolygonMap = ({
   useEffect(() => {
     const tempFeatures = coordinates? getGeoFeatures(coordinates) : [];
     setFeatures(tempFeatures);
+    // setCoordinates(getWKTfromFeature(tempFeatures));
+    toggleMode('editing');
   },[coordinates])
 
   return (

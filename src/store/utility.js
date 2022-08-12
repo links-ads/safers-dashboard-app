@@ -73,14 +73,14 @@ export const checkWKTFormate = (str) => {
 
 export const getWKTfromFeature = (feature) => {
   var tempFeature = null, tempWKT =''; 
-  if(feature.length > 1) {
+  if(!feature || feature.length == 0){
+    tempWKT = '';
+  } else if(feature.length > 1) {
     tempFeature = {
       type: 'GeometryCollection',
       geometries: feature.map(x=> x.geometry)
     }
     tempWKT = wkt.stringify(tempFeature);
-  } else if(feature.length == 0){
-    tempWKT = '';
   } else {
     tempWKT = wkt.stringify(feature[0].geometry);
   }
