@@ -6,6 +6,7 @@ import AoiHelper from '../../helpers/aoiHelper';
 
 import logodark from '../../assets/images/background-light-logo.png'
 import logolight from '../../assets/images/background-light-logo.png'
+import { SIGNIN_REDIRECT } from '../../config';
 
 const SelectArea = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const SelectArea = () => {
   
   useEffect(() => {
     if (aoiSetSuccess) {
-      navigate('/dashboard');
+      navigate(SIGNIN_REDIRECT);
     }
   }, [aoiSetSuccess]);
 

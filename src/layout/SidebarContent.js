@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom';
+import { SIGNIN_REDIRECT } from '../config';
 
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -39,7 +40,8 @@ const SidebarContent = (props) => {
     const ul = document.getElementById('side-menu')
     const items = ul.getElementsByTagName('a')
     for (let i = 0; i < items.length; ++i) {
-      if (location.pathname == items[i].pathname) {
+      const currentURL = location.pathname == '/' ? SIGNIN_REDIRECT : location.pathname;
+      if (currentURL == items[i].pathname) {
         matchingMenuItem = items[i];
       }
       ctrlParentDropdown(false, items[i]);
