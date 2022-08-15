@@ -83,6 +83,7 @@ const getAllMapRequestsFail = (error) => {
 };
 
 export const setNewOnDemandState = (alertState, pageState) => {
+  console.log('setNewOnDemandState('+alertState+','+pageState+')');
   return {
     type: actionTypes.SET_NEW_ON_DEMAND_STATE,
     isNewAlert: alertState,  // has data changed since last time?

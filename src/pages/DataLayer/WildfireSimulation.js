@@ -15,7 +15,8 @@ import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
 import moment from 'moment';
 import {
-  getMapRequests
+  getMapRequests,
+  setNewOnDemandState
 } from '../../store/appAction';
 
 const PROBABILITY_RANGES = ['50%', '75%','90%']
@@ -99,6 +100,7 @@ const WildfireSimulation = ({
     const shapedData = shapeFormData(formData);
     console.log('shapedData', shapedData);
     dispatch(getMapRequests(shapedData));
+    dispatch(setNewOnDemandState(true,true));
   }
 
   const handleSubmitRequest = (event) => { alert('Clicked request'); console.log(event)};

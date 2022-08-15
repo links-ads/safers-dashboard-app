@@ -1,3 +1,4 @@
+/* eslint-disable no-debugger */
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FlyToInterpolator } from 'deck.gl';
@@ -11,7 +12,7 @@ import OnDemandDataLayer from './OnDemandDataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
 import PostEventMonitoringForm from './PostEventMonitoringForm'
 import WildfireSimulation from './WildfireSimulation'
-import { getAllDataLayers } from '../../store/appAction';
+import { getAllDataLayers, setNewOnDemandState } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
@@ -55,8 +56,13 @@ const DataLayerDashboard = () => {
         fetchEndpoint('/data/layers/sources'), 
         fetchEndpoint('/data/layers/domains')
       ])
-      setSelectOptions({ sourceOptions, domainOptions })
+      setSelectOptions({ sourceOptions, domainOptions });
     })()
+  }, [])
+
+  useEffect(()=>{
+    console.log('set demand state to true');
+    dispatch(setNewOnDemandState(true,true));
   }, [])
 
   useEffect(() => {
@@ -74,6 +80,7 @@ const DataLayerDashboard = () => {
     const dateRangeParams = dateRange 
       ? { start: dateRange[0], end: dateRange[1] } 
       : {};
+    dispatch(setNewOnDemandState(true,true));
     dispatch(getAllDataLayers(
       {
         order: sortByDate,

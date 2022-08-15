@@ -11,7 +11,8 @@ import RequiredAsterisk from '../../components/required-asterisk'
 import { DATA_LAYERS_PANELS } from './constants';
 import {
   getMapRequests,
-  getAllMapRequests
+  getAllMapRequests,
+  setNewOnDemandState
 } from '../../store/appAction';
 
 //i18n
@@ -72,6 +73,7 @@ const PostEventMonitoring = ({
     console.log('shapedData', shapedData);
     dispatch(getMapRequests(shapedData));
     dispatch(getAllMapRequests());
+    dispatch(setNewOnDemandState(true,true));
   }
 
   const getReportsByArea = () => {

@@ -13,7 +13,8 @@ import 'react-rangeslider/lib/index.css'
 import { DATA_LAYERS_PANELS } from './constants';
 import {
   getMapRequests,
-  getAllMapRequests
+  getAllMapRequests,
+  setNewOnDemandState
 } from '../../store/appAction';
 //import { formatDefaultDate } from '../../store/utility';
 
@@ -72,6 +73,7 @@ const FireAndBurnedArea = ({
     const shapedData = shapeFormData(formData);
     console.log('shapedData', shapedData);
     dispatch(getMapRequests(shapedData));
+    dispatch(setNewOnDemandState(true,true));
     dispatch(getAllMapRequests())
   }
 
