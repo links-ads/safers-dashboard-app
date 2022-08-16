@@ -106,8 +106,6 @@ const PolygonMap = ({
 
   const editToggle = () => {
     toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon'); 
-    // setFeatures([]); 
-    // setCoordinates('');
   }
 
   const clearMap = () => {
@@ -156,7 +154,6 @@ const PolygonMap = ({
   useEffect(() => {
     const tempFeatures = coordinates? getGeoFeatures(coordinates) : [];
     setFeatures(tempFeatures);
-    // setCoordinates(getWKTfromFeature(tempFeatures));
     toggleMode('editing');
   },[coordinates])
 
