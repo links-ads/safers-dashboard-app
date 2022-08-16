@@ -17,12 +17,8 @@ import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
-//import { onDemandMapLayers } from './mock-data';
 
-//TODO: correct types
-// style tabs like designs
-// default-aoi button label broken
-// check domain/source filtering is still working
+// TODO: check domain/source filtering is still working!!!
 
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
@@ -48,7 +44,6 @@ const DataLayerDashboard = () => {
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
-
 
   const { sourceOptions, domainOptions } = selectOptions;
 
@@ -139,7 +134,7 @@ const DataLayerDashboard = () => {
     }
   }, [isPlaying]);
 
-  const handleCancel = () => { 
+  const backToOnDemandPanel = () => { 
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
   }
 
@@ -254,7 +249,7 @@ const DataLayerDashboard = () => {
     bitmapLayer,
     viewState,
     handleResetAOI,
-  }
+  };
 
   return(
     <div className='page-content'>
@@ -324,23 +319,23 @@ const DataLayerDashboard = () => {
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.fireAndBurnedAreas}>
             <FireAndBurnedArea 
-              t={t} 
-              setActiveTab={setActiveTab}
+              t={t}
               handleResetAOI={handleResetAOI}
-              handleCancel={handleCancel}
-              viewState={viewState}
+              backToOnDemandPanel={backToOnDemandPanel}
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.postEventMonitoring}>
             <PostEventMonitoringForm 
               t={t} 
-              handleCancel={handleCancel}
+              handleResetAOI={handleResetAOI}
+              backToOnDemandPanel={backToOnDemandPanel}
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.wildfireSimulation}>
             <WildfireSimulation 
               t={t}
-              handleCancel={handleCancel}
+              handleResetAOI={handleResetAOI}
+              backToOnDemandPanel={backToOnDemandPanel}
             />
           </TabPane>
         </TabContent>

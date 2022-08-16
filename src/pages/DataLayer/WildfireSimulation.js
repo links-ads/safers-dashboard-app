@@ -8,23 +8,19 @@ import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { withTranslation } from 'react-i18next'
 import RequiredAsterisk from '../../components/required-asterisk'
-import 'react-rangeslider/lib/index.css'
-import { getBoundingBox } from '../../helpers/mapHelper';
-import moment from 'moment';
-<<<<<<< HEAD
 import {
   getMapRequests,
-  setNewOnDemandState
+  getAllMapRequests
 } from '../../store/appAction';
-=======
->>>>>>> fix(frontend): Fix validation and types
+import 'react-rangeslider/lib/index.css'
+import moment from 'moment';
 
 const TABLE_HEADERS = [
   'timeHours',
   'windDirection',
   'windSpeed',
-  'fuelMoistureContent',
-]
+  'fuelMoistureContent'
+];
 
 const PROBABILITY_RANGES = ['50%', '75%','90%'];
 
@@ -77,11 +73,8 @@ const renderDynamicError = errorMessage => (
   
 const WildfireSimulation = ({ 
   t,
-  handleCancel,
   handleResetAOI,
-  setBoundingBox,
-  viewState,
-  setViewState,
+  backToOnDemandPanel,
 }) => {
   const dispatch = useDispatch();
   
@@ -90,26 +83,19 @@ const WildfireSimulation = ({
   // to manage number of dynamic (vertical) table rows in `Boundary Conditions`
   const [tableEntries, setTableEntries] = useState([0]);
 
-  const [midPoint, setMidPoint] = useState([]);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
-
   // The other two forms allow user to select these from a dropdown. 
   // For this form we hard-code the list and pass along to the API
   // when we reshape the form data for submission
-
   const layerTypes = [
-    {id: 35006, name:'Fire Simulation'},
-    {id: 35011, name:'Max rate of spread'},
-    {id: 35010, name:'Mean rate of spread'},
-    {id: 35009, name:'Max fireline intensity'},
-    {id: 35008, name:'Mean fireline intensity'},
-    {id: 35007, name:'Fire perimeter simulation as isochrones maps'},
+    {id: '35006', name:'Fire Simulation'},
+    {id: '35011', name:'Max rate of spread'},
+    {id: '35010', name:'Mean rate of spread'},
+    {id: '35009', name:'Max fireline intensity'},
+    {id: '35008', name:'Mean fireline intensity'},
+    {id: '35007', name:'Fire perimeter simulation as isochrones maps'},
   ];
 
-
-  const handleSubmitRequest = (formData) => {
+  const onSubmit = (formData) => {
     const boundary_conditions = Object.values(formData.boundaryConditions)
       .reduce((acc, obj) => ([...acc, {
         time: obj.timeOffset,
@@ -119,6 +105,8 @@ const WildfireSimulation = ({
       }]), []);
 
     const payload = {
+      data_types: layerTypes.map(item => item.id),
+      geometry: formData.mapSelection,
       name: formData.simulationTitle,
       parameters: {
         start: `${formData.ignitionDateTime}T00:00:00.000`,
@@ -126,25 +114,13 @@ const WildfireSimulation = ({
         probabilityRange: formData.probabilityRange,
         do_spotting: formData.simulationFireSpotting,
         boundary_conditions,
-      },
-      data_types: layerTypes.map(item => item.id),
-      geometry: formData.mapSelection,
+      }
     }
 
-    console.log('payload', payload);
-    // dispatch(getMapRequests(payload))
+    dispatch(getMapRequests(payload));
+    dispatch(getAllMapRequests());
+    backToOnDemandPanel();
   }
-
-  const getReportsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
-  }
-
-  const handleViewStateChange = (e) => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
-    }
-  };
 
   // used to compute end date from start date and number of hours
   const getDateOffset = (startTime, numberHours) => {
@@ -184,7 +160,7 @@ const WildfireSimulation = ({
               boundaryConditions: [],
             }}
             validationSchema={WildfireSimulationSchema}
-            onSubmit={handleSubmitRequest}
+            onSubmit={onSubmit}
             id="wildfireSimulationForm"
           >
             {({
@@ -368,12 +344,6 @@ const WildfireSimulation = ({
                   <Col xl={7} className='mx-auto'>
                     <Card className='map-card mb-0' style={{ height: 670 }}>
                       <MapSection
-                        viewState={viewState}
-                        setViewState={setViewState}
-                        getReportsByArea={getReportsByArea}
-                        handleViewStateChange={handleViewStateChange}
-                        setNewWidth={setNewWidth}
-                        setNewHeight={setNewHeight}
                         setCoordinates={value => {
                           setFieldValue('mapSelection', value)
                         }}
@@ -485,7 +455,6 @@ const WildfireSimulation = ({
                     </table>
                   </FormGroup>
                 </Row>
-
                 <Row>
                   <Col>
                     <Button 
@@ -499,13 +468,12 @@ const WildfireSimulation = ({
                     <Button
                       className='btn btn-secondary ms-3'
                       color="secondary"
-                      onClick={handleCancel}
+                      onClick={backToOnDemandPanel}
                     >
                       {t('cancel')}
                     </Button>
                   </Col>
                 </Row>
-
               </Form>
             )}
           </Formik>
@@ -517,11 +485,8 @@ const WildfireSimulation = ({
 
 WildfireSimulation.propTypes = {
   t: PropTypes.any,
-  handleCancel: PropTypes.func,
   handleResetAOI: PropTypes.func,
-  setBoundingBox: PropTypes.func,
-  viewState: PropTypes.object,
-  setViewState: PropTypes.func,
+  backToOnDemandPanel: PropTypes.func,
 } 
 
 export default withTranslation(['dataLayers','common'])(WildfireSimulation);

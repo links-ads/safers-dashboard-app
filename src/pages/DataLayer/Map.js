@@ -22,7 +22,7 @@ const MapSection = ({
       index={index}
       getInfoByArea={getReportsByArea}
     />
-  )
+  );
 
   return (
     <Card 

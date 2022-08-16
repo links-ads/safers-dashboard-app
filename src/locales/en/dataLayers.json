@@ -4,7 +4,7 @@
   "aoiLocation": "AOI Location",
   "layerType": "Layer type",
   "fireAndBurnedAreas": "Fire and Burned Areas",
-  "datalayertype": "Layer type",
+  "dataLayerType": "Layer type",
   "requestTitle": "Request Title",
   "mapSelection": "Map selection",
   "startDate": "Start Date",
@@ -15,7 +15,7 @@
   "frequencyInstructions": "Integers only, ≥1",
   "resolution": "Spatial Resolution [m]",
   "resolutionInstructions": "Range 10-60 m, default 10m",
-  "posteventmonitoring": "Post-Event monitoring",
+  "postEventMonitoring": "Post-Event monitoring",
   "default-aoi": "Default AOI",
   "wildfireSimulation": "Wildfire Simulation",
   "simulationTitle": "Simulation Title",
@@ -28,5 +28,5 @@
   "windDirection": "Wind Direction [°]",
   "windSpeed": "Wind Speed [km/h]",
   "fuelMoistureContent": "Fuel Moisture Content [%]",
-  "selectlayertypes": "Select Data Layer Type(s)"
+  "selectLayerTypes": "Select Data Layer Type(s)"
 }
