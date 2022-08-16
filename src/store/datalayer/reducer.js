@@ -7,6 +7,9 @@ const initialState = {
   error: false,
   success: null,
   mapRequest: {},
+  allMapRequests: [],
+  isPageActive: false, // form is open
+  isNewAlert: false // data has changed
 };
 
 const dataLayerReducer = (state = initialState, action) => {

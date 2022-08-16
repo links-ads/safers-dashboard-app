@@ -29,7 +29,7 @@ const pollingHelper = (props) => {
   const [currentAlertCount, setCurrentAlertCount] = useState(undefined);
   
   const allMapRequests = useSelector(state=> state?.dataLayer?.allMapRequests)
-  console.log('allMapRequests', allMapRequests);
+  //console.log('allMapRequests', allMapRequests);
 
   const allEvents = useSelector(state => state.eventAlerts.allAlerts);
   const eventParams = useSelector(state => state.eventAlerts.params);
@@ -40,6 +40,7 @@ const pollingHelper = (props) => {
   const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
   
   const [lastOnDemandResponse, setLastOnDemandResponse] = useState({});
+  
   const isOnDemandPageActive = useSelector(state => state?.dataLayer?.isPageActive);
 
 
@@ -64,15 +65,18 @@ const pollingHelper = (props) => {
   // However, any use of this useEffect causes an application hang with no errors, even if it's just
   // the console.log
   useEffect(() => {
-    console.log('all Map Requests', allMapRequests);
+    //console.log('all Map Requests', allMapRequests);
     if (pollingFrequency && pollingFrequency > 0) {
       clearInterval(timer.current);
       timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
+      console.log('lastOnDemandResponse', lastOnDemandResponse);
+      console.log('allMapRequests', allMapRequests);
       if (!_.isEqual(lastOnDemandResponse, allMapRequests)) {
+        console.log('isEqual',_.isEqual(lastOnDemandResponse, allMapRequests));
         console.log('isOnDemandPageActive', isOnDemandPageActive )
-        if (!isOnDemandPageActive) {
-          dispatch(setNewOnDemandState(true, true));
-        }
+        //if (!isOnDemandPageActive) {
+        dispatch(setNewOnDemandState(true, isOnDemandPageActive));
+        //}
         setLastOnDemandResponse(allMapRequests); 
       } else {
         console.log('Object is unchanged');
@@ -96,10 +100,6 @@ const pollingHelper = (props) => {
     }
     setCurrentAlertCount(newAlertsCount);
   }, [allAlerts]);
-
-
-  // useEffect(() => {
-  // }, []);
   
   useEffect(() => {
     var newEventsCount = allEvents.length

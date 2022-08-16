@@ -18,6 +18,8 @@ import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 //import { onDemandMapLayers } from './mock-data';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css'
 
 //TODO: correct types
 
@@ -30,6 +32,8 @@ const DataLayerDashboard = () => {
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
   const onDemandMapLayers = useSelector(state=>state.dataLayer.allMapRequests);
   const dateRange = useSelector(state => state.common.dateRange);
+  const isPageActive = useSelector(state => state?.dataLayer?.isPageActive);
+  const isNewDataAvailable = useSelector(state => state?.dataLayer?.isNewAlert)
 
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -61,9 +65,10 @@ const DataLayerDashboard = () => {
   }, [])
 
   useEffect(()=>{
-    console.log('set demand state to true');
-    dispatch(setNewOnDemandState(true,true));
-  }, [])
+    //
+    console.log('isPageActive now ',isPageActive);
+    toastr.success('An update has been received. Please refresh the list.', '', { preventDuplicates: true, });
+  }, [isNewDataAvailable])
 
   useEffect(() => {
     setBoundingBox(
@@ -80,7 +85,6 @@ const DataLayerDashboard = () => {
     const dateRangeParams = dateRange 
       ? { start: dateRange[0], end: dateRange[1] } 
       : {};
-    dispatch(setNewOnDemandState(true,true));
     dispatch(getAllDataLayers(
       {
         order: sortByDate,
@@ -260,10 +264,22 @@ const DataLayerDashboard = () => {
         <Row>
           <Col xl={5} className='mb-3'>
             <Row className='d-flex align-items-baseline'>
-              <Col xl={4}>
+              <Col xl={2}>
                 <p className='align-self-baseline alert-title'>
                   {t('Data Layers')}
                 </p>
+              </Col>
+              <Col xl={2}>
+                <button
+                  type="button"
+                  className="btn float-end mt-1 py-0 px-1"
+                  aria-label='refresh-events'
+                  onClick={() => {
+                    dispatch(setNewOnDemandState(true,true));
+                  }}
+                >
+                  <i className="mdi mdi-sync"></i>
+                </button>
               </Col>
               <Col xl={8}>
                 <Nav className='d-flex flex-nowrap' pills fill>
