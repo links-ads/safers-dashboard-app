@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FlyToInterpolator } from 'deck.gl';
@@ -58,8 +57,7 @@ const DataLayerDashboard = () => {
     })()
   }, [])
 
-  useEffect(()=>{
-    console.log('set demand state to true');
+  useEffect(() => {
     dispatch(setNewOnDemandState(true,true));
   }, [])
 

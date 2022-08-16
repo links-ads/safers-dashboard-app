@@ -59,7 +59,6 @@ const getMapRequestsFail = (error) => {
 // get All Map Requests (GET)
 
 export const getAllMapRequests = () => async (dispatch) => {
-  console.log('getAllMapRequests');
   const response = await api.get(endpoints.dataLayers.getAllMapRequests);
   if (response.status === 200) {
     return dispatch(getAllMapRequestsSuccess(response.data));
@@ -83,7 +82,6 @@ const getAllMapRequestsFail = (error) => {
 };
 
 export const setNewOnDemandState = (alertState, pageState) => {
-  console.log('setNewOnDemandState('+alertState+','+pageState+')');
   return {
     type: actionTypes.SET_NEW_ON_DEMAND_STATE,
     isNewAlert: alertState,  // has data changed since last time?

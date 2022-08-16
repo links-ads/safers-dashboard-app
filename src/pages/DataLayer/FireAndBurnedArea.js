@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
 import React from 'react';
->>>>>>> fix(frontend): Finish forms
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
@@ -15,13 +11,8 @@ import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import {
   getMapRequests,
-  getAllMapRequests,
-  setNewOnDemandState
+  getAllMapRequests
 } from '../../store/appAction';
-<<<<<<< HEAD
-//import { formatDefaultDate } from '../../store/utility';
-=======
->>>>>>> fix(frontend): Finish forms
 
 const fireAndBurnedAreaSchema = Yup.object().shape({
   dataLayerType: Yup.array()
@@ -51,20 +42,6 @@ const FireAndBurnedArea = ({
 }) => {
   const dispatch = useDispatch();
   const error = useSelector(state => state.auth.error);
-<<<<<<< HEAD
-  //const mapRequest = useSelector(state => state.dataLayer.mapRequest);
-
-  //const [iconLayer, setIconLayer] = useState(undefined);
-  const [midPoint, setMidPoint] = useState([]);
-  const [, setBoundingBox] = useState(undefined);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState('');
-  //const [maprequest, setMapRequest] = useState({});
-
-=======
->>>>>>> fix(frontend): Finish forms
 
   const onSubmit = (formData) => {
     const payload = {
@@ -79,15 +56,7 @@ const FireAndBurnedArea = ({
       },
     }
 
-<<<<<<< HEAD
-  const submitMe = (formData) => {
-    const shapedData = shapeFormData(formData);
-    console.log('shapedData', shapedData);
-    dispatch(getMapRequests(shapedData));
-    dispatch(setNewOnDemandState(true,true));
-=======
     dispatch(getMapRequests(payload));
->>>>>>> fix(frontend): Finish forms
     dispatch(getAllMapRequests())
     backToOnDemandPanel()
   }
@@ -356,24 +325,6 @@ const FireAndBurnedArea = ({
           </Formik>
         </Row>
       </Col>
-<<<<<<< HEAD
-      <Col xl={7} className='mx-auto'>
-        <Card className='map-card mb-0' style={{ height: 670 }}>
-          <MapSection
-            viewState={viewState}
-            //iconLayer={}
-            getReportsByArea={getReportsByArea}
-            handleViewStateChange={handleViewStateChange}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
-            setCoordinates={setCoordinates}
-            coordinates={coordinates}
-            togglePolygonMap={true}
-          />
-        </Card>
-      </Col>
-=======
->>>>>>> fix(frontend): Finish forms
     </Row>
   );
 }

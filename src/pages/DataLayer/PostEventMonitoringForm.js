@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import React, { useState } from 'react';
-=======
 import React from 'react';
->>>>>>> fix(frontend): Finish forms
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
@@ -10,15 +6,10 @@ import { Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
-<<<<<<< HEAD
-import { getBoundingBox } from '../../helpers/mapHelper';
-=======
->>>>>>> fix(frontend): Finish forms
 import RequiredAsterisk from '../../components/required-asterisk'
 import {
   getMapRequests,
-  getAllMapRequests,
-  setNewOnDemandState
+  getAllMapRequests
 } from '../../store/appAction';
 
 import { withTranslation } from 'react-i18next'
@@ -43,10 +34,6 @@ const PostEventMonitoring = ({
 }) => {
   const dispatch = useDispatch();
   const error = useSelector(state => state.auth.error);
-<<<<<<< HEAD
-  //const defaultAoi = useSelector(state => state.user.defaultAoi);
-=======
->>>>>>> fix(frontend): Finish forms
 
   const onSubmit = (formData) => {
     const payload = {
@@ -61,28 +48,10 @@ const PostEventMonitoring = ({
     
     dispatch(getMapRequests(payload));
     dispatch(getAllMapRequests());
-<<<<<<< HEAD
-    dispatch(setNewOnDemandState(true,true));
-  }
-
-  const getReportsByArea = () => {
-    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
-  }
-
-  const handleViewStateChange = (e) => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
-    }
-  };
-
-  // TODO:  hard wired for now, this will be replaced with an API call in time
-=======
     backToOnDemandPanel();
   }
 
   // hardcoded for now, this will be replaced with an API call in time
->>>>>>> fix(frontend): Finish forms
   const layerTypes = [
     {id: '37006', name: 'Generate vegetation recovery map'},
     {id: '37005', name: 'Generate historical severity map (dNBR)'},
