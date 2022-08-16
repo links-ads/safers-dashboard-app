@@ -3,13 +3,13 @@ import React, { useEffect, useRef, useState } from 'react';
 import MapGL, { FullscreenControl, NavigationControl, MapContext } from 'react-map-gl';
 import { MapView } from '@deck.gl/core';
 import { MAPBOX_TOKEN } from '../../config';
+import { getGeoFeatures, getWKTfromFeature } from '../../store/utility';
 import {
   Editor,
   DrawPolygonMode,
-  // EditingMode,
+  EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
-import wkt from 'wkt';
 
 const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
@@ -26,7 +26,8 @@ const MAP_STYLE = {
 };
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
-const POLYGON_LINE_DASH = '10,2'
+const POLYGON_LINE_DASH = '10,2';
+const POINT_RADIUS = 8;
 
 
 const PolygonMap = ({
@@ -53,14 +54,15 @@ const PolygonMap = ({
   ];
 
   const MODES = [
+    { id: 'editing', text: 'Edit Feature', handler: EditingMode },
     { id: 'drawPolygon', text: 'Draw Polygon', handler: DrawPolygonMode },
-    // { id: 'editing', text: 'Edit Feature', handler: EditingMode },
   ];
 
   const [viewport, setViewport] = useState(initialViewState);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
   const [features, setFeatures] = useState([]);
+  const [selectedFeatureData, setSelectedFeatureData] = useState(null);
 
   useEffect(() => {
     window.addEventListener('resize', getMapSize);
@@ -88,11 +90,13 @@ const PolygonMap = ({
   }
 
   const toggleMode = (evt) => {
-    const tempModeId = evt === modeId ? null : evt;
-    const mode = MODES.find((m) => m.id === tempModeId);
-    const modeHandler = mode ? new mode.handler() : null;
-    setModeId(tempModeId);
-    setModeHandler(modeHandler);
+    if(evt !== modeId) {
+      const tempModeId = evt? evt : null;
+      const mode = MODES.find((m) => m.id === tempModeId);
+      const modeHandler = mode ? new mode.handler() : null;
+      setModeId(tempModeId);
+      setModeHandler(modeHandler);
+    }
   };
 
 
@@ -101,11 +105,19 @@ const PolygonMap = ({
   };
 
   const editToggle = () => {
-    toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates('');
+    toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon'); 
   }
 
   const clearMap = () => {
-    toggleMode(''); setFeatures([]); setCoordinates('');
+    if(selectedFeatureData.selectedFeature) {
+      const tempFeatures = [...features];
+      tempFeatures.splice(selectedFeatureData.selectedFeatureIndex, 1);
+      setFeatures(tempFeatures);
+      setCoordinates(getWKTfromFeature(tempFeatures));
+    } else {
+      setFeatures([]);
+      setCoordinates('');
+    }
   }
 
   const renderToolbar = () => {
@@ -113,7 +125,7 @@ const PolygonMap = ({
     return (<>
       <div className="" style={{ position: 'absolute', top: '50px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={editToggle} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}} onClick={editToggle} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
@@ -131,24 +143,18 @@ const PolygonMap = ({
   const handleUpdate = (val) => {
     if (val.editType === 'addFeature') {
       setFeatures(val.data);
-      const tempStr = wkt.stringify(val.data[0].geometry);
-      const tempStr2 = tempStr.replace(/\d+\.\d+/g, function(match) {
-        return Number(match).toFixed(6);
-      });
-      setCoordinates(tempStr2);
-      toggleMode('');
-    } else {
-      setFeatures([])
-    }
+      setCoordinates(getWKTfromFeature(val.data));
+      toggleMode('editing');
+    } else if (val.editType === 'movePosition') {
+      setFeatures(val.data);
+      setCoordinates(getWKTfromFeature(val.data));
+    } 
   };
 
   useEffect(() => {
-    const tempFeatures = [{
-      type: 'Feature',
-      properties: {},
-      geometry: coordinates ? wkt.parse(coordinates) : '',
-    }]
+    const tempFeatures = coordinates? getGeoFeatures(coordinates) : [];
     setFeatures(tempFeatures);
+    toggleMode('editing');
   },[coordinates])
 
   return (
@@ -174,17 +180,22 @@ const PolygonMap = ({
           mode={modeHandler}
           features={features}
           onUpdate={handleUpdate}
+          onSelect={selected => {
+            setSelectedFeatureData(selected);
+          }}
           featureStyle={(data) => {
             if (data.state === RENDER_STATE.SELECTED) {
               return {
                 stroke: POLYGON_LINE_COLOR,
                 fill: POLYGON_FILL_COLOR,
+                r: POINT_RADIUS,
               };
             }
             return {
               stroke: POLYGON_LINE_COLOR,
               fill: POLYGON_FILL_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
+              r: POINT_RADIUS,
             };
           }}
         />

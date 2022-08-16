@@ -32,20 +32,26 @@ const MapInput = (props) => {
       centered
       isOpen={isOpen}
       toggle={toggle}
+      size="lg"
       id="staticBackdrop"
     >
       <ModalHeader style={{borderColor: 'gray'}} toggle={toggle}>WKT Guidance</ModalHeader>
       <ModalBody>
         <div className='px-3 mb-3'>
-          Sample of supporting format of WKT<br/><br/>
-          <b>POINT (1 2)<br />
-          POINT (1 2 3)<br />
-          LINESTRING (100 0, 101 1)<br />
-          POLYGON ((1 2, 3 4, 0 5, 1 2))<br />
-          POLYGON ((20.3 28.6, 20.3 19.6, 8.5 19.6, 8.5 28.6, 20.3 28.6))</b><br /><br />
+          Sample of supporting format of WKT
+          <div className='my-3 fw-bold'>
+            POINT (30 10)<br/>
+            LINESTRING (30 10, 10 30, 40 40)<br/>
+            POLYGON ((30 10, 40 40, 20 40, 10 20, 30 10))<br/>
+            POLYGON ((35 10, 45 45, 15 40, 10 20, 35 10), (20 30, 35 35, 30 20, 20 30))<br/>
+            MULTIPOINT ((10 40), (40 30), (20 20), (30 10))<br/>
+            MULTIPOINT (10 40, 40 30, 20 20, 30 10)<br/>
+            MULTILINESTRING ((10 10, 20 20, 10 40), (40 40, 30 30, 40 20, 30 10))<br/>
+            MULTIPOLYGON (((30 20, 45 40, 10 40, 30 20)), ((15 5, 40 10, 10 20, 5 10, 15 5)))<br/>
+            MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))<br/>
+            GEOMETRYCOLLECTION (POINT (40 10), LINESTRING (10 10, 20 20, 10 40), POLYGON ((40 40, 20 45, 45 30, 40 40)))
+          </div>
           For more info , please refer wiki link (<a href='https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry' target='_blank' rel="noreferrer" >https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry</a>)
-          <br /><br />
-          P.S: Currently the map does not support MULTIPOINT and MULTIPOLYGON.
         </div>
       </ModalBody>
     </Modal>
