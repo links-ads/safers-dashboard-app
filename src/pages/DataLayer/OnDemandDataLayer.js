@@ -20,11 +20,11 @@ import SimpleBar from 'simplebar-react';
 import MOCKDATA from './mockdata';
 
 const SLIDER_SPEED = 800;
-const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
+const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels, search }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dateRange = useSelector(state => state.common.dateRange)
   //const dataLayers = useSelector(state => state.dataLayer.dataLayers);
-  const dataLayers = MOCKDATA;
+  const [dataLayers, setDataLayers] = useState(MOCKDATA);
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -350,6 +350,9 @@ const OnDemandDataLayer = ({ t, setActiveTab, dataLayerPanels }) => {
                     name="searchEvent"
                     placeholder="Search by relation to an event"
                     autoComplete="on"
+                    onChange={({ target: { value }}) => search(
+                      value, MOCKDATA, setDataLayers
+                    )}
                   />
                 </InputGroup>
               </Col>
@@ -392,6 +395,7 @@ OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
   setActiveTab: PropTypes.func,
   dataLayerPanels: PropTypes.object,
+  search: PropTypes.func
 }
 
 export default withTranslation(['common'])(OnDemandDataLayer);

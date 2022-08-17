@@ -15,6 +15,17 @@ const dataLayerPanels = {
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(dataLayerPanels.DATA_LAYER);
+
+  const search = (value, data, callback) => {
+    if (!value) callback(data);
+  
+    const searchResult = data.filter(
+      layer => layer.category.toLowerCase().includes(value.toLowerCase())
+    );
+  
+    callback(searchResult);
+  };
+
   return(
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
@@ -48,13 +59,14 @@ const DataLayerDashboard = () => {
         </Row>
         <TabContent activeTab={activeTab}>
           <TabPane tabId={dataLayerPanels.DATA_LAYER}>
-            <DataLayer t={t} />
+            <DataLayer t={t} search={search} />
           </TabPane>
           <TabPane tabId={dataLayerPanels.ON_DEMAND_DATA_LAYER}>
             <OnDemandDataLayer
               t={t}
               setActiveTab={setActiveTab} 
-              dataLayerPanels={dataLayerPanels}  
+              dataLayerPanels={dataLayerPanels}
+              search={search}
             />
           </TabPane>
           <TabPane tabId={dataLayerPanels.FIRE_AND_BURNED_AREA}>
