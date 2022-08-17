@@ -12,7 +12,7 @@ const MILLISECONDS = 1000;
 const pollingHelper = (props) => {
   const dispatch = useDispatch();
   const timer = useRef(null)
-  const config = useSelector(state => state.common.config);
+  const {config, dateRange} = useSelector(state => state.common);
   const pollingFrequency = config ? config.polling_frequency : undefined;
   const allAlerts = useSelector(state => state.alerts.allAlerts);
   const alertParams = useSelector(state => state.alerts.params);
@@ -27,10 +27,19 @@ const pollingHelper = (props) => {
   const isNotificationPageActive = useSelector(state => state.notifications.isPageActive);
   const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
 
+  let dateRangeParams = {};
+
+  if(dateRange) {
+    delete alertParams.default_date;
+    delete eventParams.default_date;
+    delete notificationParams.default_date;
+    dateRangeParams = { start_date: dateRange[0], end_date: dateRange[1] }
+  }
+
   const callAPIs = () => {
-    dispatch(getAllFireAlerts(alertParams));
-    dispatch(getAllEventAlerts(eventParams));
-    dispatch(getAllNotifications(notificationParams));
+    dispatch(getAllFireAlerts({...alertParams, ...dateRangeParams}));
+    dispatch(getAllEventAlerts({...eventParams, ...dateRangeParams}));
+    dispatch(getAllNotifications({...notificationParams, ...dateRangeParams}));
   };
 
   useEffect(() => {
