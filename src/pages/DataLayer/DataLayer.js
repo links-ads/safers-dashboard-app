@@ -319,7 +319,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
                 <Input
                   id="searchEvent"
                   name="searchEvent"
-                  placeholder="Search by relation to an event"
+                  placeholder="Search by keyword"
                   autoComplete="on"
                   onChange={({target: {value}}) => searchDataLayers(
                     value, globalDataLayers, setDataLayers
