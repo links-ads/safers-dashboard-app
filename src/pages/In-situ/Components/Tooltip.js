@@ -7,33 +7,41 @@ import {
 import { Popup } from 'react-map-gl';
 import { formatDate } from '../../../store/utility';
 
-const Tooltip = ({object, coordinate }) => {
-
+const Tooltip = ({ object = {}, coordinate }) => {
+  const { id, description, location, direction, last_update } = object.properties;
   return (
     <Popup
       longitude={coordinate[0]}
       latitude={coordinate[1]}
-      offsetTop={15}
+      offsetLeft={15}
       dynamicPosition={true}
-      anchor='top-left'
+      anchor='left'
       style={{ borderRadius: '10px' }}
     >
-
       <div className='my-2 mx-4 map-tooltip'>
         <Row className='mb-2'>
-          <Col md={11} className='text-white ms-auto'>
-            <p className='mb-1'>Camera Number: {object.id} </p>
-            <p className='mb-1'>Camara Location: Long. {object.location.longitude}, Lat. {object.location.latitude}</p>
-            <p className='mb-1'>Camara Direction: {object.direction}&#176;</p>
-            <p className='mb-1'>Last Uploaded feed: {object.last_update ? formatDate(object.last_update) : '-'}</p>
+          <Col md={2} className='d-flex g-0 text-white'>
+            <b>Data:</b>
+          </Col>
+          <Col md={10} className='text-white ms-auto'>
+            <p className='mb-1'>Camera Number: {id}</p>
+            <p className='mb-1'>
+              Camera Location: Lon. {location.longitude}, 
+              Lat. {location.latitude}
+            </p>
+            <p className='mb-1'>Camera Direction: {direction}&#176;</p>
+            <p className='mb-1'>
+              Last Uploaded feed: 
+              {last_update ? formatDate(last_update) : '-'}
+            </p>
           </Col>
         </Row>
         <Row>
-          <Col md={1} className='d-flex g-0 text-white'>
+          <Col md={2} className='d-flex g-0 text-white'>
             <b>Info:</b>
           </Col>
-          <Col md={11}>
-            {object.description}
+          <Col md={10}>
+            {description}
           </Col>
         </Row>
       </div>
