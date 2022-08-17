@@ -1,4 +1,5 @@
 import moment from 'moment';
+import wkt from 'wkt';
 
 export const updateObject = (oldObject, updatedProperties) => {
   return {
@@ -7,8 +8,8 @@ export const updateObject = (oldObject, updatedProperties) => {
   };
 };
 export const formatNumber = (number) => {
-  if(number>1000) 
-    return Math.floor(parseInt(number/1000)) + 'K'
+  if (number > 1000)
+    return Math.floor(parseInt(number / 1000)) + 'K'
   return number
 }
 
@@ -18,11 +19,11 @@ export const getDefaultDateRange = () => {
   return [from, to];
 }
 
-export const formatDefaultDate = (date, format='L') => {
+export const formatDefaultDate = (date, format = 'L') => {
   return moment(date).format(format);
 }
 
-export const formatDate = (date, format='ll') => {
+export const formatDate = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
   return moment(date).format(format)
 }
 
@@ -37,7 +38,7 @@ export const getPropertyValue = (searchObject = {}, targetProperty) => {
       if (nestedTargetProperty) return nestedTargetProperty;
 
       const childrenTargetProperty = getPropertyValue(
-        children[i], 
+        children[i],
         targetProperty
       );
       if (childrenTargetProperty) return childrenTargetProperty;
@@ -54,7 +55,7 @@ export const filterNodesByProperty = (layers, params = {}) => {
   //if all filters are inactive, return all layers
   if (paramsEntries.every(([key]) => !params[key])) return layers;
 
-  return layers?.filter((parent) => 
+  return layers?.filter((parent) =>
     paramsEntries.every(([targetProperty, matchValue]) => {
       //if some filters are inactive, ignore, as that means they're not applied
       if (!matchValue) return true;
@@ -65,9 +66,95 @@ export const filterNodesByProperty = (layers, params = {}) => {
   )
 }
 
-// TODO: needs tests
-//format coords as Well-Known Text
-export const formatWKT = (coordinates) => {
-  const list = coordinates.map(([x, y]) => `${x.toFixed(6)} ${y.toFixed(6)}`);
-  return `POLYGON((${list.join(',\n')}))`;
+export const checkWKTFormate = (str) => {
+  const check = wkt.parse(str);
+  return !!check;
+}
+
+export const getWKTfromFeature = (feature) => {
+  var tempFeature = null, tempWKT =''; 
+  if(!feature || feature.length == 0){
+    tempWKT = '';
+  } else if(feature.length > 1) {
+    tempFeature = {
+      type: 'GeometryCollection',
+      geometries: feature.map(x=> x.geometry)
+    }
+    tempWKT = wkt.stringify(tempFeature);
+  } else {
+    tempWKT = wkt.stringify(feature[0].geometry);
+  }
+  const newWKT = tempWKT.replace(/\d+\.\d+/g, function(match) {
+    return Number(match).toFixed(6);
+  });
+  return newWKT;
+}
+
+export const getGeoFeatures = (wktString) => {
+  const tempGeoJSON = wkt.parse(wktString);
+  const tempFeatures = [];
+  if (tempGeoJSON) {
+    switch (tempGeoJSON.type) {
+    case 'MultiLineString':
+      tempGeoJSON.coordinates.forEach(element => {
+        tempFeatures.push({
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'LineString',
+            coordinates: element
+          },
+        })
+      });
+      break;
+
+    case 'MultiPolygon':
+      tempGeoJSON.coordinates.forEach(element => {
+        tempFeatures.push({
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Polygon',
+            coordinates: element
+          },
+        })
+      });
+      break;
+
+    case 'MultiPoint':
+      tempGeoJSON.coordinates.forEach(element => {
+        tempFeatures.push({
+          type: 'Feature',
+          properties: {},
+          geometry: {
+            type: 'Point',
+            coordinates: element
+          },
+        })
+      });
+      break;
+
+    case 'GeometryCollection':
+      tempGeoJSON.geometries.forEach(element => {
+        tempFeatures.push({
+          type: 'Feature',
+          properties: {},
+          geometry: element,
+        })
+      });
+      break;
+
+    default:
+      tempFeatures.push({
+        type: 'Feature',
+        properties: {},
+        geometry: wktString ? wkt.parse(wktString) : '',
+      })
+      break;
+    }
+
+    return tempFeatures
+  } else {
+    return [];
+  }
 }

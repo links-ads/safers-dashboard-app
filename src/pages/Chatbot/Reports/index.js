@@ -26,6 +26,7 @@ const Reports = () => {
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
   const [reportSource, setReportSource] = useState(undefined);
+  const [category, setCategory] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
@@ -45,13 +46,14 @@ const Reports = () => {
     const reportParams = {
       order: sortOrder ? sortOrder : '-date',
       source: reportSource ? reportSource : undefined,
+      category: category ? category : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
     dispatch(getAllReports(reportParams));
-  }, [dateRange, reportSource, sortOrder, boundingBox])
+  }, [dateRange, reportSource, sortOrder, boundingBox, category])
 
   useEffect(() => {
     if (success?.detail) {
@@ -102,6 +104,7 @@ const Reports = () => {
             sortOrder={sortOrder}
             setReportSource={setReportSource}
             setSortOrder={setSortOrder}
+            setCategory={setCategory}
           />
           <Row>
             <Col xl={12} className='px-3'>

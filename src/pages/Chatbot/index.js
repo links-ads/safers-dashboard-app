@@ -1,17 +1,27 @@
-import React , { useState } from 'react';
+import React , { useEffect, useState } from 'react';
 import { Nav, NavItem, NavLink, TabContent, TabPane, Container } from 'reactstrap';
-
+import { useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
-
+import People from './People';
 import Reports from './Reports';
 import Comms from './Comms';
 import Missions from './Missions';
 
 const Chatbot = () => {
 
-  const [customActiveTab, setCustomActiveTab] = useState('4');
+  const [customActiveTab, setCustomActiveTab] = useState('1');
   const { t } = useTranslation();
+  const location = useLocation();
+
+  useEffect(()=>{
+    const queryString = location.search;
+    const params = new URLSearchParams(queryString);
+    const tab = params.get('tab');
+    if (tab && customActiveTab !== tab) {
+      setCustomActiveTab(tab)
+    }
+  },[])
 
   const toggleCustom = (tab) => {
     if (customActiveTab !== tab) {
@@ -26,7 +36,7 @@ const Chatbot = () => {
 
     switch(tab) {
     case '1': 
-      return null;
+      return <People />;
     case '2':
       return <Comms />;
     case '3':
@@ -100,7 +110,8 @@ const Chatbot = () => {
             </NavItem>
           </Nav>
           <TabContent activeTab={customActiveTab} className="p-3">
-            <TabPane tabId="1">
+            <TabPane tabId="1">              
+              {renderContent('1')}
             </TabPane>
             <TabPane tabId="2">
               {renderContent('2')}

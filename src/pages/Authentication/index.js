@@ -8,6 +8,7 @@ import ForgotPassword from './ForgotPassword';
 import PreLoader from '../../components/PreLoader';
 import ResetPassword from './ResetPassword';
 import { isRemembered, setAoiSuccess, getAllAreas } from '../../store/appAction';
+import { SIGNIN_REDIRECT } from '../../config';
 import _ from 'lodash';
 
 import logodark from '../../assets/images/background-light-logo.png'
@@ -47,7 +48,7 @@ const Authentication = () => {
 
   useEffect(() => {
     if (defaultAoi) {
-      navigate('/dashboard');
+      navigate(SIGNIN_REDIRECT);
     } 
   }, [defaultAoi]);
 

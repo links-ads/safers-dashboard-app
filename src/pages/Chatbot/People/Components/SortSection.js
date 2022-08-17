@@ -2,13 +2,12 @@ import React from 'react';
 import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { CATEGORIES } from './filters';
 
 //i18N
 import { withTranslation } from 'react-i18next';
 
-const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder, setCategory }) => {
-  const { allReports } = useSelector(state => state.reports);
+const SortSection = ({ t, status, activity, sortOrder, setStatus, setActivity, setSortOrder }) => {
+  const { allPeople } = useSelector(state => state.people);
 
   return (
     <>
@@ -16,12 +15,12 @@ const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder
       <Row className=''>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {allReports.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {allPeople.length}</span>
         </Col>
       </Row>
       <hr />
       <Row className='my-2'>
-        <Col xl={4} className='mx-0 my-1'>
+        <Col className='mx-0 my-1'>
           <Input
             id="sortByDate"
             className="btn-sm sort-select-input"
@@ -37,33 +36,34 @@ const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder
         </Col>
         <Col xl={4} className='my-1'>
           <Input
-            id="alertSource"
+            id="status"
             className="btn-sm sort-select-input"
-            name="alertSource"
-            placeholder="Source"
+            name="status"
+            placeholder="Status"
             type="select"
-            onChange={(e) => setReportSource(e.target.value)}
-            value={reportSource}
-            data-testid='reportAlertSource'
+            onChange={(e) => setStatus(e.target.value)}
+            value={status}
+            data-testid='status'
           >
-            <option value={''} >Source : All</option>
+            <option value={''} >--Status--</option>
+            <option value="Active" >{t('Active').toUpperCase()}</option>
+            <option value="Inactive" >{t('Inactive').toUpperCase()}</option>
           </Input>
         </Col>
         <Col xl={4} className='my-1'>
           <Input
-            id="category"
-            className="btn-sm sort-select-input text-capitalize"
-            name="category"
-            placeholder="Source"
+            id="activity"
+            className="btn-sm sort-select-input"
+            name="activity"
+            placeholder="Activity"
             type="select"
-            onChange={(e) => setCategory(e.target.value)}
-            value={reportSource}
-            data-testid='reportAlertSource'
+            onChange={(e) => setActivity(e.target.value)}
+            value={activity}
+            data-testid='activity'
           >
-            <option value={''} >{t('Category')}</option>
-            {
-              CATEGORIES.map((cat, index) => (<option key={index} value={cat}>{cat}</option>))
-            }
+            <option value={''} >--Activity--</option>
+            <option value="Online" >{t('Online').toUpperCase()}</option>
+            <option value="Offline" >{t('Offline').toUpperCase()}</option>
           </Input>
         </Col>
       </Row>
@@ -72,11 +72,12 @@ const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder
 }
 
 SortSection.propTypes = {
-  reportSource: PropTypes.any,
+  status: PropTypes.any,
+  activity: PropTypes.any,
   sortOrder: PropTypes.string,
-  setReportSource: PropTypes.func,
+  setStatus: PropTypes.func,
+  setActivity: PropTypes.func,
   setSortOrder: PropTypes.func,
-  setCategory: PropTypes.func,
   t: PropTypes.func
 }
 

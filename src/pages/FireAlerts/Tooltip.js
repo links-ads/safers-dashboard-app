@@ -13,6 +13,7 @@ import {
   Row
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
+import { formatDate } from '../../store/utility';
 
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -59,7 +60,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
           <Col >
             <CardTitle className="mt-0 card-title">{object.title}</CardTitle>
             <CardSubtitle className="font-14 text-muted">
-              {object.timestamp}
+              {formatDate(object.timestamp)}
             </CardSubtitle>
           </Col>
         </Row>

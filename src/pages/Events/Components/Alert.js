@@ -68,7 +68,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
             <Row className='mt-2'>
               <Col>
                 <small className="text-muted card-desc date no-wrap">
-                  Start: {formatDate(card.start_date)} - End: {card.end_date ? formatDate(card.end_date) : '-'}
+                  Start: {formatDate(card.start_date)} - End: {card.end_date ? formatDate(card.end_date, 'YYYY-MM-DD') : '-'}
                 </small>
               </Col>
               <Col md={2}>

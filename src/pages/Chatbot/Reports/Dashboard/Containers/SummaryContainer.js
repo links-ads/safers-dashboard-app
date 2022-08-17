@@ -13,12 +13,12 @@ const SummaryContainer = ({reportDetail, t}) => {
   if(!reportDetail) 
     return null;
 
-  const dateDisplay = reportDetail?.timestamp ? formatDate(reportDetail.timestamp, 'll, HH:mm') : 'Unknown';
+  const dateDisplay = reportDetail?.timestamp ? formatDate(reportDetail.timestamp) : 'Unknown';
   return (
     <>
       <Row>
         <Col className=''>
-          <Button onClick={() => navigate(-1)} className='back-arrow px-0 py-0'>
+          <Button onClick={() => navigate('/chatbot?tab=4')} className='back-arrow px-0 py-0'>
             <i className='bx bx-arrow-back fa-2x'></i>
           </Button>
         </Col> 
