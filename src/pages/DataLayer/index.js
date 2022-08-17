@@ -16,11 +16,13 @@ const DataLayerDashboard = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(dataLayerPanels.DATA_LAYER);
 
-  const search = (value, data, callback) => {
+  const searchDataLayers = (value, data, callback) => {
     if (!value) callback(data);
   
+    // 'text' property is used as it appears in 
+    // both Operational and On-Demand layers
     const searchResult = data.filter(
-      layer => layer.category.toLowerCase().includes(value.toLowerCase())
+      layer => layer.text.toLowerCase().includes(value.toLowerCase())
     );
   
     callback(searchResult);
@@ -59,14 +61,14 @@ const DataLayerDashboard = () => {
         </Row>
         <TabContent activeTab={activeTab}>
           <TabPane tabId={dataLayerPanels.DATA_LAYER}>
-            <DataLayer t={t} search={search} />
+            <DataLayer t={t} searchDataLayers={searchDataLayers} />
           </TabPane>
           <TabPane tabId={dataLayerPanels.ON_DEMAND_DATA_LAYER}>
             <OnDemandDataLayer
               t={t}
               setActiveTab={setActiveTab} 
               dataLayerPanels={dataLayerPanels}
-              search={search}
+              searchDataLayers={searchDataLayers}
             />
           </TabPane>
           <TabPane tabId={dataLayerPanels.FIRE_AND_BURNED_AREA}>
