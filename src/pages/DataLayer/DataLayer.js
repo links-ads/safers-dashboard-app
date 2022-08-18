@@ -20,10 +20,12 @@ import { getBoundingBox } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
 
 const SLIDER_SPEED = 800;
-const DataLayer = ({ t }) => {
+const DataLayer = ({ t, searchDataLayers }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const dataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const globalDataLayers = useSelector(state => state.dataLayer.dataLayers);
   const dateRange = useSelector(state => state.common.dateRange);
+
+  const [dataLayers, setDataLayers] = useState([]);
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -51,7 +53,15 @@ const DataLayer = ({ t }) => {
       ])
       setSelectOptions({ sourceOptions, domainOptions })
     })()
-  }, [])
+  }, []);
+
+  // places global data layers into local state, 
+  // so that search filtering can then be applied
+  useEffect(() => {
+    if (!dataLayers?.length) {
+      setDataLayers(globalDataLayers);
+    }
+  }, [globalDataLayers]);
 
   useEffect(() => {
     setBoundingBox(
@@ -309,8 +319,11 @@ const DataLayer = ({ t }) => {
                 <Input
                   id="searchEvent"
                   name="searchEvent"
-                  placeholder="Search by relation to an event"
+                  placeholder="Search by keyword"
                   autoComplete="on"
+                  onChange={({target: {value}}) => searchDataLayers(
+                    value, globalDataLayers, setDataLayers
+                  )}
                 />
               </InputGroup>
             </Col>
@@ -351,8 +364,9 @@ const DataLayer = ({ t }) => {
   );
 }
 
-
-
-export default withTranslation(['common'])(DataLayer);DataLayer.propTypes = {
+DataLayer.propTypes = {
   t: PropTypes.any,
+  searchDataLayers: PropTypes.func
 }
+
+export default withTranslation(['common'])(DataLayer);
