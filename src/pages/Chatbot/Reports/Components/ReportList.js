@@ -66,14 +66,15 @@ const ReportList = ({
     <>
       <Row>
         {
-          filteredData.map((report) =>
+          filteredData.map((report) => (
             <Report
               key={report.report_id}
               card={report}
               reportId={reportId}
               setSelectedReport={setSelectedReport}
               setFavorite={setFavoriteFlag}
-            />)
+            />
+          ))
         }
       </Row>
       <Row className='text-center'>
