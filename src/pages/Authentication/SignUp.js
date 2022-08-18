@@ -23,6 +23,7 @@ const SignUp = () => {
   const docTNM = BASE_URL +  endpoints.common.termsNconditions;
   const docPP = BASE_URL +  endpoints.common.privacyPolicy;
   const signUpOauth2Success = useSelector(state => state.auth.signUpOauth2Success);
+  const config = useSelector(state => state.common.config);
 
   if(error){
     window.scrollTo(0, 0);
@@ -109,177 +110,176 @@ const SignUp = () => {
           {getGeneralErrors(error)}
           <div className="container auth-form">
             <Form onSubmit={handleSubmit} noValidate>
-              <Row form>
-                <Col>
-                  <FormGroup className="form-group">
-                    <Label for="userEmail">
-                      EMAIL ADDRESS:
-                    </Label>
-                    <Input
-                      id="userEmail"
-                      className={getError('email', errors, touched)}
-                      name="email"
-                      placeholder="email address"
-                      type="email"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.email}
-                      autoComplete="on"
-                      data-testid="sign-up-email"
-                    />
-                    {getError('email', errors, touched, false)}
-                  </FormGroup>
-                </Col>
-                <Col>
-                  <FormGroup className="form-group">
-                    <Label for="first_name">
-                      FIRST NAME:
-                    </Label>
-                    <Input
-                      id="first_name"
-                      className={getError('first_name', errors, touched)}
-                      name="first_name"
-                      data-testid="sign-up-firstName"
-                      placeholder="first name"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.first_name}
-                      autoComplete="on"
-                    />
-                    {getError('first_name', errors, touched, false)}
-                  </FormGroup>
-                </Col>
-                <Col >
-                  <FormGroup className="form-group">
-                    <Label for="last_name">
-                      LAST NAME:
-                    </Label>
-                    <Input
-                      id="last_name"
-                      className={getError('last_name', errors, touched)}
-                      name="last_name"
-                      placeholder="last name"
-                      type="text"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.last_name}
-                      autoComplete="on"
-                      data-testid="sign-up-lastName"
-                    />
-                    {getError('last_name', errors, touched, false)}
-                  </FormGroup>
-                </Col>
-                <Col>
-                  <FormGroup className="form-group">
-                    <Label for="userPassword">
-                      PASSWORD:
-                    </Label>
-                    <InputGroup>
+              {config.allow_signup ?
+                <><Row form>
+                  <Col>
+                    <FormGroup className="form-group">
+                      <Label for="userEmail">
+                        EMAIL ADDRESS:
+                      </Label>
                       <Input
-                        id="userPassword"
-                        className={getError('password', errors, touched)}
-                        name="password"
-                        placeholder="password"
-                        type={passwordToggle ? 'text' : 'password'}
+                        id="userEmail"
+                        className={getError('email', errors, touched)}
+                        name="email"
+                        placeholder="email address"
+                        type="email"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.password}
+                        value={values.email}
                         autoComplete="on"
-                        data-testid="sign-up-password"
-                      />
-                      <InputGroupText>
-                        <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
-                      </InputGroupText>
-                    </InputGroup>
-                    {values.password && (<>{passwordHelper(values.password)}</>)}
-                    {getError('password', errors, touched, false)}
-                  </FormGroup>
-                </Col>
-                <Col >
-                  <FormGroup className="form-group">
-                    <Label for="role">
-                      SELECT YOUR ROLE:
-                    </Label>
-                    <Input
-                      id="role"
-                      className={getError('role', errors, touched)}
-                      name="role"
-                      placeholder="select role"
-                      type="select"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.role}
-                      data-testid="sign-up-role"
-                    >
-                      <option value={''} >--Select your role--</option>
-                      {roles.map((role) => { return (<option key={role.name} value={role.name}>{role.name}</option>) })}
-                    </Input>
-                    {getError('role', errors, touched, false)}
-                  </FormGroup>
-                </Col>
-                <Col className={values.role == citizenId ? 'd-none': ''}>
-                  <FormGroup className="form-group">
-                    <Label for="organization">
-                      SELECT YOUR ORGANISATION:
-                    </Label>
-                    <Input
-                      id="organization"
-                      className={getError('organization', errors, touched)}
-                      name="organization"
-                      placeholder="select organisation"
-                      type="select"
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      value={values.organization}
-                      data-testid="sign-up-org"
-                    >
-                      <option value={''} >--Select organisation--</option>
-                      {orgList.map((org) => { return (<option key={org.name} value={org.name}>{org.name}</option>) })}
-                    </Input>
-                    {getError('organization', errors, touched, false)}
-                  </FormGroup>
-                </Col>
-                <Col>
-                  <FormGroup className="form-group" check>
-                    <Input
-                      id="accepted_terms"
-                      name="accepted_terms"
-                      type="checkbox"
-                      value={values.accepted_terms}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      data-testid="sign-up-agreeTermsConditions"
-                    />
-                    <Label
-                      check
-                      for="accepted_terms"
-                    >
-                      <p className='mb-0'>
-                        <span>I agree to the </span>
-                        <a href={docTNM} rel="noreferrer" target="_blank">
-                          Terms of User
-                        </a>
-                        <span> and </span>
-                        <a href={docPP} rel="noreferrer" target="_blank">
-                          Privacy Policy
-                        </a>
-                        <span>, to the processing of my personal data, and to receive emails</span>
-                      </p>
-                    </Label>
-                    {getError('accepted_terms', errors, touched, false)}
-                  </FormGroup>
-                </Col>
-              </Row>
-              <div className='center-sign-in'>
-                <Button
-                  className="my-4 sign-in-btn"
-                  color="primary"
-                  disabled={isSubmitting}
-                  data-testid="signUpButton">
-                  SIGN UP
-                </Button>
-              </div>
+                        data-testid="sign-up-email" />
+                      {getError('email', errors, touched, false)}
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup className="form-group">
+                      <Label for="first_name">
+                        FIRST NAME:
+                      </Label>
+                      <Input
+                        id="first_name"
+                        className={getError('first_name', errors, touched)}
+                        name="first_name"
+                        data-testid="sign-up-firstName"
+                        placeholder="first name"
+                        type="text"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.first_name}
+                        autoComplete="on" />
+                      {getError('first_name', errors, touched, false)}
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup className="form-group">
+                      <Label for="last_name">
+                        LAST NAME:
+                      </Label>
+                      <Input
+                        id="last_name"
+                        className={getError('last_name', errors, touched)}
+                        name="last_name"
+                        placeholder="last name"
+                        type="text"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.last_name}
+                        autoComplete="on"
+                        data-testid="sign-up-lastName" />
+                      {getError('last_name', errors, touched, false)}
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup className="form-group">
+                      <Label for="userPassword">
+                        PASSWORD:
+                      </Label>
+                      <InputGroup>
+                        <Input
+                          id="userPassword"
+                          className={getError('password', errors, touched)}
+                          name="password"
+                          placeholder="password"
+                          type={passwordToggle ? 'text' : 'password'}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          value={values.password}
+                          autoComplete="on"
+                          data-testid="sign-up-password" />
+                        <InputGroupText>
+                          <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle); } } className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
+                        </InputGroupText>
+                      </InputGroup>
+                      {values.password && (<>{passwordHelper(values.password)}</>)}
+                      {getError('password', errors, touched, false)}
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup className="form-group">
+                      <Label for="role">
+                        SELECT YOUR ROLE:
+                      </Label>
+                      <Input
+                        id="role"
+                        className={getError('role', errors, touched)}
+                        name="role"
+                        placeholder="select role"
+                        type="select"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.role}
+                        data-testid="sign-up-role"
+                      >
+                        <option value={''}>--Select your role--</option>
+                        {roles.map((role) => { return (<option key={role.name} value={role.name}>{role.name}</option>); })}
+                      </Input>
+                      {getError('role', errors, touched, false)}
+                    </FormGroup>
+                  </Col>
+                  <Col className={values.role == citizenId ? 'd-none' : ''}>
+                    <FormGroup className="form-group">
+                      <Label for="organization">
+                        SELECT YOUR ORGANISATION:
+                      </Label>
+                      <Input
+                        id="organization"
+                        className={getError('organization', errors, touched)}
+                        name="organization"
+                        placeholder="select organisation"
+                        type="select"
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        value={values.organization}
+                        data-testid="sign-up-org"
+                      >
+                        <option value={''}>--Select organisation--</option>
+                        {orgList.map((org) => { return (<option key={org.name} value={org.name}>{org.name}</option>); })}
+                      </Input>
+                      {getError('organization', errors, touched, false)}
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <FormGroup className="form-group" check>
+                      <Input
+                        id="accepted_terms"
+                        name="accepted_terms"
+                        type="checkbox"
+                        value={values.accepted_terms}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        data-testid="sign-up-agreeTermsConditions" />
+                      <Label
+                        check
+                        for="accepted_terms"
+                      >
+                        <p className='mb-0'>
+                          <span>I agree to the </span>
+                          <a href={docTNM} rel="noreferrer" target="_blank">
+                            Terms of User
+                          </a>
+                          <span> and </span>
+                          <a href={docPP} rel="noreferrer" target="_blank">
+                            Privacy Policy
+                          </a>
+                          <span>, to the processing of my personal data, and to receive emails</span>
+                        </p>
+                      </Label>
+                      {getError('accepted_terms', errors, touched, false)}
+                    </FormGroup>
+                  </Col>
+                </Row><div className='center-sign-in'>
+                  <Button
+                    className="my-4 sign-in-btn"
+                    color="primary"
+                    disabled={isSubmitting}
+                    data-testid="signUpButton">
+                      SIGN UP
+                  </Button>
+                </div></>
+              
+                : <>
+                  <h5>Sorry, registration is not available at the moment</h5>
+                </>}
             </Form>
           </div>
         </div>
