@@ -238,7 +238,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
     <div>
       {showLegend ? (
         <div className='legend'>
-          <img src={currentLayer.legend_url}/>
+          <img src={`${currentLayer.legend_url}&LEGEND_OPTIONS=fontsize:80;dpi=72`}/>
         </div>
       ) : null
       }
