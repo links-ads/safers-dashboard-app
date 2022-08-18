@@ -7,14 +7,33 @@ import { CATEGORIES } from './filters';
 //i18N
 import { withTranslation } from 'react-i18next';
 
-const SortSection = ({ t, reportSource, sortOrder, setReportSource, setSortOrder, setCategory }) => {
+const SortSection = ({ 
+  t, 
+  reportSource, 
+  sortOrder, 
+  setReportSource, 
+  setSortOrder, 
+  setCategory,
+  assignmentSort,
+  setAssignmentSort
+}) => {
   const { allReports } = useSelector(state => state.reports);
-
   return (
     <>
-
       <Row className=''>
-        <Col></Col>
+        <Col xl={4}>
+          <Input
+            type='select'
+            className="btn-sm sort-select-input"
+            value={assignmentSort}
+            onChange={({ target: { value } }) => setAssignmentSort(value)}
+          >
+            <option value='all'>All</option>
+            <option value='assigned'>Assigned to Mission</option>
+            <option value='unassigned'>Unassigned to Mission</option>
+          </Input>
+        </Col>
+        <Col xl={5} />
         <Col xl={3} className="d-flex justify-content-end">
           <span className='my-auto alert-report-text'>{t('Results')} {allReports.length}</span>
         </Col>
@@ -77,7 +96,9 @@ SortSection.propTypes = {
   setReportSource: PropTypes.func,
   setSortOrder: PropTypes.func,
   setCategory: PropTypes.func,
-  t: PropTypes.func
+  t: PropTypes.func,
+  assignmentSort: PropTypes.string,
+  setAssignmentSort: PropTypes.func
 }
 
 export default withTranslation(['common'])(SortSection);

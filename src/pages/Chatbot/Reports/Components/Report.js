@@ -45,6 +45,12 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
       onClick={() => setSelectedReport(!isSelected ? card.report_id : null)}
       className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
+        {card.report_id ? (
+          <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
+            <i className={'fa fa-dice text-danger me-1'}></i> 
+            <span className='text-capitalize'>Mission {card.report_id}</span>
+          </Badge>
+        ) : null}
         {getBadge()}
         <Row className='mt-2'>
           <Col>

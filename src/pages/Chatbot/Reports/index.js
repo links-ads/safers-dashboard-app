@@ -32,6 +32,7 @@ const Reports = () => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
+  const [assignmentSort, setAssignmentSort] = useState('all')
 
   const dispatch = useDispatch();
 
@@ -105,6 +106,8 @@ const Reports = () => {
             setReportSource={setReportSource}
             setSortOrder={setSortOrder}
             setCategory={setCategory}
+            assignmentSort={assignmentSort}
+            setAssignmentSort={setAssignmentSort}
           />
           <Row>
             <Col xl={12} className='px-3'>
@@ -113,7 +116,9 @@ const Reports = () => {
                 currentZoomLevel={currentZoomLevel}
                 setViewState={setViewState}
                 setReportId={setReportId}
-                setIconLayer={setIconLayer} />
+                setIconLayer={setIconLayer} 
+                assignmentSort={assignmentSort}
+              />
             </Col>
           </Row>
         </Col>

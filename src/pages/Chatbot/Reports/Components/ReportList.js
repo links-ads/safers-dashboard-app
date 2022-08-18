@@ -10,12 +10,18 @@ import Report from './Report';
 
 const MAP_TYPE = 'reports';
 
-const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, setIconLayer }) => {
+const ReportList = ({ 
+  reportId, 
+  currentZoomLevel, 
+  setViewState, 
+  setReportId, 
+  setIconLayer,
+  assignmentSort
+}) => {
   const { allReports: OrgReportList, filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
 
   const dispatch = useDispatch();
-
 
   const allReports = filteredReports || OrgReportList;
 
@@ -44,11 +50,23 @@ const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, set
     setPageData(data);
   };
 
+  const filterByAssignment = data => {
+    if (assignmentSort === 'assigned') {
+      return data.filter(datum => Boolean(datum.mission_id))
+    } else {
+      return data.filter(datum => !datum.mission_id)
+    }
+  };
+
+  const filteredData = assignmentSort === 'all' 
+    ? pageData 
+    : filterByAssignment(pageData);
+
   return (
     <>
       <Row>
         {
-          pageData.map((report) =>
+          filteredData.map((report) =>
             <Report
               key={report.report_id}
               card={report}
@@ -70,6 +88,7 @@ ReportList.propTypes = {
   setViewState: PropTypes.func,
   setReportId: PropTypes.func,
   setIconLayer: PropTypes.func,
+  assignmentSort: PropTypes.string
 }
 
 export default ReportList;
