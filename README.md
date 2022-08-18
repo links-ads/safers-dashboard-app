@@ -1,2 +1,2 @@
-# safers-dashboard
+# safers-dashboard-app
 web frontend for SAFERS
