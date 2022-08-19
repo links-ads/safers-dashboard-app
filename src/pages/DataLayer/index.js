@@ -266,28 +266,30 @@ const DataLayerDashboard = () => {
                 </p>
               </Col>
               <Col xl={8}>
-                <Nav className='d-flex flex-nowrap' pills fill>
-                  <NavItem>
-                    <NavLink
-                      className={{
-                        'active': activeTab === DATA_LAYERS_PANELS.mapLayers 
-                      }}
-                      onClick={() => setActiveTab(DATA_LAYERS_PANELS.mapLayers)}
-                    >
-                      {t('Operational Map Layers')}
-                    </NavLink>
-                  </NavItem>
-                  <NavItem>
-                    <NavLink
-                      className={{ 
-                        'active': activeTab === DATA_LAYERS_PANELS.onDemandMapLayers 
-                      }}
-                      onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
-                    >
-                      {t('On-Demand Map Layers')}
-                    </NavLink>
-                  </NavItem>
-                </Nav>
+                {activeTab < 2 ? (
+                  <Nav className='d-flex flex-nowrap' pills fill>
+                    <NavItem>
+                      <NavLink
+                        className={{
+                          'active': activeTab === DATA_LAYERS_PANELS.mapLayers 
+                        }}
+                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.mapLayers)}
+                      >
+                        {t('Operational Map Layers')}
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        className={{ 
+                          'active': activeTab === DATA_LAYERS_PANELS.onDemandMapLayers 
+                        }}
+                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
+                      >
+                        {t('On-Demand Map Layers')}
+                      </NavLink>
+                    </NavItem>
+                  </Nav>
+                ) : null}
               </Col>
             </Row>
           </Col>
