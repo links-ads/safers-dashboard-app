@@ -9,7 +9,7 @@ import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllDataLayers } from '../../store/appAction';
 
 import TreeView from './TreeView';
-import { filterNodesByProperty } from '../../store/utility';
+import { filterNodesByProperty, formatDate } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 
 //i18n
@@ -223,7 +223,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
       return (
         <div className='timestamp-container'>
           <p className='timestamp-display'>
-            {moment(new Date(timestamp)).format('DD/MM/YY h:mma')}
+            {formatDate(timestamp)}
           </p>
         </div>
       )
