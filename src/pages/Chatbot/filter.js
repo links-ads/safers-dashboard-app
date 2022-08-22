@@ -3,8 +3,8 @@
 
 import _ from 'lodash';
 
-export const getFilteredRec = (allPeople, filters, sort) => {
-  let actFiltered = [...allPeople];
+export const getFilteredRec = (allRecords, filters, sort) => {
+  let actFiltered = [...allRecords];
   const filterNames = Object.keys(filters);
   filterNames.forEach((key) => {
     if(filters[key] !== ''){
