@@ -18,6 +18,7 @@ import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
 const SLIDER_SPEED = 800;
 const DataLayer = ({ t }) => {
@@ -37,6 +38,8 @@ const DataLayer = ({ t }) => {
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+  const [tempSelectedPixel, setTempSelectedPixel] = useState([]);
+  const [selectedPixel, setSelectedPixel] = useState([]);
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -46,7 +49,7 @@ const DataLayer = ({ t }) => {
   useEffect(() => {
     (async () => {
       const [sourceOptions, domainOptions] = await Promise.all([
-        fetchEndpoint('/data/layers/sources'), 
+        fetchEndpoint('/data/layers/sources'),
         fetchEndpoint('/data/layers/domains')
       ])
       setSelectOptions({ sourceOptions, domainOptions })
@@ -107,8 +110,8 @@ const DataLayer = ({ t }) => {
   }, [dataLayers]);
 
   useEffect(() => {
-    const dateRangeParams = dateRange 
-      ? { start: dateRange[0], end: dateRange[1] } 
+    const dateRangeParams = dateRange
+      ? { start: dateRange[0], end: dateRange[1] }
       : {};
     dispatch(getAllDataLayers(
       {
@@ -213,7 +216,7 @@ const DataLayer = ({ t }) => {
             onClick={() => setShowLegend(!showLegend)}
           >
             <i className="h4 mdi mdi-map-legend">legend</i>
-          </button>     
+          </button>
         </div>
       );
     }
@@ -228,7 +231,7 @@ const DataLayer = ({ t }) => {
     <div>
       {showLegend ? (
         <div className='legend'>
-          <img src={currentLayer.legend_url}/>
+          <img src={currentLayer.legend_url} />
         </div>
       ) : null
       }
@@ -267,7 +270,7 @@ const DataLayer = ({ t }) => {
                     <option value=''>Source : All</option>
                     {sourceOptions?.map((option) => (
                       <option key={option} value={option}>
-                          Source: {option}
+                        Source: {option}
                       </option>
                     )) ?? []}
                   </Input>
@@ -285,7 +288,7 @@ const DataLayer = ({ t }) => {
                     <option value=''>Domain : All</option>
                     {domainOptions?.map((option) => (
                       <option key={option} value={option}>
-                          Data Domain: {option}
+                        Data Domain: {option}
                       </option>
                     )) ?? []}
                   </Input>
@@ -317,14 +320,14 @@ const DataLayer = ({ t }) => {
           </Row>
           <Row>
             <Col>
-              <SimpleBar style={{ 
-                maxHeight: '500px', 
-                margin: '5px', 
-                zIndex: '100' 
+              <SimpleBar style={{
+                maxHeight: '500px',
+                margin: '5px',
+                zIndex: '100'
               }}>
                 <TreeView
                   data={filterNodesByProperty(dataLayers, {
-                    source: layerSource, 
+                    source: layerSource,
                     domain: dataDomain
                   })}
                   setCurrentLayer={setCurrentLayer}
@@ -335,24 +338,36 @@ const DataLayer = ({ t }) => {
         </Col>
         <Col xl={7} className='mx-auto'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
-            <BaseMap
-              layers={[bitmapLayer]}
-              initialViewState={viewState}
-              widgets={[]}
-              screenControlPosition='top-right'
-              navControlPosition='bottom-right'
-            />
+            <ContextMenuTrigger id={'map'}>
+              <BaseMap
+                layers={[bitmapLayer]}
+                initialViewState={viewState}
+                widgets={[]}
+                screenControlPosition='top-right'
+                navControlPosition='bottom-right'
+                onClick={(data) => { setTempSelectedPixel(data.pixel) }}
+              />
+            </ContextMenuTrigger>
+            <ContextMenu id={'map'} className="menu">
+              <MenuItem className="menuItem" onClick={()=>setSelectedPixel(tempSelectedPixel)}>
+                Display Layer Info
+              </MenuItem>
+              <MenuItem className="menuItem">
+                Time Series Chart
+              </MenuItem>
+            </ContextMenu>
             {getSlider()}
             {getLegend()}
           </Card>
         </Col>
-      </Row>
+      </Row>      
+      {selectedPixel?.length > 0 && <div className='m-2 sign-up-aoi-map-bg'>Pixel: {selectedPixel.join(', ')}</div>}
     </div >
   );
 }
 
 
 
-export default withTranslation(['common'])(DataLayer);DataLayer.propTypes = {
+export default withTranslation(['common'])(DataLayer); DataLayer.propTypes = {
   t: PropTypes.any,
 }
