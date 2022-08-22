@@ -19,6 +19,14 @@ import 'react-rangeslider/lib/index.css'
 import { getBoundingBox } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import {
+  VictoryChart,
+  VictoryAxis,
+  VictoryLine,
+  VictoryLabel,
+  VictoryScatter,
+  VictoryTooltip
+} from 'victory';
 
 const SLIDER_SPEED = 800;
 const DataLayer = ({ t }) => {
@@ -226,6 +234,33 @@ const DataLayer = ({ t }) => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
+  const prev = [
+    { x: '2020-01', y: 1.1235, label: 5 },
+    { x: '2020-02', y: 4.32332, label: 5 },
+    { x: '2020-03', y: 3.87543, label: 5 },
+    { x: '2020-04', y: 1.1251, label: 5 },
+    { x: '2020-05', y: 2.123241, label: 5 },
+    { x: '2020-06', y: 3.5231, label: 5 }
+  ];
+
+  const xAxisLabelFormatter = (tick, index, ticks) => {
+    console.log(ticks);
+    const [year, month] = tick.split('-');
+    return moment()
+      .year(year)
+      .month(month - 1)
+      .format('MMM YYYY');
+  };
+
+  const tickValues = [
+    '2020-01',
+    '2020-02',
+    '2020-03',
+    '2020-04',
+    '2020-05',
+    '2020-06'
+  ];
+
   return (
     // <div className='page-content'>
     <div>
@@ -362,6 +397,23 @@ const DataLayer = ({ t }) => {
         </Col>
       </Row>      
       {selectedPixel?.length > 0 && <div className='m-2 sign-up-aoi-map-bg'>Pixel: {selectedPixel.join(', ')}</div>}
+      <div  className='m-2 sign-up-aoi-map-bg'>
+        <div className='w-50'>
+          <VictoryChart>
+            <VictoryAxis
+              tickValues={tickValues}
+              tickFormat={xAxisLabelFormatter}
+              tickLabelComponent={<VictoryLabel style={{ data: { stroke: '#F47938' } }} />}
+            />
+            <VictoryAxis dependentAxis size={50} style={{ data: { stroke: '#F47938' } }} />
+
+            <VictoryLine data={prev} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
+              pointerLength={0}/>} />
+            <VictoryScatter size={5} data={prev} labelComponent={<VictoryTooltip cornerRadius={2}
+              pointerLength={0}/>} />
+          </VictoryChart>
+        </div>
+      </div>
     </div >
   );
 }

@@ -51,6 +51,8 @@
     "sass": "^1.49.8",
     "simplebar-react": "^2.3.0",
     "toastr": "^2.1.4",
+    "victory": "^36.6.4",
+    "victory-chart": "^36.6.4",
     "web-vitals": "^2.1.4",
     "wkt": "^0.1.1",
     "yup": "^0.32.11"
