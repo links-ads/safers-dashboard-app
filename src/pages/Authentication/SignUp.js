@@ -110,7 +110,7 @@ const SignUp = () => {
           {getGeneralErrors(error)}
           <div className="container auth-form">
             <Form onSubmit={handleSubmit} noValidate>
-              {config.allow_signup ?
+              {config?.allow_signup ?
                 <><Row form>
                   <Col>
                     <FormGroup className="form-group">

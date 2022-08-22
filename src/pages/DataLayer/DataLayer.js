@@ -9,7 +9,7 @@ import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllDataLayers } from '../../store/appAction';
 
 import TreeView from './TreeView';
-import { filterNodesByProperty } from '../../store/utility';
+import { filterNodesByProperty, formatDate } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 
 //i18n
@@ -39,6 +39,8 @@ const DataLayer = ({ t, searchDataLayers }) => {
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+  const [timestamp, setTimestamp] = useState('')
+
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -82,9 +84,13 @@ const DataLayer = ({ t, searchDataLayers }) => {
   useEffect(() => {
     if (sliderChangeComplete && currentLayer && currentLayer.urls) {
       const urls = getUrls();
+      const timestamps = getTimestamps();
       if (urls[sliderValue]) {
         const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
         setBitmapLayer(getBitmapLayer(imageUrl));
+      }
+      if (timestamps[sliderValue]) {
+        setTimestamp(timestamps[sliderValue]);
       }
     }
   }, [sliderValue, sliderChangeComplete]);
@@ -136,7 +142,13 @@ const DataLayer = ({ t, searchDataLayers }) => {
     ));
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
-  const getUrls = () => Object.values(currentLayer?.urls);
+  const getUrls = () => {
+    return Object.values(currentLayer?.urls)
+  };
+
+  const getTimestamps = () => {
+    return Object.keys(currentLayer?.urls)
+  }
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -206,6 +218,18 @@ const DataLayer = ({ t, searchDataLayers }) => {
     }
   }
 
+  const getCurrentTimestamp = () => {
+    if (timestamp) {
+      return (
+        <div className='timestamp-container'>
+          <p className='timestamp-display'>
+            {formatDate(timestamp)}
+          </p>
+        </div>
+      )
+    }
+  }
+
   const getLegend = () => {
     if (currentLayer?.legend_url) {
       return (
@@ -244,9 +268,6 @@ const DataLayer = ({ t, searchDataLayers }) => {
       }
       <Row>
         <Col xl={5}>
-          {/* <Row>
-              <p className='align-self-baseline alert-title'>{t('Data Layers', { ns: 'dataLayers' })}</p>
-            </Row> */}
           <Row>
             <Col xl={10}>
               <Row>
@@ -357,6 +378,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
             />
             {getSlider()}
             {getLegend()}
+            {getCurrentTimestamp()}
           </Card>
         </Col>
       </Row>
