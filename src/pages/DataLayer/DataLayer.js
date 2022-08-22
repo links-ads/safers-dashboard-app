@@ -221,19 +221,8 @@ const DataLayer = ({ t, searchDataLayers }) => {
   const getCurrentTimestamp = () => {
     if (timestamp) {
       return (
-        <div style={{
-          position: 'absolute',
-          zIndex: 100,
-          bottom: '100px',
-          width: '100%',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}>
-          <p style={{
-            fontSize: '1rem',
-            color: '#000'
-          }}>
+        <div className='timestamp-container'>
+          <p className='timestamp-display'>
             {moment(new Date(timestamp)).format('DD/MM/YY h:mma')}
           </p>
         </div>
