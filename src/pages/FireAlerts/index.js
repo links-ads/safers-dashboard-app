@@ -9,6 +9,10 @@ import toastr from 'toastr';
 //i18n
 import { withTranslation } from 'react-i18next'
 
+import IconClusterLayer from '../SocialMonitoring/IconClusterLayer';
+
+import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer'
+
 import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState, getSource, setFilteredAlerts } from '../../store/appAction';
 import Alert from './Alert';
@@ -20,6 +24,9 @@ import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import SearchButton from '../../components/SearchButton';
+
+import iconMapping from '../../constants/location-icon-mapping.json';
+import iconAtlas from '../../assets/images/location-icon-atlas.png';
 
 const PAGE_SIZE = 4;
 const ICON_MAPPING = {
@@ -178,20 +185,30 @@ const FireAlerts = ({ t }) => {
   }
 
   const getIconLayer = (alerts) => {
-    return (new IconLayer({
-      data: alerts,
-      pickable: true,
-      getPosition: d => d.center,
-      iconAtlas: firePin,
-      iconMapping: ICON_MAPPING,
-      // onHover: !hoverInfo.objects && setHoverInfo,
-      id: 'icon',
-      getIcon: () => 'marker',
-      getColor: d => { return (d.isSelected ? [226, 123, 29] : [230, 51, 79]) },
-      sizeMinPixels: 80,
-      sizeMaxPixels: 100,
-      sizeScale: 0.5,
-    }))
+    const data = alerts.map(alert => {
+      console.log('ALERT: ', alert);
+      const { geometry: { features }, ...properties } = alert;
+      return {
+        type: 'Feature',
+        properties: { 
+          ...properties,
+          ...features[0].properties
+        },
+        geometry: features[0].geometry
+      }
+    });
+    
+    return new GeoJsonPinLayer({
+      id: 'layer-id',
+      data,
+      dispatch,
+      setViewState,
+      getPosition: feature => feature.geometry.coordinates,
+      iconProperty: 'icon',
+      iconColor: '#333f48',
+      onGroupClick: true,
+      onPointClick: true
+    })
   }
 
   const handleResetAOI = useCallback(() => {
@@ -343,6 +360,7 @@ const FireAlerts = ({ t }) => {
                 renderTooltip={renderTooltip}
                 onClick={showTooltip}
                 onViewStateChange={hideTooltip}
+                setViewState={setViewState}
                 widgets={[getSearchButton]}
                 setWidth={setNewWidth}
                 setHeight={setNewHeight}

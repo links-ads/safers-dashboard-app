@@ -4,6 +4,7 @@ import { FullscreenControl, NavigationControl, MapContext, StaticMap } from 'rea
 import { MapView } from '@deck.gl/core';
 import DeckGL from 'deck.gl';
 import { MAPBOX_TOKEN } from '../../config';
+import { FlyToInterpolator } from '@deck.gl/core';
 
 const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
@@ -19,7 +20,13 @@ const MAP_STYLE = {
   mb_nav: 'mapbox://styles/mapbox/navigation-day-v1'
 };
 
+const MAX_ZOOM = 20;
+
+const easeInOutCubic = x =>
+  x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+
 const BaseMap = ({
+  setViewState,
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
   hoverInfo = null,
@@ -48,6 +55,23 @@ const BaseMap = ({
     getMapSize();
   }, [layers]);
 
+  const handleClick = info => {
+    console.log('INFO: ', info)
+    if (info?.object?.properties?.cluster) {
+      if (info.object.properties.expansion_zoom <= MAX_ZOOM)
+        setViewState({
+          longitude: info.object.geometry.coordinates[0],
+          latitude: info.object.geometry.coordinates[1],
+          zoom: info.object.properties.expansion_zoom,
+          transitionDuration: 1000,
+          transitionEasing: easeInOutCubic,
+          transitionInterpolator: new FlyToInterpolator(),
+        });
+    } else {
+      onClick(info);
+    }
+  }
+
   const getMapSize = () => {
     const newWidth = mapRef?.current?.deck?.width;
     newWidth && setWidth(newWidth);
@@ -69,7 +93,7 @@ const BaseMap = ({
       <DeckGL
         ref={mapRef}
         views={new MapView({ repeat: true })}
-        onClick={onClick}
+        onClick={handleClick}
         onViewStateChange={onViewStateChange}
         onViewportLoad={onViewportLoad}
         initialViewState={initialViewState}
