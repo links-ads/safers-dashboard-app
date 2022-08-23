@@ -27,6 +27,7 @@ import {
   VictoryScatter,
   VictoryTooltip
 } from 'victory';
+import {GeoJsonLayer} from '@deck.gl/layers';
 
 const SLIDER_SPEED = 800;
 const DataLayer = ({ t }) => {
@@ -48,6 +49,7 @@ const DataLayer = ({ t }) => {
   const [showLegend, setShowLegend] = useState(false);
   const [tempSelectedPixel, setTempSelectedPixel] = useState([]);
   const [selectedPixel, setSelectedPixel] = useState([]);
+  const [geoJsonLayerData, setGeoJsonLayerData] = useState([]);
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -234,6 +236,66 @@ const DataLayer = ({ t }) => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
+  const generateGeoJson = ()=> {
+    const tempGeo = new GeoJsonLayer({
+      id: 'geojson-layer',
+      data: [
+        {
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+            'type': 'Point',
+            'coordinates': tempSelectedPixel
+          }
+        },
+        {
+          'type': 'Feature',
+          'properties': {},
+          'geometry': {
+            'type': 'Polygon',
+            'coordinates': [
+              [
+                [
+                  30,
+                  10
+                ],
+                [
+                  40,
+                  40
+                ],
+                [
+                  20,
+                  40
+                ],
+                [
+                  10,
+                  20
+                ],
+                [
+                  30,
+                  10
+                ]
+              ]
+            ]
+          }
+        }
+      ],
+      pointType: 'circle',
+      pickable: true,
+      getPointRadius: 1000,
+      getFillColor: [128, 128, 128, 128],
+      getLineColor:[0,0,0,255],
+      // getLineWidth: 5000,
+      lineWidthScale: 20,
+      lineWidthMinPixels: 1,
+      getLineWidth: 1,
+      stroked:true,
+      filled:true,
+    })
+    setSelectedPixel(tempSelectedPixel);
+    setGeoJsonLayerData(tempGeo)
+  }
+
   const prev = [
     { x: '2020-01', y: 1.1235, label: 5 },
     { x: '2020-02', y: 4.32332, label: 5 },
@@ -375,16 +437,16 @@ const DataLayer = ({ t }) => {
           <Card className='map-card mb-0' style={{ height: 670 }}>
             <ContextMenuTrigger id={'map'}>
               <BaseMap
-                layers={[bitmapLayer]}
+                layers={[bitmapLayer, geoJsonLayerData]}
                 initialViewState={viewState}
                 widgets={[]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
-                onClick={(data) => { setTempSelectedPixel(data.pixel) }}
+                onClick={(data) => { console.log(data); setTempSelectedPixel(data.coordinate) }}
               />
             </ContextMenuTrigger>
             <ContextMenu id={'map'} className="menu">
-              <MenuItem className="menuItem" onClick={()=>setSelectedPixel(tempSelectedPixel)}>
+              <MenuItem className="menuItem" onClick={generateGeoJson}>
                 Display Layer Info
               </MenuItem>
               <MenuItem className="menuItem">
