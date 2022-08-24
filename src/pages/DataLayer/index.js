@@ -16,6 +16,9 @@ import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
+//import { onDemandMapLayers } from './mock-data';
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css'
 
 // TODO: check domain/source filtering is still working!!!
 
@@ -28,6 +31,8 @@ const DataLayerDashboard = () => {
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
   const onDemandMapLayers = useSelector(state=>state.dataLayer.allMapRequests);
   const dateRange = useSelector(state => state.common.dateRange);
+  const isPageActive = useSelector(state => state?.dataLayer?.isPageActive);
+  const isNewDataAvailable = useSelector(state => state?.dataLayer?.isNewAlert)
 
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -57,9 +62,11 @@ const DataLayerDashboard = () => {
     })()
   }, [])
 
-  useEffect(() => {
-    dispatch(setNewOnDemandState(true,true));
-  }, [])
+  useEffect(()=>{
+    //
+    console.log('isPageActive now ',isPageActive);
+    toastr.success('An update has been received. Please refresh the list.', '', { preventDuplicates: true, });
+  }, [isNewDataAvailable])
 
   useEffect(() => {
     setBoundingBox(
@@ -264,6 +271,18 @@ const DataLayerDashboard = () => {
                 <p className='align-self-baseline alert-title'>
                   {t('Data Layers')}
                 </p>
+              </Col>
+              <Col xl={2}>
+                <button
+                  type="button"
+                  className="btn float-end mt-1 py-0 px-1"
+                  aria-label='refresh-events'
+                  onClick={() => {
+                    dispatch(setNewOnDemandState(true,true));
+                  }}
+                >
+                  <i className="mdi mdi-sync"></i>
+                </button>
               </Col>
               <Col xl={8}>
                 {activeTab < 2 ? (

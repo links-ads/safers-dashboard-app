@@ -63,7 +63,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
         enableZoom={true}
         imageCaption={
           <div className='position-fixed top-0 start-0 m-2'>
-            <h5 className='mb-1'>{formatDate(card.timestamp, 'YYYY-MM-DD HH:mm')}</h5>
+            <h5 className='mb-1'>{formatDate(card.timestamp)}</h5>
             <h5>{card.camera_id}</h5>
           </div>
         }
@@ -108,7 +108,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
             <Col>
               <Row>
                 <Col md={8}>
-                  <p>{formatDate(card.timestamp, 'YYYY-MM-DD HH:mm')}</p>
+                  <p>{formatDate(card.timestamp)}</p>
                   {card.fire_classes != null && <p className='mb-1'><i data-tip data-for="smoke-column" className='bx bx-info-circle float-start fs-5 me-2'></i><span >{t('Smoke Column Class')}: {card.fire_classes.join()}</span></p>}
                   {card.direction != null && <p className='mb-1'><i data-tip data-for="geo-direction" className='bx bx-info-circle float-start fs-5 me-2'></i><span>{t('Geographical Direction')}: {card.direction}&deg;</span></p>}
                 </Col>

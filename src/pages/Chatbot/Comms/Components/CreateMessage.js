@@ -8,11 +8,12 @@ import {
   Col
 } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
+import MapInput from '../../../../components/BaseMap/MapInput';
 import { useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import _ from 'lodash';
 
-const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMessage, setCoordinates  }) => {
+const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
 
   const { t } = useTranslation();  
   const { orgList = [] } = useSelector(state => state.common);
@@ -35,16 +36,15 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
         isTooltipInput={true}
         showIcons={true}
       />
-      <Input
+      <MapInput
         id="coordinates-input"
         className='mt-3'
         type='textarea'
         name="coordinates-value"
         placeholder='Map Selection, please edit and draw on the map'
         rows="10"
-        value={coordinates.map(x => {
-          return '[' + x[0] + ' , ' + x[1] + ']';
-        }).join('\n')}
+        coordinates={coordinates}
+        setCoordinates={setCoordinates}
       />
       <Label className='form-label mt-3 mb-0'>{t('Organisation')}: {orgName}</Label>
       <Row className='my-3'>
@@ -87,11 +87,7 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
       <div className='mt-3'>
         <Button
           type="button"
-          onClick={()=>{
-            setTogglePolygonMap(false);
-            setToggleCreateNewMessage(false);
-            setCoordinates([]);
-          }}
+          onClick={onCancel}
         >
           Cancel
         </Button>
@@ -107,9 +103,8 @@ const CreateMessage = ({ coordinates, setTogglePolygonMap, setToggleCreateNewMes
 }
 
 CreateMessage.propTypes = {
-  coordinates: PropTypes.array,
-  setTogglePolygonMap: PropTypes.func,
-  setToggleCreateNewMessage: PropTypes.func,
+  coordinates: PropTypes.any,
+  onCancel: PropTypes.func,
   setCoordinates: PropTypes.func
 }
 

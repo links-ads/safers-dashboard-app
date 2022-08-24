@@ -52,7 +52,7 @@ const Comm = ({ card, reportId, setSelectedComm }) => {
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  {t('Start date', { ns: 'common' })}: {formatDate(card.startDate)} | {t('End date', { ns: 'common' })}: {formatDate(card.endDate)}
+                  {t('Start date', { ns: 'common' })}: {formatDate(card.startDate, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.endDate, 'YYYY-MM-DD')}
                 </p>
               </Col>
 

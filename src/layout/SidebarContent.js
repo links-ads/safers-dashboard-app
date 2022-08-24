@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types'
 import React, { useEffect, useRef } from 'react'
 import { useLocation } from 'react-router-dom';
+import { SIGNIN_REDIRECT } from '../config';
 
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -39,7 +40,8 @@ const SidebarContent = (props) => {
     const ul = document.getElementById('side-menu')
     const items = ul.getElementsByTagName('a')
     for (let i = 0; i < items.length; ++i) {
-      if (location.pathname == items[i].pathname) {
+      const currentURL = location.pathname == '/' ? SIGNIN_REDIRECT : location.pathname;
+      if (currentURL == items[i].pathname) {
         matchingMenuItem = items[i];
       }
       ctrlParentDropdown(false, items[i]);
@@ -105,29 +107,18 @@ const SidebarContent = (props) => {
       <SimpleBar style={{ maxHeight: '100%' }} ref={ref}>
         <div id='sidebar-menu'>
           <ul className='metismenu list-unstyled' id='side-menu'>
-
-            <li>
+            {/* <li>
               <Link to='/dashboard' className=''>
                 <i className='bx bx-layout'></i>
 
                 <span>{props.t('Dashboard')}</span>
               </Link>
-
-            </li>
-
-
+            </li> */}
             <li>
               <Link to='/fire-alerts' className=''>
                 <i className='bx bxs-hot'></i>
                 <span>{props.t('Fire Alerts')}</span>
                 {isNewAlert && <span className='new-info-indicator float-end'>{newAlertsCount}</span>}
-              </Link>
-            </li>
-
-            <li>
-              <Link to='/data-layer' className=''>
-                <i className='bx bx-copy'></i>
-                <span>{props.t('Data Layers')}</span>
               </Link>
             </li>
             <li>
@@ -138,18 +129,24 @@ const SidebarContent = (props) => {
               </Link>
             </li>
             <li>
+              <Link to='/data-layer' className=''>
+                <i className='bx bx-copy'></i>
+                <span>{props.t('Data Layers')}</span>
+              </Link>
+            </li>
+            <li>
               <Link to='/notifications'>
                 <i className='bx bx-bell'></i>
                 <span>{props.t('Notifications')}</span>
                 {isNewNotification && <span className='new-info-indicator float-end'>{newNotificationsCount}</span>}
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link to='/social-monitoring'>
                 <i className='bx bxl-twitter'></i>
                 <span>{props.t('Social Monitoring')}</span>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link to='/insitu-alerts'>
                 <i className='bx bx-image'></i>

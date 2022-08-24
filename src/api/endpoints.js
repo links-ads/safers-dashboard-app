@@ -62,12 +62,11 @@ export const endpoints = {
     setFavorite: '/cameras/media/:media_id/favorite/',
     getSources: '/cameras/media/sources',
   },
-  
-  reports: {
-    getReports: '/chatbot/reports',
-    getReportInfo: '/chatbot/reports/:report_id',
-  },
   chatbot: {
+    reports: {
+      getReports: '/chatbot/reports',
+      getReportInfo: '/chatbot/reports/:report_id',
+    },
     comms: {
       getAll: '/chatbot/comms'
     },
