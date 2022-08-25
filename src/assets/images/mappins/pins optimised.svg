@@ -1,0 +1,11 @@
+<svg width="48mm" height="24mm" version="1.1" viewBox="0 0 48 24" xmlns="http://www.w3.org/2000/svg">
+	<defs>
+		<style>
+			.cls-1{fill:#000;}
+		</style>
+	</defs>
+	<g transform="translate(-.09999 .17314)">
+		<path class="cls-1" d="m11.882 0.15355a11.66 11.66 0 0 0-11.653 11.653c0 6.4303 5.4711 11.653 11.653 11.653 2.9132 0 7.9934-1.8118 11.653 0v-11.653a11.66 11.66 0 0 0-11.653-11.653z" style="stroke-width:.35526" />
+		<circle cx="35.588" cy="11.806" r="11.381" style="stroke-width:.679;stroke:#000" />
+	</g>
+</svg>

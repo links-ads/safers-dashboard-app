@@ -1,0 +1,58 @@
+{
+    "camera": {
+        "x": 0,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": false
+    },
+    "notification": {
+        "x": 24,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": false
+    },
+    "mission": {
+        "x": 48,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": false
+    },
+    "alert": {
+        "x": 72,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": false
+    },
+    "people": {
+        "x": 96,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": false
+    },
+    "twitter": {
+        "x": 120,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": false
+    },
+    "report": {
+        "x": 144,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": false
+    },
+    "communications": {
+        "x": 168,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": false
+    }
+}

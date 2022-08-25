@@ -4,8 +4,9 @@ import { color } from 'd3-color';
 import { get, isArray } from 'lodash';
 import Supercluster from 'supercluster';
 
-import backgroundsIconAtlas from './pin-layer-backgrounds.iconAtlas.svg';
-import backgroundsIconMapping from './pin-layer-backgrounds.iconMapping.json';
+import backgroundsIconAtlas from '../../assets/images/mappins/pins optimised.svg';
+import backgroundsIconMapping from '../../assets/images/mappins/pins.json';
+
 import iconAtlas from './pin-layer-icons.iconAtlas.svg';
 import iconMapping from './pin-layer-icons.iconMapping.json';
 
@@ -82,10 +83,9 @@ export class PinLayer extends CompositeLayer {
     if (
       feature.properties.cluster
     ) {
-      //console.log('CLUSTER')
-      return 'pin'; // totally the other way round
+      // totally counterintuitive, cluster means its a leaf node (PART OF a cluster)
+      return 'pin'; 
     }
-    //console.log('PIN')
     return 'cluster';
   }
 
@@ -169,6 +169,7 @@ export class PinLayer extends CompositeLayer {
           iconMapping: backgroundsIconMapping,
           getPosition: this.props.getPosition,
           getIcon: d => this._getPinIcon(d),
+          //getSize: d => this._getPinLayerIconSize(d),
           getSize: d => this._getPinLayerIconSize(d),
           getColor: d => this._getPinColor(d),
           updateTriggers: {
