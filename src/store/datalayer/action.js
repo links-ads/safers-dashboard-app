@@ -32,34 +32,32 @@ export const resetDataLayersResponseState = () => {
   }
 };
 
-// Map requests (POST)
-
-export const getMapRequests = (body) => async (dispatch) => {
+// Request a map (POST)
+export const postMapRequest = (body) => async (dispatch) => {
   const response = await api.post(endpoints.dataLayers.mapRequests, body);
   if (response.status === 200) {
-    return dispatch(getMapRequestsSuccess(response.data));
+    return dispatch(postMapRequestSuccess(response.data));
   }
   else
-    return dispatch(getMapRequestsFail(response.error));
+    return dispatch(postMapRequestFail(response.error));
 };
 
-const getMapRequestsSuccess = (mapRequest) => {
+const postMapRequestSuccess = (mapRequest) => {
   return {
-    type: actionTypes.GET_MAP_REQUESTS_SUCCESS,
+    type: actionTypes.POST_MAP_REQUESTS_SUCCESS,
     payload: mapRequest
   };
 };
-const getMapRequestsFail = (error) => {
+const postMapRequestFail = (error) => {
   return {
-    type: actionTypes.GET_MAP_REQUESTS_FAIL,
+    type: actionTypes.POST_MAP_REQUESTS_FAIL,
     payload: error
   };
 };
 
 // get All Map Requests (GET)
-
 export const getAllMapRequests = () => async (dispatch) => {
-  const response = await api.get(endpoints.dataLayers.getAllMapRequests);
+  const response = await api.get(endpoints.dataLayers.mapRequests);
   if (response.status === 200) {
     return dispatch(getAllMapRequestsSuccess(response.data));
   }
@@ -67,10 +65,10 @@ export const getAllMapRequests = () => async (dispatch) => {
     return dispatch(getAllMapRequestsFail(response.error));
 };
 
-const getAllMapRequestsSuccess = (mapRequest) => {
+const getAllMapRequestsSuccess = (mapRequests) => {
   return {
     type: actionTypes.GET_ALL_MAP_REQUESTS_SUCCESS,
-    payload: mapRequest
+    payload: mapRequests
   };
 };
 
@@ -79,12 +77,4 @@ const getAllMapRequestsFail = (error) => {
     type: actionTypes.GET_ALL_MAP_REQUESTS_FAIL,
     payload: error
   };
-};
-
-export const setNewOnDemandState = (alertState, pageState) => {
-  return {
-    type: actionTypes.SET_NEW_ON_DEMAND_STATE,
-    isNewAlert: alertState,  // has data changed since last time?
-    isPageActive: pageState, // has user navigated to the form?
-  }
 };

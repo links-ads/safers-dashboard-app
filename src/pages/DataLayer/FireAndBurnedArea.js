@@ -10,7 +10,7 @@ import RequiredAsterisk from '../../components/required-asterisk'
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import {
-  getMapRequests,
+  postMapRequest,
   getAllMapRequests
 } from '../../store/appAction';
 
@@ -56,7 +56,7 @@ const FireAndBurnedArea = ({
       },
     }
 
-    dispatch(getMapRequests(payload));
+    dispatch(postMapRequest(payload));
     dispatch(getAllMapRequests())
     backToOnDemandPanel()
   }

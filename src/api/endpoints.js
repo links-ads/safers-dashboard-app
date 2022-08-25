@@ -22,8 +22,7 @@ export const endpoints = {
   dataLayers: {
     getAll: '/data/layers',
     metadata:'/data/layers/metadata/',
-    mapRequests:'/data/maprequests/', // POST
-    getAllMapRequests: '/data/maprequests/', // GET
+    mapRequests:'/data/maprequests/',
   },
   eventAlerts: {
     getAll: '/events/',

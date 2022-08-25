@@ -8,7 +8,7 @@ import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import RequiredAsterisk from '../../components/required-asterisk'
 import {
-  getMapRequests,
+  postMapRequest,
   getAllMapRequests
 } from '../../store/appAction';
 
@@ -46,7 +46,7 @@ const PostEventMonitoring = ({
       },
     }
     
-    dispatch(getMapRequests(payload));
+    dispatch(postMapRequest(payload));
     dispatch(getAllMapRequests());
     backToOnDemandPanel();
   }

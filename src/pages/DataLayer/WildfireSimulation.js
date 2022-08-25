@@ -9,7 +9,7 @@ import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import { withTranslation } from 'react-i18next'
 import RequiredAsterisk from '../../components/required-asterisk'
 import {
-  getMapRequests,
+  postMapRequest,
   getAllMapRequests
 } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css'
@@ -117,7 +117,7 @@ const WildfireSimulation = ({
       }
     }
 
-    dispatch(getMapRequests(payload));
+    dispatch(postMapRequest(payload));
     dispatch(getAllMapRequests());
     backToOnDemandPanel();
   }

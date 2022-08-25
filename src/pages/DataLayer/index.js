@@ -6,19 +6,18 @@ import { useTranslation } from 'react-i18next';
 import { BitmapLayer } from 'deck.gl';
 import moment from 'moment';
 import Slider from 'react-rangeslider';
+import { getAllMapRequests } from '../../store/datalayer/action'
 import DataLayer from './DataLayer';
 import OnDemandDataLayer from './OnDemandDataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
 import PostEventMonitoringForm from './PostEventMonitoringForm'
 import WildfireSimulation from './WildfireSimulation'
-import { getAllDataLayers, setNewOnDemandState } from '../../store/appAction';
+import { getAllDataLayers, setNewAlertState, setAlertApiParams } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
-//import { onDemandMapLayers } from './mock-data';
-import toastr from 'toastr';
-import 'toastr/build/toastr.min.css'
+import { setFilteredAlerts } from '../../store/alerts/action';
 
 // TODO: check domain/source filtering is still working!!!
 
@@ -29,10 +28,9 @@ const DataLayerDashboard = () => {
 
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
-  const onDemandMapLayers = useSelector(state=>state.dataLayer.allMapRequests);
   const dateRange = useSelector(state => state.common.dateRange);
-  const isPageActive = useSelector(state => state?.dataLayer?.isPageActive);
-  const isNewDataAvailable = useSelector(state => state?.dataLayer?.isNewAlert)
+
+  const allMapRequests = useSelector(state=> state?.dataLayer?.allMapRequests)
 
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -62,11 +60,14 @@ const DataLayerDashboard = () => {
     })()
   }, [])
 
-  useEffect(()=>{
-    //
-    console.log('isPageActive now ',isPageActive);
-    toastr.success('An update has been received. Please refresh the list.', '', { preventDuplicates: true, });
-  }, [isNewDataAvailable])
+  useEffect(() => {
+    dispatch(getAllMapRequests());
+    dispatch(setNewAlertState(false, true));
+    return () => {
+      dispatch(setAlertApiParams(undefined));
+      dispatch(setNewAlertState(false, false));
+    }
+  }, []);
 
   useEffect(() => {
     setBoundingBox(
@@ -83,7 +84,6 @@ const DataLayerDashboard = () => {
     const dateRangeParams = dateRange 
       ? { start: dateRange[0], end: dateRange[1] } 
       : {};
-    dispatch(setNewOnDemandState(true,true));
     dispatch(getAllDataLayers(
       {
         order: sortByDate,
@@ -278,7 +278,7 @@ const DataLayerDashboard = () => {
                   className="btn float-end mt-1 py-0 px-1"
                   aria-label='refresh-events'
                   onClick={() => {
-                    dispatch(setNewOnDemandState(true,true));
+                    dispatch(setFilteredAlerts(allMapRequests));
                   }}
                 >
                   <i className="mdi mdi-sync"></i>
@@ -331,7 +331,7 @@ const DataLayerDashboard = () => {
               //   source: layerSource, 
               //   domain: dataDomain
               // })}
-              onDemandMapLayers={onDemandMapLayers}
+              allMapRequests={allMapRequests}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
             />

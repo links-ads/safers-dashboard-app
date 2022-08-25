@@ -48,9 +48,8 @@ export {
 export {
   getAllDataLayers,
   resetDataLayersResponseState,
-  getMapRequests,
+  postMapRequest,
   getAllMapRequests,
-  setNewOnDemandState
 } from './datalayer/action'
 export {
   getAllInSituAlerts,
