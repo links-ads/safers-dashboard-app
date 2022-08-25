@@ -82,11 +82,11 @@ export class PinLayer extends CompositeLayer {
     if (
       feature.properties.cluster
     ) {
-      console.log('CLUSTER')
-      return 'cluster';
+      //console.log('CLUSTER')
+      return 'pin'; // totally the other way round
     }
-    console.log('PIN')
-    return 'pin';
+    //console.log('PIN')
+    return 'cluster';
   }
 
   _getPinLayerIconSize(feature) {

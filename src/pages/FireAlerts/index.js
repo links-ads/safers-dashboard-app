@@ -2,14 +2,14 @@ import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card } from 'reactstrap';
-import { IconLayer } from 'deck.gl';
+//import { IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import toastr from 'toastr';
 //i18n
 import { withTranslation } from 'react-i18next'
 
-import IconClusterLayer from '../SocialMonitoring/IconClusterLayer';
+//import IconClusterLayer from '../SocialMonitoring/IconClusterLayer';
 
 import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer'
 
@@ -19,19 +19,19 @@ import Alert from './Alert';
 import Tooltip from './Tooltip';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types'
 
-import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
+//import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import SearchButton from '../../components/SearchButton';
 
-import iconMapping from '../../constants/location-icon-mapping.json';
-import iconAtlas from '../../assets/images/location-icon-atlas.png';
+//import iconMapping from '../../constants/location-icon-mapping.json';
+//import iconAtlas from '../../assets/images/location-icon-atlas.png';
 
 const PAGE_SIZE = 4;
-const ICON_MAPPING = {
-  marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
-};
+// const ICON_MAPPING = {
+//   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
+// };
 
 const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -122,7 +122,7 @@ const FireAlerts = ({ t }) => {
     selectedAlert.type = 'VALIDATED';
     dispatch(validateAlert(id));
     hideTooltip();
-    console.log('validateEvent')
+    //console.log('validateEvent')
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -132,7 +132,7 @@ const FireAlerts = ({ t }) => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.information = desc;
     dispatch(editAlertInfo(id, desc));
-    console.log('editInfo')
+    //console.log('editInfo')
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -186,7 +186,7 @@ const FireAlerts = ({ t }) => {
 
   const getIconLayer = (alerts) => {
     const data = alerts.map(alert => {
-      console.log('ALERT: ', alert);
+      //console.log('ALERT: ', alert);
       const { geometry: { features }, ...properties } = alert;
       return {
         type: 'Feature',
@@ -226,6 +226,7 @@ const FireAlerts = ({ t }) => {
   };
 
   const showTooltip = info => {
+    //('>>>>', info);
     if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
@@ -239,7 +240,7 @@ const FireAlerts = ({ t }) => {
     if (object) {
       return <Tooltip
         key={object.id}
-        object={object}
+        object={object?.properties}
         coordinate={coordinate}
         isEdit={isEdit}
         setIsEdit={setIsEdit}

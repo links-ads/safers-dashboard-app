@@ -56,7 +56,7 @@ const BaseMap = ({
   }, [layers]);
 
   const handleClick = info => {
-    console.log('INFO: ', info)
+    // console.log('INFO: ', info)
     if (info?.object?.properties?.cluster) {
       if (info.object.properties.expansion_zoom <= MAX_ZOOM)
         setViewState({
@@ -109,7 +109,7 @@ const BaseMap = ({
         <FullscreenControl style={getPosition(screenControlPosition)} />
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
         {widgets.map((widget, index) => widget(index))}
-        {renderTooltip(hoverInfo)}
+        {hoverInfo ? renderTooltip(hoverInfo) : null}
       </DeckGL>
     </>
   );
