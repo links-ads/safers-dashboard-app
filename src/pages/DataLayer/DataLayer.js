@@ -16,7 +16,7 @@ import { fetchEndpoint } from '../../helpers/apiHelper';
 import { withTranslation } from 'react-i18next'
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
-import { getBoundingBox } from '../../helpers/mapHelper';
+import { getBoundingBox, getIconLayer } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import {
@@ -27,7 +27,7 @@ import {
   VictoryScatter,
   VictoryTooltip
 } from 'victory';
-import {GeoJsonLayer} from '@deck.gl/layers';
+import {GeoJsonLayer, IconLayer} from '@deck.gl/layers';
 
 const SLIDER_SPEED = 800;
 const DataLayer = ({ t }) => {
@@ -49,7 +49,9 @@ const DataLayer = ({ t }) => {
   const [showLegend, setShowLegend] = useState(false);
   const [tempSelectedPixel, setTempSelectedPixel] = useState([]);
   const [selectedPixel, setSelectedPixel] = useState([]);
-  const [geoJsonLayerData, setGeoJsonLayerData] = useState([]);
+  const [tempGeoJsonLayerData, setTempGeoJsonLayerData] = useState(null);
+  const [geoJsonLayerData, setGeoJsonLayerData] = useState(null);
+  const [tempLayerData, setTempLayerData] = useState(null);
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -236,7 +238,7 @@ const DataLayer = ({ t }) => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
-  const generateGeoJson = ()=> {
+  const generateGeoJson = (data)=> {
     const tempGeo = new GeoJsonLayer({
       id: 'geojson-layer',
       data: [
@@ -245,44 +247,13 @@ const DataLayer = ({ t }) => {
           'properties': {},
           'geometry': {
             'type': 'Point',
-            'coordinates': tempSelectedPixel
-          }
-        },
-        {
-          'type': 'Feature',
-          'properties': {},
-          'geometry': {
-            'type': 'Polygon',
-            'coordinates': [
-              [
-                [
-                  30,
-                  10
-                ],
-                [
-                  40,
-                  40
-                ],
-                [
-                  20,
-                  40
-                ],
-                [
-                  10,
-                  20
-                ],
-                [
-                  30,
-                  10
-                ]
-              ]
-            ]
+            'coordinates': data.coordinate
           }
         }
       ],
       pointType: 'circle',
       pickable: true,
-      getPointRadius: 1000,
+      getPointRadius: 10000,
       getFillColor: [128, 128, 128, 128],
       getLineColor:[0,0,0,255],
       // getLineWidth: 5000,
@@ -291,9 +262,54 @@ const DataLayer = ({ t }) => {
       getLineWidth: 1,
       stroked:true,
       filled:true,
-    })
-    setSelectedPixel(tempSelectedPixel);
-    setGeoJsonLayerData(tempGeo)
+    });
+    getIconLayer()
+    const layer = new IconLayer({
+      id: 'IconLayer',
+      data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
+  
+      /* props from IconLayer class */
+  
+      // alphaCutoff: 0.05,
+      // billboard: true,
+      // getAngle: 0,
+      getColor: d => [Math.sqrt(d.exits), 140, 0],
+      getIcon: () => 'marker',
+      // getPixelOffset: [0, 0],
+      getPosition: d => d.coordinates,
+      getSize: () => 5,
+      iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
+      iconMapping: {
+        marker: {
+          x: 0,
+          y: 0,
+          width: 128,
+          height: 128,
+          anchorY: 128,
+          mask: true
+        }
+      },
+      // onIconError: null,
+      // sizeMaxPixels: Number.MAX_SAFE_INTEGER,
+      // sizeMinPixels: 0,
+      sizeScale: 8,
+      // sizeUnits: 'pixels',
+  
+      /* props inherited from Layer class */
+  
+      // autoHighlight: false,
+      // coordinateOrigin: [0, 0, 0],
+      // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+      // highlightColor: [0, 0, 128, 128],
+      // modelMatrix: null,
+      // opacity: 1,
+      pickable: true,
+      // visible: true,
+      // wrapLongitude: false,
+    });
+    setTempLayerData(layer);
+    setTempSelectedPixel(data.coordinate);
+    setTempGeoJsonLayerData(tempGeo);
   }
 
   const prev = [
@@ -306,7 +322,7 @@ const DataLayer = ({ t }) => {
   ];
 
   const xAxisLabelFormatter = (tick, index, ticks) => {
-    console.log(ticks);
+    console.log(ticks, dataLayers, currentLayer);
     const [year, month] = tick.split('-');
     return moment()
       .year(year)
@@ -437,19 +453,19 @@ const DataLayer = ({ t }) => {
           <Card className='map-card mb-0' style={{ height: 670 }}>
             <ContextMenuTrigger id={'map'}>
               <BaseMap
-                layers={[bitmapLayer, geoJsonLayerData]}
+                layers={[bitmapLayer, tempGeoJsonLayerData, tempLayerData]}
                 initialViewState={viewState}
                 widgets={[]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
-                onClick={(data) => { console.log(data); setTempSelectedPixel(data.coordinate) }}
+                onClick={generateGeoJson}
               />
             </ContextMenuTrigger>
             <ContextMenu id={'map'} className="menu">
-              <MenuItem className="menuItem" onClick={generateGeoJson}>
+              <MenuItem className="menuItem" onClick={()=> { setSelectedPixel(tempSelectedPixel); setGeoJsonLayerData(null);} }>
                 Display Layer Info
               </MenuItem>
-              <MenuItem className="menuItem">
+              <MenuItem className="menuItem" onClick={()=> { setSelectedPixel([]); setGeoJsonLayerData(tempGeoJsonLayerData); }}>
                 Time Series Chart
               </MenuItem>
             </ContextMenu>
@@ -458,10 +474,12 @@ const DataLayer = ({ t }) => {
           </Card>
         </Col>
       </Row>      
-      {selectedPixel?.length > 0 && <div className='m-2 sign-up-aoi-map-bg'>Pixel: {selectedPixel.join(', ')}</div>}
-      <div  className='m-2 sign-up-aoi-map-bg'>
+      {selectedPixel?.length > 0 && <div className='m-2 sign-up-aoi-map-bg'>Pixel: {selectedPixel.join(', ').replace(/\d+\.\d+/g, function(match) {
+        return Number(match).toFixed(6);
+      })}</div>}
+      {geoJsonLayerData && <div  className='m-2 sign-up-aoi-map-bg d-flex'>
         <div className='w-50'>
-          <VictoryChart>
+          <VictoryChart style={{ bar: { size: 50, width: 100, strokeWidth: 100,}}}>
             <VictoryAxis
               tickValues={tickValues}
               tickFormat={xAxisLabelFormatter}
@@ -469,13 +487,34 @@ const DataLayer = ({ t }) => {
             />
             <VictoryAxis dependentAxis size={50} style={{ data: { stroke: '#F47938' } }} />
 
-            <VictoryLine data={prev} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
+            <VictoryLine data={prev} size={20} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
               pointerLength={0}/>} />
             <VictoryScatter size={5} data={prev} labelComponent={<VictoryTooltip cornerRadius={2}
               pointerLength={0}/>} />
           </VictoryChart>
         </div>
-      </div>
+        <div className='w-50' style={{lineHeight: '30px'}}>
+          <div>
+            <strong>Time Interval: </strong> 2000-05-01-2022-05-1
+          </div>
+          <div>
+            <strong>Mean Value: </strong> 32
+          </div>
+          <div>
+            <strong>Highest Value: </strong> 48
+          </div>
+          <div>
+            <strong>Highest Value Date: </strong> 2015-05-01
+          </div>
+          <div>
+            <strong>Lowest Value: </strong> 17
+          </div>
+          <div>
+            <strong>Lowest Value Date: </strong> 2017-05-01
+          </div>
+          
+        </div>
+      </div>}
     </div >
   );
 }
