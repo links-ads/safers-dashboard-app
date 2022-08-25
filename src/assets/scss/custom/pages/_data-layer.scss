@@ -42,3 +42,18 @@
 .props-line {
     margin: 0;
 }
+
+.timestamp-container {
+    position: absolute;
+    z-index: 100;
+    bottom: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timestamp-display {
+    font-size: 1.5rem;
+    color: $orange;
+}

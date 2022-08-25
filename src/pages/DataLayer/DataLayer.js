@@ -9,7 +9,7 @@ import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllDataLayers } from '../../store/appAction';
 
 import TreeView from './TreeView';
-import { filterNodesByProperty } from '../../store/utility';
+import { filterNodesByProperty, formatDate } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 
 //i18n
@@ -30,10 +30,12 @@ import {
 import {GeoJsonLayer, IconLayer} from '@deck.gl/layers';
 
 const SLIDER_SPEED = 800;
-const DataLayer = ({ t }) => {
+const DataLayer = ({ t, searchDataLayers }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const dataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const globalDataLayers = useSelector(state => state.dataLayer.dataLayers);
   const dateRange = useSelector(state => state.common.dateRange);
+
+  const [dataLayers, setDataLayers] = useState([]);
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -47,6 +49,8 @@ const DataLayer = ({ t }) => {
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
+  const [timestamp, setTimestamp] = useState('')
+
   const [tempSelectedPixel, setTempSelectedPixel] = useState([]);
   const [selectedPixel, setSelectedPixel] = useState([]);
   const [tempGeoJsonLayerData, setTempGeoJsonLayerData] = useState(null);
@@ -66,7 +70,15 @@ const DataLayer = ({ t }) => {
       ])
       setSelectOptions({ sourceOptions, domainOptions })
     })()
-  }, [])
+  }, []);
+
+  // places global data layers into local state, 
+  // so that search filtering can then be applied
+  useEffect(() => {
+    if (!dataLayers?.length) {
+      setDataLayers(globalDataLayers);
+    }
+  }, [globalDataLayers]);
 
   useEffect(() => {
     setBoundingBox(
@@ -87,9 +99,13 @@ const DataLayer = ({ t }) => {
   useEffect(() => {
     if (sliderChangeComplete && currentLayer && currentLayer.urls) {
       const urls = getUrls();
+      const timestamps = getTimestamps();
       if (urls[sliderValue]) {
         const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
         setBitmapLayer(getBitmapLayer(imageUrl));
+      }
+      if (timestamps[sliderValue]) {
+        setTimestamp(timestamps[sliderValue]);
       }
     }
   }, [sliderValue, sliderChangeComplete]);
@@ -141,7 +157,13 @@ const DataLayer = ({ t }) => {
     ));
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
-  const getUrls = () => Object.values(currentLayer?.urls);
+  const getUrls = () => {
+    return Object.values(currentLayer?.urls)
+  };
+
+  const getTimestamps = () => {
+    return Object.keys(currentLayer?.urls)
+  }
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {
@@ -208,6 +230,18 @@ const DataLayer = ({ t }) => {
           />
         </div>
       );
+    }
+  }
+
+  const getCurrentTimestamp = () => {
+    if (timestamp) {
+      return (
+        <div className='timestamp-container'>
+          <p className='timestamp-display'>
+            {formatDate(timestamp)}
+          </p>
+        </div>
+      )
     }
   }
 
@@ -350,9 +384,6 @@ const DataLayer = ({ t }) => {
       }
       <Row>
         <Col xl={5}>
-          {/* <Row>
-              <p className='align-self-baseline alert-title'>{t('Data Layers', { ns: 'dataLayers' })}</p>
-            </Row> */}
           <Row>
             <Col xl={10}>
               <Row>
@@ -425,8 +456,11 @@ const DataLayer = ({ t }) => {
                 <Input
                   id="searchEvent"
                   name="searchEvent"
-                  placeholder="Search by relation to an event"
+                  placeholder="Search by keyword"
                   autoComplete="on"
+                  onChange={({target: {value}}) => searchDataLayers(
+                    value, globalDataLayers, setDataLayers
+                  )}
                 />
               </InputGroup>
             </Col>
@@ -471,6 +505,7 @@ const DataLayer = ({ t }) => {
             </ContextMenu>
             {getSlider()}
             {getLegend()}
+            {getCurrentTimestamp()}
           </Card>
         </Col>
       </Row>      
@@ -519,8 +554,9 @@ const DataLayer = ({ t }) => {
   );
 }
 
-
-
-export default withTranslation(['common'])(DataLayer); DataLayer.propTypes = {
+DataLayer.propTypes = {
   t: PropTypes.any,
+  searchDataLayers: PropTypes.func
 }
+
+export default withTranslation(['common'])(DataLayer);

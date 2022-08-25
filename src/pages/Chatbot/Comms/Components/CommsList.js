@@ -9,7 +9,7 @@ import Comm from './Comm';
 
 const MAP_TYPE = 'reports';
 
-const CommsList = ({ reportId, currentZoomLevel, setViewState, setReportId, setIconLayer }) => {
+const CommsList = ({ commID, currentZoomLevel, setViewState, setCommID, setIconLayer }) => {
   const { allComms, filteredComms } = useSelector(state => state.comms);
   const [pageData, setPageData] = useState([]);
 
@@ -18,19 +18,19 @@ const CommsList = ({ reportId, currentZoomLevel, setViewState, setReportId, setI
 
   const setSelectedComm = (mission_id) => {
     if (mission_id) {
-      setReportId(mission_id);
+      setCommID(mission_id);
       let copyCommList = _.cloneDeep(commList);
-      let selectedComm = _.find(copyCommList, { mission_id });
+      let selectedComm = _.find(copyCommList, { id: mission_id });
       selectedComm.isSelected = true;
       setIconLayer(getIconLayer(copyCommList, MAP_TYPE));
       setViewState(getViewState(selectedComm.location, currentZoomLevel))
     } else {
-      setReportId(undefined);
+      setCommID(undefined);
       setIconLayer(getIconLayer(commList, MAP_TYPE));
     }
   }
   const updatePage = data => {
-    setReportId(undefined);
+    setCommID(undefined);
     setIconLayer(getIconLayer(data, MAP_TYPE));
     setPageData(data);
   };
@@ -43,7 +43,7 @@ const CommsList = ({ reportId, currentZoomLevel, setViewState, setReportId, setI
             <Comm
               key={comm.mission_id}
               card={comm}
-              reportId={reportId}
+              commID={commID}
               setSelectedComm={setSelectedComm}
             />)
         }
@@ -55,10 +55,10 @@ const CommsList = ({ reportId, currentZoomLevel, setViewState, setReportId, setI
 }
 
 CommsList.propTypes = {
-  reportId: PropTypes.any,
+  commID: PropTypes.any,
   currentZoomLevel: PropTypes.any,
   setViewState: PropTypes.func,
-  setReportId: PropTypes.func,
+  setCommID: PropTypes.func,
   setIconLayer: PropTypes.func,
 }
 

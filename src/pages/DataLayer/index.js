@@ -15,6 +15,19 @@ const dataLayerPanels = {
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState(dataLayerPanels.DATA_LAYER);
+
+  const searchDataLayers = (value, data, callback) => {
+    if (!value) callback(data);
+  
+    // 'text' property is used as it appears in 
+    // both Operational and On-Demand layers
+    const searchResult = data.filter(
+      layer => layer.text.toLowerCase().includes(value.toLowerCase())
+    );
+  
+    callback(searchResult);
+  };
+
   return(
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
@@ -48,13 +61,14 @@ const DataLayerDashboard = () => {
         </Row>
         <TabContent activeTab={activeTab}>
           <TabPane tabId={dataLayerPanels.DATA_LAYER}>
-            <DataLayer t={t} />
+            <DataLayer t={t} searchDataLayers={searchDataLayers} />
           </TabPane>
           <TabPane tabId={dataLayerPanels.ON_DEMAND_DATA_LAYER}>
             <OnDemandDataLayer
               t={t}
               setActiveTab={setActiveTab} 
-              dataLayerPanels={dataLayerPanels}  
+              dataLayerPanels={dataLayerPanels}
+              searchDataLayers={searchDataLayers}
             />
           </TabPane>
           <TabPane tabId={dataLayerPanels.FIRE_AND_BURNED_AREA}>
