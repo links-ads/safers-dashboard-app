@@ -8,9 +8,12 @@ export const getFilteredRec = (allRecords, filters, sort) => {
   const filterNames = Object.keys(filters);
   filterNames.forEach((key) => {
     if(filters[key] !== ''){
-      actFiltered = actFiltered.filter((o) => o[key] == filters[key]);
+      actFiltered = actFiltered.filter((o) => {
+        return o[key] == filters[key]
+      });
     }
   });
+
   actFiltered = _.orderBy(actFiltered , [(o) => new Date(o[sort.fieldName])], [sort.order]);
   return actFiltered;
 }

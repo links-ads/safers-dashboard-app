@@ -1,11 +1,12 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
-import { setFavorite } from '../../../../store/reports/action';
+import { setFavorite, setFilterdReports } from '../../../../store/reports/action';
+import { getFilteredRec } from '../../filter';
 import Report from './Report';
 
 const MAP_TYPE = 'reports';
@@ -16,14 +17,30 @@ const ReportList = ({
   setViewState, 
   setReportId, 
   setIconLayer,
-  assignmentSort
+  assignmentSort,
+  category,
+  sortOrder
 }) => {
   const { allReports: OrgReportList, filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
 
+  console.log('pageData: ', pageData);
+
   const dispatch = useDispatch();
 
   const allReports = filteredReports || OrgReportList;
+
+  useEffect(() => {
+    // if(pageData.length > 0) {
+    const filters = { 
+      additional_info: category, 
+      assignmentSort 
+    };
+    const sort = { fieldName: 'timestamp', order: sortOrder };
+    const actFiltered = getFilteredRec(allReports, filters, sort);
+    dispatch(setFilterdReports(actFiltered));
+    // }
+  }, [category, assignmentSort, sortOrder])
 
   const setFavoriteFlag = (id) => {
     let selectedReport = _.find(pageData, { id });
@@ -50,23 +67,11 @@ const ReportList = ({
     setPageData(data);
   };
 
-  const filterByAssignment = data => {
-    if (assignmentSort === 'assigned') {
-      return data.filter(datum => Boolean(datum.mission_id))
-    } else {
-      return data.filter(datum => !datum.mission_id)
-    }
-  };
-
-  const filteredData = assignmentSort === 'all' 
-    ? pageData 
-    : filterByAssignment(pageData);
-
   return (
     <>
       <Row>
         {
-          filteredData.map((report) => (
+          pageData.map((report) => (
             <Report
               key={report.report_id}
               card={report}
@@ -89,7 +94,9 @@ ReportList.propTypes = {
   setViewState: PropTypes.func,
   setReportId: PropTypes.func,
   setIconLayer: PropTypes.func,
-  assignmentSort: PropTypes.string
+  assignmentSort: PropTypes.string,
+  category: PropTypes.string,
+  sortOrder: PropTypes.string
 }
 
 export default ReportList;

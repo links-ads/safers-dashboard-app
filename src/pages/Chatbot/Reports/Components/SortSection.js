@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { CATEGORIES } from './filters';
+import { fetchEndpoint } from '../../../../helpers/apiHelper'
 
 //i18N
 import { withTranslation } from 'react-i18next';
@@ -18,6 +18,16 @@ const SortSection = ({
   setAssignmentSort
 }) => {
   const { allReports } = useSelector(state => state.reports);
+  const [selectOptions, setSelectOptions] = useState([]);
+
+  //fetch data to populate 'Categories' select
+  useEffect(() => {
+    (async () => {
+      const categories = await fetchEndpoint('/chatbot/reports/categories');
+      setSelectOptions(categories)
+    })()
+  }, []);
+
   return (
     <>
       <Row className=''>
@@ -28,9 +38,9 @@ const SortSection = ({
             value={assignmentSort}
             onChange={({ target: { value } }) => setAssignmentSort(value)}
           >
-            <option value='all'>All</option>
-            <option value='assigned'>Assigned to Mission</option>
-            <option value='unassigned'>Unassigned to Mission</option>
+            <option value='all'>{t('All')}</option>
+            <option value='assigned'>{t('Assigned to Mission')}</option>
+            <option value='unassigned'>{t('Unassigned to Mission')}</option>
           </Input>
         </Col>
         <Col xl={5} />
@@ -73,16 +83,18 @@ const SortSection = ({
             id="category"
             className="btn-sm sort-select-input text-capitalize"
             name="category"
-            placeholder="Source"
+            placeholder="Category"
             type="select"
-            onChange={(e) => setCategory(e.target.value)}
-            value={reportSource}
-            data-testid='reportAlertSource'
-          >
-            <option value={''} >{t('Category')}</option>
-            {
-              CATEGORIES.map((cat, index) => (<option key={index} value={cat}>{cat}</option>))
+            onChange={({ target: { value } }) => 
+              setCategory(value.toLowerCase())
             }
+            value={reportSource}
+            data-testid='reportAlertCategory'
+          >
+            <option value={''}>{t('Category')}: All</option>
+            {selectOptions.map((option) => (
+              <option key={option} value={option}>{t('Category')}: {option}</option>
+            ))}
           </Input>
         </Col>
       </Row>

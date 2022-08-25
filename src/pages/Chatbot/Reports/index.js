@@ -24,15 +24,15 @@ const Reports = () => {
   const [reportId, setReportId] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortOrder, setSortOrder] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState('');
   const [reportSource, setReportSource] = useState(undefined);
-  const [category, setCategory] = useState(undefined);
+  const [category, setCategory] = useState('');
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [assignmentSort, setAssignmentSort] = useState('all')
+  const [assignmentSort, setAssignmentSort] = useState('')
 
   const dispatch = useDispatch();
 
@@ -118,6 +118,8 @@ const Reports = () => {
                 setReportId={setReportId}
                 setIconLayer={setIconLayer} 
                 assignmentSort={assignmentSort}
+                category={category}
+                sortOrder={sortOrder}
               />
             </Col>
           </Row>
