@@ -341,8 +341,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
     })
   }
 
-  function xmlToJson(xml) {
-	
+  function xmlToJson(xml) {	
     // Create the return object
     var obj = {};
   
@@ -377,6 +376,17 @@ const DataLayer = ({ t, searchDataLayers }) => {
       }
     }
     return obj;
+  }
+
+  const toggleDisplayLayerInfo = () => {
+    setSelectedPixel(tempSelectedPixel);
+    setLayerData(null);
+  }
+
+  const toggleTimeSeriesChart = () => {
+    setSelectedPixel([]);
+    setLayerData(tempLayerData);
+    apiFetch();
   }
 
   return (
@@ -507,10 +517,10 @@ const DataLayer = ({ t, searchDataLayers }) => {
               />
             </ContextMenuTrigger>
             <ContextMenu id={'map'} className="menu">
-              <MenuItem className="menuItem" onClick={()=> { setSelectedPixel(tempSelectedPixel); setLayerData(null) } }>
+              <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
                 Display Layer Info
               </MenuItem>
-              <MenuItem className="menuItem" onClick={()=> { setSelectedPixel([]); setLayerData(tempLayerData); apiFetch() }}>
+              <MenuItem className="menuItem" onClick={toggleTimeSeriesChart}>
                 Time Series Chart
               </MenuItem>
             </ContextMenu>
