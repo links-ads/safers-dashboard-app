@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="48mm"
+   height="24mm"
+   viewBox="0 0 48 24"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.1.1 (3bf5ae0d25, 2021-09-20)"
+   sodipodi:docname="pins.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:document-units="mm"
+     showgrid="false"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0"
+     inkscape:zoom="2.0460068"
+     inkscape:cx="-17.59525"
+     inkscape:cy="27.12601"
+     inkscape:window-width="1920"
+     inkscape:window-height="1001"
+     inkscape:window-x="-9"
+     inkscape:window-y="-9"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2">
+    <style
+       id="style835">.cls-1{fill:#e91e63;}</style>
+  </defs>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-0.09999001,0.1731433)">
+    <path
+       class="cls-1"
+       d="M 11.881939,0.15355487 A 11.659727,11.659727 0 0 0 0.22930698,11.806172 c 0,6.430261 5.47105732,11.652631 11.65263202,11.652631 2.913151,0 7.993408,-1.811846 11.652617,0 V 11.806172 A 11.659727,11.659727 0 0 0 11.881939,0.15355487 Z"
+       id="path841"
+       style="fill:#000000;stroke-width:0.355262" />
+    <circle
+       style="fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:0.678997"
+       id="path870"
+       cx="35.587891"
+       cy="11.806179"
+       r="11.38119" />
+  </g>
+</svg>
