@@ -198,7 +198,7 @@ const FireAlerts = ({ t }) => {
       setViewState,
       getPosition: feature => feature.geometry.coordinates,
       getPinColor: () => [72, 169, 197, 255],
-      getPinIcon: () => 'alert',
+      getPinIcon: () => 'notification',
       pointType: 'icon',
       clusterIconSize: 50,
       onGroupClick: true,
