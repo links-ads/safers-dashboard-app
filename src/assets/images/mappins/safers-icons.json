@@ -4,55 +4,62 @@
         "y": 0,
         "width": 24,
         "height": 24,
-        "mask": false
+        "mask": true
     },
-    "notification": {
+    "target": {
         "x": 25,
         "y": 0,
         "width": 24,
         "height": 24,
-        "mask": false
+        "mask": true
     },
-    "mission": {
+    "people": {
         "x": 50,
         "y": 0,
         "width": 24,
         "height": 24,
-        "mask": false
+        "mask": true
     },
-    "alert": {
+    "twitter": {
         "x": 75,
         "y": 0,
         "width": 24,
         "height": 24,
-        "mask": false
+        "mask": true
     },
-    "people": {
+    "fire": {
         "x": 100,
         "y": 0,
         "width": 24,
         "height": 24,
-        "mask": false
+        "mask": true
     },
-    "twitter": {
+    "flag": {
         "x": 125,
         "y": 0,
         "width": 24,
         "height": 24,
-        "mask": false
+        "mask": true
     },
     "report": {
         "x": 150,
         "y": 0,
         "width": 24,
         "height": 24,
-        "mask": false
+        "mask": true
     },
     "communications": {
         "x": 175,
         "y": 0,
         "width": 24,
         "height": 24,
-        "mask": false
+        "mask": true
+    },
+    "group": {
+        "x": 200,
+        "y": 0,
+        "width": 24,
+        "height": 24,
+        "mask": true
     }
 }

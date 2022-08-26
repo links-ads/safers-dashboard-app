@@ -2,16 +2,15 @@
   "pin": {
     "x": 0,
     "y": 0,
-    "width": 40,
-    "height": 50,
-    "anchorY": 25,
+    "width": 66,
+    "height": 66,
     "mask": true
   },
   "cluster": {
-    "x": 41,
+    "x": 66,
     "y": 0,
-    "width": 60,
-    "height": 60,
+    "width": 66,
+    "height": 66,
     "mask": true
   }
 }

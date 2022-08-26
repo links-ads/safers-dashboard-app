@@ -1,6 +1,6 @@
-import { getGeojsonFeatures } from '@deck.gl/layers/dist/es5/geojson-layer/geojson';
+import { getGeojsonFeatures } from "@deck.gl/layers/dist/es5/geojson-layer/geojson";
 
-import { PinLayer } from './PinLayer';
+import { PinLayer } from "./PinLayer";
 
 export class GeoJsonPinLayer extends PinLayer {
   updateState({ props, oldProps, changeFlags }) {
@@ -13,7 +13,7 @@ export class GeoJsonPinLayer extends PinLayer {
   }
 }
 
-GeoJsonPinLayer.layerName = 'GeoJsonPinLayer';
+GeoJsonPinLayer.layerName = "GeoJsonPinLayer";
 GeoJsonPinLayer.defaultProps = {
-  getPosition: { type: 'accessor', value: x => x.geometry.coordinates },
+  getPosition: { type: "accessor", value: (x) => x.geometry.coordinates },
 };
