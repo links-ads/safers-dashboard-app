@@ -39,7 +39,7 @@ const PostEventMonitoring = ({
     const payload = {
       data_types: formData.dataLayerType,
       geometry: formData.mapSelection,
-      name: formData.requestTitle,
+      title: formData.requestTitle,
       parameters: {
         start: `${formData.startDate}T00:00:00.000`,
         end: `${formData.endDate}T00:00:00.000`,

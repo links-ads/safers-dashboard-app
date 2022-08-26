@@ -50,6 +50,7 @@ export {
   resetDataLayersResponseState,
   postMapRequest,
   getAllMapRequests,
+  setNewMapRequestState,
 } from './datalayer/action'
 export {
   getAllInSituAlerts,
@@ -69,3 +70,10 @@ export {
   getWeatherStats,
   getWeatherVariables
 } from './dashboard/action'
+export {
+  getAllNotifications,
+  getAllNotificationSources,
+  setNotificationParams,
+  resetNotificationApiParams,
+  setNewNotificationState
+} from './notifications/action'

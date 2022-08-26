@@ -8,8 +8,14 @@ const initialState = {
   success: null,
   mapRequest: {},
   allMapRequests: [],
-  isPageActive: false, // form is open
-  isNewAlert: false // data has changed
+  filteredMapRequests: [],
+  params: {
+    order: '-date',
+    default_bbox: true,
+    default_date: false
+  },
+  isPageActive: false,
+  isNewAlert: false
 };
 
 const dataLayerReducer = (state = initialState, action) => {
@@ -20,7 +26,11 @@ const dataLayerReducer = (state = initialState, action) => {
   case actionTypes.POST_MAP_REQUESTS_SUCCESS: return postMapRequestSuccess(state, action);
   case actionTypes.POST_MAP_REQUESTS_FAIL: return postMapRequestFail(state, action);
   case actionTypes.GET_ALL_MAP_REQUESTS_SUCCESS: return getAllMapRequestsSuccess(state, action);
-  case actionTypes.GET_ALL_MAP_REQUESTS_FAIL: return getAllMapRequestsFail(state,action);
+  case actionTypes.GET_ALL_MAP_REQUESTS_FAIL: return getAllMapRequestsFail(state, action);
+  case actionTypes.SET_NEW_MAP_REQUEST_STATE: return setNewMapRequestState(state, action);
+  case actionTypes.GET_ALL_FILTERED_MAP_REQUESTS_SUCCESS: return getAllFilteredMapRequestsSuccess(state, action);
+  case actionTypes.GET_ALL_FILTERED_MAP_REQUESTS_FAIL: return getAllFilteredMapRequestsFail(state, action);
+  case actionTypes.SET_MAP_REQUEST_PARAMS: return setMapRequestsParams(state, action)
   default:
     return state;
   }
@@ -74,6 +84,37 @@ const getAllMapRequestsSuccess = (state, action) => {
 const getAllMapRequestsFail = (state) => {
   const updatedState = {
     error: true,
+  }
+  return updateObject(state, updatedState);
+}
+
+// All Filtered Map requests (GET)
+const getAllFilteredMapRequestsSuccess = (state, action) => {
+  const updatedState = {
+    filteredMapRequests: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const getAllFilteredMapRequestsFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
+
+const setMapRequestsParams = (state, action) => {
+  const updatedState = {
+    params: action,
+  }
+  return updateObject(state, updatedState);
+}
+
+const setNewMapRequestState = (state, action) => {
+  const updatedState = {
+    isNewMapRequest: action.isNewMapRequest,
+    isPageActive: action.isPageActive,
+    newItemsCount: action.newItemsCount
   }
   return updateObject(state, updatedState);
 }

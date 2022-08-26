@@ -7,30 +7,53 @@ import {
   getAllFireAlerts, 
   setNewAlertState, 
   getAllEventAlerts, 
-  setNewEventState, 
+  setNewEventState,
+  getAllNotifications,
+  setNewNotificationState,
+  getAllMapRequests,
+  setNewMapRequestState
 } from '../store/appAction';
-import { getAllNotifications, setNewNotificationState } from '../store/notifications/action';
-import { getAllMapRequests } from '../store/datalayer/action';
- 
 
 const MILLISECONDS = 1000;
 const pollingHelper = (props) => {
   const dispatch = useDispatch();
   const timer = useRef(null)
+
+  // Map Requests
+  const {
+    allMapRequests,
+    params: mapRequestParams,
+    isPageActive: isMapRequestPageActive
+  } = useSelector(state => state.dataLayer);
+
+  // Alerts
+  const {
+    allAlerts,
+    params: alertParams,
+    isPageActive: isAlertPageActive,
+  } = useSelector(state => state.alerts);
+
+  // Events
+  const { 
+    allAlerts: allEvents, 
+    params: eventParams, 
+    isPageActive: isEventPageActive 
+  } = useSelector(state => state.eventAlerts);
+
+  // Notifications ?? But in app there are more?
+  const { 
+    allNotifications, 
+    params: notificationParams, 
+    isPageActive: isNotificationPageActive 
+  } = useSelector(state => state.notifications);
+
   const {config, dateRange} = useSelector(state => state.common);
   const pollingFrequency = config ? config.polling_frequency : undefined;
-  const allAlerts = useSelector(state => state.alerts.allAlerts);
-  const alertParams = useSelector(state => state.alerts.params);
-  const isAlertPageActive = useSelector(state => state.alerts.isPageActive);
-  const [currentAlertCount, setCurrentAlertCount] = useState(undefined);
 
-  const allEvents = useSelector(state => state.eventAlerts.allAlerts);
-  const eventParams = useSelector(state => state.eventAlerts.params);
-  const isEventPageActive = useSelector(state => state.eventAlerts.isPageActive);
+  const [currentAlertCount, setCurrentAlertCount] = useState(undefined);
   const [currentEventCount, setCurrentEventCount] = useState(undefined);
-  const { allNotifications, params:notificationParams } = useSelector(state => state.notifications);
-  const isNotificationPageActive = useSelector(state => state.notifications.isPageActive);
   const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
+  const [currentMapRequestCount, setCurrentMapRequestCount] = useState(undefined);
 
   let dateRangeParams = {};
 
@@ -45,7 +68,7 @@ const pollingHelper = (props) => {
     dispatch(getAllFireAlerts({...alertParams, ...dateRangeParams}));
     dispatch(getAllEventAlerts({...eventParams, ...dateRangeParams}));
     dispatch(getAllNotifications({...notificationParams, ...dateRangeParams}));
-    dispatch(getAllMapRequests());
+    dispatch(getAllMapRequests({...notificationParams, ...mapRequestParams}));
   };
 
   useEffect(() => {
@@ -63,7 +86,7 @@ const pollingHelper = (props) => {
   }, [alertParams, eventParams, notificationParams]);
 
   useEffect(() => {
-    var newAlertsCount = allAlerts.length
+    const newAlertsCount = allAlerts.length
     if (currentAlertCount && newAlertsCount > currentAlertCount) {
       let difference = newAlertsCount - currentAlertCount;
       if (!isAlertPageActive)
@@ -73,7 +96,7 @@ const pollingHelper = (props) => {
   }, [allAlerts]);
   
   useEffect(() => {
-    var newEventsCount = allEvents.length
+    const newEventsCount = allEvents.length
     if (currentEventCount && newEventsCount > currentEventCount) {
       let difference = newEventsCount - currentEventCount;
       if (!isEventPageActive)
@@ -83,7 +106,7 @@ const pollingHelper = (props) => {
   }, [allEvents]);
 
   useEffect(() => {
-    var newNotificationsCount = allNotifications.length
+    const newNotificationsCount = allNotifications.length
     if (currentNotificationCount && newNotificationsCount > currentNotificationCount) {
       let difference = newNotificationsCount - currentNotificationCount;
       if (!isNotificationPageActive)
@@ -91,6 +114,17 @@ const pollingHelper = (props) => {
     }
     setCurrentNotificationCount(newNotificationsCount);
   }, [allNotifications]);
+
+  useEffect(() => {
+    const newMapRequestCount = allMapRequests.length
+    if (currentMapRequestCount && newMapRequestCount > 
+    currentMapRequestCount) {
+      let difference = newMapRequestCount - currentMapRequestCount;
+      if (!isMapRequestPageActive)
+        dispatch(setNewMapRequestState(true, false, difference));
+    }
+    setCurrentMapRequestCount(newMapRequestCount);
+  }, [allMapRequests]);
 
   return (
     <>

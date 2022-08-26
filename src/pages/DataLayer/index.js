@@ -2,6 +2,7 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FlyToInterpolator } from 'deck.gl';
 import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
+import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 import { BitmapLayer } from 'deck.gl';
 import moment from 'moment';
@@ -19,8 +20,6 @@ import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { setFilteredAlerts } from '../../store/alerts/action';
 
-// TODO: check domain/source filtering is still working!!!
-
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -29,8 +28,7 @@ const DataLayerDashboard = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dataLayers = useSelector(state => state.dataLayer.dataLayers);
   const dateRange = useSelector(state => state.common.dateRange);
-
-  const allMapRequests = useSelector(state=> state?.dataLayer?.allMapRequests)
+  const { allMapRequests, isNewAlert } = useSelector(state=> state?.dataLayer);
 
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -61,13 +59,18 @@ const DataLayerDashboard = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(getAllMapRequests());
     dispatch(setNewAlertState(false, true));
     return () => {
       dispatch(setAlertApiParams(undefined));
       dispatch(setNewAlertState(false, false));
     }
   }, []);
+
+  useEffect(() => {
+    if (isNewAlert) {
+      toastr.success('New events are received. Please refresh the list.', '', { preventDuplicates: true, });
+    }
+  }, [isNewAlert]);
 
   useEffect(() => {
     setBoundingBox(
@@ -84,19 +87,21 @@ const DataLayerDashboard = () => {
     const dateRangeParams = dateRange 
       ? { start: dateRange[0], end: dateRange[1] } 
       : {};
-    dispatch(getAllDataLayers(
-      {
-        order: sortByDate,
-        source: layerSource ? layerSource : undefined,
-        domain: dataDomain ? dataDomain : undefined,
-        start: dateRange[0],
-        end: dateRange[1],
-        default_start: false,
-        default_end: false,
-        default_bbox: false,
-        ...dateRangeParams,
-      }
-    ));
+
+    const options = {
+      order: sortByDate,
+      source: layerSource ? layerSource : undefined,
+      domain: dataDomain ? dataDomain : undefined,
+      start: dateRange[0],
+      end: dateRange[1],
+      default_start: false,
+      default_end: false,
+      default_bbox: false,
+      ...dateRangeParams,
+    }
+      
+    dispatch(getAllDataLayers(options));
+    dispatch(getAllMapRequests(options, true))
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
   useEffect(() => {
@@ -267,12 +272,10 @@ const DataLayerDashboard = () => {
         <Row>
           <Col xl={5} className='mb-3'>
             <Row className='d-flex align-items-baseline'>
-              <Col xl={4}>
-                <p className='align-self-baseline alert-title'>
+              <Col xl={4} className='d-flex align-items-baseline'>
+                <p className='alert-title'>
                   {t('Data Layers')}
                 </p>
-              </Col>
-              <Col xl={2}>
                 <button
                   type="button"
                   className="btn float-end mt-1 py-0 px-1"
@@ -326,12 +329,10 @@ const DataLayerDashboard = () => {
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
             <OnDemandDataLayer
-              // TODO: Disabled for now as data not yet provided by API
-              // onDemandMapLayers={filterNodesByProperty(onDemandMapLayers, {
-              //   source: layerSource, 
-              //   domain: dataDomain
-              // })}
-              allMapRequests={allMapRequests}
+              mapRequests={filterNodesByProperty(allMapRequests, {
+                source: layerSource, 
+                domain: dataDomain
+              })}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
             />

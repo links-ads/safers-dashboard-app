@@ -78,3 +78,48 @@ const getAllMapRequestsFail = (error) => {
     payload: error
   };
 };
+
+// get All Filtered Map Requests (GET)
+export const getAllFilteredMapRequests = (options) => async (dispatch) => {
+  const url = endpoints.dataLayers.mapRequests.concat('?', queryString.stringify(options))
+  
+  // TODO: Why this not being triggered?
+
+  const response = await api.get(url);
+
+  if (response.status === 200) {
+    return dispatch(getAllFilteredMapRequestsSuccess(response.data));
+  }
+  else
+    return dispatch(getAllFilteredMapRequestsFail(response.error));
+};
+
+export const setNewMapRequestState = (eventState, pageState, newItemsCount) => {
+  return {
+    type: actionTypes.SET_NEW_MAP_REQUEST_STATE,
+    isNewEvent: eventState,
+    isPageActive: pageState,
+    newItemsCount
+  }
+};
+
+const getAllFilteredMapRequestsSuccess = (mapRequests) => {
+  return {
+    type: actionTypes.GET_ALL_FILTERED_MAP_REQUESTS_SUCCESS,
+    payload: mapRequests
+  };
+};
+
+const getAllFilteredMapRequestsFail = (error) => {
+  return {
+    type: actionTypes.GET_ALL_FILTERED_MAP_REQUESTS_FAIL,
+    payload: error
+  };
+};
+
+export const setMapRequestParams = (payload) => {
+  return {
+    type: actionTypes.SET_MAP_REQUEST_PARAMS,
+    payload,
+  };
+};

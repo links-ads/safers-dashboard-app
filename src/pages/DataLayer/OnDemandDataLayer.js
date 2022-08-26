@@ -12,7 +12,7 @@ import { DATA_LAYERS_PANELS } from './constants';
 
 const OnDemandDataLayer = ({ 
   t,
-  onDemandMapLayers,
+  mapRequests,
   sourceOptions,
   domainOptions,
   setActiveTab,
@@ -179,7 +179,7 @@ const OnDemandDataLayer = ({
                 zIndex: '100' 
               }}>
                 <OnDemandTreeView
-                  data={onDemandMapLayers}
+                  data={mapRequests}
                   setCurrentLayer={setCurrentLayer}
                 />
               </SimpleBar>
@@ -206,7 +206,7 @@ const OnDemandDataLayer = ({
 
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
-  onDemandMapLayers: PropTypes.any,
+  mapRequests: PropTypes.any,
   sourceOptions: PropTypes.array,
   domainOptions: PropTypes.array,
   setActiveTab: PropTypes.func,
