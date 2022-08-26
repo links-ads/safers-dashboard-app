@@ -27,7 +27,6 @@ import {
   VictoryScatter,
   VictoryTooltip
 } from 'victory';
-import {GeoJsonLayer, IconLayer} from '@deck.gl/layers';
 
 const SLIDER_SPEED = 800;
 const DataLayer = ({ t, searchDataLayers }) => {
@@ -50,12 +49,15 @@ const DataLayer = ({ t, searchDataLayers }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
   const [timestamp, setTimestamp] = useState('')
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
 
-  const [tempSelectedPixel, setTempSelectedPixel] = useState([]);
+  const [tempSelectedPixel, setTempSelectedPixel] = useState([]);  
+  const [midPoint, setMidPoint] = useState([]);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [selectedPixel, setSelectedPixel] = useState([]);
-  const [tempGeoJsonLayerData, setTempGeoJsonLayerData] = useState(null);
-  const [geoJsonLayerData, setGeoJsonLayerData] = useState(null);
   const [tempLayerData, setTempLayerData] = useState(null);
+  const [layerData, setLayerData] = useState(null);
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -272,78 +274,39 @@ const DataLayer = ({ t, searchDataLayers }) => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
-  const generateGeoJson = (data)=> {
-    const tempGeo = new GeoJsonLayer({
-      id: 'geojson-layer',
-      data: [
-        {
-          'type': 'Feature',
-          'properties': {},
-          'geometry': {
-            'type': 'Point',
-            'coordinates': data.coordinate
+  const handleViewStateChange = (e) => {
+    if (e && e.viewState) {
+      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
+      setCurrentZoomLevel(e.viewState.zoom);
+      console.log([e.viewState.longitude, e.viewState.latitude], e.viewState.zoom);
+    }
+  };
+
+  const generateGeoJson = (data)=> {    
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
+    const layer = getIconLayer(
+      [{ geometry: { coordinates : data.coordinate} }], null, 
+      'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png', 
+      {
+        getSize: () => 5,
+        iconMapping: {
+          marker: {
+            x: 0,
+            y: 0,
+            width: 128,
+            height: 128,
+            anchorY: 128,
+            mask: true
           }
-        }
-      ],
-      pointType: 'circle',
-      pickable: true,
-      getPointRadius: 10000,
-      getFillColor: [128, 128, 128, 128],
-      getLineColor:[0,0,0,255],
-      // getLineWidth: 5000,
-      lineWidthScale: 20,
-      lineWidthMinPixels: 1,
-      getLineWidth: 1,
-      stroked:true,
-      filled:true,
-    });
-    getIconLayer()
-    const layer = new IconLayer({
-      id: 'IconLayer',
-      data: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/bart-stations.json',
-  
-      /* props from IconLayer class */
-  
-      // alphaCutoff: 0.05,
-      // billboard: true,
-      // getAngle: 0,
-      getColor: d => [Math.sqrt(d.exits), 140, 0],
-      getIcon: () => 'marker',
-      // getPixelOffset: [0, 0],
-      getPosition: d => d.coordinates,
-      getSize: () => 5,
-      iconAtlas: 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png',
-      iconMapping: {
-        marker: {
-          x: 0,
-          y: 0,
-          width: 128,
-          height: 128,
-          anchorY: 128,
-          mask: true
-        }
-      },
-      // onIconError: null,
-      // sizeMaxPixels: Number.MAX_SAFE_INTEGER,
-      // sizeMinPixels: 0,
-      sizeScale: 8,
-      // sizeUnits: 'pixels',
-  
-      /* props inherited from Layer class */
-  
-      // autoHighlight: false,
-      // coordinateOrigin: [0, 0, 0],
-      // coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-      // highlightColor: [0, 0, 128, 128],
-      // modelMatrix: null,
-      // opacity: 1,
-      pickable: true,
-      // visible: true,
-      // wrapLongitude: false,
-    });
+        },
+        sizeScale: 8,
+        sizeMinPixels: 40,
+        sizeMaxPixels: 40,
+        getColor: () => [57, 58, 58],
+      }
+    );
     setTempLayerData(layer);
     setTempSelectedPixel(data.coordinate);
-    setTempGeoJsonLayerData(tempGeo);
   }
 
   const prev = [
@@ -372,6 +335,54 @@ const DataLayer = ({ t, searchDataLayers }) => {
     '2020-05',
     '2020-06'
   ];
+
+  const apiFetch = async () => {
+    selectedPixel
+    console.log(tempSelectedPixel, `https://geoserver-test.safers-project.cloud/geoserver/ermes/wms?service=WMS&version=1.1.0&request=GetTimeSeries&format=text%2Fcsv&time=2022-08-22T00%3A00%3A00Z%2C2022-08-22T06%3A00%3A00Z%2C2022-08-22T12%3A00%3A00Z%2C2022-08-22T18%3A00%3A00Z%2C2022-08-23T00%3A00%3A00Z%2C2022-08-23T06%3A00%3A00Z%2C2022-08-23T12%3A00%3A00Z%2C2022-08-23T18%3A00%3A00Z%2C2022-08-24T00%3A00%3A00Z%2C2022-08-24T06%3A00%3A00Z%2C2022-08-24T12%3A00%3A00Z%2C2022-08-24T18%3A00%3A00Z%2C2022-08-25T00%3A00%3A00Z%2C2022-08-25T06%3A00%3A00Z%2C2022-08-25T12%3A00%3A00Z%2C2022-08-25T18%3A00%3A00Z&layers=ermes%3A33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467&query_layers=ermes%3A33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467&x=${tempSelectedPixel[0]}&y=${tempSelectedPixel[1]}&bbox=${boundingBox.join(',')}`)
+    await fetch(`https://geoserver-test.safers-project.cloud/geoserver/ermes/wms?service=WMS&version=1.1.0&request=GetTimeSeries&format=text%2Fcsv&time=2022-08-22T00%3A00%3A00Z%2C2022-08-22T06%3A00%3A00Z%2C2022-08-22T12%3A00%3A00Z%2C2022-08-22T18%3A00%3A00Z%2C2022-08-23T00%3A00%3A00Z%2C2022-08-23T06%3A00%3A00Z%2C2022-08-23T12%3A00%3A00Z%2C2022-08-23T18%3A00%3A00Z%2C2022-08-24T00%3A00%3A00Z%2C2022-08-24T06%3A00%3A00Z%2C2022-08-24T12%3A00%3A00Z%2C2022-08-24T18%3A00%3A00Z%2C2022-08-25T00%3A00%3A00Z%2C2022-08-25T06%3A00%3A00Z%2C2022-08-25T12%3A00%3A00Z%2C2022-08-25T18%3A00%3A00Z&layers=ermes%3A33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467&query_layers=ermes%3A33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467&x=${tempSelectedPixel[0]}&y=${tempSelectedPixel[1]}&bbox=${boundingBox.join(',')}`).then(res=> res.text()).then(x=> {
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(x,'text/xml');
+      console.log(xmlDoc, xmlToJson(xmlDoc));
+    })
+  }
+
+  function xmlToJson(xml) {
+	
+    // Create the return object
+    var obj = {};
+  
+    if (xml.nodeType == 1) { // element
+      // do attributes
+      if (xml.attributes.length > 0) {
+        obj['@attributes'] = {};
+        for (var j = 0; j < xml.attributes.length; j++) {
+          var attribute = xml.attributes.item(j);
+          obj['@attributes'][attribute.nodeName] = attribute.nodeValue;
+        }
+      }
+    } else if (xml.nodeType == 3) { // text
+      obj = xml.nodeValue;
+    }
+  
+    // do children
+    if (xml.hasChildNodes()) {
+      for(var i = 0; i < xml.childNodes.length; i++) {
+        var item = xml.childNodes.item(i);
+        var nodeName = item.nodeName;
+        if (typeof(obj[nodeName]) == 'undefined') {
+          obj[nodeName] = xmlToJson(item);
+        } else {
+          if (typeof(obj[nodeName].push) == 'undefined') {
+            var old = obj[nodeName];
+            obj[nodeName] = [];
+            obj[nodeName].push(old);
+          }
+          obj[nodeName].push(xmlToJson(item));
+        }
+      }
+    }
+    return obj;
+  }
 
   return (
     // <div className='page-content'>
@@ -487,19 +498,24 @@ const DataLayer = ({ t, searchDataLayers }) => {
           <Card className='map-card mb-0' style={{ height: 670 }}>
             <ContextMenuTrigger id={'map'}>
               <BaseMap
-                layers={[bitmapLayer, tempGeoJsonLayerData, tempLayerData]}
+                layers={[bitmapLayer, tempLayerData]}
                 initialViewState={viewState}
                 widgets={[]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
                 onClick={generateGeoJson}
+                onViewStateChange={handleViewStateChange}
+                setWidth={setNewWidth}
+                setHeight={setNewHeight}      
+                setNewWidth={setNewWidth}
+                setNewHeight={setNewHeight}
               />
             </ContextMenuTrigger>
             <ContextMenu id={'map'} className="menu">
-              <MenuItem className="menuItem" onClick={()=> { setSelectedPixel(tempSelectedPixel); setGeoJsonLayerData(null);} }>
+              <MenuItem className="menuItem" onClick={()=> { setSelectedPixel(tempSelectedPixel); setLayerData(null) } }>
                 Display Layer Info
               </MenuItem>
-              <MenuItem className="menuItem" onClick={()=> { setSelectedPixel([]); setGeoJsonLayerData(tempGeoJsonLayerData); }}>
+              <MenuItem className="menuItem" onClick={()=> { setSelectedPixel([]); setLayerData(tempLayerData); apiFetch() }}>
                 Time Series Chart
               </MenuItem>
             </ContextMenu>
@@ -512,7 +528,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
       {selectedPixel?.length > 0 && <div className='m-2 sign-up-aoi-map-bg'>Pixel: {selectedPixel.join(', ').replace(/\d+\.\d+/g, function(match) {
         return Number(match).toFixed(6);
       })}</div>}
-      {geoJsonLayerData && <div  className='m-2 sign-up-aoi-map-bg d-flex'>
+      {layerData && <div  className='m-2 sign-up-aoi-map-bg d-flex'>
         <div className='w-50'>
           <VictoryChart style={{ bar: { size: 50, width: 100, strokeWidth: 100,}}}>
             <VictoryAxis
