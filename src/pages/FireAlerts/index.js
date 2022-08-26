@@ -8,10 +8,10 @@ import Pagination from 'rc-pagination';
 import toastr from 'toastr';
 //i18n
 import { withTranslation } from 'react-i18next'
-
-//import IconClusterLayer from '../SocialMonitoring/IconClusterLayer';
-
 import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer'
+
+// import IconAtlas from '../../assets/images/mappins/icons optimized.svg'
+// import IconMapping from '../../assets/images/mappins/icons.json'
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllFireAlerts, setFavoriteAlert, validateAlert, editAlertInfo, setAlertApiParams, resetAlertsResponseState, setNewAlertState, getSource, setFilteredAlerts } from '../../store/appAction';
@@ -19,19 +19,13 @@ import Alert from './Alert';
 import Tooltip from './Tooltip';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types'
 
-//import firePin from '../../assets/images/atoms-general-icon-fire-drop.png'
 import 'toastr/build/toastr.min.css'
 import 'rc-pagination/assets/index.css';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import SearchButton from '../../components/SearchButton';
 
-//import iconMapping from '../../constants/location-icon-mapping.json';
-//import iconAtlas from '../../assets/images/location-icon-atlas.png';
 
 const PAGE_SIZE = 4;
-// const ICON_MAPPING = {
-//   marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
-// };
 
 const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -204,8 +198,12 @@ const FireAlerts = ({ t }) => {
       dispatch,
       setViewState,
       getPosition: feature => feature.geometry.coordinates,
-      iconProperty: 'icon',
-      iconColor: '#333f48',
+      getPinColor: () => [72, 169, 197, 255],
+      // icon: 'alert',
+      pointType: 'icon',
+      // iconProperty: 'alert',
+      //getColor: () => '#ffffff',
+      clusterIconSize: 50,
       onGroupClick: true,
       onPointClick: true
     })

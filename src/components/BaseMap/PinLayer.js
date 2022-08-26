@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { CompositeLayer } from '@deck.gl/core';
 import { IconLayer, TextLayer } from '@deck.gl/layers';
 import { color } from 'd3-color';
@@ -7,12 +8,23 @@ import Supercluster from 'supercluster';
 import backgroundsIconAtlas from '../../assets/images/mappins/pins optimised.svg';
 import backgroundsIconMapping from '../../assets/images/mappins/pins.json';
 
-import iconAtlas from './pin-layer-icons.iconAtlas.svg';
-import iconMapping from './pin-layer-icons.iconMapping.json';
+// broken originals
+// import iconAtlas from '../../assets/images/mappins/icons_optimized.svg';
+// import iconMapping from '../../assets/images/mappins/icons.json';
+
+// worked with these, from orbis
+// import iconAtlas from '../../assets/images/mappins/pin-layer-icons.iconAtlas.svg';
+// import iconMapping from '../../assets/images/mappins/pin-layer-icons.iconMapping.json';
+
+// attempted fix
+import iconAtlas from '../../assets/images/mappins/icons_manual.svg';
+import iconMapping from '../../assets/images/mappins/icons.json';
+
 
 const COLOR_TRANSPARENT = [0, 0, 0, 0],
   COLOR_PRIMARY = [246, 190, 0, 255],
-  COLOR_SECONDARY = [51, 63, 72, 255];
+  //COLOR_SECONDARY = [51, 63, 72, 255];
+  COLOR_SECONDARY = [255, 255, 255, 255]
 
 export class PinLayer extends CompositeLayer {
   _getExpansionZoom(feature) {
@@ -80,13 +92,13 @@ export class PinLayer extends CompositeLayer {
 
   // ===== Pin/Cluster Layer Functions =====
   _getPinIcon(feature) {
+    console.log('_getPinIcon', feature);
     if (
       feature.properties.cluster
     ) {
-      // totally counterintuitive, cluster means its a leaf node (PART OF a cluster)
-      return 'pin'; 
+      return 'cluster'; 
     }
-    return 'cluster';
+    return 'pin';
   }
 
   _getPinLayerIconSize(feature) {
@@ -117,17 +129,20 @@ export class PinLayer extends CompositeLayer {
 
   // ===== Icon Layer Functions =====
   _getIcon(feature) {
-    if (
-      feature.properties.cluster &&
-      this._getExpansionZoom(feature) > this.props.maxZoom
-    )
-      return 'group';
-    if (this.props.icon) return this.props.icon;
-    if (this.props.iconProperty)
-      return get(feature.properties, this.props.iconProperty)
-        ?.toLowerCase()
-        .replace(' ', '-');
-    return undefined;
+    return 'alert';
+    // console.log('getIcon feature', feature);
+    // console.log('this.props', this.props);
+    // if (
+    //   feature.properties.cluster &&
+    //   this._getExpansionZoom(feature) > this.props.maxZoom
+    // )
+    //   return 'group'; // TODO this is the odd icon 
+    // if (this.props.icon) return this.props.icon;
+    // if (this.props.iconProperty)
+    //   return get(feature.properties, this.props.iconProperty)
+    //     ?.toLowerCase()
+    //     .replace(' ', '-');
+    // return undefined;
   }
 
   _getIconColor(feature) {
@@ -187,7 +202,12 @@ export class PinLayer extends CompositeLayer {
           iconAtlas,
           iconMapping,
           getPosition: this.props.getPosition,
-          getIcon: d => this._getIcon(d),
+          getIcon: d => { 
+            console.log('FEATURE FOR ICON: ', d);
+            const result = this._getIcon(d);
+            console.log('ICON TO USE: ', result);
+            return result;
+          },
           getColor: d => this._getIconColor(d),
           getSize: d => this._getPinLayerIconSize(d) / 2,
           updateTriggers: {
