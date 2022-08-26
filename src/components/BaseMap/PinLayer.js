@@ -17,8 +17,9 @@ import backgroundsIconMapping from '../../assets/images/mappins/pins.json';
 // import iconMapping from '../../assets/images/mappins/pin-layer-icons.iconMapping.json';
 
 // attempted fix
-import iconAtlas from '../../assets/images/mappins/icons_manual.svg';
-import iconMapping from '../../assets/images/mappins/icons.json';
+import iconAtlas from '../../assets/images/mappins/SAFERS_icons.svg';
+import iconMap from '../../assets/images/mappins/icons.json';
+import { nodeName } from 'rsuite/esm/DOMHelper';
 
 
 const COLOR_TRANSPARENT = [0, 0, 0, 0],
@@ -92,7 +93,6 @@ export class PinLayer extends CompositeLayer {
 
   // ===== Pin/Cluster Layer Functions =====
   _getPinIcon(feature) {
-    console.log('_getPinIcon', feature);
     if (
       feature.properties.cluster
     ) {
@@ -129,20 +129,13 @@ export class PinLayer extends CompositeLayer {
 
   // ===== Icon Layer Functions =====
   _getIcon(feature) {
+    // hide marker for cluster nodes
+    if (feature.properties.cluster) return '';
+    // or use injected function
+    if (typeof this.props.getPinIcon === 'function')
+      return this.props.getPinIcon(feature);
+    // fallback
     return 'alert';
-    // console.log('getIcon feature', feature);
-    // console.log('this.props', this.props);
-    // if (
-    //   feature.properties.cluster &&
-    //   this._getExpansionZoom(feature) > this.props.maxZoom
-    // )
-    //   return 'group'; // TODO this is the odd icon 
-    // if (this.props.icon) return this.props.icon;
-    // if (this.props.iconProperty)
-    //   return get(feature.properties, this.props.iconProperty)
-    //     ?.toLowerCase()
-    //     .replace(' ', '-');
-    // return undefined;
   }
 
   _getIconColor(feature) {
@@ -184,7 +177,6 @@ export class PinLayer extends CompositeLayer {
           iconMapping: backgroundsIconMapping,
           getPosition: this.props.getPosition,
           getIcon: d => this._getPinIcon(d),
-          //getSize: d => this._getPinLayerIconSize(d),
           getSize: d => this._getPinLayerIconSize(d),
           getColor: d => this._getPinColor(d),
           updateTriggers: {
@@ -199,15 +191,10 @@ export class PinLayer extends CompositeLayer {
         this.getSubLayerProps({
           id: `${this.props.id}-icon`,
           data,
-          iconAtlas,
-          iconMapping,
+          iconAtlas: iconAtlas,
+          iconMapping: iconMap,
           getPosition: this.props.getPosition,
-          getIcon: d => { 
-            console.log('FEATURE FOR ICON: ', d);
-            const result = this._getIcon(d);
-            console.log('ICON TO USE: ', result);
-            return result;
-          },
+          getIcon: d=> this._getIcon(d),
           getColor: d => this._getIconColor(d),
           getSize: d => this._getPinLayerIconSize(d) / 2,
           updateTriggers: {

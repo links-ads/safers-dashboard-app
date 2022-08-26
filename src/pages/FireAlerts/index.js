@@ -180,7 +180,6 @@ const FireAlerts = ({ t }) => {
 
   const getIconLayer = (alerts) => {
     const data = alerts.map(alert => {
-      //console.log('ALERT: ', alert);
       const { geometry: { features }, ...properties } = alert;
       return {
         type: 'Feature',
@@ -199,10 +198,8 @@ const FireAlerts = ({ t }) => {
       setViewState,
       getPosition: feature => feature.geometry.coordinates,
       getPinColor: () => [72, 169, 197, 255],
-      // icon: 'alert',
+      getPinIcon: () => 'alert',
       pointType: 'icon',
-      // iconProperty: 'alert',
-      //getColor: () => '#ffffff',
       clusterIconSize: 50,
       onGroupClick: true,
       onPointClick: true
