@@ -108,16 +108,13 @@ const OnDemandDataLayer = ({
         order: sortByDate,
         source: layerSource ? layerSource : undefined,
         domain: dataDomain ? dataDomain : undefined,
-        start: dateRange[0],
-        end: dateRange[1],
-        // bbox: boundingBox ? boundingBox.toString() : undefined, //disabled since bbox value won't return data 
         default_start: false,
         default_end: false,
         default_bbox: false,
         ...dateRangeParams
       }
     ));
-  }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
+  }, [layerSource, dataDomain, sortByDate, dateRange]);
 
   const getUrls = () => Object.values(currentLayer?.urls);
 
