@@ -108,8 +108,6 @@ const OnDemandDataLayer = ({
         order: sortByDate,
         source: layerSource ? layerSource : undefined,
         domain: dataDomain ? dataDomain : undefined,
-        default_start: false,
-        default_end: false,
         default_bbox: false,
         ...dateRangeParams
       }
