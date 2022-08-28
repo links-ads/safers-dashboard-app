@@ -25,6 +25,7 @@ const getDataLayersFail = (error) => {
 };
 
 export const getDataLayerTimeSeriesData = (options) => async (dispatch) => {
+  // const response = await api.get('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
   const response = await fetch('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
   if (response.status === 200) {
     return dispatch(getTimeSeriesDataSuccess(await response.text()));
