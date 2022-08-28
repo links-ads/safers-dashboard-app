@@ -6,7 +6,7 @@ import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllDataLayers } from '../../store/appAction';
+import { getAllDataLayers, getDataLayerTimeSeriesData } from '../../store/appAction';
 
 import TreeView from './TreeView';
 import { filterNodesByProperty, formatDate } from '../../store/utility';
@@ -23,7 +23,7 @@ import {
   VictoryChart,
   VictoryAxis,
   VictoryLine,
-  VictoryLabel,
+  // VictoryLabel,
   VictoryScatter,
   VictoryTooltip
 } from 'victory';
@@ -32,6 +32,7 @@ const SLIDER_SPEED = 800;
 const DataLayer = ({ t, searchDataLayers }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const globalDataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const timeSeriesData = useSelector(state => state.dataLayer.timeSeries);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const [dataLayers, setDataLayers] = useState([]);
@@ -152,7 +153,15 @@ const DataLayer = ({ t, searchDataLayers }) => {
         ...dateRangeParams,
       }
     ));
-  }, [layerSource, dataDomain, sortByDate, dateRange]);
+  }, [layerSource, dataDomain, sortByDate, dateRange]);  
+
+  useEffect(()=> {
+    if(timeSeriesData) {
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(timeSeriesData,'text/xml');
+      console.log(xmlToJson(xmlDoc));
+    }
+  }, [timeSeriesData])
 
   const getUrls = () => {
     return Object.values(currentLayer?.urls)
@@ -273,14 +282,14 @@ const DataLayer = ({ t, searchDataLayers }) => {
     if (e && e.viewState) {
       setMidPoint([e.viewState.longitude, e.viewState.latitude]);
       setCurrentZoomLevel(e.viewState.zoom);
-      console.log([e.viewState.longitude, e.viewState.latitude], e.viewState.zoom);
     }
   };
 
   const generateGeoJson = (data)=> {    
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
     const layer = getIconLayer(
-      [{ geometry: { coordinates : data.coordinate} }], null, 
+      [{ geometry: { coordinates : data.coordinate} }], 
+      null, 
       'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png', 
       {
         getSize: () => 5,
@@ -313,8 +322,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
     { x: '2020-06', y: 3.5231, label: 5 }
   ];
 
-  const xAxisLabelFormatter = (tick, index, ticks) => {
-    console.log(ticks, dataLayers, currentLayer);
+  const xAxisLabelFormatter = (tick) => {
     const [year, month] = tick.split('-');
     return moment()
       .year(year)
@@ -332,13 +340,20 @@ const DataLayer = ({ t, searchDataLayers }) => {
   ];
 
   const apiFetch = async () => {
-    selectedPixel
-    console.log(tempSelectedPixel, `https://geoserver-test.safers-project.cloud/geoserver/ermes/wms?service=WMS&version=1.1.0&request=GetTimeSeries&format=text%2Fcsv&time=2022-08-22T00%3A00%3A00Z%2C2022-08-22T06%3A00%3A00Z%2C2022-08-22T12%3A00%3A00Z%2C2022-08-22T18%3A00%3A00Z%2C2022-08-23T00%3A00%3A00Z%2C2022-08-23T06%3A00%3A00Z%2C2022-08-23T12%3A00%3A00Z%2C2022-08-23T18%3A00%3A00Z%2C2022-08-24T00%3A00%3A00Z%2C2022-08-24T06%3A00%3A00Z%2C2022-08-24T12%3A00%3A00Z%2C2022-08-24T18%3A00%3A00Z%2C2022-08-25T00%3A00%3A00Z%2C2022-08-25T06%3A00%3A00Z%2C2022-08-25T12%3A00%3A00Z%2C2022-08-25T18%3A00%3A00Z&layers=ermes%3A33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467&query_layers=ermes%3A33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467&x=${tempSelectedPixel[0]}&y=${tempSelectedPixel[1]}&bbox=${boundingBox.join(',')}`)
-    await fetch(`https://geoserver-test.safers-project.cloud/geoserver/ermes/wms?service=WMS&version=1.1.0&request=GetTimeSeries&format=text%2Fcsv&time=2022-08-22T00%3A00%3A00Z%2C2022-08-22T06%3A00%3A00Z%2C2022-08-22T12%3A00%3A00Z%2C2022-08-22T18%3A00%3A00Z%2C2022-08-23T00%3A00%3A00Z%2C2022-08-23T06%3A00%3A00Z%2C2022-08-23T12%3A00%3A00Z%2C2022-08-23T18%3A00%3A00Z%2C2022-08-24T00%3A00%3A00Z%2C2022-08-24T06%3A00%3A00Z%2C2022-08-24T12%3A00%3A00Z%2C2022-08-24T18%3A00%3A00Z%2C2022-08-25T00%3A00%3A00Z%2C2022-08-25T06%3A00%3A00Z%2C2022-08-25T12%3A00%3A00Z%2C2022-08-25T18%3A00%3A00Z&layers=ermes%3A33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467&query_layers=ermes%3A33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467&x=${tempSelectedPixel[0]}&y=${tempSelectedPixel[1]}&bbox=${boundingBox.join(',')}`).then(res=> res.text()).then(x=> {
-      var parser = new DOMParser();
-      var xmlDoc = parser.parseFromString(x,'text/xml');
-      console.log(xmlDoc, xmlToJson(xmlDoc));
-    })
+    const queryParams = {
+      format: 'text/csv',
+      layers: 'ermes:33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467',
+      query_layers: 'ermes:33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467',
+      request: 'GetTimeSeries',
+      service: 'WMS',
+      time: '2022-08-22T00:00:00Z,2022-08-22T06:00:00Z,2022-08-22T12:00:00Z,2022-08-22T18:00:00Z,2022-08-23T00:00:00Z,2022-08-23T06:00:00Z,2022-08-23T12:00:00Z,2022-08-23T18:00:00Z,2022-08-24T00:00:00Z,2022-08-24T06:00:00Z,2022-08-24T12:00:00Z,2022-08-24T18:00:00Z,2022-08-25T00:00:00Z,2022-08-25T06:00:00Z,2022-08-25T12:00:00Z,2022-08-25T18:00:00Z',
+      version: '1.1.0',
+      x: tempSelectedPixel[0],
+      y: tempSelectedPixel[1],
+      bbox: boundingBox.join(','),
+    }
+
+    dispatch(getDataLayerTimeSeriesData(queryParams));
   }
 
   function xmlToJson(xml) {	
@@ -387,6 +402,22 @@ const DataLayer = ({ t, searchDataLayers }) => {
     setSelectedPixel([]);
     setLayerData(tempLayerData);
     apiFetch();
+  }
+
+  const clearInfo = () => {
+    setSelectedPixel([]);    
+    setLayerData(null);
+    setTempLayerData(null);
+  }
+
+  const renderClearBtn = () => {
+    return (
+      <div className='position-absolute' style={{ top: '5px', right: '10px' }}>
+        <button onClick={clearInfo} className="custom-clear-btn d-flex justify-content-center align-items-center" type="button">
+          <i className="bx bx-x" style={{ fontSize: '25px' }}></i>
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -529,23 +560,48 @@ const DataLayer = ({ t, searchDataLayers }) => {
             {getCurrentTimestamp()}
           </Card>
         </Col>
-      </Row>      
-      {selectedPixel?.length > 0 && <div className='m-2 sign-up-aoi-map-bg'>Pixel: {selectedPixel.join(', ').replace(/\d+\.\d+/g, function(match) {
+      </Row>    
+
+      {selectedPixel?.length > 0 && <div className='mt-2 sign-up-aoi-map-bg position-relative'>Pixel: {selectedPixel.join(', ').replace(/\d+\.\d+/g, function(match) {
         return Number(match).toFixed(6);
-      })}</div>}
-      {layerData && <div  className='m-2 sign-up-aoi-map-bg d-flex'>
+      })}
+      {renderClearBtn()}
+      </div>}
+
+      {layerData && <div  className='mt-2 sign-up-aoi-map-bg d-flex position-relative'>
         <div className='w-50'>
-          <VictoryChart style={{ bar: { size: 50, width: 100, strokeWidth: 100,}}}>
+          <VictoryChart>
             <VictoryAxis
               tickValues={tickValues}
               tickFormat={xAxisLabelFormatter}
-              tickLabelComponent={<VictoryLabel style={{ data: { stroke: '#F47938' } }} />}
+              style={{
+                axis: {
+                  stroke: 'white', 
+                },
+                tickLabels: {
+                  fill: 'white' //CHANGE COLOR OF X-AXIS LABELS
+                }, 
+                grid: {
+                  stroke: 'white', //CHANGE COLOR OF X-AXIS GRID LINES
+                  strokeDasharray: '7',
+                }
+              }}
+              // tickLabelComponent={<VictoryLabel style={{ data: { stroke: '#F47938' } }} />}
             />
-            <VictoryAxis dependentAxis size={50} style={{ data: { stroke: '#F47938' } }} />
+            <VictoryAxis dependentAxis 
+              style={{ 
+                axis: {
+                  stroke: 'white', 
+                },
+                tickLabels: {
+                  fill: 'white' //CHANGE COLOR OF Y-AXIS LABELS
+                },
+              }}  
+            />
 
-            <VictoryLine data={prev} size={20} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
+            <VictoryLine data={prev} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
               pointerLength={0}/>} />
-            <VictoryScatter size={5} data={prev} labelComponent={<VictoryTooltip cornerRadius={2}
+            <VictoryScatter size={3} data={prev} labelComponent={<VictoryTooltip cornerRadius={2}
               pointerLength={0}/>} />
           </VictoryChart>
         </div>
@@ -568,8 +624,8 @@ const DataLayer = ({ t, searchDataLayers }) => {
           <div>
             <strong>Lowest Value Date: </strong> 2017-05-01
           </div>
-          
-        </div>
+        </div>        
+        {renderClearBtn()}
       </div>}
     </div >
   );

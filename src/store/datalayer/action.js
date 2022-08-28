@@ -24,6 +24,27 @@ const getDataLayersFail = (error) => {
   };
 };
 
+export const getDataLayerTimeSeriesData = (options) => async (dispatch) => {
+  const response = await fetch('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
+  if (response.status === 200) {
+    return dispatch(getTimeSeriesDataSuccess(await response.text()));
+  }
+  else
+    return dispatch(getTimeSeriesDataFail(response.error));
+};
+const getTimeSeriesDataSuccess = (TimeSeries) => {
+  return {
+    type: actionTypes.GET_TIME_SERIES_SUCCESS,
+    payload: TimeSeries
+  };
+};
+const getTimeSeriesDataFail = (error) => {
+  return {
+    type: actionTypes.GET_TIME_SERIES_FAIL,
+    payload: error
+  };
+};
+
 export const resetDataLayersResponseState = () => {
   return {
     type: actionTypes.RESET_DATA_LAYER_STATE,

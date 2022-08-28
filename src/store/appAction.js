@@ -47,6 +47,7 @@ export {
 } from './alerts/action'
 export {
   getAllDataLayers,
+  getDataLayerTimeSeriesData,
   resetDataLayersResponseState
 } from './datalayer/action'
 export {
