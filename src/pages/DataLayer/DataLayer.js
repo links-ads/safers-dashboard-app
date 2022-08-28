@@ -532,7 +532,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
         </Col>
         <Col xl={7} className='mx-auto'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
-            <ContextMenuTrigger id={'map'}>
+            <ContextMenuTrigger id={'DataLayerMapMenu'}>
               <BaseMap
                 layers={[bitmapLayer, tempLayerData]}
                 initialViewState={viewState}
@@ -547,7 +547,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
                 setNewHeight={setNewHeight}
               />
             </ContextMenuTrigger>
-            <ContextMenu id={'map'} className="menu">
+            <ContextMenu id={'DataLayerMapMenu'} className="menu">
               <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
                 Display Layer Info
               </MenuItem>

@@ -6,7 +6,7 @@ import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllDataLayers } from '../../store/appAction';
+import { getAllDataLayers, getDataLayerTimeSeriesData } from '../../store/appAction';
 
 import OnDemandTreeView from './OnDemandTreeView';
 // import { getDefaultDateRange } from '../../store/utility';
@@ -15,9 +15,18 @@ import OnDemandTreeView from './OnDemandTreeView';
 import { withTranslation } from 'react-i18next'
 import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
-import { getBoundingBox } from '../../helpers/mapHelper';
+import { getBoundingBox, getIconLayer } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
 import MOCKDATA from './mockdata';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import {
+  VictoryChart,
+  VictoryAxis,
+  VictoryLine,
+  // VictoryLabel,
+  VictoryScatter,
+  VictoryTooltip
+} from 'victory';
 
 const SLIDER_SPEED = 800;
 const OnDemandDataLayer = ({ 
@@ -28,7 +37,8 @@ const OnDemandDataLayer = ({
 }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const dateRange = useSelector(state => state.common.dateRange)
-  //const dataLayers = useSelector(state => state.dataLayer.dataLayers);
+  //const dataLayers = useSelector(state => state.dataLayer.dataLayers);  
+  const timeSeriesData = useSelector(state => state.dataLayer.timeSeries);
   const [dataLayers, setDataLayers] = useState(MOCKDATA);
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
@@ -42,7 +52,17 @@ const OnDemandDataLayer = ({
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [showLegend, setShowLegend] = useState(false);
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
+  const [newWidth, setNewWidth] = useState(600);
+  const [newHeight, setNewHeight] = useState(600);
+
+  const [tempSelectedPixel, setTempSelectedPixel] = useState([]);  
+  const [midPoint, setMidPoint] = useState([]);
+  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
+  const [selectedPixel, setSelectedPixel] = useState([]);
+  const [tempLayerData, setTempLayerData] = useState(null);
+  const [layerData, setLayerData] = useState(null);
 
   const dispatch = useDispatch();
   const timer = useRef(null);
@@ -113,6 +133,14 @@ const OnDemandDataLayer = ({
       }
     ));
   }, [layerSource, dataDomain, sortByDate, dateRange]);
+
+  useEffect(()=> {
+    if(timeSeriesData) {
+      var parser = new DOMParser();
+      var xmlDoc = parser.parseFromString(timeSeriesData,'text/xml');
+      console.log(xmlToJson(xmlDoc));
+    }
+  }, [timeSeriesData])
 
   const getUrls = () => Object.values(currentLayer?.urls);
 
@@ -217,6 +245,149 @@ const OnDemandDataLayer = ({
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
+
+  const handleViewStateChange = (e) => {
+    if (e && e.viewState) {
+      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
+      setCurrentZoomLevel(e.viewState.zoom);
+    }
+  };
+
+  const generateGeoJson = (data)=> {    
+    setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
+    const layer = getIconLayer(
+      [{ geometry: { coordinates : data.coordinate} }], 
+      null, 
+      'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png', 
+      {
+        getSize: () => 5,
+        iconMapping: {
+          marker: {
+            x: 0,
+            y: 0,
+            width: 128,
+            height: 128,
+            anchorY: 128,
+            mask: true
+          }
+        },
+        sizeScale: 8,
+        sizeMinPixels: 40,
+        sizeMaxPixels: 40,
+        getColor: () => [57, 58, 58],
+      }
+    );
+    setTempLayerData(layer);
+    setTempSelectedPixel(data.coordinate);
+  }
+
+  const prev = [
+    { x: '2020-01', y: 1.1235, label: 5 },
+    { x: '2020-02', y: 4.32332, label: 5 },
+    { x: '2020-03', y: 3.87543, label: 5 },
+    { x: '2020-04', y: 1.1251, label: 5 },
+    { x: '2020-05', y: 2.123241, label: 5 },
+    { x: '2020-06', y: 3.5231, label: 5 }
+  ];
+
+  const xAxisLabelFormatter = (tick) => {
+    const [year, month] = tick.split('-');
+    return moment()
+      .year(year)
+      .month(month - 1)
+      .format('MMM YYYY');
+  };
+
+  const tickValues = [
+    '2020-01',
+    '2020-02',
+    '2020-03',
+    '2020-04',
+    '2020-05',
+    '2020-06'
+  ];
+
+  const apiFetch = async () => {
+    const queryParams = {
+      format: 'text/csv',
+      layers: 'ermes:33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467',
+      query_layers: 'ermes:33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467',
+      request: 'GetTimeSeries',
+      service: 'WMS',
+      time: '2022-08-22T00:00:00Z,2022-08-22T06:00:00Z,2022-08-22T12:00:00Z,2022-08-22T18:00:00Z,2022-08-23T00:00:00Z,2022-08-23T06:00:00Z,2022-08-23T12:00:00Z,2022-08-23T18:00:00Z,2022-08-24T00:00:00Z,2022-08-24T06:00:00Z,2022-08-24T12:00:00Z,2022-08-24T18:00:00Z,2022-08-25T00:00:00Z,2022-08-25T06:00:00Z,2022-08-25T12:00:00Z,2022-08-25T18:00:00Z',
+      version: '1.1.0',
+      x: tempSelectedPixel[0],
+      y: tempSelectedPixel[1],
+      bbox: boundingBox.join(','),
+    }
+
+    dispatch(getDataLayerTimeSeriesData(queryParams));
+  }
+
+  function xmlToJson(xml) {	
+    // Create the return object
+    var obj = {};
+  
+    if (xml.nodeType == 1) { // element
+      // do attributes
+      if (xml.attributes.length > 0) {
+        obj['@attributes'] = {};
+        for (var j = 0; j < xml.attributes.length; j++) {
+          var attribute = xml.attributes.item(j);
+          obj['@attributes'][attribute.nodeName] = attribute.nodeValue;
+        }
+      }
+    } else if (xml.nodeType == 3) { // text
+      obj = xml.nodeValue;
+    }
+  
+    // do children
+    if (xml.hasChildNodes()) {
+      for(var i = 0; i < xml.childNodes.length; i++) {
+        var item = xml.childNodes.item(i);
+        var nodeName = item.nodeName;
+        if (typeof(obj[nodeName]) == 'undefined') {
+          obj[nodeName] = xmlToJson(item);
+        } else {
+          if (typeof(obj[nodeName].push) == 'undefined') {
+            var old = obj[nodeName];
+            obj[nodeName] = [];
+            obj[nodeName].push(old);
+          }
+          obj[nodeName].push(xmlToJson(item));
+        }
+      }
+    }
+    return obj;
+  }
+
+  const toggleDisplayLayerInfo = () => {
+    setSelectedPixel(tempSelectedPixel);
+    setLayerData(null);
+    console.log(toggleTimeSeriesChart);
+  }
+
+  const toggleTimeSeriesChart = () => {
+    setSelectedPixel([]);
+    setLayerData(tempLayerData);
+    apiFetch();
+  }
+
+  const clearInfo = () => {
+    setSelectedPixel([]);    
+    setLayerData(null);
+    setTempLayerData(null);
+  }
+
+  const renderClearBtn = () => {
+    return (
+      <div className='position-absolute' style={{ top: '5px', right: '10px' }}>
+        <button onClick={clearInfo} className="custom-clear-btn d-flex justify-content-center align-items-center" type="button">
+          <i className="bx bx-x" style={{ fontSize: '25px' }}></i>
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -374,19 +545,101 @@ const OnDemandDataLayer = ({
           </Col>
           <Col xl={7} className='mx-auto'>
             <Card className='map-card mb-0' style={{ height: 670 }}>
-              <BaseMap
-                layers={[bitmapLayer]}
-                initialViewState={viewState}
-                widgets={[]}
-                screenControlPosition='top-right'
-                navControlPosition='bottom-right'
-              />
+              <ContextMenuTrigger id={'OnDemanDataLayerMapMenu'}>
+                <BaseMap
+                  layers={[bitmapLayer, tempLayerData]}
+                  initialViewState={viewState}
+                  widgets={[]}
+                  screenControlPosition='top-right'
+                  navControlPosition='bottom-right'
+                  onClick={generateGeoJson}
+                  onViewStateChange={handleViewStateChange}
+                  setWidth={setNewWidth}
+                  setHeight={setNewHeight}      
+                  setNewWidth={setNewWidth}
+                  setNewHeight={setNewHeight}
+                />
+              </ContextMenuTrigger>
+              <ContextMenu id={'OnDemanDataLayerMapMenu'} className="menu">
+                <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
+                  Display Layer Info
+                </MenuItem>                
+                {/* <MenuItem className="menuItem" onClick={toggleTimeSeriesChart}>
+                  Time Series Chart
+                </MenuItem> */}
+              </ContextMenu>
               {getSlider()}
               {getLegend()}
             </Card>
           </Col>
         </Row>
       </div>
+
+      {selectedPixel?.length > 0 && <div className='mt-2 sign-up-aoi-map-bg position-relative'>Pixel: {selectedPixel.join(', ').replace(/\d+\.\d+/g, function(match) {
+        return Number(match).toFixed(6);
+      })}
+      {renderClearBtn()}
+      </div>}
+
+      {layerData && <div  className='mt-2 sign-up-aoi-map-bg d-flex position-relative'>
+        <div className='w-50'>
+          <VictoryChart>
+            <VictoryAxis
+              tickValues={tickValues}
+              tickFormat={xAxisLabelFormatter}
+              style={{
+                axis: {
+                  stroke: 'white', 
+                },
+                tickLabels: {
+                  fill: 'white' //CHANGE COLOR OF X-AXIS LABELS
+                }, 
+                grid: {
+                  stroke: 'white', //CHANGE COLOR OF X-AXIS GRID LINES
+                  strokeDasharray: '7',
+                }
+              }}
+              // tickLabelComponent={<VictoryLabel style={{ data: { stroke: '#F47938' } }} />}
+            />
+            <VictoryAxis dependentAxis 
+              style={{ 
+                axis: {
+                  stroke: 'white', 
+                },
+                tickLabels: {
+                  fill: 'white' //CHANGE COLOR OF Y-AXIS LABELS
+                },
+              }}  
+            />
+
+            <VictoryLine data={prev} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
+              pointerLength={0}/>} />
+            <VictoryScatter size={3} data={prev} labelComponent={<VictoryTooltip cornerRadius={2}
+              pointerLength={0}/>} />
+          </VictoryChart>
+        </div>
+        <div className='w-50' style={{lineHeight: '30px'}}>
+          <div>
+            <strong>Time Interval: </strong> 2000-05-01-2022-05-1
+          </div>
+          <div>
+            <strong>Mean Value: </strong> 32
+          </div>
+          <div>
+            <strong>Highest Value: </strong> 48
+          </div>
+          <div>
+            <strong>Highest Value Date: </strong> 2015-05-01
+          </div>
+          <div>
+            <strong>Lowest Value: </strong> 17
+          </div>
+          <div>
+            <strong>Lowest Value Date: </strong> 2017-05-01
+          </div>
+        </div>        
+        {renderClearBtn()}
+      </div>}
     </div >
   );
 }
