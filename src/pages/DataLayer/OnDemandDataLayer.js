@@ -51,8 +51,6 @@ const OnDemandDataLayer = ({
     setSearchedMapRequests(searchResult);
   };
 
-  console.log('mapRequests: ', mapRequests);
-
   const toggleModal = () => setModalIsOpen(prev => !prev);
 
   const handleDialogButtonClick = ({ target: { value } }) => {
