@@ -58,14 +58,19 @@ export const getPolygonLayer = (aoi) => {
 }
 
 export const getIconColorFromContext = (mapType, feature) => {
+  let color = [127,127,127];
   switch (mapType) {
   case MAP_TYPES.REPORTS:
-    return (feature?.isSelected ? ORANGE : DARK_GRAY);
+    color = feature?.isSelected ? ORANGE : DARK_GRAY;
+    break;
   case MAP_TYPES.IN_SITU:
-    return (feature?.isSelected ? ORANGE : DARK_GRAY);
+    color = feature?.isSelected ? ORANGE : DARK_GRAY;
+    break;
   default:
-    return (feature?.isSelected ? ORANGE : feature?.status == 'CLOSED' ? GRAY : RED);
+    color = feature?.isSelected ? ORANGE : feature?.status == 'CLOSED' ? GRAY : RED;
   }
+  console.log('icon color', color);
+  return color;
 }
 
 export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts) => {
