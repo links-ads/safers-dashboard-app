@@ -1,21 +1,32 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Card, Row } from 'reactstrap';
-
+import { Card } from 'reactstrap';
 import BaseMap from '../../../../../components/BaseMap/BaseMap';
-import MapCards from '../../../../../components/BaseMap/MapCards';
+import PropTypes from 'prop-types';
 
-const MapComponent = () => {
-  const { polygonLayer, viewState } = useSelector(state => state.common);
+const MapSection = ({
+  viewState,
+  iconLayer
+}) => {
+
   return (
-    <Row className="h-100 w-100 mx-auto">
-      <Card className='map-card'>
-        <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
-        <MapCards />
-      </Card>
-    </Row>
-
-  );
+    <Card className='map-card mb-0' style={{ height: 500 }}>
+      <BaseMap
+        layers={[iconLayer]}
+        initialViewState={viewState}
+        screenControlPosition='top-right'
+        navControlPosition='bottom-right'
+      />
+    </Card>
+  )
 }
 
-export default MapComponent;
+MapSection.propTypes = {
+  viewState: PropTypes.any,
+  iconLayer: PropTypes.any,
+  getReportsByArea: PropTypes.func,
+  handleViewStateChange: PropTypes.func,
+  setNewWidth: PropTypes.func,
+  setNewHeight: PropTypes.func
+}
+
+export default MapSection;
