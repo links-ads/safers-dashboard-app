@@ -16,17 +16,19 @@ import { MAP_TYPES } from '../../../constants/common';
 
 const People = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allPeople: OrgPeopleList, success, filteredPeople } = useSelector(state => state.people);
+  const { allPeople: orgPplList, filteredPeople, success } = useSelector(state => state.people);
   const dateRange = useSelector(state => state.common.dateRange);
+
+  let allPeople = filteredPeople || orgPplList;
 
   const { t } = useTranslation();
 
   const [peopleId, setPeopleId] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortOrder, setSortOrder] = useState(undefined);
-  const [status, setStatus] = useState(undefined);
-  const [activity, setActivity] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [status, setStatus] = useState('');
+  const [activity, setActivity] = useState('');
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
@@ -35,8 +37,6 @@ const People = () => {
 
   const dispatch = useDispatch();
 
-  const allPeople = filteredPeople || OrgPeopleList;
-
   useEffect(() => {
     const dateRangeParams = dateRange
       ? { start: dateRange[0], end: dateRange[1] }
@@ -44,16 +44,18 @@ const People = () => {
 
     setPeopleId(undefined);
     const peopleParams = {
-      order: sortOrder ? sortOrder : '-date',
-      status: status ? status : undefined,
-      activity: activity ? activity : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
-    dispatch(getAllPeople(peopleParams));
-  }, [dateRange, status, activity, sortOrder, boundingBox])
+    const feFilters = {      
+      activity,
+      status,
+      sortOrder
+    }
+    dispatch(getAllPeople(peopleParams, feFilters));
+  }, [dateRange, boundingBox])
 
   useEffect(() => {
     if (success?.detail) {

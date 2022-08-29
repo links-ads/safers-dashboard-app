@@ -5,7 +5,6 @@ import { useLocation } from 'react-router-dom';
 import { generalInProgress, signInOauth2 } from '../../store/appAction';
 import { AUTH_BASE_URL, CLIENT_BASE_URL, AUTH_CLIENT_ID, AUTH_TENANT_ID, REDIRECT_URL  } from '../../config'
 
-
 /* 
 The `authorize` fn gets the authorization_code from the Authentication Server
 which redirects back to this page w/ that code.  It is run when the SSO button
@@ -56,7 +55,7 @@ const OAuth2 = () => {
         className="outh2-btn"
         color="primary"
         onClick={()=>{authorize()}}>
-        SSO
+        SSO Sign In
       </Button>
     </div>     
   );

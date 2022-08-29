@@ -153,18 +153,6 @@ const DataLayerDashboard = () => {
     }
   }, [isPlaying]);
 
-  const searchDataLayers = (value, data, callback) => {
-    if (!value) callback(data);
-  
-    // 'text' property is used as it appears in 
-    // both Operational and On-Demand layers
-    const searchResult = data.filter(
-      layer => layer.text.toLowerCase().includes(value.toLowerCase())
-    );
-  
-    callback(searchResult);
-  };
-
   const backToOnDemandPanel = () => { 
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
   }
@@ -285,7 +273,6 @@ const DataLayerDashboard = () => {
     bitmapLayer,
     viewState,
     handleResetAOI,
-    searchDataLayers,
     timestamp
   };
 

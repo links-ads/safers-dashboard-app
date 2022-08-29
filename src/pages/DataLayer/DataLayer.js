@@ -6,11 +6,11 @@ import { BitmapLayer } from 'deck.gl';
 import BaseMap from '../../components/BaseMap/BaseMap';
 
 import TreeView from './TreeView';
+import { formatDate } from '../../store/utility';
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import SimpleBar from 'simplebar-react';
-import { formatDate } from '../../store/utility';
 
 const DataLayer = ({ 
   t,
@@ -29,7 +29,6 @@ const DataLayer = ({
   getLegend,
   bitmapLayer,
   viewState,
-  searchDataLayers,
   timestamp
 }) => {
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
@@ -42,12 +41,14 @@ const DataLayer = ({
     }
   }, [operationalMapLayers]);
 
-  const handleSearch = ({ target: { value }}) => {
-    searchDataLayers(
-      value, 
-      operationalMapLayers, 
-      setSearchedDataLayers
-    )               
+  const handleSearch = (value) => {
+    if (!value) setSearchedDataLayers(operationalMapLayers);
+  
+    const searchResult = operationalMapLayers.filter(
+      layer => layer.text.toLowerCase().includes(value.toLowerCase())
+    );
+  
+    setSearchedDataLayers(searchResult);
   };
 
   const getCurrentTimestamp = () => (
@@ -175,7 +176,7 @@ const DataLayer = ({
   )
 }
 
-export default withTranslation(['common'])(DataLayer);DataLayer.propTypes = {
+DataLayer.propTypes = {
   t: PropTypes.any,
   setLayerSource: PropTypes.any,
   sourceOptions: PropTypes.array,
@@ -192,6 +193,7 @@ export default withTranslation(['common'])(DataLayer);DataLayer.propTypes = {
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
-  searchDataLayers: PropTypes.func,
   timestamp: PropTypes.string
 }
+
+export default withTranslation(['common'])(DataLayer);

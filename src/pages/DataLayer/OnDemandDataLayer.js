@@ -1,6 +1,7 @@
-import React, { useState,  } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText, Modal } from 'reactstrap';
+import { BitmapLayer } from 'deck.gl';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 
@@ -27,9 +28,30 @@ const OnDemandDataLayer = ({
   getSlider,
   getLegend,
   bitmapLayer,
-  viewState
+  viewState,
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [searchedMapRequests, setSearchedMapRequests] = useState(null);
+
+  // places fetched data layers into local state, 
+  // so that search filtering can then be applied
+  useEffect(() => {
+    if (!searchedMapRequests?.length) {
+      setSearchedMapRequests(mapRequests);
+    }
+  }, [mapRequests]);
+
+  const handleSearch = (value) => {
+    if (!value) setSearchedMapRequests(mapRequests);
+  
+    const searchResult = mapRequests.filter(
+      layer => layer.category.toLowerCase().includes(value.toLowerCase())
+    );
+  
+    setSearchedMapRequests(searchResult);
+  };
+
+  console.log('mapRequests: ', mapRequests);
 
   const toggleModal = () => setModalIsOpen(prev => !prev);
 
@@ -165,8 +187,9 @@ const OnDemandDataLayer = ({
                 <Input
                   id="searchEvent"
                   name="searchEvent"
-                  placeholder="Search by relation to an event"
+                  placeholder="Search by keyword"
                   autoComplete="on"
+                  onChange={handleSearch}
                 />
               </InputGroup>
             </Col>
@@ -179,7 +202,7 @@ const OnDemandDataLayer = ({
                 zIndex: '100' 
               }}>
                 <OnDemandTreeView
-                  data={mapRequests}
+                  data={searchedMapRequests}
                   setCurrentLayer={setCurrentLayer}
                 />
               </SimpleBar>
@@ -189,7 +212,7 @@ const OnDemandDataLayer = ({
         <Col xl={7} className='mx-auto'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
             <BaseMap
-              layers={[bitmapLayer]}
+              layers={[new BitmapLayer(bitmapLayer)]}
               initialViewState={viewState}
               widgets={[]}
               screenControlPosition='top-right'
@@ -221,7 +244,7 @@ OnDemandDataLayer.propTypes = {
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
-  handleResetAOI: PropTypes.any
+  handleResetAOI: PropTypes.any,
 }
 
 export default withTranslation(['common'])(OnDemandDataLayer);
