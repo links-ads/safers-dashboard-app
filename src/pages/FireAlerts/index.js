@@ -12,7 +12,7 @@ import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState, getIconColorFromContext } from '../../helpers/mapHelper';
 import SearchButton from '../../components/SearchButton';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
@@ -30,6 +30,8 @@ import {
 import Alert from './Alert';
 import Tooltip from './Tooltip';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types';
+import { MAP_TYPES } from '../../constants/common';
+
 
 const PAGE_SIZE = 4;
 
@@ -207,6 +209,7 @@ const FireAlerts = ({ t }) => {
   };
 
   const getIconLayer = (alerts) => {
+    console.log('alerts', alerts);
     const data = alerts.map((alert) => {
       const {
         geometry: { features },
@@ -223,14 +226,13 @@ const FireAlerts = ({ t }) => {
     });
 
     return new GeoJsonPinLayer({
-      id: 'layer-id',
       data,
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: () => [72, 169, 197, 255],
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.Alert,feature),
       icon: 'fire',
-      iconColor: '#ff0000',
+      iconColor: '#ffffff',
       clusterIconSize: 50,
       onGroupClick: true,
       onPointClick: true,

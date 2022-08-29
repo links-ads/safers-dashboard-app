@@ -57,6 +57,17 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
+export const getIconColorFromContext = (mapType, feature) => {
+  switch (mapType) {
+  case MAP_TYPES.REPORTS:
+    return (feature?.isSelected ? ORANGE : DARK_GRAY);
+  case MAP_TYPES.IN_SITU:
+    return (feature?.isSelected ? ORANGE : DARK_GRAY);
+  default:
+    return (feature?.isSelected ? ORANGE : feature?.status == 'CLOSED' ? GRAY : RED);
+  }
+}
+
 export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts) => {
   const icon = mapType == MAP_TYPES.REPORTS || MAP_TYPES.IN_SITU ? locationPin : firePin
   return (new IconLayer({

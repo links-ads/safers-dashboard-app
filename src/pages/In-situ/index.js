@@ -18,12 +18,14 @@ import {
   getCameraList,
   getCameraSources
 } from '../../store/appAction';
-import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
+import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
 
 //i18n
 import { useTranslation } from 'react-i18next'
 import { MAP_TYPES } from '../../constants/common';
+import { getIconColorFromContext } from '../../helpers/mapHelper';
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -46,6 +48,35 @@ const InSituAlerts = () => {
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const getIconLayer = (alerts) => {
+    console.log('alerts', alerts);
+    const data = alerts.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.IN_SITU,feature),
+      icon: 'camera',
+      iconColor: '#ffffff',
+      clusterIconSize: 50,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
+
 
   useEffect(() => {
     dispatch(getCameraSources());

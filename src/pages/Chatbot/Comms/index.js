@@ -10,10 +10,12 @@ import MapSection from './Components/Map';
 import CommsList from './Components/CommsList';
 import CreateMessage from './Components/CreateMessage';
 import { getAllComms, resetCommsResponseState } from '../../../store/comms/action';
-import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
+import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const Comms = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -40,6 +42,35 @@ const Comms = () => {
   const dispatch = useDispatch();
 
   const allReports = filteredComms || allComms;
+
+  const getIconLayer = (alerts) => {
+    console.log('alerts', alerts);
+    const data = alerts.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.COMMUNICATIONS,feature),
+      icon: 'communications',
+      iconColor: '#ffffff',
+      clusterIconSize: 50,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
+
 
   useEffect(() => {
     const dateRangeParams = dateRange

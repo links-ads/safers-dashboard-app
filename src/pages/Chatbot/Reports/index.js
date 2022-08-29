@@ -9,10 +9,12 @@ import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
 import { getAllReports, resetReportResponseState } from '../../../store/reports/action';
-import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
+import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -36,6 +38,34 @@ const Reports = () => {
   const dispatch = useDispatch();
 
   const allReports = filteredReports || OrgReportList;
+
+  const getIconLayer = (alerts) => {
+    console.log('alerts', alerts);
+    const data = alerts.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.REPORTS,feature),
+      icon: 'report',
+      iconColor: '#ffffff',
+      clusterIconSize: 50,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   useEffect(() => {
     const dateRangeParams = dateRange
