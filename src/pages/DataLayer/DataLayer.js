@@ -549,7 +549,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
             </ContextMenuTrigger>
             <ContextMenu id={'DataLayerMapMenu'} className="menu">
               <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
-                Display Layer Info
+                Get Feature Info
               </MenuItem>
               <MenuItem className="menuItem" onClick={toggleTimeSeriesChart}>
                 Time Series Chart
