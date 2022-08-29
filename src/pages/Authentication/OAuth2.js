@@ -52,10 +52,13 @@ const OAuth2 = () => {
   return (
     <div className='text-center'>
       <Button
-        className="outh2-btn"
+        className="my-4 sign-in-btn"
         color="primary"
-        onClick={()=>{authorize()}}>
-        SSO Sign In
+        onClick={() => {
+          authorize();
+        }}
+      >
+        SSO SIGN IN
       </Button>
     </div>     
   );
