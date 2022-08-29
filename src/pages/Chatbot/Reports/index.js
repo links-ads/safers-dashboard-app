@@ -59,7 +59,7 @@ const Reports = () => {
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
       getPinColor: feature => getIconColorFromContext(MAP_TYPES.REPORTS,feature),
-      icon: 'target',
+      icon: 'report',
       iconColor: '#ffffff',
       clusterIconSize: 50,
       onGroupClick: true,
