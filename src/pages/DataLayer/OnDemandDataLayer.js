@@ -41,7 +41,7 @@ const OnDemandDataLayer = ({
     }
   }, [mapRequests]);
 
-  const handleSearch = (value) => {
+  const handleSearch = ({ target: { value } }) => {
     if (!value) setSearchedMapRequests(mapRequests);
   
     const searchResult = mapRequests.filter(

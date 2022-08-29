@@ -41,7 +41,7 @@ const DataLayer = ({
     }
   }, [operationalMapLayers]);
 
-  const handleSearch = (value) => {
+  const handleSearch = ({ target: { value } }) => {
     if (!value) setSearchedDataLayers(operationalMapLayers);
   
     const searchResult = operationalMapLayers.filter(
