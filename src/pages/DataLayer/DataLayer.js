@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
 
@@ -9,6 +9,7 @@ import TreeView from './TreeView';
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import SimpleBar from 'simplebar-react';
+import { formatDate } from '../../store/utility';
 
 const DataLayer = ({ 
   t,
@@ -26,118 +27,154 @@ const DataLayer = ({
   getSlider,
   getLegend,
   bitmapLayer,
-  viewState
-}) => (
-  <Row>
-    <Col xl={5}>
-      <Row>
-        <Col xl={10}>
-          <Row>
-            <Col xl={4}>
+  viewState,
+  searchDataLayers,
+  timestamp
+}) => {
+  const [searchedDataLayers, setSearchedDataLayers] = useState(null);
+
+  // places fetched data layers into local state, 
+  // so that search filtering can then be applied
+  useEffect(() => {
+    if (!searchedDataLayers?.length) {
+      setSearchedDataLayers(operationalMapLayers);
+    }
+  }, [operationalMapLayers]);
+
+  const handleSearch = ({ target: { value }}) => {
+    searchDataLayers(
+      value, 
+      operationalMapLayers, 
+      setSearchedDataLayers
+    )               
+  };
+
+  const getCurrentTimestamp = () => {
+    if (timestamp) {
+      return (
+        <div className='timestamp-container'>
+          <p className='timestamp-display'>
+            {formatDate(timestamp)}
+          </p>
+        </div>
+      )
+    }
+  }
+
+  return (
+    <Row>
+      <Col xl={5}>
+        <Row>
+          <Col xl={10}>
+            <Row>
+              <Col xl={4}>
+                <Input
+                  id="sortByDate"
+                  className="btn-sm sort-select-input"
+                  name="sortByDate"
+                  placeholder="Sort By : Date"
+                  type="select"
+                  onChange={(e) => setSortByDate(e.target.value)}
+                  value={sortByDate}
+                >
+                  <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+                  <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
+                </Input>
+              </Col>
+              <Col xl={4}>
+                <Input
+                  id="layerSource"
+                  className="btn-sm sort-select-input"
+                  name="layerSource"
+                  placeholder="layerSource"
+                  type="select"
+                  onChange={(e) => setLayerSource(e.target.value)}
+                  value={layerSource}
+                >
+                  <option value={''} >Source: All</option>
+                  {sourceOptions?.map((option) => (
+                    <option key={option} value={option}>
+                      Source: {option}
+                    </option>
+                  )) ?? []}
+                </Input>
+              </Col>
+              <Col xl={4}>
+                <Input
+                  id="dataDomain"
+                  className="btn-sm sort-select-input"
+                  name="dataDomain"
+                  placeholder="Domain"
+                  type="select"
+                  onChange={(e) => setDataDomain(e.target.value)}
+                  value={dataDomain}
+                >
+                  <option value={''} >Domain: All</option>
+                  {domainOptions?.map((option) => (
+                    <option key={option} value={option}>
+                      Domain: {option}
+                    </option>
+                  )) ?? []}
+                </Input>
+              </Col>
+            </Row>
+          </Col>
+          <Col xl={2} className="d-flex justify-content-end align-items-center">
+            <Button color='link'
+              onClick={handleResetAOI} className='p-0'>
+              {t('default-aoi')}
+            </Button>
+          </Col>
+        </Row>
+        <hr />
+        <Row className='mb-3'>
+          <Col xl={12}>
+            <InputGroup>
+              <InputGroupText className='border-end-0'>
+                <i className='fa fa-search' />
+              </InputGroupText>
               <Input
-                id="sortByDate"
-                className="btn-sm sort-select-input"
-                name="sortByDate"
-                placeholder="Sort By : Date"
-                type="select"
-                onChange={(e) => setSortByDate(e.target.value)}
-                value={sortByDate}
-              >
-                <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
-                <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
-              </Input>
-            </Col>
-            <Col xl={4}>
-              <Input
-                id="layerSource"
-                className="btn-sm sort-select-input"
-                name="layerSource"
-                placeholder="layerSource"
-                type="select"
-                onChange={(e) => setLayerSource(e.target.value)}
-                value={layerSource}
-              >
-                <option value={''} >Source: All</option>
-                {sourceOptions?.map((option) => (
-                  <option key={option} value={option}>
-                    Source: {option}
-                  </option>
-                )) ?? []}
-              </Input>
-            </Col>
-            <Col xl={4}>
-              <Input
-                id="dataDomain"
-                className="btn-sm sort-select-input"
-                name="dataDomain"
-                placeholder="Domain"
-                type="select"
-                onChange={(e) => setDataDomain(e.target.value)}
-                value={dataDomain}
-              >
-                <option value={''} >Domain: All</option>
-                {domainOptions?.map((option) => (
-                  <option key={option} value={option}>
-                    Domain: {option}
-                  </option>
-                )) ?? []}
-              </Input>
-            </Col>
-          </Row>
-        </Col>
-        <Col xl={2} className="d-flex justify-content-end align-items-center">
-          <Button color='link'
-            onClick={handleResetAOI} className='p-0'>
-            {t('default-aoi')}
-          </Button>
-        </Col>
-      </Row>
-      <hr />
-      <Row className='mb-3'>
-        <Col xl={12}>
-          <InputGroup>
-            <InputGroupText className='border-end-0'>
-              <i className='fa fa-search' />
-            </InputGroupText>
-            <Input
-              id="searchEvent"
-              name="searchEvent"
-              placeholder="Search by relation to an event"
-              autoComplete="on"
-            />
-          </InputGroup>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          <SimpleBar style={{ 
-            maxHeight: '500px', 
-            margin: '5px', 
-            zIndex: '100' 
-          }}>
-            <TreeView
-              data={operationalMapLayers}
-              setCurrentLayer={setCurrentLayer}
-            />
-          </SimpleBar>
-        </Col>
-      </Row>
-    </Col>
-    <Col xl={7} className='mx-auto'>
-      <Card className='map-card mb-0' style={{ height: 670 }}>
-        <BaseMap
-          layers={[bitmapLayer]}
-          initialViewState={viewState}
-          widgets={[]}
-          screenControlPosition='top-right'
-          navControlPosition='bottom-right'
-        />
-        {getSlider()}
-        {getLegend()}
-      </Card>
-    </Col>
-  </Row>
-)
+                id="searchEvent"
+                name="searchEvent"
+                placeholder="Search by keyword"
+                autoComplete="on"
+                onChange={handleSearch}
+              />
+            </InputGroup>
+          </Col>
+        </Row>
+        <Row>
+          <Col>
+            <SimpleBar style={{ 
+              maxHeight: '500px', 
+              margin: '5px', 
+              zIndex: '100' 
+            }}>
+              <TreeView
+                data={searchedDataLayers}
+                setCurrentLayer={setCurrentLayer}
+              />
+            </SimpleBar>
+          </Col>
+        </Row>
+      </Col>
+      <Col xl={7} className='mx-auto'>
+        <Card className='map-card mb-0' style={{ height: 670 }}>
+          <BaseMap
+            layers={[bitmapLayer]}
+            initialViewState={viewState}
+            widgets={[]}
+            screenControlPosition='top-right'
+            navControlPosition='bottom-right'
+          />
+          {getSlider()}
+          {getLegend()}
+          {getCurrentTimestamp()}
+        </Card>
+      </Col>
+    </Row>
+  )
+}
 
 export default withTranslation(['common'])(DataLayer);DataLayer.propTypes = {
   t: PropTypes.any,
@@ -156,4 +193,6 @@ export default withTranslation(['common'])(DataLayer);DataLayer.propTypes = {
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
+  searchDataLayers: PropTypes.func,
+  timestamp: PropTypes.string
 }

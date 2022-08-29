@@ -44,6 +44,7 @@ const DataLayerDashboard = () => {
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
+  const [timestamp, setTimestamp] = useState('')
 
   const { sourceOptions, domainOptions } = selectOptions;
 
@@ -118,9 +119,13 @@ const DataLayerDashboard = () => {
   useEffect(() => {
     if (sliderChangeComplete && currentLayer && currentLayer.urls) {
       const urls = getUrls();
+      const timestamps = getTimestamps();
       if (urls[sliderValue]) {
         const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
         setBitmapLayer(getBitmapLayer(imageUrl));
+      }
+      if (timestamps[sliderValue]) {
+        setTimestamp(timestamps[sliderValue]);
       }
     }
   }, [sliderValue, sliderChangeComplete]);
@@ -144,11 +149,27 @@ const DataLayerDashboard = () => {
     }
   }, [isPlaying]);
 
+  const searchDataLayers = (value, data, callback) => {
+    if (!value) callback(data);
+  
+    // 'text' property is used as it appears in 
+    // both Operational and On-Demand layers
+    const searchResult = data.filter(
+      layer => layer.text.toLowerCase().includes(value.toLowerCase())
+    );
+  
+    callback(searchResult);
+  };
+
   const backToOnDemandPanel = () => { 
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
   }
 
   const getUrls = () => Object.values(currentLayer?.urls);
+
+  const getTimestamps = () => {
+    return Object.keys(currentLayer?.urls)
+  }
 
   const getBitmapLayer = (url) => {
     return (new BitmapLayer({
@@ -259,6 +280,8 @@ const DataLayerDashboard = () => {
     bitmapLayer,
     viewState,
     handleResetAOI,
+    searchDataLayers,
+    timestamp
   };
 
   return(
