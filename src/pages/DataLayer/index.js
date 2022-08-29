@@ -4,7 +4,7 @@ import { FlyToInterpolator } from 'deck.gl';
 import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
 import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
-import { BitmapLayer } from 'deck.gl';
+
 import moment from 'moment';
 import Slider from 'react-rangeslider';
 import { getAllMapRequests } from '../../store/datalayer/action'
@@ -110,6 +110,8 @@ const DataLayerDashboard = () => {
     setIsPlaying(false);
     if (currentLayer && currentLayer.urls) {
       const urls = getUrls();
+      const timestamps = getTimestamps();
+      setTimestamp(timestamps[sliderValue])
       const imageUrl = urls[0].replace('{bbox}', boundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
@@ -117,13 +119,15 @@ const DataLayerDashboard = () => {
   }, [currentLayer]);
 
   useEffect(() => {
-    if (sliderChangeComplete && currentLayer && currentLayer.urls) {
-      const urls = getUrls();
-      const timestamps = getTimestamps();
-      if (urls[sliderValue]) {
-        const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
-        setBitmapLayer(getBitmapLayer(imageUrl));
+    if (currentLayer?.urls) {
+      if (sliderChangeComplete) {
+        const urls = getUrls();
+        if (urls[sliderValue]) {
+          const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
+          setBitmapLayer(getBitmapLayer(imageUrl));
+        }
       }
+      const timestamps = getTimestamps();
       if (timestamps[sliderValue]) {
         setTimestamp(timestamps[sliderValue]);
       }
@@ -172,17 +176,18 @@ const DataLayerDashboard = () => {
   }
 
   const getBitmapLayer = (url) => {
-    return (new BitmapLayer({
+    return {
       id: 'bitmap-layer',
       bounds: boundingBox,
       image: url
-    }))
+    }
   }
 
   const formatTooltip = value => moment(Object.assign({}, Object.keys(currentLayer?.urls))[value]).format('LLL');
 
   const getSlider = (index) => {
     if (currentLayer?.urls) {
+      console.log('HIT SLIDER');
       return (
         <div style={{
           position: 'absolute',
@@ -195,11 +200,11 @@ const DataLayerDashboard = () => {
         }}>
           <button
             type="button"
-            className="btn btn-layers-slider-play float-start me-2 p-0"
+            className="btn btn-layers-slider-play float-start me-3 p-0"
             onClick={() => setIsPlaying(!isPlaying)}
             aria-label='play-data-layers'
           >
-            <i className={`h4 mdi ${isPlaying ? 'mdi-play' : 'mdi-stop'}`} />
+            <i className={`h4 mdi ${isPlaying ? 'mdi-stop' : 'mdi-play'}`} />
           </button>
           <Slider
             key={index}

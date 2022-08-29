@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
+import { BitmapLayer } from 'deck.gl';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 
@@ -49,17 +50,15 @@ const DataLayer = ({
     )               
   };
 
-  const getCurrentTimestamp = () => {
-    if (timestamp) {
-      return (
-        <div className='timestamp-container'>
-          <p className='timestamp-display'>
-            {formatDate(timestamp)}
-          </p>
-        </div>
-      )
-    }
-  }
+  const getCurrentTimestamp = () => (
+    timestamp ? (
+      <div className='timestamp-container'>
+        <p className='timestamp-display'>
+          {formatDate(timestamp)}
+        </p>
+      </div>
+    ) : null
+  );
 
   return (
     <Row>
@@ -161,7 +160,7 @@ const DataLayer = ({
       <Col xl={7} className='mx-auto'>
         <Card className='map-card mb-0' style={{ height: 670 }}>
           <BaseMap
-            layers={[bitmapLayer]}
+            layers={[new BitmapLayer(bitmapLayer)]}
             initialViewState={viewState}
             widgets={[]}
             screenControlPosition='top-right'
