@@ -6,6 +6,7 @@ import moment from 'moment'
 import { useDispatch, useSelector } from 'react-redux';
 
 import { setDateRange } from '../store/common/action';
+import {getDefaultDateRange} from '../store/utility'
 
 import LanguageDropdown from '../components/LanguageDropdown'
 
@@ -14,6 +15,7 @@ import ProfileMenu from './TopbarDropdown/ProfileMenu'
 
 import DateRangePicker from '../components/DateRangePicker/DateRange';
 
+
 const Header = () => {
   const dispatch = useDispatch()
 
@@ -21,7 +23,7 @@ const Header = () => {
   const dateRange = useSelector(state => state.common.dateRange)
 
   const clearDates = () => {
-    dispatch(setDateRange(null))
+    dispatch(setDateRange(getDefaultDateRange()))
   }
 
   const handleDateRangePicker = (dates) => {
