@@ -106,7 +106,7 @@ const WildfireSimulation = ({
 
     const payload = {
       data_types: layerTypes.map(item => item.id),
-      geometry: formData.mapSelection,
+      geometry: `GEOMETRYCOLLECTION(${formData.mapSelection})`,
       title: formData.simulationTitle,
       parameters: {
         start: `${formData.ignitionDateTime}T00:00:00.000`,
