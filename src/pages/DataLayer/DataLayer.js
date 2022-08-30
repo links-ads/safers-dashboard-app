@@ -47,8 +47,6 @@ const DataLayer = ({ t, searchDataLayers }) => {
 
   const { sourceOptions, domainOptions } = selectOptions;
 
-  console.log('metaData..', metaData);
-
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
     (async () => {
