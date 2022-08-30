@@ -88,8 +88,8 @@ a {
   }
   &.btn-light {
     .label-icon {
-      background-color: rgba($dark, 0.1);
-      border-right: 1px solid rgba($dark, 0.2);
+      background-color: rgba($gray-800, 0.1);
+      border-right: 1px solid rgba($gray-800, 0.2);
     }
   }
 }
@@ -97,7 +97,6 @@ a {
 .btn-orange.request-map {
   background-color: $orange ;
   color: black !important;
-  margin-bottom: 1rem;
 }
 
 .data-layers-dialog-btn {

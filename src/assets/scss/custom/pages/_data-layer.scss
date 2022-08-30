@@ -24,10 +24,10 @@
 }
 
 .legend {
-    max-height: 10rem;
+    max-height: 30rem;
     position: absolute;
-    bottom: 9rem;
-    left: 60rem;
+    top: 20%;
+    left: 50%;
     z-index: 1;
 
     img {
@@ -56,4 +56,17 @@
 .timestamp-display {
     font-size: 1.5rem;
     color: $orange;
+}
+
+.meta-icon {
+    &:hover {
+        cursor: pointer;
+        color: $primary;
+    }
+}
+
+.meta-close {
+    float: right;
+    margin-right:  35px;
+    cursor: pointer;
 }

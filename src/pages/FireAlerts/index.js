@@ -36,13 +36,12 @@ import { MAP_TYPES } from '../../constants/common';
 const PAGE_SIZE = 4;
 
 const FireAlerts = ({ t }) => {
-  const defaultAoi = useSelector((state) => state.user.defaultAoi);
-  const alerts = useSelector((state) => state.alerts.allAlerts);
-  const filteredAlerts = useSelector((state) => state.alerts.filteredAlerts);
-  const sources = useSelector((state) => state.alerts.sources);
-  const success = useSelector((state) => state.alerts.success);
-  const error = useSelector((state) => state.alerts.error);
-  const dateRange = useSelector((state) => state.common.dateRange);
+  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const {allAlerts: alerts, isNewAlert, filteredAlerts} = useSelector(state => state.alerts);
+  const sources = useSelector(state => state.alerts.sources);
+  const success = useSelector(state => state.alerts.success);
+  const error = useSelector(state => state.alerts.error);
+  const dateRange = useSelector(state => state.common.dateRange)
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
@@ -89,7 +88,7 @@ const FireAlerts = ({ t }) => {
         preventDuplicates: true,
       });
     }
-  }, [alerts]);
+  }, [isNewAlert]);
 
   useEffect(() => {
     setAlertId(undefined);
