@@ -40,7 +40,9 @@ const PeopleList = ({ peopleId, currentZoomLevel, setViewState, setPeopleId, set
       getPinColor: feature => getIconColorFromContext(MAP_TYPES.PEOPLE,feature),
       icon: 'people',
       iconColor: '#ffffff',
-      clusterIconSize: 50,
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
     });

@@ -46,7 +46,9 @@ const EventList = ({
       getPinColor: feature => getIconColorFromContext(MAP_TYPES.EVENTS,feature),
       icon: 'flag',
       iconColor: '#ffffff',
-      clusterIconSize: 50,
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
     });

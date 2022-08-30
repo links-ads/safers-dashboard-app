@@ -185,6 +185,7 @@ export class PinLayer extends CompositeLayer {
           iconAtlas,
           iconMapping,
           getPosition: this.props.getPosition,
+          getPixelOffset: () => [-18,-18],
           getIcon: (d) => this._getIcon(d),
           getColor: (d) => this._getIconColor(d),
           getSize: (d) => this._getPinLayerIconSize(d) / 2,

@@ -65,7 +65,9 @@ const Missions = () => {
       getPinColor: feature => getIconColorFromContext(MAP_TYPES.MISSIONS,feature),
       icon: 'target',
       iconColor: '#ffffff',
-      clusterIconSize: 50,
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
     });

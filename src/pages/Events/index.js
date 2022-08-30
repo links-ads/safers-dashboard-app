@@ -78,7 +78,9 @@ const EventAlerts = ({ t }) => {
       getPinColor: feature => getIconColorFromContext(MAP_TYPES.COMMUNICATIONS,feature),
       icon: 'flag',
       iconColor: '#ffffff',
-      clusterIconSize: 50,
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
     });

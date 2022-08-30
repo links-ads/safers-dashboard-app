@@ -37,7 +37,9 @@ const CommsList = ({ commID, currentZoomLevel, setViewState, setCommID, setIconL
       getPinColor: feature => getIconColorFromContext(MAP_TYPES.COMMUNICATIONS,feature),
       icon: 'communications',
       iconColor: '#ffffff',
-      clusterIconSize: 50,
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
     });

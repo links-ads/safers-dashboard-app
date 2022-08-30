@@ -232,7 +232,9 @@ const FireAlerts = ({ t }) => {
       getPinColor: feature => getIconColorFromContext(MAP_TYPES.Alert,feature),
       icon: 'fire',
       iconColor: '#ffffff',
-      clusterIconSize: 50,
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
     });

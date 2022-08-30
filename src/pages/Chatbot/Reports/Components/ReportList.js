@@ -41,7 +41,9 @@ const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, set
       getPinColor: feature => getIconColorFromContext(MAP_TYPES.REPORT,feature),
       icon: 'report',
       iconColor: '#ffffff',
-      clusterIconSize: 50,
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
     });

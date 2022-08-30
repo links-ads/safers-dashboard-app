@@ -4,13 +4,17 @@
     "y": 0,
     "width": 66,
     "height": 66,
-    "mask": true
+    "mask": true,
+    "anchorX": 66,
+    "anchorY": 66
   },
   "cluster": {
     "x": 66,
     "y": 0,
     "width": 66,
     "height": 66,
-    "mask": true
+    "mask": true,
+    "anchorX": 66,
+    "anchorY": 66
   }
 }
