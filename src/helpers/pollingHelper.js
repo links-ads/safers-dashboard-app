@@ -40,7 +40,7 @@ const pollingHelper = (props) => {
     isPageActive: isEventPageActive 
   } = useSelector(state => state.eventAlerts);
 
-  // Notifications ?? But in app there are more?
+  // Notifications
   const { 
     allNotifications, 
     params: notificationParams, 
@@ -68,7 +68,7 @@ const pollingHelper = (props) => {
     dispatch(getAllFireAlerts({...alertParams, ...dateRangeParams}));
     dispatch(getAllEventAlerts({...eventParams, ...dateRangeParams}));
     dispatch(getAllNotifications({...notificationParams, ...dateRangeParams}));
-    dispatch(getAllMapRequests({...notificationParams, ...mapRequestParams}));
+    dispatch(getAllMapRequests({...mapRequestParams, ...dateRangeParams}));
   };
 
   useEffect(() => {
@@ -120,8 +120,7 @@ const pollingHelper = (props) => {
     if (currentMapRequestCount && newMapRequestCount > 
     currentMapRequestCount) {
       let difference = newMapRequestCount - currentMapRequestCount;
-      if (!isMapRequestPageActive)
-        dispatch(setNewMapRequestState(true, false, difference));
+      dispatch(setNewMapRequestState(true, isMapRequestPageActive, difference));
     }
     setCurrentMapRequestCount(newMapRequestCount);
   }, [allMapRequests]);

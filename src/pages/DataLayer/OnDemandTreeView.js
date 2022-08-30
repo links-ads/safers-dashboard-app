@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
-//import _ from 'lodash';
 
 const PropsPanel = (node) => {
   const node2=node.node;
@@ -25,7 +24,6 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
 
   useEffect(() => {
-    //TODO: when single layer selected
     setCurrentLayer(selectedLayer);
   }, [selectedLayer]);
 

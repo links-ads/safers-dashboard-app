@@ -97,7 +97,7 @@ export const getAllFilteredMapRequests = (options) => async (dispatch) => {
 export const setNewMapRequestState = (eventState, pageState, newItemsCount) => {
   return {
     type: actionTypes.SET_NEW_MAP_REQUEST_STATE,
-    isNewEvent: eventState,
+    isNewAlert: eventState,
     isPageActive: pageState,
     newItemsCount
   }

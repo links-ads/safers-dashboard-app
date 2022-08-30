@@ -15,7 +15,8 @@ const initialState = {
     default_date: false
   },
   isPageActive: false,
-  isNewAlert: false
+  isNewAlert: false,
+  newItemsCount: 0,
 };
 
 const dataLayerReducer = (state = initialState, action) => {
@@ -112,7 +113,7 @@ const setMapRequestsParams = (state, action) => {
 
 const setNewMapRequestState = (state, action) => {
   const updatedState = {
-    isNewMapRequest: action.isNewMapRequest,
+    isNewAlert: action.isNewAlert,
     isPageActive: action.isPageActive,
     newItemsCount: action.newItemsCount
   }

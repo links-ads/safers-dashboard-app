@@ -30,6 +30,7 @@ const DataLayerDashboard = () => {
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests, isNewAlert } = useSelector(state=> state?.dataLayer);
 
+  const [mapRequests, setMapRequests] = useState(null)
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
@@ -46,7 +47,19 @@ const DataLayerDashboard = () => {
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
   const [timestamp, setTimestamp] = useState('')
 
+  // TODO: layers sometimes don't show when returning from forms
+  // TODO: need to turn `isNewAlert` off again
+  // TODO: need to duplicate for other two
+
   const { sourceOptions, domainOptions } = selectOptions;
+
+  // This is to prevent the component from automatically updating
+  // when new map requests appear in global state (should show toast)
+  useEffect(() => {
+    if (!mapRequests) {
+      setMapRequests(allMapRequests)
+    }
+  }, [allMapRequests])
 
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
@@ -69,7 +82,7 @@ const DataLayerDashboard = () => {
 
   useEffect(() => {
     if (isNewAlert) {
-      toastr.success('New events are received. Please refresh the list.', '', { preventDuplicates: true, });
+      toastr.success('New maps are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
   }, [isNewAlert]);
 
@@ -175,7 +188,6 @@ const DataLayerDashboard = () => {
 
   const getSlider = (index) => {
     if (currentLayer?.urls) {
-      console.log('HIT SLIDER');
       return (
         <div style={{
           position: 'absolute',
@@ -344,7 +356,7 @@ const DataLayerDashboard = () => {
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
             <OnDemandDataLayer
-              mapRequests={filterNodesByProperty(allMapRequests, {
+              mapRequests={filterNodesByProperty(mapRequests, {
                 source: layerSource, 
                 domain: dataDomain
               })}
