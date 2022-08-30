@@ -1,17 +1,50 @@
 import _ from 'lodash';
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
-import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
+import { getViewState } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
 import People from './People';
+import { MAP_TYPES } from '../../../../constants/common';
+import { getIconColorFromContext } from '../../../../helpers/mapHelper';
+import { GeoJsonPinLayer } from '../../../../components/BaseMap/GeoJsonPinLayer';
+
 
 const MAP_TYPE = 'people';
 
 const PeopleList = ({ peopleId, currentZoomLevel, setViewState, setPeopleId, setIconLayer }) => {
   const { allPeople: OrgPeopleList, filteredPeople } = useSelector(state => { return state.people });
   const [pageData, setPageData] = useState([]);
+  const dispatch = useDispatch();
+
+  const getIconLayer = (alerts) => {
+    console.log('alerts', alerts);
+    const data = alerts?.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.PEOPLE,feature),
+      icon: 'people',
+      iconColor: '#ffffff',
+      clusterIconSize: 50,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   const allPeople = filteredPeople || OrgPeopleList;
 

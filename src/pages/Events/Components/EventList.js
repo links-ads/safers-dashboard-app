@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { Row } from 'reactstrap';
-import { getIconLayer } from '../../../helpers/mapHelper';
+import { getIconColorFromContext } from '../../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../../store/events/types';
 import Alert from './Alert';
 import PaginationWrapper from '../../../components/Pagination';
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
+import { MAP_TYPES } from '../../../constants/common';
+import { useDispatch } from 'react-redux';
 
 const EventList = ({
   alertId,
@@ -17,6 +20,37 @@ const EventList = ({
   setPaginatedAlerts,
   setSelectedAlert
 }) => {
+
+  const dispatch = useDispatch();
+  const [, setViewState] = useState({});
+
+  const getIconLayer = (alerts) => {
+    console.log('alerts', alerts);
+    const data = alerts?.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.EVENTS,feature),
+      icon: 'flag',
+      iconColor: '#ffffff',
+      clusterIconSize: 50,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   const setPageData = pageData => {
     setAlertId(undefined);
