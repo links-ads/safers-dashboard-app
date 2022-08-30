@@ -1,28 +1,24 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
-import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
-import moment from 'moment';
-import highlight from 'json-format-highlight'
+import { BitmapLayer } from 'deck.gl';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllDataLayers, resetMetaData } from '../../store/appAction';
+import { resetMetaData } from '../../store/appAction';
 
 import TreeView from './TreeView';
-import { filterNodesByProperty, formatDate } from '../../store/utility';
-import { fetchEndpoint } from '../../helpers/apiHelper';
+import { formatDate } from '../../store/utility';
+import highlight from 'json-format-highlight'
 
-//i18n
 import { withTranslation } from 'react-i18next'
-import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
-import { getBoundingBox } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
 
 const DataLayer = ({ 
   t,
   setLayerSource,
+  metaData,
+  isMetaDataLoading,
   sourceOptions,
   domainOptions,
   layerSource,
@@ -37,17 +33,15 @@ const DataLayer = ({
   getLegend,
   bitmapLayer,
   viewState,
-  timestamp
+  timestamp,
+  dispatch
 }) => {
-  const {dataLayers: globalDataLayers, metaData, isMetaDataLoading} = useSelector(state => state.dataLayer);
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
 
   // places fetched data layers into local state, 
   // so that search filtering can then be applied
   useEffect(() => {
-    if (!searchedDataLayers?.length) {
-      setSearchedDataLayers(operationalMapLayers);
-    }
+    setSearchedDataLayers(operationalMapLayers)
   }, [operationalMapLayers]);
 
   const handleSearch = ({ target: { value } }) => {
@@ -186,13 +180,26 @@ const DataLayer = ({
         </Row>
       </Col>
       <Col xl={7} className='mx-auto'>
-	{isMetaDataLoading || metaData ? (
-	  <Card color="dark default-panel">
-            <h4 className='ps-3 pt-3 mb-2'>Meta Info: <i className='meta-close' onClick={()=>{dispatch(resetMetaData());}}>x</i></h4>
-            {!metaData ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}>{print(metaData)}</SimpleBar>}
+        {isMetaDataLoading || metaData ? (
+          <Card color="dark default-panel">
+            <h4 className='ps-3 pt-3 mb-2'>
+              Meta Info: 
+              <i 
+                className='meta-close' 
+                onClick={() => {dispatch(resetMetaData());}}
+              >
+                x
+              </i>
+            </h4>
+            {!metaData 
+              ? <p className='p-3'>{t('Loadng')}...</p> 
+              : <SimpleBar style={{ height: 670 }}>
+                {print(metaData)}
+              </SimpleBar>
+            }
           </Card>
-	) : (
-	  <Card className='map-card mb-0' style={{ height: 670 }}>
+        ) : (
+          <Card className='map-card mb-0' style={{ height: 670 }}>
             <BaseMap
               layers={[new BitmapLayer(bitmapLayer)]}
               initialViewState={viewState}
@@ -204,7 +211,7 @@ const DataLayer = ({
             {getLegend()}
             {getCurrentTimestamp()}
           </Card>
-	)}        
+        )}        
       </Col>
     </Row>
   )
@@ -213,6 +220,8 @@ const DataLayer = ({
 DataLayer.propTypes = {
   t: PropTypes.any,
   setLayerSource: PropTypes.any,
+  metaData: PropTypes.object,
+  isMetaDataLoading: PropTypes.bool,
   sourceOptions: PropTypes.array,
   domainOptions: PropTypes.array,
   layerSource: PropTypes.any,
@@ -227,7 +236,8 @@ DataLayer.propTypes = {
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
-  timestamp: PropTypes.string
+  timestamp: PropTypes.string,
+  dispatch: PropTypes.func
 }
 
 export default withTranslation(['common'])(DataLayer);

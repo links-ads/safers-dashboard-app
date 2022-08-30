@@ -57,7 +57,7 @@ const getDataLayersFail = (state) => {
   return updateObject(state, updatedState);
 }
 
-const resetDataLayersResponseState = (state) => {
+const resetDataLayersResponseState = (state, action) => {
   const updatedState = {
     metaData: action.payload,
     isMetaDataLoading: false,

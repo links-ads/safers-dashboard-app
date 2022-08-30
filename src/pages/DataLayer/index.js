@@ -26,7 +26,11 @@ const DataLayerDashboard = () => {
   const timer = useRef(null);
 
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const dataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const {
+    dataLayers, 
+    metaData, 
+    isMetaDataLoading
+  } = useSelector(state => state.dataLayer);
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests, isNewAlert } = useSelector(state=> state?.dataLayer);
 
@@ -46,10 +50,6 @@ const DataLayerDashboard = () => {
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
   const [timestamp, setTimestamp] = useState('')
-
-  // TODO: layers sometimes don't show when returning from forms
-  // TODO: need to turn `isNewAlert` off again
-  // TODO: need to duplicate for other two
 
   const { sourceOptions, domainOptions } = selectOptions;
 
@@ -351,6 +351,9 @@ const DataLayerDashboard = () => {
                 source: layerSource, 
                 domain: dataDomain
               })}
+              dispatch={dispatch}
+              metaData={metaData}
+              isMetaDataLoading={isMetaDataLoading}
               {...sharedMapLayersProps}
             />
           </TabPane>

@@ -33,12 +33,10 @@ const OnDemandDataLayer = ({
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [searchedMapRequests, setSearchedMapRequests] = useState(null);
 
-  // places fetched data layers into local state, 
+  // places fetched map requests into local state, 
   // so that search filtering can then be applied
   useEffect(() => {
-    if (!searchedMapRequests?.length) {
-      setSearchedMapRequests(mapRequests);
-    }
+    setSearchedMapRequests(mapRequests)
   }, [mapRequests]);
 
   const handleSearch = ({ target: { value } }) => {

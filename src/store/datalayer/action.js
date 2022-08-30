@@ -116,8 +116,6 @@ const getAllMapRequestsFail = (error) => {
 // get All Filtered Map Requests (GET)
 export const getAllFilteredMapRequests = (options) => async (dispatch) => {
   const url = endpoints.dataLayers.mapRequests.concat('?', queryString.stringify(options))
-  
-  // TODO: Why this not being triggered?
 
   const response = await api.get(url);
 
