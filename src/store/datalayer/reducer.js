@@ -4,6 +4,7 @@ import { updateObject } from '../utility';
 const initialState = {
   dataLayers: [],
   currentLayer: {},
+  featureInfo: {},
   timeSeries: '',
   error: false,
   success: null,
@@ -20,6 +21,7 @@ const dataLayerReducer = (state = initialState, action) => {
   case actionTypes.META_DATA_RESET: return resetMetaData(state, action);
   case actionTypes.GET_META_DATA_FAIL: return getMetaDataFail(state, action);
   case actionTypes.GET_TIME_SERIES_SUCCESS: return getTimeSeriesDataSuccess(state, action);
+  case actionTypes.GET_FEATURE_INFO_SUCCESS: return getFeatureDataSuccess(state, action);
   case actionTypes.GET_TIME_SERIES_FAIL: return getTimeSeriesDataFail(state, action);
   case actionTypes.RESET_DATA_LAYER_STATE: return resetDataLayersResponseState(state, action);
   default:
@@ -72,6 +74,14 @@ const getDataLayersFail = (state) => {
 const getTimeSeriesDataSuccess = (state, action) => {
   const updatedState = {
     timeSeries: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const getFeatureDataSuccess = (state, action) => {
+  const updatedState = {
+    featureInfo: action.payload,
     error: false,
   }
   return updateObject(state, updatedState);

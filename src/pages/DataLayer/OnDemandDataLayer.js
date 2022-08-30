@@ -36,9 +36,8 @@ const OnDemandDataLayer = ({
   searchDataLayers 
 }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const dateRange = useSelector(state => state.common.dateRange)
-  //const dataLayers = useSelector(state => state.dataLayer.dataLayers);  
-  const timeSeriesData = useSelector(state => state.dataLayer.timeSeries);
+  const dateRange = useSelector(state => state.common.dateRange);
+  const {timeSeries: timeSeriesData, featureInfo: featureInfoData } = useSelector(state => state.dataLayer);
   const [dataLayers, setDataLayers] = useState(MOCKDATA);
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
@@ -307,21 +306,15 @@ const OnDemandDataLayer = ({
     '2020-06'
   ];
 
-  const apiFetch = async () => {
-    const queryParams = {
-      format: 'text/csv',
-      layers: 'ermes:33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467',
-      query_layers: 'ermes:33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467',
-      request: 'GetTimeSeries',
-      service: 'WMS',
-      time: '2022-08-22T00:00:00Z,2022-08-22T06:00:00Z,2022-08-22T12:00:00Z,2022-08-22T18:00:00Z,2022-08-23T00:00:00Z,2022-08-23T06:00:00Z,2022-08-23T12:00:00Z,2022-08-23T18:00:00Z,2022-08-24T00:00:00Z,2022-08-24T06:00:00Z,2022-08-24T12:00:00Z,2022-08-24T18:00:00Z,2022-08-25T00:00:00Z,2022-08-25T06:00:00Z,2022-08-25T12:00:00Z,2022-08-25T18:00:00Z',
-      version: '1.1.0',
-      x: tempSelectedPixel[0],
-      y: tempSelectedPixel[1],
-      bbox: boundingBox.join(','),
+  const apiFetch = async (requestType) => {
+    var tempUrl = ''
+    if(requestType == 'GetTimeSeries') {
+      tempUrl = currentLayer.timeseries_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0]+0.0001},${tempSelectedPixel[1]+0.0001}`);
+    } else if(requestType == 'GetFeatureInfo') {
+      tempUrl = currentLayer.pixel_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0]+0.0001},${tempSelectedPixel[1]+0.0001}`);
     }
 
-    dispatch(getDataLayerTimeSeriesData(queryParams));
+    dispatch(getDataLayerTimeSeriesData(tempUrl, requestType));
   }
 
   function xmlToJson(xml) {	
@@ -364,13 +357,13 @@ const OnDemandDataLayer = ({
   const toggleDisplayLayerInfo = () => {
     setSelectedPixel(tempSelectedPixel);
     setLayerData(null);
-    console.log(toggleTimeSeriesChart);
+    apiFetch('GetFeatureInfo');
   }
 
+  // eslint-disable-next-line no-unused-vars
   const toggleTimeSeriesChart = () => {
     setSelectedPixel([]);
     setLayerData(tempLayerData);
-    apiFetch();
   }
 
   const clearInfo = () => {
@@ -387,6 +380,18 @@ const OnDemandDataLayer = ({
         </button>
       </div>
     );
+  }
+
+  const getPixelValue = () => {
+    var valueString = '';
+    if(featureInfoData?.features?.length > 0 && featureInfoData?.features[0]?.properties) {
+      for (const key in featureInfoData.features[0].properties) {
+        if (Object.hasOwnProperty.call(featureInfoData.features[0].properties, key)) {
+          valueString = valueString+`${key}: ${featureInfoData.features[0].properties[key]}\n`;
+        }
+      }
+    }
+    return valueString;
   }
 
   return (
@@ -561,9 +566,9 @@ const OnDemandDataLayer = ({
                 />
               </ContextMenuTrigger>
               <ContextMenu id={'OnDemanDataLayerMapMenu'} className="menu">
-                <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
+                {currentLayer?.id && <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
                   Display Layer Info
-                </MenuItem>                
+                </MenuItem>}            
                 {/* <MenuItem className="menuItem" onClick={toggleTimeSeriesChart}>
                   Time Series Chart
                 </MenuItem> */}
@@ -575,10 +580,9 @@ const OnDemandDataLayer = ({
         </Row>
       </div>
 
-      {selectedPixel?.length > 0 && <div className='mt-2 sign-up-aoi-map-bg position-relative'>Pixel: {selectedPixel.join(', ').replace(/\d+\.\d+/g, function(match) {
-        return Number(match).toFixed(6);
-      })}
-      {renderClearBtn()}
+      {selectedPixel?.length > 0 && <div className='mt-2 sign-up-aoi-map-bg position-relative'>
+        {getPixelValue()}
+        {renderClearBtn()}
       </div>}
 
       {layerData && <div  className='mt-2 sign-up-aoi-map-bg d-flex position-relative'>

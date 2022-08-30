@@ -32,8 +32,7 @@ import {
 const SLIDER_SPEED = 800;
 const DataLayer = ({ t, searchDataLayers }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const {dataLayers: globalDataLayers, metaData, isMetaDataLoading} = useSelector(state => state.dataLayer);
-  const timeSeriesData = useSelector(state => state.dataLayer.timeSeries);
+  const {dataLayers: globalDataLayers, metaData, isMetaDataLoading, timeSeries: timeSeriesData, featureInfo: featureInfoData } = useSelector(state => state.dataLayer);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const [dataLayers, setDataLayers] = useState([]);
@@ -60,6 +59,8 @@ const DataLayer = ({ t, searchDataLayers }) => {
   const [selectedPixel, setSelectedPixel] = useState([]);
   const [tempLayerData, setTempLayerData] = useState(null);
   const [layerData, setLayerData] = useState(null);
+  const [tickValues, setTickValues] = useState([]);
+  const [chartValues, setChartValues] = useState([]);
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -158,9 +159,31 @@ const DataLayer = ({ t, searchDataLayers }) => {
 
   useEffect(()=> {
     if(timeSeriesData) {
-      var parser = new DOMParser();
-      var xmlDoc = parser.parseFromString(timeSeriesData,'text/xml');
-      console.log(xmlToJson(xmlDoc));
+      const array = timeSeriesData.split('\n');
+      array.splice(0,3);
+      if(!array[array.length -1]) {
+        array.pop();
+      }
+      if(array.length != 0) {
+        setTickValues(array.map(x=> {
+          return x.split(',')[0];
+        }));
+
+        setChartValues(array.map(data=> {
+          const tempY = data.split(',')[1].replace(/\d+\.\d+/g, function(match) {
+            return Number(match).toFixed(2);
+          })
+          return {
+            x: data.split(',')[0],
+            y: tempY? tempY : '0',
+            label: tempY? tempY : '0'
+          }
+        }));
+      } else {
+        setTickValues([]);
+        setChartValues([]);
+      }
+      
     }
   }, [timeSeriesData])
 
@@ -309,18 +332,34 @@ const DataLayer = ({ t, searchDataLayers }) => {
     }
     return(
       <Card className='map-card mb-0' style={{ height: 670 }}>
-        <BaseMap
-          layers={[bitmapLayer]}
-          initialViewState={viewState}
-          widgets={[]}
-          screenControlPosition='top-right'
-          navControlPosition='bottom-right'
-        />
+        <ContextMenuTrigger id={'DataLayerMapMenu'}>
+          <BaseMap
+            layers={[bitmapLayer, tempLayerData]}
+            initialViewState={viewState}
+            widgets={[]}
+            screenControlPosition='top-right'
+            navControlPosition='bottom-right'
+            onClick={generateGeoJson}
+            onViewStateChange={handleViewStateChange}
+            setWidth={setNewWidth}
+            setHeight={setNewHeight}      
+            setNewWidth={setNewWidth}
+            setNewHeight={setNewHeight}
+          />
+        </ContextMenuTrigger>
+        <ContextMenu id={'DataLayerMapMenu'} className="menu">
+          {currentLayer?.id && <><MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
+                Get Feature Info
+          </MenuItem>
+          <MenuItem className="menuItem" onClick={toggleTimeSeriesChart}>
+                Time Series Chart
+          </MenuItem></>}
+        </ContextMenu>
         {getSlider()}
         {getLegend()}
         {getCurrentTimestamp()}
       </Card>
-        );
+    );
   }
   
   const handleViewStateChange = (e) => {
@@ -358,95 +397,31 @@ const DataLayer = ({ t, searchDataLayers }) => {
     setTempSelectedPixel(data.coordinate);
   }
 
-  const prev = [
-    { x: '2020-01', y: 1.1235, label: 5 },
-    { x: '2020-02', y: 4.32332, label: 5 },
-    { x: '2020-03', y: 3.87543, label: 5 },
-    { x: '2020-04', y: 1.1251, label: 5 },
-    { x: '2020-05', y: 2.123241, label: 5 },
-    { x: '2020-06', y: 3.5231, label: 5 }
-  ];
-
   const xAxisLabelFormatter = (tick) => {
-    const [year, month] = tick.split('-');
-    return moment()
-      .year(year)
-      .month(month - 1)
-      .format('MMM YYYY');
+    return moment(tick).format('MMM YYYY');
   };
 
-  const tickValues = [
-    '2020-01',
-    '2020-02',
-    '2020-03',
-    '2020-04',
-    '2020-05',
-    '2020-06'
-  ];
-
-  const apiFetch = async () => {
-    const queryParams = {
-      format: 'text/csv',
-      layers: 'ermes:33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467',
-      query_layers: 'ermes:33301_t2m_33003_fceffa24-e2ca-47cf-88f9-d4984587f467',
-      request: 'GetTimeSeries',
-      service: 'WMS',
-      time: '2022-08-22T00:00:00Z,2022-08-22T06:00:00Z,2022-08-22T12:00:00Z,2022-08-22T18:00:00Z,2022-08-23T00:00:00Z,2022-08-23T06:00:00Z,2022-08-23T12:00:00Z,2022-08-23T18:00:00Z,2022-08-24T00:00:00Z,2022-08-24T06:00:00Z,2022-08-24T12:00:00Z,2022-08-24T18:00:00Z,2022-08-25T00:00:00Z,2022-08-25T06:00:00Z,2022-08-25T12:00:00Z,2022-08-25T18:00:00Z',
-      version: '1.1.0',
-      x: tempSelectedPixel[0],
-      y: tempSelectedPixel[1],
-      bbox: boundingBox.join(','),
+  const apiFetch = async (requestType) => {
+    var tempUrl = ''
+    if(requestType == 'GetTimeSeries') {
+      tempUrl = currentLayer.timeseries_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0]+0.0001},${tempSelectedPixel[1]+0.0001}`);
+    } else if(requestType == 'GetFeatureInfo') {
+      tempUrl = currentLayer.pixel_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0]+0.0001},${tempSelectedPixel[1]+0.0001}`);
     }
 
-    dispatch(getDataLayerTimeSeriesData(queryParams));
-  }
-
-  function xmlToJson(xml) {	
-    // Create the return object
-    var obj = {};
-  
-    if (xml.nodeType == 1) { // element
-      // do attributes
-      if (xml.attributes.length > 0) {
-        obj['@attributes'] = {};
-        for (var j = 0; j < xml.attributes.length; j++) {
-          var attribute = xml.attributes.item(j);
-          obj['@attributes'][attribute.nodeName] = attribute.nodeValue;
-        }
-      }
-    } else if (xml.nodeType == 3) { // text
-      obj = xml.nodeValue;
-    }
-  
-    // do children
-    if (xml.hasChildNodes()) {
-      for(var i = 0; i < xml.childNodes.length; i++) {
-        var item = xml.childNodes.item(i);
-        var nodeName = item.nodeName;
-        if (typeof(obj[nodeName]) == 'undefined') {
-          obj[nodeName] = xmlToJson(item);
-        } else {
-          if (typeof(obj[nodeName].push) == 'undefined') {
-            var old = obj[nodeName];
-            obj[nodeName] = [];
-            obj[nodeName].push(old);
-          }
-          obj[nodeName].push(xmlToJson(item));
-        }
-      }
-    }
-    return obj;
+    dispatch(getDataLayerTimeSeriesData(tempUrl, requestType));
   }
 
   const toggleDisplayLayerInfo = () => {
     setSelectedPixel(tempSelectedPixel);
     setLayerData(null);
+    apiFetch('GetFeatureInfo');
   }
 
   const toggleTimeSeriesChart = () => {
     setSelectedPixel([]);
     setLayerData(tempLayerData);
-    apiFetch();
+    apiFetch('GetTimeSeries');
   }
 
   const clearInfo = () => {
@@ -463,6 +438,18 @@ const DataLayer = ({ t, searchDataLayers }) => {
         </button>
       </div>
     );
+  }
+
+  const getPixelValue = () => {
+    var valueString = '';
+    if(featureInfoData?.features?.length > 0 && featureInfoData?.features[0]?.properties) {
+      for (const key in featureInfoData.features[0].properties) {
+        if (Object.hasOwnProperty.call(featureInfoData.features[0].properties, key)) {
+          valueString = valueString+`${key}: ${featureInfoData.features[0].properties[key]}\n`;
+        }
+      }
+    }
+    return valueString;
   }
 
   return (
@@ -576,42 +563,13 @@ const DataLayer = ({ t, searchDataLayers }) => {
           </Row>
         </Col>
         <Col xl={7} className='mx-auto'>
-          { switchRHPanel() }
-          <Card className='map-card mb-0' style={{ height: 670 }}>
-            <ContextMenuTrigger id={'DataLayerMapMenu'}>
-              <BaseMap
-                layers={[bitmapLayer, tempLayerData]}
-                initialViewState={viewState}
-                widgets={[]}
-                screenControlPosition='top-right'
-                navControlPosition='bottom-right'
-                onClick={generateGeoJson}
-                onViewStateChange={handleViewStateChange}
-                setWidth={setNewWidth}
-                setHeight={setNewHeight}      
-                setNewWidth={setNewWidth}
-                setNewHeight={setNewHeight}
-              />
-            </ContextMenuTrigger>
-            <ContextMenu id={'DataLayerMapMenu'} className="menu">
-              <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
-                Get Feature Info
-              </MenuItem>
-              <MenuItem className="menuItem" onClick={toggleTimeSeriesChart}>
-                Time Series Chart
-              </MenuItem>
-            </ContextMenu>
-            {getSlider()}
-            {getLegend()}
-            {getCurrentTimestamp()}
-          </Card>
+          { switchRHPanel() }          
         </Col>
       </Row>    
 
-      {selectedPixel?.length > 0 && <div className='mt-2 sign-up-aoi-map-bg position-relative'>Pixel: {selectedPixel.join(', ').replace(/\d+\.\d+/g, function(match) {
-        return Number(match).toFixed(6);
-      })}
-      {renderClearBtn()}
+      {selectedPixel?.length > 0 && <div className='mt-2 sign-up-aoi-map-bg position-relative'>
+        {getPixelValue()}
+        {renderClearBtn()}
       </div>}
 
       {layerData && <div  className='mt-2 sign-up-aoi-map-bg d-flex position-relative'>
@@ -645,30 +603,32 @@ const DataLayer = ({ t, searchDataLayers }) => {
               }}  
             />
 
-            <VictoryLine data={prev} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
+            <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
               pointerLength={0}/>} />
-            <VictoryScatter size={3} data={prev} labelComponent={<VictoryTooltip cornerRadius={2}
+            <VictoryScatter size={3} data={chartValues} labelComponent={<VictoryTooltip cornerRadius={2}
               pointerLength={0}/>} />
           </VictoryChart>
         </div>
         <div className='w-50' style={{lineHeight: '30px'}}>
           <div>
-            <strong>Time Interval: </strong> 2000-05-01-2022-05-1
+            <strong>Time Interval: </strong> {tickValues.sort(function(a,b){
+              return new Date(b.date) - new Date(a.date);
+            }).map(x=> formatDate(x)).join(', ')}
           </div>
           <div>
-            <strong>Mean Value: </strong> 32
+            <strong>Mean Value: </strong> {chartValues?.length > 0 ? chartValues.map(data=> +data.y).reduce((a, b) => a + b) / chartValues.length : 0}
           </div>
           <div>
-            <strong>Highest Value: </strong> 48
+            <strong>Highest Value: </strong> {chartValues?.length > 0 ? Math.max(...chartValues.map(data=> +data.y)) : 0}
           </div>
           <div>
-            <strong>Highest Value Date: </strong> 2015-05-01
+            <strong>Highest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.max(...chartValues.map(data=> +data.y)))[0]?.x)}
           </div>
           <div>
-            <strong>Lowest Value: </strong> 17
+            <strong>Lowest Value: </strong> {chartValues?.length > 0 ? Math.min(...chartValues.map(data=> +data.y)) : 0}
           </div>
           <div>
-            <strong>Lowest Value Date: </strong> 2017-05-01
+            <strong>Lowest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.min(...chartValues.map(data=> +data.y)))[0]?.x)}
           </div>
         </div>        
         {renderClearBtn()}

@@ -58,11 +58,13 @@ const getMetaDataFail = (error) => {
   };
 };
 
-export const getDataLayerTimeSeriesData = (options) => async (dispatch) => {
+export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) => {
   // const response = await api.get('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
-  const response = await fetch('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
-  if (response.status === 200) {
+  const response = await fetch(options);
+  if (response.status === 200 && type == 'GetTimeSeries') {
     return dispatch(getTimeSeriesDataSuccess(await response.text()));
+  } else if (response.status === 200 && type == 'GetFeatureInfo') {
+    return dispatch(getFeatureInfoSuccess(await response.json()));
   }
   else
     return dispatch(getTimeSeriesDataFail(response.error));
@@ -71,6 +73,12 @@ const getTimeSeriesDataSuccess = (TimeSeries) => {
   return {
     type: actionTypes.GET_TIME_SERIES_SUCCESS,
     payload: TimeSeries
+  };
+};
+const getFeatureInfoSuccess = (FeatureInfo) => {
+  return {
+    type: actionTypes.GET_FEATURE_INFO_SUCCESS,
+    payload: FeatureInfo
   };
 };
 const getTimeSeriesDataFail = (error) => {
