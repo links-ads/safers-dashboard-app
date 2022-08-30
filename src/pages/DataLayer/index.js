@@ -56,7 +56,7 @@ const DataLayerDashboard = () => {
   // This is to prevent the component from automatically updating
   // when new map requests appear in global state (should show toast)
   useEffect(() => {
-    if (!mapRequests) {
+    if (!mapRequests?.length) {
       setMapRequests(allMapRequests)
     }
   }, [allMapRequests])
