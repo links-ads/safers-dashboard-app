@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
 import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
+import highlight from 'json-format-highlight'
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { getAllDataLayers } from '../../store/appAction';
+import { getAllDataLayers, resetMetaData } from '../../store/appAction';
 
 import TreeView from './TreeView';
 import { filterNodesByProperty, formatDate } from '../../store/utility';
@@ -22,7 +23,7 @@ import SimpleBar from 'simplebar-react';
 const SLIDER_SPEED = 800;
 const DataLayer = ({ t, searchDataLayers }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const globalDataLayers = useSelector(state => state.dataLayer.dataLayers);
+  const {dataLayers: globalDataLayers, metaData, isMetaDataLoading} = useSelector(state => state.dataLayer);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const [dataLayers, setDataLayers] = useState([]);
@@ -252,6 +253,50 @@ const DataLayer = ({ t, searchDataLayers }) => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
+
+  const print = (data) => {
+    
+    const jsonTheme = {
+      keyColor: '#ffffff',
+      numberColor: '#007bff',
+      stringColor: '#B3B2B2',
+      trueColor: '#199891'
+    };
+
+    return <pre className="px-3">
+      <code
+        dangerouslySetInnerHTML={{
+          __html: highlight(data, jsonTheme)
+        }}
+      />
+    </pre>
+  };
+
+  const switchRHPanel = () => {
+    if(isMetaDataLoading || metaData){
+      return (
+        <Card color="dark default-panel">
+          <h4 className='ps-3 pt-3 mb-2'>Meta Info: <i className='meta-close' onClick={()=>{dispatch(resetMetaData());}}>x</i></h4>
+          {!metaData ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}>{print(metaData)}</SimpleBar>}
+        </Card>
+      );
+    }
+    return(
+      <Card className='map-card mb-0' style={{ height: 670 }}>
+        <BaseMap
+          layers={[bitmapLayer]}
+          initialViewState={viewState}
+          widgets={[]}
+          screenControlPosition='top-right'
+          navControlPosition='bottom-right'
+        />
+        {getSlider()}
+        {getLegend()}
+        {getCurrentTimestamp()}
+      </Card>
+    );
+  }
+
   return (
     // <div className='page-content'>
     <div>
@@ -363,18 +408,7 @@ const DataLayer = ({ t, searchDataLayers }) => {
           </Row>
         </Col>
         <Col xl={7} className='mx-auto'>
-          <Card className='map-card mb-0' style={{ height: 670 }}>
-            <BaseMap
-              layers={[bitmapLayer]}
-              initialViewState={viewState}
-              widgets={[]}
-              screenControlPosition='top-right'
-              navControlPosition='bottom-right'
-            />
-            {getSlider()}
-            {getLegend()}
-            {getCurrentTimestamp()}
-          </Card>
+          { switchRHPanel() }
         </Col>
       </Row>
     </div >

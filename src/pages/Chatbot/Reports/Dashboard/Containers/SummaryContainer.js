@@ -1,17 +1,31 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types'
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle, Button } from 'reactstrap';
 import { formatDate } from '../../../../../store/utility';
+import MapSection from '../Components/Map';
+import { getIconLayer, getViewState } from '../../../../../helpers/mapHelper';
+
+import { MAP_TYPES } from '../../../../../constants/common';
 
 //i18n
 import { withTranslation } from 'react-i18next'
 
 const SummaryContainer = ({reportDetail, t}) => {
+
+  const defaultAoi = useSelector(state => state.user.defaultAoi);
+
+
   const navigate = useNavigate();
 
   if(!reportDetail) 
     return null;
+
+  const iconLayer = getIconLayer([reportDetail], MAP_TYPES.REPORTS);
+  const viewState= getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel);
+
+
 
   const dateDisplay = reportDetail?.timestamp ? formatDate(reportDetail.timestamp) : 'Unknown';
   return (
@@ -28,13 +42,13 @@ const SummaryContainer = ({reportDetail, t}) => {
         <span className='event-alert-title opacity-75'> {t('Results')} &gt;</span> <span className='event-alert-title'>{reportDetail.name}</span>
       </Col>
 
-      <Col md={7}>
+      <Col md={3}>
         <Col className='ms-2 report-info'>
           <Row className='mb-3'>
             <span className='text-title'>{reportDetail.name}</span>
           </Row>
           <Row className='my-3'>
-            <span>{t('Hazard Type')}: {reportDetail.hazardType}</span>
+            <span>{t('Hazard Type')}: {reportDetail.hazard}</span>
           </Row>
           <Row className='my-3'>
             <span>{t('Status')}: {reportDetail.status}</span>
@@ -47,21 +61,21 @@ const SummaryContainer = ({reportDetail, t}) => {
           </Row>
         </Col>
       </Col>
-      <Col md={5} sm={12} xs={12} className='mt-2'>
-        <Card className='card-weather px-0 report-detail text-light' >
-          <Col className='mx-auto' md={11}>
+      <Col md={3}>
+        <Card className='card-weather px-0 report-detail' >
+          <Col className='ps-3 pt-3'>
             <Row>
-              <Col className='text-end'>
-                <span className='text-username'>{t('Username')} : </span><h5 className='d-inline-block text-username-org'>{reportDetail.reporter?.name}</h5></Col>
+              <Col >
+                <span className='font-size-18'>{t('Username')}</span> : {reportDetail.reporter?.name}</Col>
             </Row>
             <Row>
-              <Col className='text-end'><span className='text-username'>{t('Organization', {ns: 'common'})} : </span><h5 className='d-inline-block text-username-org'>{reportDetail.reporter?.organization}</h5></Col>
+              <Col><span className='font-size-18'>{t('Organization', {ns: 'common'})}</span> : {reportDetail.reporter?.organization}</Col>
             </Row>
           </Col>
           <hr></hr>
-          <Col className='mx-auto mb-0' md={10}>
+          <Col className='ps-3 mb-0'>
             <Row className='mb-1'>
-              <Col className='font-size-18'>{t('Location', {ns: 'common'})}</Col>
+              <Col className='font-size-18'>{t('Location', {ns: 'common'})}: </Col>
             </Row>
             <Row className='mt-2'>
               <Col md={1} className='d-flex'>
@@ -75,9 +89,9 @@ const SummaryContainer = ({reportDetail, t}) => {
             </Row>
           </Col>
           <hr></hr>
-          <Col className='mx-auto' md={10}>
+          <Col className='ps-3'>
             <Row className='mb-1'>
-              <Col className='font-size-18'>{t('Date of Report')}</Col>
+              <Col className='font-size-18'>{t('Date of Report')}: </Col>
             </Row>
             <Row >
               <Col md={1} className='d-flex'>
@@ -91,7 +105,7 @@ const SummaryContainer = ({reportDetail, t}) => {
             </Row>
           </Col>
           <hr></hr>
-          <Col className='mx-auto' md={10}>
+          <Col className='ps-3 pb-5'>
             <Row>
               <Col>
                 <CardText>
@@ -106,25 +120,21 @@ const SummaryContainer = ({reportDetail, t}) => {
                 </CardText>
               </Col>
             </Row>
-          </Col>
-
-          <Col className='mx-auto mt-3' md={10}>
             <Row>
               <Col>
-                <CardText className='opacity-50'>
-                  {t('Passport ID')}: {reportDetail.passportID}
-                </CardText>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <CardText className='opacity-50'>
+                <CardText >
                   {t('Mission ID')}: {reportDetail.missionId}
                 </CardText>
               </Col>
             </Row>
           </Col>
         </Card>
+      </Col>
+      <Col className='mx-auto'>
+        <MapSection
+          viewState={viewState}
+          iconLayer={iconLayer}
+        />
       </Col>
     </>     
   );
