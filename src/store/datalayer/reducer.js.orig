@@ -6,8 +6,7 @@ const initialState = {
   currentLayer: {},
   error: false,
   success: null,
-  metaData: null,
-  isMetaDataLoading: null,
+<<<<<<< HEAD
   mapRequest: {},
   allMapRequests: [],
   filteredMapRequests: [],
@@ -19,6 +18,10 @@ const initialState = {
   isPageActive: false,
   isNewAlert: false,
   newItemsCount: 0,
+=======
+  metaData: null,
+  isMetaDataLoading: null
+>>>>>>> development
 };
 
 const dataLayerReducer = (state = initialState, action) => {
@@ -43,6 +46,33 @@ const dataLayerReducer = (state = initialState, action) => {
   }
 };
 
+const resetMetaData = (state) => {
+  const updatedState = {
+    metaData: null,
+  }
+  return updateObject(state, updatedState);
+}
+const getMetaLoading = (state) => {
+  const updatedState = {
+    isMetaDataLoading: true,
+  }
+  return updateObject(state, updatedState);
+}
+const getMetaDataSuccess = (state, action) => {
+  const updatedState = {
+    metaData: action.payload,
+    isMetaDataLoading: false,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const getMetaDataFail = (state) => {
+  const updatedState = {
+    error: true,
+    isMetaDataLoading: false
+  }
+  return updateObject(state, updatedState);
+}
 const getDataLayersSuccess = (state, action) => {
   const updatedState = {
     dataLayers: action.payload,
@@ -59,8 +89,6 @@ const getDataLayersFail = (state) => {
 
 const resetDataLayersResponseState = (state) => {
   const updatedState = {
-    metaData: action.payload,
-    isMetaDataLoading: false,
     error: false,
     success: null
   }
@@ -78,7 +106,6 @@ const postMapRequestSuccess = (state, action) => {
 const postMapRequestFail = (state) => {
   const updatedState = {
     error: true,
-    isMetaDataLoading: false
   }
   return updateObject(state, updatedState);
 }
@@ -125,34 +152,6 @@ const setNewMapRequestState = (state, action) => {
     isNewAlert: action.isNewAlert,
     isPageActive: action.isPageActive,
     newItemsCount: action.newItemsCount
-  }
-  return updateObject(state, updatedState);
-}
-
-const resetMetaData = (state) => {
-  const updatedState = {
-    metaData: null,
-  }
-  return updateObject(state, updatedState);
-}
-const getMetaLoading = (state) => {
-  const updatedState = {
-    isMetaDataLoading: true,
-  }
-  return updateObject(state, updatedState);
-}
-const getMetaDataSuccess = (state, action) => {
-  const updatedState = {
-    metaData: action.payload,
-    isMetaDataLoading: false,
-    error: false,
-  }
-  return updateObject(state, updatedState);
-}
-const getMetaDataFail = (state) => {
-  const updatedState = {
-    error: true,
-    isMetaDataLoading: false
   }
   return updateObject(state, updatedState);
 }

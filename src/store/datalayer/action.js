@@ -26,6 +26,40 @@ const getDataLayersFail = (error) => {
   };
 };
 
+export const getMetaData = (endpoint) => async (dispatch) => {
+  dispatch(metaDataLoading());
+  const response = await api.get(endpoint);
+  if (response.status === 200) {
+    return dispatch(getMetaDataSuccess(response.data));
+  }
+  else
+    return dispatch(getMetaDataFail(response.error));
+};
+
+const metaDataLoading = () => {
+  return {
+    type: actionTypes.META_DATA_LOADING,
+  };
+};
+
+export const resetMetaData = () => {
+  return {
+    type: actionTypes.META_DATA_RESET,
+  };
+};
+const getMetaDataSuccess = (DataLayers) => {
+  return {
+    type: actionTypes.GET_META_DATA_SUCCESS,
+    payload: DataLayers
+  };
+};
+const getMetaDataFail = (error) => {
+  return {
+    type: actionTypes.GET_META_DATA_FAIL,
+    payload: error
+  };
+};
+
 export const resetDataLayersResponseState = () => {
   return {
     type: actionTypes.RESET_DATA_LAYER_STATE,

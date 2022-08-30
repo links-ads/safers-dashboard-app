@@ -46,6 +46,8 @@ export {
   resetAlertsResponseState
 } from './alerts/action'
 export {
+  getMetaData,
+  resetMetaData,
   getAllDataLayers,
   resetDataLayersResponseState,
   postMapRequest,

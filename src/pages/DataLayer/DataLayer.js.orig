@@ -1,25 +1,27 @@
-import React, { useEffect, useState, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
+<<<<<<< HEAD
+import { BitmapLayer } from 'deck.gl';
+
+import BaseMap from '../../components/BaseMap/BaseMap';
+=======
 import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
 import highlight from 'json-format-highlight'
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 import { getAllDataLayers, resetMetaData } from '../../store/appAction';
+>>>>>>> development
 
 import TreeView from './TreeView';
-import { filterNodesByProperty, formatDate } from '../../store/utility';
-import { fetchEndpoint } from '../../helpers/apiHelper';
+import { formatDate } from '../../store/utility';
 
-//i18n
 import { withTranslation } from 'react-i18next'
-import Slider from 'react-rangeslider';
 import 'react-rangeslider/lib/index.css'
-import { getBoundingBox } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
 
+<<<<<<< HEAD
 const DataLayer = ({ 
   t,
   setLayerSource,
@@ -39,10 +41,50 @@ const DataLayer = ({
   viewState,
   timestamp
 }) => {
-  const {dataLayers: globalDataLayers, metaData, isMetaDataLoading} = useSelector(state => state.dataLayer);
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
 
   // places fetched data layers into local state, 
+=======
+const SLIDER_SPEED = 800;
+const DataLayer = ({ t, searchDataLayers }) => {
+  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const {dataLayers: globalDataLayers, metaData, isMetaDataLoading} = useSelector(state => state.dataLayer);
+  const dateRange = useSelector(state => state.common.dateRange);
+
+  const [dataLayers, setDataLayers] = useState([]);
+  const [currentLayer, setCurrentLayer] = useState(undefined);
+  const [bitmapLayer, setBitmapLayer] = useState(undefined);
+  const [boundingBox, setBoundingBox] = useState(undefined);
+  const [viewState, setViewState] = useState(undefined);
+  const [sortByDate, setSortByDate] = useState(undefined);
+  const [layerSource, setLayerSource] = useState(undefined);
+  const [dataDomain, setDataDomain] = useState(undefined);
+  const [sliderValue, setSliderValue] = useState(0);
+  const [selectOptions, setSelectOptions] = useState({})
+  const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
+  const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [showLegend, setShowLegend] = useState(false);
+  const [timestamp, setTimestamp] = useState('')
+
+  const dispatch = useDispatch();
+  const timer = useRef(null);
+
+  const { sourceOptions, domainOptions } = selectOptions;
+
+  //fetch data to populate 'Source' and 'Domain' selects
+  useEffect(() => {
+    (async () => {
+      const [sourceOptions, domainOptions] = await Promise.all([
+        fetchEndpoint('/data/layers/sources'), 
+        fetchEndpoint('/data/layers/domains')
+      ])
+      setSelectOptions({ sourceOptions, domainOptions })
+    })()
+  }, []);
+
+  // places global data layers into local state, 
+>>>>>>> development
   // so that search filtering can then be applied
   useEffect(() => {
     if (!searchedDataLayers?.length) {
@@ -70,6 +112,7 @@ const DataLayer = ({
     ) : null
   );
 
+
   const print = (data) => {
     
     const jsonTheme = {
@@ -88,6 +131,31 @@ const DataLayer = ({
     </pre>
   };
 
+  const switchRHPanel = () => {
+    if(isMetaDataLoading || metaData){
+      return (
+        <Card color="dark default-panel">
+          <h4 className='ps-3 pt-3 mb-2'>Meta Info: <i className='meta-close' onClick={()=>{dispatch(resetMetaData());}}>x</i></h4>
+          {!metaData ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}>{print(metaData)}</SimpleBar>}
+        </Card>
+      );
+    }
+    return(
+      <Card className='map-card mb-0' style={{ height: 670 }}>
+        <BaseMap
+          layers={[bitmapLayer]}
+          initialViewState={viewState}
+          widgets={[]}
+          screenControlPosition='top-right'
+          navControlPosition='bottom-right'
+        />
+        {getSlider()}
+        {getLegend()}
+        {getCurrentTimestamp()}
+      </Card>
+    );
+  }
+
   return (
     <Row>
       <Col xl={5}>
@@ -96,6 +164,7 @@ const DataLayer = ({
             <Row>
               <Col xl={4}>
                 <Input
+<<<<<<< HEAD
                   id="sortByDate"
                   className="btn-sm sort-select-input"
                   name="sortByDate"
@@ -186,28 +255,58 @@ const DataLayer = ({
         </Row>
       </Col>
       <Col xl={7} className='mx-auto'>
-	{isMetaDataLoading || metaData ? (
-	  <Card color="dark default-panel">
-            <h4 className='ps-3 pt-3 mb-2'>Meta Info: <i className='meta-close' onClick={()=>{dispatch(resetMetaData());}}>x</i></h4>
-            {!metaData ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}>{print(metaData)}</SimpleBar>}
-          </Card>
-	) : (
-	  <Card className='map-card mb-0' style={{ height: 670 }}>
-            <BaseMap
-              layers={[new BitmapLayer(bitmapLayer)]}
-              initialViewState={viewState}
-              widgets={[]}
-              screenControlPosition='top-right'
-              navControlPosition='bottom-right'
-            />
-            {getSlider()}
-            {getLegend()}
-            {getCurrentTimestamp()}
-          </Card>
-	)}        
+        <Card className='map-card mb-0' style={{ height: 670 }}>
+          <BaseMap
+            layers={[new BitmapLayer(bitmapLayer)]}
+            initialViewState={viewState}
+            widgets={[]}
+            screenControlPosition='top-right'
+            navControlPosition='bottom-right'
+          />
+          {getSlider()}
+          {getLegend()}
+          {getCurrentTimestamp()}
+        </Card>
       </Col>
     </Row>
   )
+=======
+                  id="searchEvent"
+                  name="searchEvent"
+                  placeholder="Search by keyword"
+                  autoComplete="on"
+                  onChange={({target: {value}}) => searchDataLayers(
+                    value, globalDataLayers, setDataLayers
+                  )}
+                />
+              </InputGroup>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <SimpleBar style={{ 
+                maxHeight: '500px', 
+                margin: '5px', 
+                zIndex: '100' 
+              }}>
+                <TreeView
+                  data={filterNodesByProperty(dataLayers, {
+                    source: layerSource, 
+                    domain: dataDomain
+                  })}
+                  setCurrentLayer={setCurrentLayer}
+                />
+              </SimpleBar>
+            </Col>
+          </Row>
+        </Col>
+        <Col xl={7} className='mx-auto'>
+          { switchRHPanel() }
+        </Col>
+      </Row>
+    </div >
+  );
+>>>>>>> development
 }
 
 DataLayer.propTypes = {
