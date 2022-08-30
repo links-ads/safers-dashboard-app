@@ -21,7 +21,7 @@ input[switch] {
     font-weight: $fw-medium;
     transition: all 0.1s ease-in-out;
     &:before {
-      color: $dark;
+      color: $gray-800;
       content: attr(data-off-label);
       display: block;
       font-family: inherit;
