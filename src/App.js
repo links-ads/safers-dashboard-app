@@ -11,11 +11,11 @@ import { getConfig } from './store/appAction';
 const App = () => {
   const { isLoading, loadingMsg, config } = useSelector(state => state.common);
   const dispatch = useDispatch();
-
   useEffect(() => {
-    if (!config)
+    if (!config){
       dispatch(getConfig());
-  }, []);
+    }
+  }, [config]);
 
   return (
     config ? 
