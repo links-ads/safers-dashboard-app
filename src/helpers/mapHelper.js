@@ -105,8 +105,7 @@ export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts) => {
     },
     sizeMinPixels: 80,
     sizeMaxPixels: 100,
-    sizeScale: 0.5,
-    ...customData
+    sizeScale: 0.5
   }))
 }
 
