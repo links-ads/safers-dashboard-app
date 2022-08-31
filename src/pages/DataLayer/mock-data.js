@@ -1,7 +1,9 @@
-const MOCKDATA = [
+const onDemandMapLayers = [
   {
     'category': 'Fire and Burned Area',
     'id': 'd54b3d08-69fe-40ec-9fb2-7518b4739b2b',
+    'source': 'FMA',
+    'domain': 'Environment',
     'requests': [
       {
         'parameters': {
@@ -38,6 +40,8 @@ const MOCKDATA = [
   {
     'category': 'Post Event Monitoring ',
     'id': 'bbfecae7-482f-4df4-83fc-e1eb9f48cbec',
+    'source': 'CIMA',
+    'domain': 'Weather',
     'requests': [
       {
         'parameters': {
@@ -74,6 +78,8 @@ const MOCKDATA = [
   {
     'category': 'Wildfire Simulation',
     'id': '34272b4c-89f8-4c74-a046-0e980f34af3e',
+    'source': 'RISC',
+    'domain': 'Environment',
     'requests': [
       {
         'parameters': {
@@ -97,4 +103,6 @@ const MOCKDATA = [
   },
 ];
 
-export default MOCKDATA;
+export {
+  onDemandMapLayers,
+};

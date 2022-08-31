@@ -46,7 +46,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
   }
 
   const mapper = (nodes, parentId, lvl) => {
-    return nodes.map((node, index) => {
+    return nodes?.map((node, index) => {
       
       const id = node.id;
       const tooltipDisplay = tooltipInfo || node.info

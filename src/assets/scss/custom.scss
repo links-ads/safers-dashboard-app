@@ -110,3 +110,9 @@
 .debug {
   border: 1px solid red;
 }
+
+.clickable {
+  &:hover{
+    cursor: pointer;
+  }
+}
