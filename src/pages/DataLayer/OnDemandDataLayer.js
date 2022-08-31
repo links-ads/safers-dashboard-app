@@ -292,8 +292,8 @@ const OnDemandDataLayer = ({
                 onClick={generateGeoJson}
               />
             </ContextMenuTrigger>
-            <ContextMenu id={'OnDemandDataLayerMapMenu'} className="menu">
-              {currentLayer?.id && <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
+            <ContextMenu id={'OnDemandDataLayerMapMenu'} className="geo-menu">
+              {currentLayer?.id && <MenuItem className="geo-menuItem" onClick={toggleDisplayLayerInfo}>
                     Get Feature Info
               </MenuItem>}
             </ContextMenu>

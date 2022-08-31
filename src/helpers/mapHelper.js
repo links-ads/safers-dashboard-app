@@ -57,9 +57,8 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts, customIcon, customData) => {
+export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts, customIcon = '', customData = {}) => {
   const icon = customIcon? customIcon : (mapType == MAP_TYPES.REPORTS || MAP_TYPES.IN_SITU ? locationPin : firePin)
-  console.log(alerts);
   return (new IconLayer({
     data: alerts,
     pickable: true,

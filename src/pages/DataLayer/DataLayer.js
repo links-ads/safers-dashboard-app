@@ -19,7 +19,6 @@ import {
   VictoryChart,
   VictoryAxis,
   VictoryLine,
-  // VictoryLabel,
   VictoryScatter,
   VictoryTooltip
 } from 'victory';
@@ -154,11 +153,11 @@ const DataLayer = ({
             onClick={generateGeoJson}
           />
         </ContextMenuTrigger>
-        <ContextMenu id={'DataLayerMapMenu'} className="menu">
-          {currentLayer?.id && <><MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
+        <ContextMenu id={'DataLayerMapMenu'} className="geo-menu">
+          {currentLayer?.id && <><MenuItem className="geo-menuItem" onClick={toggleDisplayLayerInfo}>
                 Get Feature Info
           </MenuItem>
-          <MenuItem className="menuItem" onClick={toggleTimeSeriesChart}>
+          <MenuItem className="geo-menuItem" onClick={toggleTimeSeriesChart}>
                 Time Series Chart
           </MenuItem></>}
         </ContextMenu>
@@ -196,7 +195,7 @@ const DataLayer = ({
     setTempSelectedPixel(data.coordinate);
   }
 
-  const apiFetch = async (requestType) => {
+  const apiFetch = (requestType) => {
     var tempUrl = ''
     if(requestType == 'GetTimeSeries') {
       tempUrl = currentLayer.timeseries_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0]+0.0001},${tempSelectedPixel[1]+0.0001}`);

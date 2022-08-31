@@ -9,20 +9,20 @@ code {
     font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
-.menu {
+.geo-menu {
     background-color: white;
     z-index: 1;
     border-radius: 5px;
     color: black;
 }
 
-.menuItem {
+.geo-menuItem {
     padding: 8px 30px;
     margin: 2px 0px;
     border: none;
     cursor: pointer;
 }
 
-.menuItem:hover {
+.geo-menuItem:hover {
     background-color: lightgrey;
 }
