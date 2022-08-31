@@ -29,7 +29,9 @@ const DataLayerDashboard = () => {
   const {
     dataLayers, 
     metaData, 
-    isMetaDataLoading
+    isMetaDataLoading,
+    timeSeries: timeSeriesData,
+    featureInfo: featureInfoData
   } = useSelector(state => state.dataLayer);
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests, isNewAlert } = useSelector(state=> state?.dataLayer);
@@ -276,6 +278,7 @@ const DataLayerDashboard = () => {
     setLayerSource,
     sourceOptions,
     domainOptions,
+    currentLayer,
     setCurrentLayer,
     dataDomain,
     setDataDomain,
@@ -286,7 +289,9 @@ const DataLayerDashboard = () => {
     bitmapLayer,
     viewState,
     handleResetAOI,
-    timestamp
+    timestamp,
+    timeSeriesData,
+    featureInfoData
   };
 
   return(
@@ -364,6 +369,7 @@ const DataLayerDashboard = () => {
                 source: layerSource, 
                 domain: dataDomain
               })}
+              dispatch={dispatch}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
             />

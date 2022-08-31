@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
-import { BitmapLayer } from 'deck.gl';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { resetMetaData } from '../../store/appAction';
+import { resetMetaData, getDataLayerTimeSeriesData } from '../../store/appAction';
 
 import TreeView from './TreeView';
 import { formatDate } from '../../store/utility';
-import highlight from 'json-format-highlight'
+import highlight from 'json-format-highlight';
+import { BitmapLayer } from 'deck.gl';
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
+import { getIconLayer } from '../../helpers/mapHelper';
 import SimpleBar from 'simplebar-react';
+import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
+import {
+  VictoryChart,
+  VictoryAxis,
+  VictoryLine,
+  VictoryScatter,
+  VictoryTooltip
+} from 'victory';
 
 const DataLayer = ({ 
   t,
@@ -28,17 +37,28 @@ const DataLayer = ({
   sortByDate,
   setSortByDate,
   handleResetAOI,
+  currentLayer,
   setCurrentLayer,
   getSlider,
   getLegend,
   bitmapLayer,
   viewState,
   timestamp,
-  dispatch
+  dispatch,
+  timeSeriesData,
+  featureInfoData
 }) => {
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
 
-  // places fetched data layers into local state, 
+  const [tempSelectedPixel, setTempSelectedPixel] = useState([]);  
+  const [selectedPixel, setSelectedPixel] = useState([]);
+  const [tempLayerData, setTempLayerData] = useState(null);
+  const [layerData, setLayerData] = useState(null);
+  const [tickValues, setTickValues] = useState([]);
+  const [chartValues, setChartValues] = useState([]);
+
+
+  // places global data layers into local state, 
   // so that search filtering can then be applied
   useEffect(() => {
     setSearchedDataLayers(operationalMapLayers)
@@ -64,6 +84,36 @@ const DataLayer = ({
     ) : null
   );
 
+  useEffect(()=> {
+    if(timeSeriesData) {
+      const array = timeSeriesData.split('\n');
+      array.splice(0,3);
+      if(!array[array.length -1]) {
+        array.pop();
+      }
+      if(array.length != 0) {
+        setTickValues(array.map(x=> {
+          return x.split(',')[0];
+        }));
+
+        setChartValues(array.map(data=> {
+          const tempY = data.split(',')[1].replace(/\d+\.\d+/g, function(match) {
+            return Number(match).toFixed(2);
+          })
+          return {
+            x: data.split(',')[0],
+            y: tempY? tempY : '0',
+            label: tempY? tempY : '0'
+          }
+        }));
+      } else {
+        setTickValues([]);
+        setChartValues([]);
+      }
+      
+    }
+  }, [timeSeriesData])
+
   const print = (data) => {
     
     const jsonTheme = {
@@ -82,7 +132,122 @@ const DataLayer = ({
     </pre>
   };
 
-  return (
+  const switchRHPanel = () => {
+    if(isMetaDataLoading || metaData){
+      return (
+        <Card color="dark default-panel">
+          <h4 className='ps-3 pt-3 mb-2'>Meta Info: <i className='meta-close' onClick={()=>{dispatch(resetMetaData());}}>x</i></h4>
+          {!metaData ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}>{print(metaData)}</SimpleBar>}
+        </Card>
+      );
+    }
+    return(
+      <Card className='map-card mb-0' style={{ height: 670 }}>
+        <ContextMenuTrigger id={'DataLayerMapMenu'}>
+          <BaseMap
+            layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
+            initialViewState={viewState}
+            widgets={[]}
+            screenControlPosition='top-right'
+            navControlPosition='bottom-right'
+            onClick={generateGeoJson}
+          />
+        </ContextMenuTrigger>
+        <ContextMenu id={'DataLayerMapMenu'} className="geo-menu">
+          {currentLayer?.id && <><MenuItem className="geo-menuItem" onClick={toggleDisplayLayerInfo}>
+                Get Feature Info
+          </MenuItem>
+          <MenuItem className="geo-menuItem" onClick={toggleTimeSeriesChart}>
+                Time Series Chart
+          </MenuItem></>}
+        </ContextMenu>
+        {getSlider()}
+        {getLegend()}
+        {getCurrentTimestamp()}
+      </Card>
+    );
+  };
+
+  const generateGeoJson = (data)=> {    
+    const layer = getIconLayer(
+      [{ geometry: { coordinates : data.coordinate} }], 
+      null, 
+      'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png', 
+      {
+        getSize: () => 5,
+        iconMapping: {
+          marker: {
+            x: 0,
+            y: 0,
+            width: 128,
+            height: 128,
+            anchorY: 128,
+            mask: true
+          }
+        },
+        sizeScale: 8,
+        sizeMinPixels: 40,
+        sizeMaxPixels: 40,
+        getColor: () => [57, 58, 58],
+      }
+    );
+    setTempLayerData(layer);
+    setTempSelectedPixel(data.coordinate);
+  }
+
+  const apiFetch = (requestType) => {
+    var tempUrl = ''
+    if(requestType == 'GetTimeSeries') {
+      tempUrl = currentLayer.timeseries_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0]+0.0001},${tempSelectedPixel[1]+0.0001}`);
+    } else if(requestType == 'GetFeatureInfo') {
+      tempUrl = currentLayer.pixel_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0]+0.0001},${tempSelectedPixel[1]+0.0001}`);
+    }
+
+    dispatch(getDataLayerTimeSeriesData(tempUrl, requestType));
+  }
+
+  const toggleDisplayLayerInfo = () => {
+    setSelectedPixel(tempSelectedPixel);
+    setLayerData(null);
+    apiFetch('GetFeatureInfo');
+  }
+
+  const toggleTimeSeriesChart = () => {
+    setSelectedPixel([]);
+    setLayerData(tempLayerData);
+    apiFetch('GetTimeSeries');
+  }
+
+  const clearInfo = () => {
+    setSelectedPixel([]);    
+    setLayerData(null);
+    setTempLayerData(null);
+  }
+
+  const renderClearBtn = () => {
+    return (
+      <div className='position-absolute' style={{ top: '5px', right: '10px' }}>
+        <button onClick={clearInfo} className="custom-clear-btn d-flex justify-content-center align-items-center" type="button">
+          <i className="bx bx-x" style={{ fontSize: '25px' }}></i>
+        </button>
+      </div>
+    );
+  }
+
+  const getPixelValue = () => {
+    var valueString = '';
+    if(featureInfoData?.features?.length > 0 && featureInfoData?.features[0]?.properties) {
+      for (const key in featureInfoData.features[0].properties) {
+        if (Object.hasOwnProperty.call(featureInfoData.features[0].properties, key)) {
+          valueString = valueString+`${key}: ${featureInfoData.features[0].properties[key]}\n`;
+        }
+      }
+    }
+    return valueString;
+  }
+
+  
+  return (<>
     <Row>
       <Col xl={5}>
         <Row>
@@ -180,41 +345,76 @@ const DataLayer = ({
         </Row>
       </Col>
       <Col xl={7} className='mx-auto'>
-        {isMetaDataLoading || metaData ? (
-          <Card color="dark default-panel">
-            <h4 className='ps-3 pt-3 mb-2'>
-              Meta Info: 
-              <i 
-                className='meta-close' 
-                onClick={() => {dispatch(resetMetaData());}}
-              >
-                x
-              </i>
-            </h4>
-            {!metaData 
-              ? <p className='p-3'>{t('Loadng')}...</p> 
-              : <SimpleBar style={{ height: 670 }}>
-                {print(metaData)}
-              </SimpleBar>
-            }
-          </Card>
-        ) : (
-          <Card className='map-card mb-0' style={{ height: 670 }}>
-            <BaseMap
-              layers={[new BitmapLayer(bitmapLayer)]}
-              initialViewState={viewState}
-              widgets={[]}
-              screenControlPosition='top-right'
-              navControlPosition='bottom-right'
-            />
-            {getSlider()}
-            {getLegend()}
-            {getCurrentTimestamp()}
-          </Card>
-        )}        
+        { switchRHPanel() }          
       </Col>
     </Row>
-  )
+    {selectedPixel?.length > 0 && <div className='mt-2 sign-up-aoi-map-bg position-relative'>
+      {getPixelValue()}
+      {renderClearBtn()}
+    </div>}
+
+    {layerData && <div  className='mt-2 sign-up-aoi-map-bg d-flex position-relative'>
+      <div className='w-50'>
+        <VictoryChart>
+          <VictoryAxis
+            tickValues={tickValues}
+            tickFormat={(tick) => formatDate(tick, 'YYYY-MM-DD')}
+            style={{
+              axis: {
+                stroke: 'white', 
+              },
+              tickLabels: {
+                fill: 'white' //CHANGE COLOR OF X-AXIS LABELS
+              }, 
+              grid: {
+                stroke: 'white', //CHANGE COLOR OF X-AXIS GRID LINES
+                strokeDasharray: '7',
+              }
+            }}
+            // tickLabelComponent={<VictoryLabel style={{ data: { stroke: '#F47938' } }} />}
+          />
+          <VictoryAxis dependentAxis 
+            style={{ 
+              axis: {
+                stroke: 'white', 
+              },
+              tickLabels: {
+                fill: 'white' //CHANGE COLOR OF Y-AXIS LABELS
+              },
+            }}  
+          />
+
+          <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
+            pointerLength={0}/>} />
+          <VictoryScatter size={3} data={chartValues} labelComponent={<VictoryTooltip cornerRadius={2}
+            pointerLength={0}/>} />
+        </VictoryChart>
+      </div>
+      <div className='w-50' style={{lineHeight: '30px'}}>
+        <div>
+          <strong>Time Interval: </strong> {tickValues.sort(function(a,b){
+            return new Date(b.date) - new Date(a.date);
+          }).map(x=> formatDate(x)).join(', ')}
+        </div>
+        <div>
+          <strong>Mean Value: </strong> {chartValues?.length > 0 ? chartValues.map(data=> +data.y).reduce((a, b) => a + b) / chartValues.length : 0}
+        </div>
+        <div>
+          <strong>Highest Value: </strong> {chartValues?.length > 0 ? Math.max(...chartValues.map(data=> +data.y)) : 0}
+        </div>
+        <div>
+          <strong>Highest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.max(...chartValues.map(data=> +data.y)))[0]?.x)}
+        </div>
+        <div>
+          <strong>Lowest Value: </strong> {chartValues?.length > 0 ? Math.min(...chartValues.map(data=> +data.y)) : 0}
+        </div>
+        <div>
+          <strong>Lowest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.min(...chartValues.map(data=> +data.y)))[0]?.x)}
+        </div>
+      </div>        
+      {renderClearBtn()}
+    </div>}
+  </>)
 }
 
 DataLayer.propTypes = {
@@ -231,12 +431,15 @@ DataLayer.propTypes = {
   sortByDate: PropTypes.any,
   setSortByDate: PropTypes.any,
   handleResetAOI: PropTypes.any,
+  currentLayer: PropTypes.any,
   setCurrentLayer: PropTypes.any,
   getSlider: PropTypes.any,
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
+  timeSeriesData: PropTypes.any,
+  featureInfoData: PropTypes.any,
   dispatch: PropTypes.func
 }
 
