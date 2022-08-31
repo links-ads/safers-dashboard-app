@@ -54,7 +54,6 @@ export {
   getAllMapRequests,
   setNewMapRequestState,
   getDataLayerTimeSeriesData,
-  resetDataLayersResponseState
 } from './datalayer/action'
 export {
   getAllInSituAlerts,

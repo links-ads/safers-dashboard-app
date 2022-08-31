@@ -161,20 +161,6 @@ const getMetaDataFail = (state) => {
   }
   return updateObject(state, updatedState);
 }
-const getDataLayersSuccess = (state, action) => {
-  const updatedState = {
-    dataLayers: action.payload,
-    error: false,
-  }
-  return updateObject(state, updatedState);
-}
-
-const getDataLayersFail = (state) => {
-  const updatedState = {
-    error: true,
-  }
-  return updateObject(state, updatedState);
-}
 
 const getTimeSeriesDataSuccess = (state, action) => {
   const updatedState = {
@@ -195,14 +181,6 @@ const getFeatureDataSuccess = (state, action) => {
 const getTimeSeriesDataFail = (state) => {
   const updatedState = {
     error: true,
-  }
-  return updateObject(state, updatedState);
-}
-
-const resetDataLayersResponseState = (state) => {
-  const updatedState = {
-    error: false,
-    success: null
   }
   return updateObject(state, updatedState);
 }
