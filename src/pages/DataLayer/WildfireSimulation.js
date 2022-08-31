@@ -5,7 +5,7 @@ import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstra
 import { FieldArray, Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
-import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
+import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import { withTranslation } from 'react-i18next'
 import RequiredAsterisk from '../../components/required-asterisk'
 import {
@@ -22,7 +22,7 @@ const TABLE_HEADERS = [
   'fuelMoistureContent'
 ];
 
-const PROBABILITY_RANGES = ['50%', '75%','90%'];
+const PROBABILITY_RANGES = ['50%', '75%', '90%'];
 
 const WildfireSimulationSchema = Yup.object().shape({
   simulationTitle: Yup.string()
@@ -70,14 +70,14 @@ const renderDynamicError = errorMessage => (
     </div>
   ) : null
 );
-  
-const WildfireSimulation = ({ 
+
+const WildfireSimulation = ({
   t,
   handleResetAOI,
   backToOnDemandPanel,
 }) => {
   const dispatch = useDispatch();
-  
+
   const error = useSelector(state => state.auth.error);
 
   // to manage number of dynamic (vertical) table rows in `Boundary Conditions`
@@ -87,12 +87,12 @@ const WildfireSimulation = ({
   // For this form we hard-code the list and pass along to the API
   // when we reshape the form data for submission
   const layerTypes = [
-    {id: '35006', name:'Fire Simulation'},
-    {id: '35011', name:'Max rate of spread'},
-    {id: '35010', name:'Mean rate of spread'},
-    {id: '35009', name:'Max fireline intensity'},
-    {id: '35008', name:'Mean fireline intensity'},
-    {id: '35007', name:'Fire perimeter simulation as isochrones maps'},
+    { id: '35006', name: 'Fire Simulation' },
+    { id: '35011', name: 'Max rate of spread' },
+    { id: '35010', name: 'Mean rate of spread' },
+    { id: '35009', name: 'Max fireline intensity' },
+    { id: '35008', name: 'Mean fireline intensity' },
+    { id: '35007', name: 'Fire perimeter simulation as isochrones maps' },
   ];
 
   const onSubmit = (formData) => {
@@ -104,9 +104,10 @@ const WildfireSimulation = ({
         moisture: obj.fuelMoistureContent
       }]), []);
 
+    const transformedGeometry = formData.mapSelection.startsWith('GEOMETRYCOLLECTION') ? formData.mapSelection : `GEOMETRYCOLLECTION(${formData.mapSelection})`
     const payload = {
       data_types: layerTypes.map(item => item.id),
-      geometry: formData.mapSelection,
+      geometry: transformedGeometry,
       title: formData.simulationTitle,
       parameters: {
         start: `${formData.ignitionDateTime}T00:00:00.000`,
@@ -150,10 +151,10 @@ const WildfireSimulation = ({
         </Row>
         <Row xl={12}>
           <Formik
-            initialValues={{ 
-              simulationTitle: '', 
+            initialValues={{
+              simulationTitle: '',
               probabilityRange: '75%',
-              mapSelection: '', 
+              mapSelection: '',
               simulationTimeLimit: 1,
               ignitionDateTime: null,
               simulationFireSpotting: false,
@@ -189,8 +190,8 @@ const WildfireSimulation = ({
                         <Label for="dataLayerType">
                           {t('simulationTitle')}:<RequiredAsterisk />
                         </Label>
-                        <Input 
-                          name="simulationTitle" 
+                        <Input
+                          name="simulationTitle"
                           className={
                             errors.simulationTitle ? 'is-invalid' : null
                           }
@@ -208,8 +209,8 @@ const WildfireSimulation = ({
                       <FormGroup className='d-flex-column'>
                         <Row>
                           <Label for="probabilityRange" className='d-flex align-items-center'>
-                            <i 
-                              data-tip 
+                            <i
+                              data-tip
                               className='bx bx-info-circle font-size-8 p-0 me-1'
                               style={{ cursor: 'pointer' }}
                             />
@@ -246,8 +247,8 @@ const WildfireSimulation = ({
                         <Label for="simulationTimeLimit">
                           {t('simulationTimeLimit')}:<RequiredAsterisk />
                         </Label>
-                        <Input 
-                          name="simulationTimeLimit" 
+                        <Input
+                          name="simulationTimeLimit"
                           id="simulationTimeLimit"
                           className={
                             errors.simulationTimeLimit ? 'is-invalid' : null
@@ -299,7 +300,7 @@ const WildfireSimulation = ({
                               className={
                                 errors.ignitionDateTime ? 'is-invalid' : ''
                               }
-                              onChange={({ target: { value }}) => {
+                              onChange={({ target: { value } }) => {
                                 setFieldValue('ignitionDateTime', value)
                               }}
                               onBlur={handleBlur}
@@ -321,8 +322,8 @@ const WildfireSimulation = ({
 
                     <Row xl={5} className='d-flex justify-content-between align-items-center flex-nowrap mb-3 w-100'>
                       <FormGroup className='d-flex flex-nowrap align-items-center w-100'>
-                        <Label 
-                          for="simulationFireSpotting" 
+                        <Label
+                          for="simulationFireSpotting"
                           className='mb-0 me-3'
                         >
                           {t('simulationFireSpotting')}:
@@ -364,9 +365,9 @@ const WildfireSimulation = ({
                       <thead>
                         <tr></tr>
                         {TABLE_HEADERS.map(header => (
-                          <tr 
+                          <tr
                             key={header}>
-                            <span 
+                            <span
                               style={{ fontWeight: 'bold' }}
                             >
                               {t(header)}
@@ -380,25 +381,25 @@ const WildfireSimulation = ({
                             <tbody>
                               {tableEntries.map((position) => (
                                 <tr key={position}>
-                                  <td style={{justifyContent: 'center'}}>
-                                    {<i 
+                                  <td style={{ justifyContent: 'center' }}>
+                                    {<i
                                       className="bx bx-trash font-size-24 p-0 w-auto"
                                       onClick={() => setTableEntries(
                                         tableEntries.filter(
                                           entry => entry !== position
                                         )
                                       )}
-                                      style={{ 
-                                        cursor: 'pointer', 
-                                        visibility: position === 0 ? 'hidden' : 'visible' 
-                                      }} 
+                                      style={{
+                                        cursor: 'pointer',
+                                        visibility: position === 0 ? 'hidden' : 'visible'
+                                      }}
                                     />}
                                   </td>
                                   <td>
                                     <Input
-                                      name={`boundaryConditions.${position}.timeOffset`} 
-                                      id={`boundaryConditions.${position}.timeOffset`} 
-                                      value={values.boundaryConditions[position]?.timeOffset ?? ''} 
+                                      name={`boundaryConditions.${position}.timeOffset`}
+                                      id={`boundaryConditions.${position}.timeOffset`}
+                                      value={values.boundaryConditions[position]?.timeOffset ?? ''}
                                       placeholder='[type here]'
                                       onChange={handleChange}
                                       onBlur={handleBlur}
@@ -407,8 +408,8 @@ const WildfireSimulation = ({
                                   </td>
                                   <td>
                                     <Input
-                                      name={`boundaryConditions.${position}.windDirection`} 
-                                      id={`boundaryConditions.${position}.windDirection`} 
+                                      name={`boundaryConditions.${position}.windDirection`}
+                                      id={`boundaryConditions.${position}.windDirection`}
                                       placeholder='[type here]'
                                       onChange={handleChange}
                                       onBlur={handleBlur}
@@ -417,8 +418,8 @@ const WildfireSimulation = ({
                                   </td>
                                   <td>
                                     <Input
-                                      name={`boundaryConditions.${position}.windSpeed`} 
-                                      id={`boundaryConditions.${position}.windSpeed`} 
+                                      name={`boundaryConditions.${position}.windSpeed`}
+                                      id={`boundaryConditions.${position}.windSpeed`}
                                       placeholder='[type here]'
                                       onChange={handleChange}
                                       onBlur={handleBlur}
@@ -427,8 +428,8 @@ const WildfireSimulation = ({
                                   </td>
                                   <td>
                                     <Input
-                                      name={`boundaryConditions.${position}.fuelMoistureContent`} 
-                                      id={`boundaryConditions.${position}.fuelMoistureContent`} 
+                                      name={`boundaryConditions.${position}.fuelMoistureContent`}
+                                      id={`boundaryConditions.${position}.fuelMoistureContent`}
                                       placeholder='[type here]'
                                       onChange={handleChange}
                                       onBlur={handleBlur}
@@ -457,7 +458,7 @@ const WildfireSimulation = ({
                 </Row>
                 <Row>
                   <Col>
-                    <Button 
+                    <Button
                       type="submit"
                       disabled={isSubmitting}
                       className='btn btn-primary'
@@ -487,6 +488,6 @@ WildfireSimulation.propTypes = {
   t: PropTypes.any,
   handleResetAOI: PropTypes.func,
   backToOnDemandPanel: PropTypes.func,
-} 
+}
 
-export default withTranslation(['dataLayers','common'])(WildfireSimulation);
+export default withTranslation(['dataLayers', 'common'])(WildfireSimulation);
