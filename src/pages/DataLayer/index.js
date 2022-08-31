@@ -36,7 +36,7 @@ const DataLayerDashboard = () => {
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests, isNewAlert } = useSelector(state=> state?.dataLayer);
 
-  const [mapRequests, setMapRequests] = useState(null)
+  const [mapRequests, setMapRequests] = useState([])
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
@@ -58,10 +58,10 @@ const DataLayerDashboard = () => {
   // This is to prevent the component from automatically updating
   // when new map requests appear in global state (should show toast)
   useEffect(() => {
-    if (!mapRequests) {
+    if (!mapRequests.length) {
       setMapRequests(allMapRequests)
     }
-  }, [allMapRequests])
+  }, [allMapRequests]);
 
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
