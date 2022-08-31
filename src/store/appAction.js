@@ -49,8 +49,11 @@ export {
   getMetaData,
   resetMetaData,
   getAllDataLayers,
+  resetDataLayersResponseState,
+  postMapRequest,
+  getAllMapRequests,
+  setNewMapRequestState,
   getDataLayerTimeSeriesData,
-  resetDataLayersResponseState
 } from './datalayer/action'
 export {
   getAllInSituAlerts,
@@ -70,3 +73,10 @@ export {
   getWeatherStats,
   getWeatherVariables
 } from './dashboard/action'
+export {
+  getAllNotifications,
+  getAllNotificationSources,
+  setNotificationParams,
+  resetNotificationApiParams,
+  setNewNotificationState
+} from './notifications/action'

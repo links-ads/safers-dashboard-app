@@ -9,7 +9,7 @@ import SortSection from './Components/SortSection';
 
 import NotificationsList from './Components/NotificationsList';
 import { NOTIFICATIONS_PAGE_SIZE } from '../../store/notifications/types';
-import { getAllNotifications, getAllNotificationSources, setNewNotificationState, setNotificationParams } from '../../store/notifications/action';
+import { getAllNotifications, getAllNotificationSources, setNewNotificationState, setNotificationParams } from '../../store/appAction';
 
 import { useTranslation } from 'react-i18next';
 

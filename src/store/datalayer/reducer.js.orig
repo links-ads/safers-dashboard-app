@@ -4,12 +4,9 @@ import { updateObject } from '../utility';
 const initialState = {
   dataLayers: [],
   currentLayer: {},
-  featureInfo: {},
-  timeSeries: '',
   error: false,
   success: null,
-  metaData: null,
-  isMetaDataLoading: null,
+<<<<<<< HEAD
   mapRequest: {},
   allMapRequests: [],
   filteredMapRequests: [],
@@ -21,6 +18,10 @@ const initialState = {
   isPageActive: false,
   isNewAlert: false,
   newItemsCount: 0,
+=======
+  metaData: null,
+  isMetaDataLoading: null
+>>>>>>> development
 };
 
 const dataLayerReducer = (state = initialState, action) => {
@@ -31,9 +32,6 @@ const dataLayerReducer = (state = initialState, action) => {
   case actionTypes.META_DATA_LOADING: return getMetaLoading(state, action);
   case actionTypes.META_DATA_RESET: return resetMetaData(state, action);
   case actionTypes.GET_META_DATA_FAIL: return getMetaDataFail(state, action);
-  case actionTypes.GET_TIME_SERIES_SUCCESS: return getTimeSeriesDataSuccess(state, action);
-  case actionTypes.GET_FEATURE_INFO_SUCCESS: return getFeatureDataSuccess(state, action);
-  case actionTypes.GET_TIME_SERIES_FAIL: return getTimeSeriesDataFail(state, action);
   case actionTypes.RESET_DATA_LAYER_STATE: return resetDataLayersResponseState(state, action);
   case actionTypes.POST_MAP_REQUESTS_SUCCESS: return postMapRequestSuccess(state, action);
   case actionTypes.POST_MAP_REQUESTS_FAIL: return postMapRequestFail(state, action);
@@ -48,6 +46,33 @@ const dataLayerReducer = (state = initialState, action) => {
   }
 };
 
+const resetMetaData = (state) => {
+  const updatedState = {
+    metaData: null,
+  }
+  return updateObject(state, updatedState);
+}
+const getMetaLoading = (state) => {
+  const updatedState = {
+    isMetaDataLoading: true,
+  }
+  return updateObject(state, updatedState);
+}
+const getMetaDataSuccess = (state, action) => {
+  const updatedState = {
+    metaData: action.payload,
+    isMetaDataLoading: false,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+const getMetaDataFail = (state) => {
+  const updatedState = {
+    error: true,
+    isMetaDataLoading: false
+  }
+  return updateObject(state, updatedState);
+}
 const getDataLayersSuccess = (state, action) => {
   const updatedState = {
     dataLayers: action.payload,
@@ -62,10 +87,8 @@ const getDataLayersFail = (state) => {
   return updateObject(state, updatedState);
 }
 
-const resetDataLayersResponseState = (state, action) => {
+const resetDataLayersResponseState = (state) => {
   const updatedState = {
-    metaData: action.payload,
-    isMetaDataLoading: false,
     error: false,
     success: null
   }
@@ -83,7 +106,6 @@ const postMapRequestSuccess = (state, action) => {
 const postMapRequestFail = (state) => {
   const updatedState = {
     error: true,
-    isMetaDataLoading: false
   }
   return updateObject(state, updatedState);
 }
@@ -130,57 +152,6 @@ const setNewMapRequestState = (state, action) => {
     isNewAlert: action.isNewAlert,
     isPageActive: action.isPageActive,
     newItemsCount: action.newItemsCount
-  }
-  return updateObject(state, updatedState);
-}
-
-const resetMetaData = (state) => {
-  const updatedState = {
-    metaData: null,
-  }
-  return updateObject(state, updatedState);
-}
-const getMetaLoading = (state) => {
-  const updatedState = {
-    isMetaDataLoading: true,
-  }
-  return updateObject(state, updatedState);
-}
-const getMetaDataSuccess = (state, action) => {
-  const updatedState = {
-    metaData: action.payload,
-    isMetaDataLoading: false,
-    error: false,
-  }
-  return updateObject(state, updatedState);
-}
-const getMetaDataFail = (state) => {
-  const updatedState = {
-    error: true,
-    isMetaDataLoading: false
-  }
-  return updateObject(state, updatedState);
-}
-
-const getTimeSeriesDataSuccess = (state, action) => {
-  const updatedState = {
-    timeSeries: action.payload,
-    error: false,
-  }
-  return updateObject(state, updatedState);
-}
-
-const getFeatureDataSuccess = (state, action) => {
-  const updatedState = {
-    featureInfo: action.payload,
-    error: false,
-  }
-  return updateObject(state, updatedState);
-}
-
-const getTimeSeriesDataFail = (state) => {
-  const updatedState = {
-    error: true,
   }
   return updateObject(state, updatedState);
 }

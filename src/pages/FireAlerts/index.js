@@ -28,8 +28,7 @@ const ICON_MAPPING = {
 
 const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const alerts = useSelector(state => state.alerts.allAlerts);
-  const filteredAlerts = useSelector(state => state.alerts.filteredAlerts);
+  const {allAlerts: alerts, isNewAlert, filteredAlerts} = useSelector(state => state.alerts);
   const sources = useSelector(state => state.alerts.sources);
   const success = useSelector(state => state.alerts.success);
   const error = useSelector(state => state.alerts.error);
@@ -77,10 +76,10 @@ const FireAlerts = ({ t }) => {
   }, [success, error]);
 
   useEffect(() => {
-    if (alerts.length > filteredAlerts.length) {
+    if (isNewAlert) {
       toastr.success('New alerts are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
-  }, [alerts]);
+  }, [isNewAlert]);
 
   useEffect(() => {
     setAlertId(undefined);
