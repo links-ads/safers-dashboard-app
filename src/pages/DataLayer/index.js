@@ -369,6 +369,7 @@ const DataLayerDashboard = () => {
                 source: layerSource, 
                 domain: dataDomain
               })}
+              dispatch={dispatch}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
             />
