@@ -168,6 +168,20 @@ const DataLayerDashboard = () => {
     }
   }, [isPlaying]);
 
+  const getAllTitles = (arr) => {
+    let titles = [];
+
+    const aggregate = data => data.forEach(datum => {
+      if (datum.children) {
+        aggregate(datum.children);
+      }
+      titles = [...titles, datum.text];
+    });
+    
+    aggregate(arr);
+    return titles;
+  }
+
   const backToOnDemandPanel = () => { 
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
   }
@@ -289,9 +303,10 @@ const DataLayerDashboard = () => {
     bitmapLayer,
     viewState,
     handleResetAOI,
-    timestamp,
     timeSeriesData,
-    featureInfoData
+    featureInfoData,
+    getAllTitles,
+    timestamp
   };
 
   return(
