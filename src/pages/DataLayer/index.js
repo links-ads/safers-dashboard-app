@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FlyToInterpolator } from 'deck.gl';
+import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
 import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
 import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +15,7 @@ import PostEventMonitoringForm from './PostEventMonitoringForm'
 import WildfireSimulation from './WildfireSimulation'
 import { getAllDataLayers, setNewAlertState, setAlertApiParams } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
-import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
+import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { setFilteredAlerts } from '../../store/alerts/action';
@@ -127,7 +127,7 @@ const DataLayerDashboard = () => {
       const urls = getUrls();
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue])
-      const imageUrl = urls[0].replace('{bbox}', boundingBox);
+      const imageUrl = urls[0].replace('{bbox}', EUROPEAN_BBOX);
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
     }
@@ -138,7 +138,7 @@ const DataLayerDashboard = () => {
       if (sliderChangeComplete) {
         const urls = getUrls();
         if (urls[sliderValue]) {
-          const imageUrl = urls[sliderValue].replace('{bbox}', boundingBox);
+          const imageUrl = urls[sliderValue].replace('{bbox}', EUROPEAN_BBOX);
           setBitmapLayer(getBitmapLayer(imageUrl));
         }
       }
@@ -181,8 +181,9 @@ const DataLayerDashboard = () => {
   const getBitmapLayer = (url) => {
     return {
       id: 'bitmap-layer',
-      bounds: boundingBox,
-      image: url
+      bounds: EUROPEAN_BBOX,
+      image: url,
+      _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
     }
   }
 
