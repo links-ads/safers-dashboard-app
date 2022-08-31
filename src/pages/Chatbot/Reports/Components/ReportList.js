@@ -17,30 +17,29 @@ const ReportList = ({
   setViewState, 
   setReportId, 
   setIconLayer,
-  assignmentSort,
+  missionId,
   category,
   sortOrder
 }) => {
   const { allReports: OrgReportList, filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
 
-  console.log('pageData: ', pageData);
-
   const dispatch = useDispatch();
 
-  const allReports = filteredReports || OrgReportList;
+  const allReports = filteredReports?.length 
+    ? filteredReports 
+    : OrgReportList;
 
   useEffect(() => {
-    // if(pageData.length > 0) {
     const filters = { 
-      additional_info: category, 
-      assignmentSort 
+      categories: category,
+      mission_id:  missionId
     };
+  
     const sort = { fieldName: 'timestamp', order: sortOrder };
-    const actFiltered = getFilteredRec(allReports, filters, sort);
+    const actFiltered = getFilteredRec(OrgReportList, filters, sort);
     dispatch(setFilterdReports(actFiltered));
-    // }
-  }, [category, assignmentSort, sortOrder])
+  }, [category, missionId, sortOrder])
 
   const setFavoriteFlag = (id) => {
     let selectedReport = _.find(pageData, { id });
@@ -94,7 +93,7 @@ ReportList.propTypes = {
   setViewState: PropTypes.func,
   setReportId: PropTypes.func,
   setIconLayer: PropTypes.func,
-  assignmentSort: PropTypes.string,
+  missionId: PropTypes.string,
   category: PropTypes.string,
   sortOrder: PropTypes.string
 }

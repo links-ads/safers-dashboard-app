@@ -14,8 +14,8 @@ const SortSection = ({
   setReportSource, 
   setSortOrder, 
   setCategory,
-  assignmentSort,
-  setAssignmentSort
+  missionId,
+  setMissionId
 }) => {
   const { allReports } = useSelector(state => state.reports);
   const [selectOptions, setSelectOptions] = useState([]);
@@ -35,12 +35,18 @@ const SortSection = ({
           <Input
             type='select'
             className="btn-sm sort-select-input"
-            value={assignmentSort}
-            onChange={({ target: { value } }) => setAssignmentSort(value)}
+            value={missionId}
+            onChange={({ target: { value } }) => {
+              // this is necessary because the select stringifies the value
+              let filterValue = value;
+              if (value === 'true') filterValue = true;
+              if (value === 'false') filterValue = false;
+              setMissionId(filterValue);
+            }}
           >
-            <option value='all'>{t('All')}</option>
-            <option value='assigned'>{t('Assigned to Mission')}</option>
-            <option value='unassigned'>{t('Unassigned to Mission')}</option>
+            <option value=''>{t('All')}</option>
+            <option value={true}>{t('Assigned to Mission')}</option>
+            <option value={false}>{t('Unassigned to Mission')}</option>
           </Input>
         </Col>
         <Col xl={5} />
@@ -109,8 +115,8 @@ SortSection.propTypes = {
   setSortOrder: PropTypes.func,
   setCategory: PropTypes.func,
   t: PropTypes.func,
-  assignmentSort: PropTypes.string,
-  setAssignmentSort: PropTypes.func
+  missionId: PropTypes.string,
+  setMissionId: PropTypes.func
 }
 
 export default withTranslation(['common'])(SortSection);
