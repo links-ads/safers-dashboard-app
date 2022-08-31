@@ -7,7 +7,6 @@ import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import { withTranslation } from 'react-i18next'
-import RequiredAsterisk from '../../components/required-asterisk'
 import {
   postMapRequest,
   getAllMapRequests
@@ -105,12 +104,15 @@ const WildfireSimulation = ({
       }]), []);
 
     const transformedGeometry = formData.mapSelection.startsWith('GEOMETRYCOLLECTION') ? formData.mapSelection : `GEOMETRYCOLLECTION(${formData.mapSelection})`
+    const startDateTime = new Date(formData.ignitionDateTime).toISOString()
+    const endDateTime = new Date(getDateOffset(startDateTime, formData.simulationTimeLimit)).toISOString()
     const payload = {
       data_types: layerTypes.map(item => item.id),
       geometry: transformedGeometry,
       title: formData.simulationTitle,
       parameters: {
-        start: `${formData.ignitionDateTime}T00:00:00.000`,
+        start: startDateTime,
+        end: endDateTime,
         time_limit: formData.simulationTimeLimit,
         probabilityRange: formData.probabilityRange,
         do_spotting: formData.simulationFireSpotting,
@@ -188,7 +190,7 @@ const WildfireSimulation = ({
                     <Row>
                       <FormGroup className="form-group">
                         <Label for="dataLayerType">
-                          {t('simulationTitle')}:<RequiredAsterisk />
+                          {t('simulationTitle')}
                         </Label>
                         <Input
                           name="simulationTitle"
@@ -214,7 +216,7 @@ const WildfireSimulation = ({
                               className='bx bx-info-circle font-size-8 p-0 me-1'
                               style={{ cursor: 'pointer' }}
                             />
-                            {t('probabilityRange')}:<RequiredAsterisk />
+                            {t('probabilityRange')}
                           </Label>
                         </Row>
                         <Row className='d-flex justify-content-start flex-nowrap gap-2'>
@@ -245,7 +247,7 @@ const WildfireSimulation = ({
                     <Row>
                       <FormGroup className="form-group">
                         <Label for="simulationTimeLimit">
-                          {t('simulationTimeLimit')}:<RequiredAsterisk />
+                          {t('simulationTimeLimit')}
                         </Label>
                         <Input
                           name="simulationTimeLimit"
@@ -265,7 +267,7 @@ const WildfireSimulation = ({
                     <Row>
                       <FormGroup className="form-group">
                         <Label for="mapSelection">
-                          {t('mapSelection')}:<RequiredAsterisk />
+                          {t('mapSelection')}
                         </Label>
                         <Input
                           id="mapSelection"
@@ -287,7 +289,7 @@ const WildfireSimulation = ({
                         <Row>
                           <Col>
                             <Label for="ignitionDateTime">
-                              {t('ignitionDateTime')}:<RequiredAsterisk />
+                              {t('ignitionDateTime')}
                             </Label>
                           </Col>
                         </Row>
@@ -326,7 +328,7 @@ const WildfireSimulation = ({
                           for="simulationFireSpotting"
                           className='mb-0 me-3'
                         >
-                          {t('simulationFireSpotting')}:
+                          {t('simulationFireSpotting')}
                         </Label>
                         <Input
                           id="simulationFireSpotting"
@@ -358,7 +360,7 @@ const WildfireSimulation = ({
                 <Row>
                   <FormGroup className="form-group">
                     <Label for="boundaryConditions" className='m-0'>
-                      {t('boundaryConditions')}:<RequiredAsterisk />
+                      {t('boundaryConditions')}
                     </Label>
                     <table className='on-demand-table'
                     >

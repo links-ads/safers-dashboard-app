@@ -6,7 +6,6 @@ import { Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
-import RequiredAsterisk from '../../components/required-asterisk'
 import {
   postMapRequest,
   getAllMapRequests
@@ -112,7 +111,7 @@ const PostEventMonitoring = ({
                         <Row>
                           <FormGroup className="form-group">
                             <Label for="dataLayerType">
-                              {t('dataLayerType')}<RequiredAsterisk />
+                              {t('dataLayerType')}
                             </Label>
                             <Input 
                               name="dataLayerType"
@@ -155,7 +154,7 @@ const PostEventMonitoring = ({
                         <Row>
                           <FormGroup className='form-group'>
                             <Label for="mapSelection">
-                              {t('mapSelection')}<RequiredAsterisk />
+                              {t('mapSelection')}
                             </Label>
                             <Input
                               id="mapSelection"
@@ -178,7 +177,7 @@ const PostEventMonitoring = ({
                             <Row>
                               <Col>
                                 <Label for="startDate">
-                                  {t('startDate')}<RequiredAsterisk />
+                                  {t('startDate')}
                                 </Label>
                                 <Input
                                   id="startDate"
@@ -195,7 +194,7 @@ const PostEventMonitoring = ({
                               </Col>
                               <Col>
                                 <Label for="endDate">
-                                  {t('endDate')}<RequiredAsterisk />
+                                  {t('endDate')}
                                 </Label>
                                 <Input
                                   id="endDate"

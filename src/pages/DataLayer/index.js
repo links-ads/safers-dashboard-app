@@ -29,12 +29,14 @@ const DataLayerDashboard = () => {
   const {
     dataLayers, 
     metaData, 
-    isMetaDataLoading
+    isMetaDataLoading,
+    timeSeries: timeSeriesData,
+    featureInfo: featureInfoData
   } = useSelector(state => state.dataLayer);
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests, isNewAlert } = useSelector(state=> state?.dataLayer);
 
-  const [mapRequests, setMapRequests] = useState(null)
+  const [mapRequests, setMapRequests] = useState([])
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
@@ -56,10 +58,10 @@ const DataLayerDashboard = () => {
   // This is to prevent the component from automatically updating
   // when new map requests appear in global state (should show toast)
   useEffect(() => {
-    if (!mapRequests) {
+    if (!mapRequests.length) {
       setMapRequests(allMapRequests)
     }
-  }, [allMapRequests])
+  }, [allMapRequests]);
 
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
@@ -165,6 +167,20 @@ const DataLayerDashboard = () => {
       clearInterval(timer.current);
     }
   }, [isPlaying]);
+
+  const getAllTitles = (arr) => {
+    let titles = [];
+
+    const aggregate = data => data.forEach(datum => {
+      if (datum.children) {
+        aggregate(datum.children);
+      }
+      titles = [...titles, datum.text];
+    });
+    
+    aggregate(arr);
+    return titles;
+  }
 
   const backToOnDemandPanel = () => { 
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
@@ -276,6 +292,7 @@ const DataLayerDashboard = () => {
     setLayerSource,
     sourceOptions,
     domainOptions,
+    currentLayer,
     setCurrentLayer,
     dataDomain,
     setDataDomain,
@@ -286,6 +303,9 @@ const DataLayerDashboard = () => {
     bitmapLayer,
     viewState,
     handleResetAOI,
+    timeSeriesData,
+    featureInfoData,
+    getAllTitles,
     timestamp
   };
 
@@ -364,6 +384,7 @@ const DataLayerDashboard = () => {
                 source: layerSource, 
                 domain: dataDomain
               })}
+              dispatch={dispatch}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
             />
