@@ -282,7 +282,7 @@ const OnDemandDataLayer = ({
         </Col>
         <Col xl={7} className='mx-auto'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
-            <ContextMenuTrigger id={'DataLayerMapMenu'}>
+            <ContextMenuTrigger id={'OnDemandDataLayerMapMenu'}>
               <BaseMap
                 layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
                 initialViewState={viewState}
@@ -292,7 +292,7 @@ const OnDemandDataLayer = ({
                 onClick={generateGeoJson}
               />
             </ContextMenuTrigger>
-            <ContextMenu id={'DataLayerMapMenu'} className="menu">
+            <ContextMenu id={'OnDemandDataLayerMapMenu'} className="menu">
               {currentLayer?.id && <MenuItem className="menuItem" onClick={toggleDisplayLayerInfo}>
                     Get Feature Info
               </MenuItem>}
