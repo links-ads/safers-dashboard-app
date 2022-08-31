@@ -29,6 +29,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   const [dateRange, setDateRange] = useState(null);
   const [desc, setDesc] = useState(null);
   const [errors, setErrors] = useState({});
+  const [validCoords, isValidCoordFormat] = useState(false);
 
   useEffect(() => {
     if(orgList.length && user?.organization){
@@ -43,6 +44,13 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     }
 
   }, [missionCreated]);
+
+  useEffect(() => {
+    if(dateRange){// On blur validation after setting values
+      validate();
+    }
+
+  }, [title, dateRange, desc, coordinates, validCoords]);
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date => 
@@ -59,8 +67,16 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     if(!desc)
       errors['desc'] = 'This field is required' ;
 
-    if(!coordinates)
+    if(!coordinates){
       errors['coordinates'] = 'Please select your area on the map' ;
+    }
+    else if (!validCoords) {
+      errors['coordinates'] = 'Please correct your coordinates' ;
+    }
+      
+
+    if(!dateRange)
+      errors['dateRange'] = 'Please select start/end date' ;
     
     setErrors(errors);
   }
@@ -94,14 +110,18 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       {getError('title', errors, errors, false)}
     </FormGroup>
 
-    <DateRangePicker
-      type='text'
-      placeholder='Start Date - End Date'
-      setDates={handleDateRangePicker}
-      defaultDateRange={dateRange}
-      isTooltipInput={true}
-      showIcons={true}
-    />
+    <FormGroup className="form-group mt-3">
+      <DateRangePicker
+        type='text'
+        placeholder='Start Date - End Date'
+        className={`${getError('dateRange', errors, errors)}`}
+        setDates={handleDateRangePicker}
+        defaultDateRange={dateRange}
+        isTooltipInput={true}
+        showIcons={true}
+      />
+      {getError('dateRange', errors, errors, false)}
+    </FormGroup>
     <FormGroup className="form-group mt-3">
       <MapInput
         id="coordinates-input"
@@ -112,6 +132,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         rows="10"
         coordinates={coordinates}
         setCoordinates={setCoordinates}
+        isValidFormat={isValidCoordFormat}
       />
       {getError('coordinates', errors, errors, false)}
     </FormGroup>

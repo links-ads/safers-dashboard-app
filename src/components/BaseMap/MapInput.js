@@ -14,6 +14,11 @@ const MapInput = (props) => {
     setShowError(!checkWKTFormate(props.coordinates));
   }, [props.coordinates])
 
+  useEffect(() => {
+    if(props.isValidFormat){
+      props.isValidFormat(!showError);
+    }
+  }, [showError])
   return (<>
     <div className='polygon-edit-input'>
       <Input
@@ -60,7 +65,8 @@ const MapInput = (props) => {
 
 MapInput.propTypes = {
   coordinates: PropTypes.any,
-  setCoordinates: PropTypes.func
+  setCoordinates: PropTypes.func,
+  isValidFormat: PropTypes.func
 }
 
 export default MapInput;

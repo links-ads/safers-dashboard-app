@@ -36,7 +36,16 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const [dateRange, setDateRange] = useState(null);
   const [desc, setDesc] = useState(null);
   const [errors, setErrors] = useState({});
-  const [restriction, setRestriction] = useState({});
+  const [restriction, setRestriction] = useState(undefined);
+  const [validCoords, isValidCoordFormat] = useState(false);
+
+  const resetState = () => {
+    setScope('');
+    setDateRange(null);
+    setScope('');
+    setDesc(null);
+    setRestriction(undefined);
+  }
 
   useEffect(() => {
     if(orgList.length && user?.organization){
@@ -48,9 +57,17 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   useEffect(() => {
     if (msgCreated) {
       toastr.success(msgCreated.msg, '');
+      resetState();
     }
 
   }, [msgCreated]);
+
+  useEffect(() => {
+    if(dateRange){// On blur validation after setting values
+      validate();
+    }
+
+  }, [scope, dateRange, desc, restriction, coordinates, validCoords]);
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date => 
@@ -65,8 +82,23 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     if(!desc)
       errors['desc'] = 'This field is required' ;
 
-    if(!coordinates)
+    if(!scope || scope === '')
+      errors['scope'] = 'This field is required' ;
+
+    if(scope && scope == 'Restricted' && (!restriction || restriction === '')){
+      errors['restriction'] = 'This field is required' ;
+    }   
+
+    if(!coordinates){
       errors['coordinates'] = 'Please select your area on the map' ;
+    }
+    else if (!validCoords) {
+      errors['coordinates'] = 'Please correct your coordinates' ;
+    }
+    
+
+    if(!dateRange)
+      errors['dateRange'] = 'Please select start/end date' ;
     
     setErrors(errors);
   }
@@ -88,13 +120,17 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
 
   return (
     <>
-      <DateRangePicker
-        type='text'
-        placeholder='Start Date | End date'
-        setDates={handleDateRangePicker}
-        isTooltipInput={true}
-        showIcons={true}
-      />
+      <FormGroup className="form-group mt-3">
+        <DateRangePicker
+          type='text'
+          placeholder='Start Date | End date'
+          className={`${getError('dateRange', errors, errors)}`}
+          setDates={handleDateRangePicker}
+          isTooltipInput={true}
+          showIcons={true}
+        />
+        {getError('dateRange', errors, errors, false)}
+      </FormGroup>
       <FormGroup className="form-group mt-3">
         <MapInput
           id="coordinates-input"
@@ -105,6 +141,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           rows="10"
           coordinates={coordinates}
           setCoordinates={setCoordinates}
+          isValidFormat={isValidCoordFormat}
         />
         {getError('coordinates', errors, errors, false)}
       </FormGroup>
@@ -114,7 +151,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
         <Col xl={5} className="pe-xl-0 text-center">
           <Input
             id="scope"
-            className="btn-sm sort-select-input me-2 mb-2"
+            className={`btn-sm sort-select-input me-2 mb-2 ${getError('scope', errors, errors)}`}
             name="scope"
             type="select"
             onChange={(e)=>{setScope(e.target.value)}}
@@ -123,21 +160,23 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
             <option value="Public">{t('Public')}</option>
             <option value="Restricted">{t('Restricted')}</option>
           </Input>
+          {getError('scope', errors, errors, false)}
         </Col>
         { scope === 'Restricted' && <Col xl={5}>
           <Input
-            id="restrictions"
-            className="btn-sm sort-select-input"
-            name="restrictions"
+            id="restriction"
+            className={`btn-sm sort-select-input ${getError('restriction', errors, errors)}`}
+            name="restriction"
             type="select"
             onChange={(e)=>{setRestriction(e.target.value)}}
             value={restriction}
           >
-            <option value={null}>--{t('Restrictions')}--</option>
+            <option value="">--{t('Restrictions')}--</option>
             <option value="Citizen">{t('Citizen')}</option>
             <option value="Professional">{t('Professional')}</option>
             <option value="Organisation">{t('Organisation')}</option>
           </Input>
+          {getError('restriction', errors, errors, false)}
         </Col>}
       </Row>
       <FormGroup className="form-group mt-3">
@@ -147,7 +186,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           type='textarea'
           name="message-description"
           placeholder='Message Description'
-          onChange={(e) => {setDesc(e.target.value); validate();}}
+          onChange={(e) => {setDesc(e.target.value);}}
           rows="10"
         />
         {getError('desc', errors, errors, false)}
