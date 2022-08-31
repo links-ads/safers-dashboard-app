@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types'
-import { Input, Button, Row, Col, Label } from 'reactstrap';
+import { Input, Button, Row, Col, Label, FormGroup } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import MapInput from '../../../../components/BaseMap/MapInput';
+import { getError }  from '../../../../helpers/errorHelper';
+import { createMission } from '../../../../store/missions/action';
+import moment from 'moment'
 
 import _ from 'lodash';
+
+import toastr from 'toastr';
+import 'toastr/build/toastr.min.css'
 
 
 const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
-  const [team, setTeam] = useState();
+  const dispatch = useDispatch();
+
   const { orgList = [] } = useSelector(state => state.common);
   const { info:user } = useSelector(state => state.user);
-  const [orgName, setorgName] = useState('');
+  const { missionCreated } = useSelector(state => state.missions);
+
+  const [team, setTeam] = useState();
+  const [orgName, setorgName] = useState('--');
   const [chatbotUser, setChatbotUser] = useState();
+  const [title, setTitle] = useState(null);
+  const [dateRange, setDateRange] = useState(null);
+  const [desc, setDesc] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if(orgList.length && user?.organization){
@@ -23,30 +37,84 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     }
   }, [orgList, user]);
 
+  useEffect(() => {
+    if (missionCreated) {
+      toastr.success(missionCreated.msg, '');
+    }
+
+  }, [missionCreated]);
+
+  const handleDateRangePicker = (dates) => {
+    setDateRange(dates.map(date => 
+      moment(date).format('YYYY-MM-DD'))
+    );
+  }
+
+  const validate = () => {
+    let errors = {};
+
+    if(!title)
+      errors['title'] = 'This field is required';
+
+    if(!desc)
+      errors['desc'] = 'This field is required' ;
+
+    if(!coordinates)
+      errors['coordinates'] = 'Please select your area on the map' ;
+    
+    setErrors(errors);
+  }
+
+  const submitMsg = () => {
+    validate();
+    if(Object.keys(errors).length === 0){
+      const payload = {
+        title,
+        description: desc,
+        start: dateRange[0] ? dateRange[0]: null,
+        end: dateRange[1] ? dateRange[1]: null,
+        source: 'Chatbot',
+        geometry: coordinates ? coordinates : null
+      }
+      dispatch(createMission(payload))
+    }
+  }
+
   return (<>
-    <Input
-      id="mission-title-input"
-      className='mb-3'
-      name="mission-title"
-      placeholder='Message Title'
-      rows="10"
-    />
+    <FormGroup className="form-group">
+      <Input
+        id="mission-title-input"
+        className={`${getError('title', errors, errors)}`}
+        name="title"
+        placeholder='Message Title'
+        type="text"
+        onChange={(e) => {setTitle(e.target.value); validate({name:'title'});}}
+        value={title}
+      />
+      {getError('title', errors, errors, false)}
+    </FormGroup>
+
     <DateRangePicker
       type='text'
       placeholder='Start Date - End Date'
+      setDates={handleDateRangePicker}
+      defaultDateRange={dateRange}
       isTooltipInput={true}
       showIcons={true}
     />
-    <MapInput
-      id="coordinates-input"
-      className='mt-3'
-      type='textarea'
-      name="coordinates-value"
-      placeholder='Map Selection'
-      rows="10"
-      coordinates={coordinates}
-      setCoordinates={setCoordinates}
-    />
+    <FormGroup className="form-group mt-3">
+      <MapInput
+        id="coordinates-input"
+        className={`${getError('coordinates', errors, errors)}`}
+        type='textarea'
+        name="coordinates-value"
+        placeholder='Map Selection'
+        rows="10"
+        coordinates={coordinates}
+        setCoordinates={setCoordinates}
+      />
+      {getError('coordinates', errors, errors, false)}
+    </FormGroup>
     <div className='mt-3'>
       <Label className='fw-bold' htmlFor="target">{t('Assign To')}: </Label>
       <Row>
@@ -80,7 +148,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
             placeholder="Team"
             type="select"
             disabled={!team}
-            onChange={(e) => setChatbotUser(e.target.value)}
+            onChange={(e) => {setChatbotUser(e.target.value); validate();}}
             value={chatbotUser}
           >
             <option value={''} >--{t('Chatbot User')}--</option>
@@ -92,14 +160,19 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       </Row>
       
     </div>
-    <Input
-      id="message-description-input"
-      className='mt-3'
-      type='textarea'
-      name="message-description"
-      placeholder='Message Description'
-      rows="10"
-    />
+    <FormGroup className="form-group mt-3">
+      <Input
+        id="message-description-input"
+        className={`${getError('desc', errors, errors)}`}
+        type='textarea'
+        name="message-description"
+        placeholder='Message Description'
+        onChange={(e) => {setDesc(e.target.value); validate();}}
+        value={desc}
+        rows="10"
+      />
+      {getError('desc', errors, errors, false)}
+    </FormGroup>
     <div className='mt-3'>
       <Button
         type="button"
@@ -110,6 +183,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       <Button
         type="button"
         className="mx-3"
+        onClick={submitMsg}
       >
         Send
       </Button>

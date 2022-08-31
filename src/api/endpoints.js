@@ -72,6 +72,7 @@ export const endpoints = {
     missions: {
       getMissions: '/chatbot/missions',
       getMissionInfo: '/chatbot/missions/:mission_id',
+      createMission: '/chatbot/missions',
     },
     people: {
       getAll: '/chatbot/people'
