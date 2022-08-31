@@ -7,7 +7,8 @@ import { resetMetaData, getDataLayerTimeSeriesData } from '../../store/appAction
 
 import TreeView from './TreeView';
 import { formatDate } from '../../store/utility';
-import highlight from 'json-format-highlight'
+import highlight from 'json-format-highlight';
+import { BitmapLayer } from 'deck.gl';
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
@@ -145,7 +146,7 @@ const DataLayer = ({
       <Card className='map-card mb-0' style={{ height: 670 }}>
         <ContextMenuTrigger id={'DataLayerMapMenu'}>
           <BaseMap
-            layers={[bitmapLayer, tempLayerData]}
+            layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
             initialViewState={viewState}
             widgets={[]}
             screenControlPosition='top-right'
