@@ -29,7 +29,6 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
     .min(1, 'Should be at least 1')
     .optional(), 
   resolution: Yup.number()
-    .integer('This field must be an integer')
     .typeError('This field must be a number')
     .min(10, 'Should be at least 10')
     .max(60, 'Should be at most 60')
