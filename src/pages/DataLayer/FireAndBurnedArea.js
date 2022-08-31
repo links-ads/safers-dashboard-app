@@ -6,7 +6,6 @@ import { Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
-import RequiredAsterisk from '../../components/required-asterisk'
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import {
@@ -25,10 +24,12 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
   endDate: Yup.date()
     .required('This field cannot be empty'), 
   frequency: Yup.number()
+    .integer('This field must be an integer')
     .typeError('This field must be a number')
     .min(1, 'Should be at least 1')
     .optional(), 
   resolution: Yup.number()
+    .integer('This field must be an integer')
     .typeError('This field must be a number')
     .min(10, 'Should be at least 10')
     .max(60, 'Should be at most 60')
@@ -122,7 +123,7 @@ const FireAndBurnedArea = ({
                       <Row>
                         <FormGroup className="form-group">
                           <Label for="dataLayerType">
-                            {t('dataLayerType')}<RequiredAsterisk />
+                            {t('dataLayerType')}
                           </Label>
                           <Input 
                             name="dataLayerType"
@@ -168,7 +169,7 @@ const FireAndBurnedArea = ({
                       <Row>
                         <FormGroup className='form-group'>
                           <Label for="mapSelection">
-                            {t('mapSelection')}<RequiredAsterisk />
+                            {t('mapSelection')}
                           </Label>
                           <Input
                             id="mapSelection"
@@ -191,7 +192,7 @@ const FireAndBurnedArea = ({
                           <Row>
                             <Col>
                               <Label for="startDate">
-                                {t('startDate')}<RequiredAsterisk />
+                                {t('startDate')}
                               </Label>
                               <Input
                                 id="startDate"
@@ -208,7 +209,7 @@ const FireAndBurnedArea = ({
                             </Col>
                             <Col>
                               <Label for="endDate">
-                                {t('endDate')}<RequiredAsterisk />
+                                {t('endDate')}
                               </Label>
                               <Input
                                 id="endDate"
@@ -229,12 +230,12 @@ const FireAndBurnedArea = ({
                       <Row>
                         <FormGroup>
                           <Row className='d-flex align-items-baseline'>
-                            <Col>
+                            <Col xl={3}>
                               <Label for="frequency" className='mb-0'>
                                 {t('frequency')}
                               </Label>
                             </Col>
-                            <Col>
+                            <Col xl={4}>
                               <Input
                                 id="frequency"
                                 name="frequency"
@@ -249,21 +250,19 @@ const FireAndBurnedArea = ({
                               />
                               {getError('frequency', errors, touched, false)}
                             </Col>
-                            <Col>
-                              {t('frequencyInstructions')}
-                            </Col>
+                            <Col xl={5} />
                           </Row>
                         </FormGroup>
                       </Row>
                       <Row>
                         <FormGroup>
                           <Row className='d-flex align-items-baseline'>
-                            <Col>
+                            <Col xl={3}>
                               <Label for="resolution" className='mb-0'>
                                 {t('resolution')}
                               </Label>
                             </Col>
-                            <Col>
+                            <Col xl={4}>
                               <Input
                                 id="resolution"
                                 name="resolution"
@@ -278,9 +277,7 @@ const FireAndBurnedArea = ({
                               />
                               {getError('resolution', errors, touched, false)}
                             </Col>
-                            <Col>
-                              <div>{t('resolutionInstructions')}</div>
-                            </Col>
+                            <Col xl={5} />
                           </Row>
                         </FormGroup>
                       </Row>
