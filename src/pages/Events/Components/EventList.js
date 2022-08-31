@@ -25,7 +25,6 @@ const EventList = ({
   const [, setViewState] = useState({});
 
   const getIconLayer = (alerts) => {
-    console.log('alerts', alerts);
     const data = alerts?.map((alert) => {
       const {
         geometry,

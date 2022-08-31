@@ -16,7 +16,6 @@ const CommsList = ({ commID, currentZoomLevel, setViewState, setCommID, setIconL
   const dispatch = useDispatch();
 
   const getIconLayer = (alerts) => {
-    console.log('alerts', alerts);
     const data = alerts?.map((alert) => {
       const {
         geometry,

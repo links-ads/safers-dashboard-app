@@ -40,7 +40,6 @@ const Reports = () => {
   const allReports = filteredReports || OrgReportList;
 
   const getIconLayer = (alerts) => {
-    console.log('alerts', alerts);
     const data = alerts.map((alert) => {
       const {
         geometry,

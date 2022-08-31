@@ -19,7 +19,6 @@ const PeopleList = ({ peopleId, currentZoomLevel, setViewState, setPeopleId, set
   const dispatch = useDispatch();
 
   const getIconLayer = (alerts) => {
-    console.log('alerts', alerts);
     const data = alerts?.map((alert) => {
       const {
         geometry,
