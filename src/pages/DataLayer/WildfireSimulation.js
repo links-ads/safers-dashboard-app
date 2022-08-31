@@ -460,7 +460,7 @@ const WildfireSimulation = ({
                   <Col>
                     <Button
                       type="submit"
-                      // disabled={isSubmitting}
+                      disabled={isSubmitting}
                       className='btn btn-primary'
                       color="primary"
                     >
