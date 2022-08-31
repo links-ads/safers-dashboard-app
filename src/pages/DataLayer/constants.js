@@ -7,3 +7,5 @@ export const DATA_LAYERS_PANELS = {
   postEventMonitoring: 3,
   wildfireSimulation: 4,
 }
+
+export const EUROPEAN_BBOX = [-18.369140, 14.519780, 41.660156, 71.130987]

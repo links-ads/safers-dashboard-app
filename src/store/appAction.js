@@ -53,6 +53,7 @@ export {
   postMapRequest,
   getAllMapRequests,
   setNewMapRequestState,
+  getDataLayerTimeSeriesData,
 } from './datalayer/action'
 export {
   getAllInSituAlerts,
