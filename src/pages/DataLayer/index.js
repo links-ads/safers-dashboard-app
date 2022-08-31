@@ -368,25 +368,34 @@ const DataLayerDashboard = () => {
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.fireAndBurnedAreas}>
-            <FireAndBurnedArea 
-              t={t}
-              handleResetAOI={handleResetAOI}
-              backToOnDemandPanel={backToOnDemandPanel}
-            />
+            {/* ternary here to unmount and clear form */}
+            {activeTab === DATA_LAYERS_PANELS.fireAndBurnedAreas ? (
+              <FireAndBurnedArea 
+                t={t}
+                handleResetAOI={handleResetAOI}
+                backToOnDemandPanel={backToOnDemandPanel}
+              />
+            ) : null}
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.postEventMonitoring}>
-            <PostEventMonitoringForm 
-              t={t} 
-              handleResetAOI={handleResetAOI}
-              backToOnDemandPanel={backToOnDemandPanel}
-            />
+            {/* ternary here to unmount and clear form */}
+            {activeTab === DATA_LAYERS_PANELS.postEventMonitoring ? (
+              <PostEventMonitoringForm 
+                t={t} 
+                handleResetAOI={handleResetAOI}
+                backToOnDemandPanel={backToOnDemandPanel}
+              />
+            ) : null}
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.wildfireSimulation}>
-            <WildfireSimulation 
-              t={t}
-              handleResetAOI={handleResetAOI}
-              backToOnDemandPanel={backToOnDemandPanel}
-            />
+            {/* ternary here to unmount and clear form */}
+            {activeTab === DATA_LAYERS_PANELS.wildfireSimulation ? (
+              <WildfireSimulation 
+                t={t}
+                handleResetAOI={handleResetAOI}
+                backToOnDemandPanel={backToOnDemandPanel}
+              />
+            ) : null}
           </TabPane>
         </TabContent>
       </div>
