@@ -120,8 +120,8 @@ const postMapRequestFail = (error) => {
 };
 
 // get All Map Requests (GET)
-export const getAllMapRequests = () => async (dispatch) => {
-  const response = await api.get(endpoints.dataLayers.mapRequests);
+export const getAllMapRequests = (options) => async (dispatch) => {
+  const response = await api.get(endpoints.dataLayers.mapRequests.concat('?', queryString.stringify(options)));
   if (response.status === 200) {
     return dispatch(getAllMapRequestsSuccess(response.data));
   }
