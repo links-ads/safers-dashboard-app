@@ -92,8 +92,8 @@ const FireAndBurnedArea = ({
               mapSelection: '', 
               startDate: null, 
               endDate: null, 
-              frequency: null,
-              resolution: null, 
+              frequency: '',
+              resolution: 10, 
             }}
             validationSchema={fireAndBurnedAreaSchema}
             onSubmit={onSubmit}
@@ -274,7 +274,7 @@ const FireAndBurnedArea = ({
                                 }
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                value={values.resolution ?? 10}
+                                value={values.resolution}
                               />
                               {getError('resolution', errors, touched, false)}
                             </Col>

@@ -37,7 +37,7 @@ const PAGE_SIZE = 4;
 
 const FireAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const {allAlerts: alerts, isNewAlert, filteredAlerts} = useSelector(state => state.alerts);
+  const {allAlerts: alerts, filteredAlerts} = useSelector(state => state.alerts);
   const sources = useSelector(state => state.alerts.sources);
   const success = useSelector(state => state.alerts.success);
   const error = useSelector(state => state.alerts.error);
@@ -84,11 +84,9 @@ const FireAlerts = ({ t }) => {
 
   useEffect(() => {
     if (alerts.length > filteredAlerts.length) {
-      toastr.success('New alerts are received. Please refresh the list.', '', {
-        preventDuplicates: true,
-      });
+      toastr.success('New alerts are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
-  }, [isNewAlert]);
+  }, [alerts]);
 
   useEffect(() => {
     setAlertId(undefined);
