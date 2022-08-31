@@ -10,11 +10,10 @@ export const createMission = (payload) => async (dispatch) => {
   else
     return dispatch(createMissionsFail(response.error));
 };
-const createMissionSuccess = (alerts, feFilters) => {
+const createMissionSuccess = (data) => {
   return {
     type: actionTypes.CREATE_MISSION_SUCCESS,
-    payload: alerts,
-    feFilters
+    payload: data,
   };
 };
 const createMissionsFail = (error) => {
