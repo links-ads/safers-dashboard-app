@@ -444,12 +444,9 @@ DataLayer.propTypes = {
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
-<<<<<<< HEAD
   timeSeriesData: PropTypes.any,
   featureInfoData: PropTypes.any,
-=======
   getAllTitles: PropTypes.func,
->>>>>>> fix(frontend): Upgrade searchbar
   dispatch: PropTypes.func
 }
 
