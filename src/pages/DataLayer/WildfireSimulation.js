@@ -105,12 +105,15 @@ const WildfireSimulation = ({
       }]), []);
 
     const transformedGeometry = formData.mapSelection.startsWith('GEOMETRYCOLLECTION') ? formData.mapSelection : `GEOMETRYCOLLECTION(${formData.mapSelection})`
+    const startDateTime = new Date(formData.ignitionDateTime).toISOString()
+    const endDateTime = new Date(getDateOffset(startDateTime, formData.simulationTimeLimit)).toISOString()
     const payload = {
       data_types: layerTypes.map(item => item.id),
       geometry: transformedGeometry,
       title: formData.simulationTitle,
       parameters: {
-        start: `${formData.ignitionDateTime}T00:00:00.000`,
+        start: startDateTime,
+        end: endDateTime,
         time_limit: formData.simulationTimeLimit,
         probabilityRange: formData.probabilityRange,
         do_spotting: formData.simulationFireSpotting,
