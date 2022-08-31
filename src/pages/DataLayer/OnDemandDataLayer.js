@@ -96,7 +96,7 @@ const OnDemandDataLayer = ({
     apiFetch('GetFeatureInfo');
   }
 
-  const apiFetch = async (requestType) => {
+  const apiFetch = (requestType) => {
     var tempUrl = ''
     if(requestType == 'GetFeatureInfo') {
       tempUrl = currentLayer.pixel_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0]+0.0001},${tempSelectedPixel[1]+0.0001}`);
