@@ -116,9 +116,11 @@ const pollingHelper = (props) => {
   }, [allNotifications]);
 
   useEffect(() => {
-    const newMapRequestCount = allMapRequests.length
-    if (currentMapRequestCount && newMapRequestCount > 
-    currentMapRequestCount) {
+    const newMapRequestCount = allMapRequests.length;
+
+    const count = newMapRequestCount > currentMapRequestCount;
+
+    if (currentMapRequestCount && count) {
       let difference = newMapRequestCount - currentMapRequestCount;
       dispatch(setNewMapRequestState(true, isMapRequestPageActive, difference));
     }

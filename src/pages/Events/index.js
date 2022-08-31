@@ -28,7 +28,7 @@ import { MAP_TYPES } from '../../constants/common';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allAlerts: alerts, filteredAlerts, isNewAlert } = useSelector(state => state.eventAlerts);
+  const { allAlerts: alerts, filteredAlerts } = useSelector(state => state.eventAlerts);
   const success = useSelector(state => state.eventAlerts.success);
   const error = useSelector(state => state.eventAlerts.error);
   const dateRange = useSelector(state => state.common.dateRange)
@@ -73,10 +73,10 @@ const EventAlerts = ({ t }) => {
   }, [success, error]);
 
   useEffect(() => {
-    if (isNewAlert) {
+    if (alerts.length > filteredAlerts.length) {
       toastr.success('New events are received. Please refresh the list.', '', { preventDuplicates: true, });
     }
-  }, [isNewAlert]);
+  }, [alerts]);
 
   useEffect(() => {
     setIconLayer(getIconLayer(filteredAlerts, MAP_TYPES.EVENTS));

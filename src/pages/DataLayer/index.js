@@ -13,7 +13,7 @@ import OnDemandDataLayer from './OnDemandDataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
 import PostEventMonitoringForm from './PostEventMonitoringForm'
 import WildfireSimulation from './WildfireSimulation'
-import { getAllDataLayers, setNewAlertState, setAlertApiParams } from '../../store/appAction';
+import { getAllDataLayers, setNewMapRequestState, setAlertApiParams } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
@@ -73,10 +73,10 @@ const DataLayerDashboard = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(setNewAlertState(false, true));
+    dispatch(setNewMapRequestState(false, true));
     return () => {
       dispatch(setAlertApiParams(undefined));
-      dispatch(setNewAlertState(false, false));
+      dispatch(setNewMapRequestState(false, false));
     }
   }, []);
 
@@ -369,25 +369,34 @@ const DataLayerDashboard = () => {
             />
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.fireAndBurnedAreas}>
-            <FireAndBurnedArea 
-              t={t}
-              handleResetAOI={handleResetAOI}
-              backToOnDemandPanel={backToOnDemandPanel}
-            />
+            {/* ternary here to unmount and clear form */}
+            {activeTab === DATA_LAYERS_PANELS.fireAndBurnedAreas ? (
+              <FireAndBurnedArea 
+                t={t}
+                handleResetAOI={handleResetAOI}
+                backToOnDemandPanel={backToOnDemandPanel}
+              />
+            ) : null}
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.postEventMonitoring}>
-            <PostEventMonitoringForm 
-              t={t} 
-              handleResetAOI={handleResetAOI}
-              backToOnDemandPanel={backToOnDemandPanel}
-            />
+            {/* ternary here to unmount and clear form */}
+            {activeTab === DATA_LAYERS_PANELS.postEventMonitoring ? (
+              <PostEventMonitoringForm 
+                t={t} 
+                handleResetAOI={handleResetAOI}
+                backToOnDemandPanel={backToOnDemandPanel}
+              />
+            ) : null}
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.wildfireSimulation}>
-            <WildfireSimulation 
-              t={t}
-              handleResetAOI={handleResetAOI}
-              backToOnDemandPanel={backToOnDemandPanel}
-            />
+            {/* ternary here to unmount and clear form */}
+            {activeTab === DATA_LAYERS_PANELS.wildfireSimulation ? (
+              <WildfireSimulation 
+                t={t}
+                handleResetAOI={handleResetAOI}
+                backToOnDemandPanel={backToOnDemandPanel}
+              />
+            ) : null}
           </TabPane>
         </TabContent>
       </div>
