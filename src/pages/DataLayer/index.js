@@ -36,7 +36,7 @@ const DataLayerDashboard = () => {
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests, isNewAlert } = useSelector(state=> state?.dataLayer);
 
-  const [mapRequests, setMapRequests] = useState(null)
+  const [mapRequests, setMapRequests] = useState([])
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
@@ -58,10 +58,10 @@ const DataLayerDashboard = () => {
   // This is to prevent the component from automatically updating
   // when new map requests appear in global state (should show toast)
   useEffect(() => {
-    if (!mapRequests) {
+    if (!mapRequests.length) {
       setMapRequests(allMapRequests)
     }
-  }, [allMapRequests])
+  }, [allMapRequests]);
 
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
@@ -168,6 +168,20 @@ const DataLayerDashboard = () => {
     }
   }, [isPlaying]);
 
+  const getAllTitles = (arr) => {
+    let titles = [];
+
+    const aggregate = data => data.forEach(datum => {
+      if (datum.children) {
+        aggregate(datum.children);
+      }
+      titles = [...titles, datum.text];
+    });
+    
+    aggregate(arr);
+    return titles;
+  }
+
   const backToOnDemandPanel = () => { 
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
   }
@@ -190,7 +204,7 @@ const DataLayerDashboard = () => {
   const formatTooltip = value => moment(Object.assign({}, Object.keys(currentLayer?.urls))[value]).format('LLL');
 
   const getSlider = (index) => {
-    if (currentLayer?.urls) {
+    if (currentLayer?.urls && Object.keys(currentLayer?.urls).length > 1) {
       return (
         <div style={{
           position: 'absolute',
@@ -233,6 +247,8 @@ const DataLayerDashboard = () => {
         </div>
       );
     }
+
+    return null
   }
 
   const getLegend = () => {
@@ -289,9 +305,10 @@ const DataLayerDashboard = () => {
     bitmapLayer,
     viewState,
     handleResetAOI,
-    timestamp,
     timeSeriesData,
-    featureInfoData
+    featureInfoData,
+    getAllTitles,
+    timestamp
   };
 
   return(

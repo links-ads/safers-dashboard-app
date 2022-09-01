@@ -57,8 +57,24 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts, customIcon = '', customData = {}) => {
-  const icon = customIcon? customIcon : (mapType == MAP_TYPES.REPORTS || MAP_TYPES.IN_SITU ? locationPin : firePin)
+export const getIconColorFromContext = (mapType, feature) => {
+  let color = [127,127,127];
+  switch (mapType) {
+  case MAP_TYPES.REPORTS:
+    color = feature?.isSelected ? ORANGE : DARK_GRAY;
+    break;
+  case MAP_TYPES.IN_SITU:
+    color = feature?.isSelected ? ORANGE : DARK_GRAY;
+    break;
+  default:
+    color = feature?.isSelected ? ORANGE : feature?.status == 'CLOSED' ? GRAY : RED;
+  }
+  console.log('icon color', color);
+  return color;
+}
+
+export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts) => {
+  const icon = mapType == MAP_TYPES.REPORTS || MAP_TYPES.IN_SITU ? locationPin : firePin
   return (new IconLayer({
     data: alerts,
     pickable: true,
@@ -89,8 +105,7 @@ export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts, customIcon = ''
     },
     sizeMinPixels: 80,
     sizeMaxPixels: 100,
-    sizeScale: 0.5,
-    ...customData
+    sizeScale: 0.5
   }))
 }
 

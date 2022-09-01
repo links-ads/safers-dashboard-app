@@ -12,7 +12,5 @@
   "request": "Demander",
   "cancel": "Annuler",
   "frequency": "Fréquence (en jours)",
-  "frequencyInstructions": "Entre 10 et 60 mètres",
-  "resolution": "Résolution spatiale (m)",
-  "resolutionInstructions": "Entre 10 et 60 mètres,par défaut 10 mètres"
+  "resolution": "Résolution spatiale (m)"
 }
