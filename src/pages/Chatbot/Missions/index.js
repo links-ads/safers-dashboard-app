@@ -61,7 +61,7 @@ const Missions = () => {
     dispatch(getAllMissions(missionParams, feFilters));
   }
 
-  const onClear = () => {
+  const onCancel = () => {
     setTogglePolygonMap(false);
     setToggleCreateNewMission(false);
     setCoordinates('');
@@ -136,7 +136,7 @@ const Missions = () => {
           </Row>
         </Col>}
         {toggleCreateNewMission && <Col xl={5}>
-          <CreateMission onCancel={onClear} t={t} coordinates={coordinates} setCoordinates={setCoordinates} />
+          <CreateMission onCancel={onCancel} t={t} coordinates={coordinates} setCoordinates={setCoordinates} />
 
         </Col>}
         <Col xl={7} className='mx-auto'>
