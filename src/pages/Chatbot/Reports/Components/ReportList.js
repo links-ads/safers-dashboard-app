@@ -10,6 +10,9 @@ import { getFilteredRec } from '../../filter';
 import Report from './Report';
 
 const MAP_TYPE = 'reports';
+import { MAP_TYPES } from '../../../../constants/common';
+import { GeoJsonPinLayer } from '../../../../components/BaseMap/GeoJsonPinLayer';
+import { getIconColorFromContext } from '../../../../helpers/mapHelper';
 
 const ReportList = ({ 
   reportId, 
@@ -40,6 +43,35 @@ const ReportList = ({
     const actFiltered = getFilteredRec(OrgReportList, filters, sort);
     dispatch(setFilterdReports(actFiltered));
   }, [category, missionId, sortOrder])
+
+  const getIconLayer = (alerts) => {
+    const data = alerts?.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.REPORT,feature),
+      icon: 'report',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   const setFavoriteFlag = (id) => {
     let selectedReport = _.find(pageData, { id });

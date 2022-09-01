@@ -9,7 +9,8 @@ const initialState = {
   error: false,
   success: null,
   filteredMissions: null,
-  missionDetail: null
+  missionDetail: null,
+  missionCreated: null
 };
 
 const missionReducer = (state = initialState, action) => {
@@ -22,10 +23,27 @@ const missionReducer = (state = initialState, action) => {
   case actionTypes.SET_MISSION_FILTERS: return setFilters(state, action);
   case actionTypes.GET_MISSION_DETAIL_SUCCESS: return getMissionDetailSuccess(state, action);
   case actionTypes.GET_MISSION_DETAIL_FAIL: return getMissionDetailFail(state, action);
+  case actionTypes.CREATE_MISSION_SUCCESS: return createMissionSuccess(state, action);
+  case actionTypes.CREATE_MISSION_FAIL: return createMissionsFail(state, action);
   default:
     return state;
   }
 };
+
+const createMissionSuccess = (state, action) => {
+  const updatedState = {
+    missionCreated: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const createMissionsFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
 
 const getMissionDetailSuccess = (state, action) => {
   const updatedState = {

@@ -9,11 +9,14 @@ import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import MissionList from './Components/MissionList';
 import { getAllMissions, resetMissionResponseState } from '../../../store/missions/action';
-import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
 import CreateMission from './Components/CreateMission';
+
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
+import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const Missions = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -40,7 +43,36 @@ const Missions = () => {
 
   const allMissions = filteredMissions || OrgMissionList;
 
-  useEffect(() => {
+  const getIconLayer = (alerts) => {
+    const data = alerts.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.MISSIONS,feature),
+      icon: 'target',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
+
+  const loadAllMissions = () => {
     const dateRangeParams = dateRange
       ? { start: dateRange[0], end: dateRange[1] }
       : {};
@@ -59,6 +91,17 @@ const Missions = () => {
     };
 
     dispatch(getAllMissions(missionParams, feFilters));
+  }
+
+  const onCancel = () => {
+    setTogglePolygonMap(false);
+    setToggleCreateNewMission(false);
+    setCoordinates('');
+    loadAllMissions();
+  }
+
+  useEffect(() => {
+    loadAllMissions();
   }, [dateRange, boundingBox])
 
   useEffect(() => {
@@ -125,11 +168,7 @@ const Missions = () => {
           </Row>
         </Col>}
         {toggleCreateNewMission && <Col xl={5}>
-          <CreateMission onCancel={()=>{
-            setTogglePolygonMap(false);
-            setToggleCreateNewMission(false);
-            setCoordinates('');
-          }} t={t} coordinates={coordinates} setCoordinates={setCoordinates} />
+          <CreateMission onCancel={onCancel} t={t} coordinates={coordinates} setCoordinates={setCoordinates} />
 
         </Col>}
         <Col xl={7} className='mx-auto'>
