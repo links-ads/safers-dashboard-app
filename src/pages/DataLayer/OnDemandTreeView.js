@@ -18,7 +18,7 @@ const formatParameter = (node, key) => {
 const PropsPanel = (node) => {
   const node2=node.node;
   if (!node2.parameters) return null;
-  node2.parameters['geometry_wkt'] = node2?.geometry_wkt;
+  node2.parameters['geometry'] = node2?.geometry;
   const parameters = Object.keys(node2.parameters);
   console.log('node is ==>', node);
   console.log('paramaters is ==>', parameters);
@@ -144,7 +144,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                   &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
                 </> : null
               }
-              { node?.parameters &&  itemPropsState[id] ?  <PropsPanel node={node} />: null}
+              { node?.parameters &&  itemPropsState[id] ?  <div className="mt-2"><PropsPanel node={node} /></div>: null}
             </>
           </ListGroupItem>
           {
