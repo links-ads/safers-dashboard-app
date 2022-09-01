@@ -9,6 +9,7 @@ const initialState = {
   error: false,
   success: null,
   filteredComms: null,
+  msgCreated: null
 };
 
 const commsReducer = (state = initialState, action) => {
@@ -17,10 +18,27 @@ const commsReducer = (state = initialState, action) => {
   case actionTypes.GET_COMMS_FAIL: return getCommsFail(state, action);
   case actionTypes.SET_COMMS_FILTERS: return setFilters(state, action);
   case actionTypes.RESET_COMMS_STATE: return resetCommsResponseState(state, action);
+  case actionTypes.CREATE_MSG_SUCCESS: return createMsgSuccess(state, action);
+  case actionTypes.CREATE_MSG_FAIL: return createMsgFail(state, action);
   default:
     return state;
   }
 };
+
+const createMsgSuccess = (state, action) => {
+  const updatedState = {
+    msgCreated: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const createMsgFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
 
 const getCommsSuccess = (state, action) => {
   const {target, status, sortOrder} = action.feFilters;

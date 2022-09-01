@@ -72,7 +72,7 @@ const Missions = () => {
     });
   };
 
-  useEffect(() => {
+  const loadAllMissions = () => {
     const dateRangeParams = dateRange
       ? { start: dateRange[0], end: dateRange[1] }
       : {};
@@ -91,6 +91,17 @@ const Missions = () => {
     };
 
     dispatch(getAllMissions(missionParams, feFilters));
+  }
+
+  const onCancel = () => {
+    setTogglePolygonMap(false);
+    setToggleCreateNewMission(false);
+    setCoordinates('');
+    loadAllMissions();
+  }
+
+  useEffect(() => {
+    loadAllMissions();
   }, [dateRange, boundingBox])
 
   useEffect(() => {
@@ -157,11 +168,7 @@ const Missions = () => {
           </Row>
         </Col>}
         {toggleCreateNewMission && <Col xl={5}>
-          <CreateMission onCancel={()=>{
-            setTogglePolygonMap(false);
-            setToggleCreateNewMission(false);
-            setCoordinates('');
-          }} t={t} coordinates={coordinates} setCoordinates={setCoordinates} />
+          <CreateMission onCancel={onCancel} t={t} coordinates={coordinates} setCoordinates={setCoordinates} />
 
         </Col>}
         <Col xl={7} className='mx-auto'>

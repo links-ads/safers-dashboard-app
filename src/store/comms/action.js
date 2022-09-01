@@ -2,6 +2,29 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
+
+export const createMsg = (payload) => async (dispatch) => {
+  console.log('payload..', payload);
+  const response = await api.post(endpoints.chatbot.comms.createMsg, payload);
+
+  if (response.status === 200) {
+    return dispatch(createMsgSuccess(response.data));
+  }
+  else
+    return dispatch(createMsgFail(response.error));
+};
+const createMsgSuccess = (data) => {
+  return {
+    type: actionTypes.CREATE_MSG_SUCCESS,
+    payload: data,
+  };
+};
+const createMsgFail = (error) => {
+  return {
+    type: actionTypes.CREATE_MSG_FAIL,
+    payload: error
+  };
+};
 export const getAllComms = (options, feFilters) => async (dispatch) => {
   const response = await api.get(endpoints.chatbot.comms.getAll, options);
   if (response.status === 200) {
