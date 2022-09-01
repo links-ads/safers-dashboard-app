@@ -23,7 +23,7 @@ const SummaryContainer = ({reportDetail, t}) => {
     return null;
 
   const iconLayer = getIconLayer([reportDetail], MAP_TYPES.REPORTS);
-  const viewState= getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel);
+  const viewState= getViewState(reportDetail.location, defaultAoi.features[0].properties.zoomLevel);
 
 
 
