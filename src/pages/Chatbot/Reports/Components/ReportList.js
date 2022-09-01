@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
-import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
+import { getViewState } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
 import { setFavorite, setFilterdReports } from '../../../../store/reports/action';
 import { getFilteredRec } from '../../filter';
@@ -29,9 +29,7 @@ const ReportList = ({
 
   const dispatch = useDispatch();
 
-  const allReports = filteredReports?.length 
-    ? filteredReports 
-    : OrgReportList;
+  const allReports = filteredReports ?? [];
 
   useEffect(() => {
     const filters = { 
@@ -42,7 +40,7 @@ const ReportList = ({
     const sort = { fieldName: 'timestamp', order: sortOrder };
     const actFiltered = getFilteredRec(OrgReportList, filters, sort);
     dispatch(setFilterdReports(actFiltered));
-  }, [category, missionId, sortOrder])
+  }, [category, missionId, sortOrder, OrgReportList])
 
   const getIconLayer = (alerts) => {
     const data = alerts?.map((alert) => {
