@@ -14,9 +14,9 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
 
   const isSelected = card.report_id === reportId
 
-  const getBadge = () => {
+  const getBadge = (category) => {
     let iconStatus = '';
-    switch(card.additional_info){
+    switch(category){
     case 'effects':
       iconStatus = 'fa-dice';
       break;
@@ -32,9 +32,9 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
     
     return (
       <>
-        <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
+        <Badge className='me-2 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
           <i className={`fa ${iconStatus} text-danger me-1`}></i> 
-          <span className='text-capitalize'>{card.additional_info}</span>
+          <span className='text-capitalize'>{category}</span>
         </Badge>
       </>
     )
@@ -45,7 +45,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
       onClick={() => setSelectedReport(!isSelected ? card.report_id : null)}
       className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
-        {getBadge()}
+        {card.categories.map(cat=>getBadge(cat))}
         <Row className='mt-2'>
           <Col>
             <Row>
