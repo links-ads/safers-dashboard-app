@@ -198,6 +198,7 @@ export class PinLayer extends CompositeLayer {
           fontFamily: this.props.fontFamily,
           fontWeight: this.props.fontWeight,
           getPosition: this.props.getPosition,
+          getPixelOffset: () => [-18,-18],
           getText: (feature) =>
             feature.properties.cluster
               ? `${feature.properties.point_count}`
