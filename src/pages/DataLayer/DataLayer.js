@@ -20,7 +20,8 @@ import {
   VictoryAxis,
   VictoryLine,
   VictoryScatter,
-  VictoryTooltip
+  VictoryTooltip,
+  VictoryContainer
 } from 'victory';
 
 const DataLayer = ({ 
@@ -103,7 +104,7 @@ const DataLayer = ({
           return {
             x: data.split(',')[0],
             y: tempY? tempY : '0',
-            label: tempY? tempY : '0'
+            label: tempY? `${tempY}, ${formatDate(data.split(',')[0])}` : '0'
           }
         }));
       } else {
@@ -168,31 +169,33 @@ const DataLayer = ({
     );
   };
 
-  const generateGeoJson = (data)=> {    
-    const layer = getIconLayer(
-      [{ geometry: { coordinates : data.coordinate} }], 
-      null, 
-      'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png', 
-      {
-        getSize: () => 5,
-        iconMapping: {
-          marker: {
-            x: 0,
-            y: 0,
-            width: 128,
-            height: 128,
-            anchorY: 128,
-            mask: true
-          }
-        },
-        sizeScale: 8,
-        sizeMinPixels: 40,
-        sizeMaxPixels: 40,
-        getColor: () => [57, 58, 58],
-      }
-    );
-    setTempLayerData(layer);
-    setTempSelectedPixel(data.coordinate);
+  const generateGeoJson = (data,event)=> {   
+    if(event.rightButton) {
+      const layer = getIconLayer(
+        [{ geometry: { coordinates : data.coordinate} }], 
+        null, 
+        'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png', 
+        {
+          getSize: () => 5,
+          iconMapping: {
+            marker: {
+              x: 0,
+              y: 0,
+              width: 128,
+              height: 128,
+              anchorY: 128,
+              mask: true
+            }
+          },
+          sizeScale: 8,
+          sizeMinPixels: 40,
+          sizeMaxPixels: 40,
+          getColor: () => [57, 58, 58],
+        }
+      );
+      setTempLayerData(layer);
+      setTempSelectedPixel(data.coordinate);
+    }
   }
 
   const apiFetch = (requestType) => {
@@ -239,7 +242,7 @@ const DataLayer = ({
     if(featureInfoData?.features?.length > 0 && featureInfoData?.features[0]?.properties) {
       for (const key in featureInfoData.features[0].properties) {
         if (Object.hasOwnProperty.call(featureInfoData.features[0].properties, key)) {
-          valueString = valueString+`${key}: ${featureInfoData.features[0].properties[key]}\n`;
+          valueString = valueString+`Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
         }
       }
     }
@@ -354,17 +357,21 @@ const DataLayer = ({
     </div>}
 
     {layerData && <div  className='mt-2 sign-up-aoi-map-bg d-flex position-relative'>
-      <div className='w-50'>
-        <VictoryChart>
+      <div style={{width: '60%', marginTop: '-65px'}}>
+        <VictoryChart containerComponent={<VictoryContainer responsive={true}/>}>
           <VictoryAxis
+            tickCount={4}
             tickValues={tickValues}
-            tickFormat={(tick) => formatDate(tick, 'YYYY-MM-DD')}
+            tickFormat={(tick) => formatDate(tick).split(' ').join('\n')}
             style={{
               axis: {
                 stroke: 'white', 
               },
+              ticks: {stroke: 'grey', size: 10},
               tickLabels: {
-                fill: 'white' //CHANGE COLOR OF X-AXIS LABELS
+                fill: 'white', //CHANGE COLOR OF X-AXIS LABELS
+                fontSize: 7,
+                padding: 5
               }, 
               grid: {
                 stroke: 'white', //CHANGE COLOR OF X-AXIS GRID LINES
@@ -373,31 +380,32 @@ const DataLayer = ({
             }}
             // tickLabelComponent={<VictoryLabel style={{ data: { stroke: '#F47938' } }} />}
           />
-          <VictoryAxis dependentAxis 
+          <VictoryAxis dependentAxis  
+            tickCount={5}
             style={{ 
               axis: {
                 stroke: 'white', 
               },
               tickLabels: {
-                fill: 'white' //CHANGE COLOR OF Y-AXIS LABELS
+                fill: 'white', //CHANGE COLOR OF Y-AXIS LABELS
+                fontSize: 7,
+                padding: 5
               },
             }}  
           />
 
-          <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}
-            pointerLength={0}/>} />
-          <VictoryScatter size={3} data={chartValues} labelComponent={<VictoryTooltip cornerRadius={2}
-            pointerLength={0}/>} />
+          <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}/>} />
+          <VictoryScatter data={chartValues} style={{labels:{fontSize: 8}}} labelComponent={<VictoryTooltip cornerRadius={2} pointerLength={3}/>} />
         </VictoryChart>
       </div>
-      <div className='w-50' style={{lineHeight: '30px'}}>
+      <div style={{lineHeight: '30px', fontSize: '14px'}}>
         <div>
           <strong>Time Interval: </strong> {tickValues.sort(function(a,b){
             return new Date(b.date) - new Date(a.date);
-          }).map(x=> formatDate(x)).join(', ')}
+          }).filter((x,i)=> i == 0 || i == (tickValues.length - 1)).map((x)=> formatDate(x)).join(' - ')}
         </div>
         <div>
-          <strong>Mean Value: </strong> {chartValues?.length > 0 ? chartValues.map(data=> +data.y).reduce((a, b) => a + b) / chartValues.length : 0}
+          <strong>Mean Value: </strong> {chartValues?.length > 0 ? (chartValues.map(data=> +data.y).reduce((a, b) => a + b) / chartValues.length).toFixed(2) : 0}
         </div>
         <div>
           <strong>Highest Value: </strong> {chartValues?.length > 0 ? Math.max(...chartValues.map(data=> +data.y)) : 0}

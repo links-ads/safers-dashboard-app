@@ -69,7 +69,7 @@ const OnDemandDataLayer = ({
     if(featureInfoData?.features?.length > 0 && featureInfoData?.features[0]?.properties) {
       for (const key in featureInfoData.features[0].properties) {
         if (Object.hasOwnProperty.call(featureInfoData.features[0].properties, key)) {
-          valueString = valueString+`${key}: ${featureInfoData.features[0].properties[key]}\n`;
+          valueString = valueString+`Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
         }
       }
     }
@@ -104,31 +104,33 @@ const OnDemandDataLayer = ({
     dispatch(getDataLayerTimeSeriesData(tempUrl, requestType));
   }
 
-  const generateGeoJson = (data)=> {    
-    const layer = getIconLayer(
-      [{ geometry: { coordinates : data.coordinate} }], 
-      null, 
-      'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png', 
-      {
-        getSize: () => 5,
-        iconMapping: {
-          marker: {
-            x: 0,
-            y: 0,
-            width: 128,
-            height: 128,
-            anchorY: 128,
-            mask: true
-          }
-        },
-        sizeScale: 8,
-        sizeMinPixels: 40,
-        sizeMaxPixels: 40,
-        getColor: () => [57, 58, 58],
-      }
-    );
-    setTempLayerData(layer);
-    setTempSelectedPixel(data.coordinate);
+  const generateGeoJson = (data,event)=> {   
+    if(event.rightButton) {
+      const layer = getIconLayer(
+        [{ geometry: { coordinates : data.coordinate} }], 
+        null, 
+        'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png', 
+        {
+          getSize: () => 5,
+          iconMapping: {
+            marker: {
+              x: 0,
+              y: 0,
+              width: 128,
+              height: 128,
+              anchorY: 128,
+              mask: true
+            }
+          },
+          sizeScale: 8,
+          sizeMinPixels: 40,
+          sizeMaxPixels: 40,
+          getColor: () => [57, 58, 58],
+        }
+      );
+      setTempLayerData(layer);
+      setTempSelectedPixel(data.coordinate);
+    }
   }
 
   return (
