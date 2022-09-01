@@ -9,11 +9,14 @@ import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import MissionList from './Components/MissionList';
 import { getAllMissions, resetMissionResponseState } from '../../../store/missions/action';
-import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
 import CreateMission from './Components/CreateMission';
+
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
+import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const Missions = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -39,6 +42,35 @@ const Missions = () => {
   const dispatch = useDispatch();
 
   const allMissions = filteredMissions || OrgMissionList;
+
+  const getIconLayer = (alerts) => {
+    const data = alerts.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.MISSIONS,feature),
+      icon: 'target',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   const loadAllMissions = () => {
     const dateRangeParams = dateRange

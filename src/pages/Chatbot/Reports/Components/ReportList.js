@@ -3,12 +3,15 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
-import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
+import { getViewState } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
 import { setFavorite } from '../../../../store/reports/action';
 import Report from './Report';
 
 const MAP_TYPE = 'reports';
+import { MAP_TYPES } from '../../../../constants/common';
+import { GeoJsonPinLayer } from '../../../../components/BaseMap/GeoJsonPinLayer';
+import { getIconColorFromContext } from '../../../../helpers/mapHelper';
 
 const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, setIconLayer }) => {
   const { allReports: OrgReportList, filteredReports } = useSelector(state => state.reports);
@@ -16,6 +19,34 @@ const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, set
 
   const dispatch = useDispatch();
 
+  const getIconLayer = (alerts) => {
+    const data = alerts?.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.REPORT,feature),
+      icon: 'report',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   const allReports = filteredReports || OrgReportList;
 
