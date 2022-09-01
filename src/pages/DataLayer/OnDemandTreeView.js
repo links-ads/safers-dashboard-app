@@ -18,7 +18,7 @@ const formatParameter = (node, key) => {
 const PropsPanel = (node) => {
   const node2=node.node;
   if (!node2.parameters) return null;
-  node2.parameters['geometry'] = node2?.geometry;
+  node2.parameters['geometry'] = node2?.geometry_wkt;
   const parameters = Object.keys(node2.parameters);
   console.log('node is ==>', node);
   console.log('paramaters is ==>', parameters);
