@@ -41,7 +41,7 @@ const Comms = () => {
 
   const allReports = filteredComms || allComms;
 
-  useEffect(() => {
+  const loadComms = () => {
     const dateRangeParams = dateRange
       ? { start: dateRange[0], end: dateRange[1] }
       : {};
@@ -54,6 +54,10 @@ const Comms = () => {
       ...dateRangeParams
     };
     dispatch(getAllComms(reportParams, {sortOrder, status:commStatus, target}));
+  }
+
+  useEffect(() => {
+    loadComms();
   }, [dateRange, boundingBox])
 
   useEffect(() => {
@@ -89,6 +93,13 @@ const Comms = () => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
+  const onCancel = () => {
+    setTogglePolygonMap(false);
+    setToggleCreateNewMessage(false);
+    setCoordinates('');
+    loadComms();
+  }
+
   return (
     <div className='mx-2'>
       <Row className="justify-content-end mb-2">
@@ -122,11 +133,7 @@ const Comms = () => {
         </Col>}
         {toggleCreateNewMessage && <Col xl={5}>
           <CreateMessage
-            onCancel={() => {
-              setTogglePolygonMap(false);
-              setToggleCreateNewMessage(false);
-              setCoordinates('');
-            }}
+            onCancel={onCancel}
             coordinates={coordinates}
             setCoordinates={setCoordinates}
           />
