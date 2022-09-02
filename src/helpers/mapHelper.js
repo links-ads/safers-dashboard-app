@@ -69,7 +69,6 @@ export const getIconColorFromContext = (mapType, feature) => {
   default:
     color = feature?.isSelected ? ORANGE : feature?.status == 'CLOSED' ? GRAY : RED;
   }
-  console.log('icon color', color);
   return color;
 }
 

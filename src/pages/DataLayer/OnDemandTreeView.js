@@ -20,8 +20,6 @@ const PropsPanel = (node) => {
   if (!node2.parameters) return null;
   node2.parameters['geometry'] = node2?.geometry_wkt;
   const parameters = Object.keys(node2.parameters);
-  console.log('node is ==>', node);
-  console.log('paramaters is ==>', parameters);
   // TODO: get a better key once we have node numbering from backend
   const paramaters = parameters.map((key,ix)=><div className="props-line" key={ix}>{formatParameter(node2, key)}</div>) ;
   return (
@@ -107,7 +105,6 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
         `${node.key} : ${node.datatype_id}: DATA_LAYER_NAME [STATUS}]`
       ]
       node.text = nodeTextByLevel[lvl];
-      //console.log('Node', node);
       node.info = 'I\'m a tooltip';
 
       const id = node.id ?? node.key;
