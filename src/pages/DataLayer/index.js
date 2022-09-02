@@ -171,9 +171,10 @@ const DataLayerDashboard = () => {
   // This takes an array of objects and recursively filters out sibling 
   // objects that do not match the search term. It retains the original data 
   // shape and all children of matching objects.
-  const searchDataTree = (data, searchTerm) =>
-    data.reduce((acc, datum) => {
-      if (datum.text.includes(searchTerm)) {
+  const searchDataTree = (data, str) => {
+    const searchTerm = str.toLowerCase();
+    return data.reduce((acc, datum) => {
+      if (datum.text.toLowerCase.includes(searchTerm)) {
         return [...acc, datum];
       }
 
@@ -189,6 +190,7 @@ const DataLayerDashboard = () => {
         ? [...acc, { ...datum, children: [...childrenTotal] }]
         : acc;
     }, []);
+  }
 
   const backToOnDemandPanel = () => { 
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
