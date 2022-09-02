@@ -174,7 +174,7 @@ const DataLayerDashboard = () => {
   const searchDataTree = (data, str) => {
     const searchTerm = str.toLowerCase();
     return data.reduce((acc, datum) => {
-      if (datum.text.toLowerCase.includes(searchTerm)) {
+      if (datum.text.toLowerCase().includes(searchTerm)) {
         return [...acc, datum];
       }
 
