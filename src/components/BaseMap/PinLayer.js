@@ -17,9 +17,10 @@ export class PinLayer extends CompositeLayer {
 
   _getPixelOffset(feature) {
     // used to offset text/icons relative to pin anchor point
-    return typeof this.props.getPixelOffset === 'function'
-      ? this.props.getPixelOffset(feature)
-      : this.props.pixelOffset || [-18,-18];
+    console.log('props', this.props.pixelOffset);
+    if (typeof this.props.getPixelOffset === 'function')
+      return this.props.getPixelOffset(feature)
+    return this.props.pixelOffset ? this.props.pixelOffset : [0,0];
   }
 
   _getExpansionZoom(feature) {
