@@ -14,6 +14,14 @@ const COLOR_TRANSPARENT = [0, 0, 0, 0],
   COLOR_SECONDARY = [51, 63, 72, 255];
 
 export class PinLayer extends CompositeLayer {
+
+  _getPixelOffset(feature) {
+    // used to offset text/icons relative to pin anchor point
+    return typeof this.props.getPixelOffset === 'function'
+      ? this.props.getPixelOffset(feature)
+      : this.props.pixelOffset || [-18,-18];
+  }
+
   _getExpansionZoom(feature) {
     return this.state.index.getClusterExpansionZoom(
       feature.properties.cluster_id
@@ -185,7 +193,7 @@ export class PinLayer extends CompositeLayer {
           iconAtlas,
           iconMapping,
           getPosition: this.props.getPosition,
-          getPixelOffset: () => [-18,-18],
+          getPixelOffset: (d) => this._getPixelOffset(d),
           getIcon: (d) => this._getIcon(d),
           getColor: (d) => this._getIconColor(d),
           getSize: (d) => this._getPinLayerIconSize(d) / 2,
@@ -198,7 +206,7 @@ export class PinLayer extends CompositeLayer {
           fontFamily: this.props.fontFamily,
           fontWeight: this.props.fontWeight,
           getPosition: this.props.getPosition,
-          getPixelOffset: () => [-18,-18],
+          getPixelOffset: () => this._getPixelOffset(),
           getText: (feature) =>
             feature.properties.cluster
               ? `${feature.properties.point_count}`
