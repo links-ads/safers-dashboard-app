@@ -27,7 +27,7 @@ const OnDemandDataLayer = ({
   getSlider,
   getLegend,
   bitmapLayer,
-  getAllTitles,
+  searchDataTree,
   viewState,
   currentLayer,
   dispatch
@@ -47,16 +47,7 @@ const OnDemandDataLayer = ({
 
   const handleSearch = ({ target: { value } }) => {
     if (!value) setSearchedMapRequests(mapRequests);
-
-    const searchResult = mapRequests.filter(
-      request => {
-        const titles = getAllTitles([request]);
-        return titles.some(
-          str => str.toLowerCase().includes(value.toLowerCase())
-        )
-      }
-    );
-  
+    const searchResult = searchDataTree(mapRequests, value)
     setSearchedMapRequests(searchResult);
   };
 
@@ -262,7 +253,7 @@ OnDemandDataLayer.propTypes = {
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
-  getAllTitles: PropTypes.func,
+  searchDataTree: PropTypes.func,
   handleResetAOI: PropTypes.any,
   featureInfoData: PropTypes.any,
   currentLayer: PropTypes.any,
