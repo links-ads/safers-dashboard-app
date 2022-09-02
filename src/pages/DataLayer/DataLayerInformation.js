@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   VictoryChart,
   VictoryAxis,
@@ -13,6 +13,7 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { getIconLayer } from '../../helpers/mapHelper';
 import { formatDate } from '../../store/utility';
 import { useSelector } from 'react-redux';
+import { Card } from 'reactstrap';
 
 const DataLayerInformationComponent = ({
   children,
@@ -33,6 +34,7 @@ const DataLayerInformationComponent = ({
   const [layerData, setLayerData] = useState(null);
   const [tickValues, setTickValues] = useState([]);
   const [chartValues, setChartValues] = useState([]);
+  const chartContainerRef = useRef(null);
 
   useEffect(()=> {
     if(timeSeriesData) {
@@ -53,7 +55,7 @@ const DataLayerInformationComponent = ({
           return {
             x: data.split(',')[0],
             y: tempY? tempY : '0',
-            label: tempY? `${tempY}, ${formatDate(data.split(',')[0])}` : '0'
+            label: tempY? ` ${tempY}, ${formatDate(data.split(',')[0])} ` : '0'
           }
         }));
       } else {
@@ -69,83 +71,94 @@ const DataLayerInformationComponent = ({
   },[featureInfoData])
 
   useEffect(()=> {
+    if(layerData) {
+      chartContainerRef.current?.scrollIntoView({behavior: 'smooth'});  
+    }
+  }, [layerData, chartContainerRef.current])
+
+  useEffect(()=> {
     setInformation(
-      <>{selectedPixel?.length > 0 && <div className='mt-2 sign-up-aoi-map-bg position-relative'>
-        {getPixelValue()}
-        {renderClearBtn()}
-      </div>}
+      <>{selectedPixel?.length > 0 && <Card color="dark default-panel mt-3">
+        <div className='d-flex justify-content-between align-items-center'>
+          <div className='p-3 empty-loading'>
+            {getPixelValue()}
+          </div>
+          <h4 className='ps-3 mb-0'><i className='meta-close' onClick={()=>clearInfo()}>x</i></h4>
+        </div>
+      </Card>}
 
       {layerData && !featureOnly && 
-      <div  className='mt-2 sign-up-aoi-map-bg d-flex position-relative'>
-        <div style={{width: '60%', marginTop: '-65px'}}>
-          <VictoryChart containerComponent={<VictoryContainer responsive={true}/>}>
-            <VictoryAxis
-              tickCount={4}
-              tickValues={tickValues}
-              tickFormat={(tick) => formatDate(tick).split(' ').join('\n')}
-              style={{
-                axis: {
-                  stroke: 'white', 
-                },
-                ticks: {stroke: 'grey', size: 10},
-                tickLabels: {
-                  fill: 'white', //CHANGE COLOR OF X-AXIS LABELS
-                  fontSize: 7,
-                  padding: 5
-                }, 
-                grid: {
-                  stroke: 'white', //CHANGE COLOR OF X-AXIS GRID LINES
-                  strokeDasharray: '7',
-                }
-              }}
-              // tickLabelComponent={<VictoryLabel style={{ data: { stroke: '#F47938' } }} />}
-            />
-            <VictoryAxis dependentAxis  
-              tickCount={5}
-              style={{ 
-                axis: {
-                  stroke: 'white', 
-                },
-                tickLabels: {
-                  fill: 'white', //CHANGE COLOR OF Y-AXIS LABELS
-                  fontSize: 7,
-                  padding: 5
-                },
-              }}  
-            />
+      <Card color="dark default-panel mt-3">
+        <h4 className='ps-3 pt-3 mb-2'><i className='meta-close' onClick={()=>clearInfo()}>x</i></h4>
+        <div ref={chartContainerRef} className='d-flex'>
+          <div style={{width: '60%', marginTop: '-65px'}}>
+            <VictoryChart containerComponent={<VictoryContainer responsive={true}/>}>
+              <VictoryAxis
+                tickCount={4}
+                tickValues={tickValues}
+                tickFormat={(tick) => formatDate(tick).split(' ').join('\n')}
+                style={{
+                  axis: {
+                    stroke: 'white', 
+                  },
+                  ticks: {stroke: 'grey', size: 10},
+                  tickLabels: {
+                    fill: 'white', //CHANGE COLOR OF X-AXIS LABELS
+                    fontSize: 7,
+                    padding: 5
+                  }, 
+                  grid: {
+                    stroke: 'white', //CHANGE COLOR OF X-AXIS GRID LINES
+                    strokeDasharray: '7',
+                  }
+                }}
+              />
+              <VictoryAxis dependentAxis  
+                tickCount={5}
+                style={{ 
+                  axis: {
+                    stroke: 'white', 
+                  },
+                  tickLabels: {
+                    fill: 'white', //CHANGE COLOR OF Y-AXIS LABELS
+                    fontSize: 7,
+                    padding: 5
+                  },
+                }}  
+              />
 
-            <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}/>} />
-            <VictoryScatter data={chartValues} style={{labels:{fontSize: 8}}} labelComponent={<VictoryTooltip cornerRadius={2} pointerLength={3}/>} />
-          </VictoryChart>
+              <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}/>} />
+              <VictoryScatter data={chartValues} style={{labels:{fontSize: 8}}} labelComponent={<VictoryTooltip cornerRadius={2} pointerLength={3}/>} />
+            </VictoryChart>
+          </div>
+          <div style={{lineHeight: '30px', fontSize: '14px'}}>
+            <div>
+              <strong>Time Interval: </strong> {tickValues.sort(function(a,b){
+                return new Date(b.date) - new Date(a.date);
+              }).filter((x,i)=> i == 0 || i == (tickValues.length - 1)).map((x)=> formatDate(x)).join(' - ')}
+            </div>
+            <div>
+              <strong>Mean Value: </strong> {chartValues?.length > 0 ? (chartValues.map(data=> +data.y).reduce((a, b) => a + b) / chartValues.length).toFixed(2) : 0}
+            </div>
+            <div>
+              <strong>Highest Value: </strong> {chartValues?.length > 0 ? Math.max(...chartValues.map(data=> +data.y)) : 0}
+            </div>
+            <div>
+              <strong>Highest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.max(...chartValues.map(data=> +data.y)))[0]?.x)}
+            </div>
+            <div>
+              <strong>Lowest Value: </strong> {chartValues?.length > 0 ? Math.min(...chartValues.map(data=> +data.y)) : 0}
+            </div>
+            <div>
+              <strong>Lowest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.min(...chartValues.map(data=> +data.y)))[0]?.x)}
+            </div>
+          </div>  
         </div>
-        <div style={{lineHeight: '30px', fontSize: '14px'}}>
-          <div>
-            <strong>Time Interval: </strong> {tickValues.sort(function(a,b){
-              return new Date(b.date) - new Date(a.date);
-            }).filter((x,i)=> i == 0 || i == (tickValues.length - 1)).map((x)=> formatDate(x)).join(' - ')}
-          </div>
-          <div>
-            <strong>Mean Value: </strong> {chartValues?.length > 0 ? (chartValues.map(data=> +data.y).reduce((a, b) => a + b) / chartValues.length).toFixed(2) : 0}
-          </div>
-          <div>
-            <strong>Highest Value: </strong> {chartValues?.length > 0 ? Math.max(...chartValues.map(data=> +data.y)) : 0}
-          </div>
-          <div>
-            <strong>Highest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.max(...chartValues.map(data=> +data.y)))[0]?.x)}
-          </div>
-          <div>
-            <strong>Lowest Value: </strong> {chartValues?.length > 0 ? Math.min(...chartValues.map(data=> +data.y)) : 0}
-          </div>
-          <div>
-            <strong>Lowest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.min(...chartValues.map(data=> +data.y)))[0]?.x)}
-          </div>
-        </div>        
-        {renderClearBtn()}
-      </div>
+      </Card>
       }
       </>
     )
-  }, [chartValues, featureInfoData])
+  }, [chartValues, selectedPixel, featureInfoData])
   
 
   const apiFetch = (requestType) => {
@@ -175,16 +188,7 @@ const DataLayerInformationComponent = ({
     setSelectedPixel([]);    
     setLayerData(null);
     setTempLayerData(null);
-  }
-
-  const renderClearBtn = () => {
-    return (
-      <div className='position-absolute' style={{ top: '5px', right: '10px' }}>
-        <button onClick={clearInfo} className="custom-clear-btn d-flex justify-content-center align-items-center" type="button">
-          <i className="bx bx-x" style={{ fontSize: '25px' }}></i>
-        </button>
-      </div>
-    );
+    setChartValues([]);
   }
 
   const getPixelValue = () => {
