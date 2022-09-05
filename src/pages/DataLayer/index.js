@@ -178,16 +178,16 @@ const DataLayerDashboard = () => {
         return [...acc, datum];
       }
 
-      let childrenTotal = [];
+      let children = [];
       if (datum.children) {
-        const children = searchDataTree(datum.children, searchTerm);
-        childrenTotal = [...childrenTotal, ...children];
+        const filteredChildren = searchDataTree(datum.children, searchTerm);
+        children = filteredChildren;
       }
 
-      const hasChildren = childrenTotal.length;
+      const hasChildren = children.length;
 
       return hasChildren
-        ? [...acc, { ...datum, children: [...childrenTotal] }]
+        ? [...acc, { ...datum, children }]
         : acc;
     }, []);
   }
