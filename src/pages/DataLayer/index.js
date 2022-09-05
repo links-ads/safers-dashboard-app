@@ -184,7 +184,7 @@ const DataLayerDashboard = () => {
         children = filteredChildren;
       }
 
-      const hasChildren = children.length;
+      const hasChildren = !!children.length;
 
       return hasChildren
         ? [...acc, { ...datum, children }]
