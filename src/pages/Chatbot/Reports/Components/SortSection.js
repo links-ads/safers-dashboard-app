@@ -9,10 +9,9 @@ import { withTranslation } from 'react-i18next';
 
 const SortSection = ({ 
   t, 
-  reportSource, 
   sortOrder, 
-  setReportSource, 
-  setSortOrder, 
+  setSortOrder,
+  category,
   setCategory,
   missionId,
   setMissionId
@@ -56,7 +55,7 @@ const SortSection = ({
       </Row>
       <hr />
       <Row className='my-2'>
-        <Col xl={4} className='mx-0 my-1'>
+        <Col xl={6} className='mx-0 my-1'>
           <Input
             id="sortByDate"
             className="btn-sm sort-select-input"
@@ -70,31 +69,16 @@ const SortSection = ({
             <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
-        <Col xl={4} className='my-1'>
-          <Input
-            id="alertSource"
-            className="btn-sm sort-select-input"
-            name="alertSource"
-            placeholder="Source"
-            type="select"
-            onChange={(e) => setReportSource(e.target.value)}
-            value={reportSource}
-            data-testid='reportAlertSource'
-          >
-            <option value={''} >Source : All</option>
-          </Input>
-        </Col>
-        <Col xl={4} className='my-1'>
+        <Col xl={6} className='my-1'>
           <Input
             id="category"
             className="btn-sm sort-select-input text-capitalize"
             name="category"
-            placeholder="Category"
             type="select"
             onChange={({ target: { value } }) => 
               setCategory(value.toLowerCase())
             }
-            value={reportSource}
+            value={category}
             data-testid='reportAlertCategory'
           >
             <option value={''}>{t('Category')}: All</option>
@@ -109,10 +93,9 @@ const SortSection = ({
 }
 
 SortSection.propTypes = {
-  reportSource: PropTypes.any,
   sortOrder: PropTypes.string,
-  setReportSource: PropTypes.func,
   setSortOrder: PropTypes.func,
+  category: PropTypes.string,
   setCategory: PropTypes.func,
   t: PropTypes.func,
   missionId: PropTypes.string,

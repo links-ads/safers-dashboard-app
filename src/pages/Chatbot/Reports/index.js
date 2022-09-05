@@ -27,7 +27,6 @@ const Reports = () => {
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('');
-  const [reportSource, setReportSource] = useState(undefined);
   const [category, setCategory] = useState('');
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -77,7 +76,6 @@ const Reports = () => {
     setReportId(undefined);
     const reportParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: reportSource ? reportSource : undefined,
       category: category ? category : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
@@ -85,7 +83,7 @@ const Reports = () => {
       ...dateRangeParams
     };
     dispatch(getAllReports(reportParams));
-  }, [dateRange, reportSource, sortOrder, boundingBox, category])
+  }, [dateRange, sortOrder, boundingBox, category])
 
   useEffect(() => {
     if (success?.detail) {
@@ -132,10 +130,10 @@ const Reports = () => {
       <Row>
         <Col xl={5}>
           <SortSection
-            reportSource={reportSource}
+            t={t}
             sortOrder={sortOrder}
-            setReportSource={setReportSource}
             setSortOrder={setSortOrder}
+            category={category}
             setCategory={setCategory}
             missionId={missionId}
             setMissionId={setMissionId}
