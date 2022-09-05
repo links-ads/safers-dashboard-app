@@ -14,9 +14,9 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
 
   const isSelected = card.report_id === reportId
 
-  const getBadge = () => {
+  const getBadge = (category) => {
     let iconStatus = '';
-    switch(card.additional_info){
+    switch(category){
     case 'effects':
       iconStatus = 'fa-dice';
       break;
@@ -34,7 +34,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
       <>
         <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
           <i className={`fa ${iconStatus} text-danger me-1`}></i> 
-          <span className='text-capitalize'>{card.additional_info}</span>
+          <span className='text-capitalize'>{category}</span>
         </Badge>
       </>
     )
@@ -50,7 +50,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
             <span className='text-capitalize'>Mission {card.report_id}</span>
           </Badge>
         ) : null}
-        {getBadge()}
+        {card.categories.map(cat=>getBadge(cat))}
         <Row className='mt-2'>
           <Col>
             <Row>
@@ -69,7 +69,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  date: {formatDate(card.timestamp)}
+                  Date: {formatDate(card.timestamp)}
                 </p>
               </Col>
 
@@ -77,7 +77,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
             <Row className='mt-0'>
               <Col>
                 <p className="text-muted no-wrap">
-                  location: {(card.location).join(', ')}
+                  Location: {(card.location).join(', ')}
                 </p>
               </Col>
               <Col md={2}>
