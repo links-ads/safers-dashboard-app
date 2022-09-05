@@ -157,7 +157,7 @@ const DataLayerInformationComponent = ({
             </VictoryChart>
           </div>
           <div>
-            <div style={{lineHeight: '30px', fontSize: '14px'}}>
+            <div className='fs-6 lh-lg'>
               <div>
                 <strong>Time Interval: </strong> {tickValues.sort(function(a,b){
                   return new Date(b.date) - new Date(a.date);
