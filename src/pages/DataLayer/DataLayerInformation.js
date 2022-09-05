@@ -5,7 +5,8 @@ import {
   VictoryLine,
   VictoryScatter,
   VictoryTooltip,
-  VictoryContainer
+  VictoryZoomContainer,
+  VictoryBrushContainer
 } from 'victory';
 import PropTypes from 'prop-types';
 import { getDataLayerTimeSeriesData } from '../../store/appAction';
@@ -34,6 +35,8 @@ const DataLayerInformationComponent = ({
   const [layerData, setLayerData] = useState(null);
   const [tickValues, setTickValues] = useState([]);
   const [chartValues, setChartValues] = useState([]);
+  const [zoomDomain, setZoomDomain] = useState(null);
+  const [selectedDomain, setSelectedDomain] = useState(null);
   const chartContainerRef = useRef(null);
 
   useEffect(()=> {
@@ -76,6 +79,14 @@ const DataLayerInformationComponent = ({
     }
   }, [layerData, chartContainerRef.current])
 
+  const handleZoom = (domain) => {
+    setSelectedDomain(domain);
+  }
+
+  const handleBrush = (domain) => {
+    setZoomDomain(domain);
+  }
+
   useEffect(()=> {
     setInformation(
       <>{selectedPixel?.length > 0 && <Card color="dark default-panel mt-3">
@@ -91,8 +102,12 @@ const DataLayerInformationComponent = ({
       <Card color="dark default-panel mt-3">
         <h4 className='ps-3 pt-3 mb-2'><i className='meta-close' onClick={()=>clearInfo()}>x</i></h4>
         <div ref={chartContainerRef} className='d-flex'>
-          <div style={{width: '60%', marginTop: '-65px'}}>
-            <VictoryChart containerComponent={<VictoryContainer responsive={true}/>}>
+          <div style={{width: '60%'}}>
+            <VictoryChart padding={{ top: 5, left: 50, right: 50, bottom: 50 }} scale={{ x: 'time' }} containerComponent={<VictoryZoomContainer
+              zoomDimension="x"
+              zoomDomain={zoomDomain}
+              onZoomDomainChange={handleZoom}
+            />}>
               <VictoryAxis
                 tickCount={4}
                 tickValues={tickValues}
@@ -127,38 +142,84 @@ const DataLayerInformationComponent = ({
                 }}  
               />
 
-              <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}/>} />
-              <VictoryScatter data={chartValues} style={{labels:{fontSize: 8}}} labelComponent={<VictoryTooltip cornerRadius={2} pointerLength={3}/>} />
+              <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2}/>}/>
+              <VictoryScatter
+                size={1.5} 
+                data={chartValues} 
+                style={{
+                  labels:{fontSize: 8},
+                  data: { 
+                    fill: '#F47938',
+                    // fillOpacity: 0.5   //CHANGE OPACITY OF POINTS
+                  }
+                }}
+                labelComponent={<VictoryTooltip cornerRadius={2} pointerLength={3}/>}/>
             </VictoryChart>
           </div>
-          <div style={{lineHeight: '30px', fontSize: '14px'}}>
-            <div>
-              <strong>Time Interval: </strong> {tickValues.sort(function(a,b){
-                return new Date(b.date) - new Date(a.date);
-              }).filter((x,i)=> i == 0 || i == (tickValues.length - 1)).map((x)=> formatDate(x)).join(' - ')}
+          <div>
+            <div style={{lineHeight: '30px', fontSize: '14px'}}>
+              <div>
+                <strong>Time Interval: </strong> {tickValues.sort(function(a,b){
+                  return new Date(b.date) - new Date(a.date);
+                }).filter((x,i)=> i == 0 || i == (tickValues.length - 1)).map((x)=> formatDate(x)).join(' - ')}
+              </div>
+              <div>
+                <strong>Mean Value: </strong> {chartValues?.length > 0 ? (chartValues.map(data=> +data.y).reduce((a, b) => a + b) / chartValues.length).toFixed(2) : 0}
+              </div>
+              <div>
+                <strong>Highest Value: </strong> {chartValues?.length > 0 ? Math.max(...chartValues.map(data=> +data.y)) : 0}
+              </div>
+              <div>
+                <strong>Highest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.max(...chartValues.map(data=> +data.y)))[0]?.x)}
+              </div>
+              <div>
+                <strong>Lowest Value: </strong> {chartValues?.length > 0 ? Math.min(...chartValues.map(data=> +data.y)) : 0}
+              </div>
+              <div>
+                <strong>Lowest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.min(...chartValues.map(data=> +data.y)))[0]?.x)}
+              </div>
+            </div> 
+            <div className='mt-3'>
+              <div className='text-center fs-5 fw-bold mb-1'>Total Time Series Data Preview</div>
+              <VictoryChart padding={{ top: 10, bottom: 35, left: 25, right: 25 }} scale={{ x: 'time' }} 
+                containerComponent={
+                  <VictoryBrushContainer
+                    brushDimension="x"
+                    brushDomain={selectedDomain}
+                    onBrushDomainChange={handleBrush}
+                    brushStyle={{stroke: 'transparent', fill: 'white', fillOpacity: 0.1}}
+                  />
+                }>
+                <VictoryAxis
+                  tickCount={4}
+                  tickValues={tickValues}
+                  tickFormat={(tick) => formatDate(tick).split(' ').join('\n')}
+                  style={{
+                    axis: {
+                      stroke: 'white', 
+                    },
+                    ticks: {stroke: 'grey', size: 10},
+                    tickLabels: {
+                      fill: 'white', //CHANGE COLOR OF X-AXIS LABELS
+                      fontSize: 10,
+                      padding: 5
+                    }, 
+                    grid: {
+                      stroke: 'white', //CHANGE COLOR OF X-AXIS GRID LINES
+                      strokeDasharray: '7',
+                    }
+                  }}
+                />
+                <VictoryLine data={chartValues} style={{ data: { stroke: '#F47938' } }} labelComponent={<VictoryTooltip cornerRadius={2} />} />
+              </VictoryChart>
             </div>
-            <div>
-              <strong>Mean Value: </strong> {chartValues?.length > 0 ? (chartValues.map(data=> +data.y).reduce((a, b) => a + b) / chartValues.length).toFixed(2) : 0}
-            </div>
-            <div>
-              <strong>Highest Value: </strong> {chartValues?.length > 0 ? Math.max(...chartValues.map(data=> +data.y)) : 0}
-            </div>
-            <div>
-              <strong>Highest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.max(...chartValues.map(data=> +data.y)))[0]?.x)}
-            </div>
-            <div>
-              <strong>Lowest Value: </strong> {chartValues?.length > 0 ? Math.min(...chartValues.map(data=> +data.y)) : 0}
-            </div>
-            <div>
-              <strong>Lowest Value Date: </strong> {formatDate(chartValues?.filter(data=> data.y == Math.min(...chartValues.map(data=> +data.y)))[0]?.x)}
-            </div>
-          </div>  
+          </div>
         </div>
       </Card>
       }
       </>
     )
-  }, [chartValues, selectedPixel, featureInfoData])
+  }, [chartValues, selectedPixel, featureInfoData, zoomDomain, selectedDomain])
   
 
   const apiFetch = (requestType) => {
