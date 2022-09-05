@@ -21,7 +21,11 @@ const TABLE_HEADERS = [
   'fuelMoistureContent'
 ];
 
-const PROBABILITY_RANGES = ['50%', '75%', '90%'];
+const PROBABILITY_RANGES = [
+  {label: '50%', value: 0.5}, 
+  {label: '75%', value: 0.75}, 
+  {label: '90%', value: 0.9}
+];
 
 const WildfireSimulationSchema = Yup.object().shape({
   simulationTitle: Yup.string()
@@ -96,12 +100,12 @@ const WildfireSimulation = ({
 
   const onSubmit = (formData) => {
     const boundary_conditions = Object.values(formData.boundaryConditions)
-      .reduce((acc, obj) => ([...acc, {
-        time: obj.timeOffset,
-        w_dir: obj.windDirection,
-        w_speed: obj.windSpeed,
-        moisture: obj.fuelMoistureContent
-      }]), []);
+      .map(obj => ({
+        time: +obj.timeOffset,
+        w_dir: +obj.windDirection,
+        w_speed: +obj.windSpeed,
+        moisture: +obj.fuelMoistureContent
+      }), []);
 
     const transformedGeometry = formData.mapSelection.startsWith('GEOMETRYCOLLECTION') ? formData.mapSelection : `GEOMETRYCOLLECTION(${formData.mapSelection})`
     const startDateTime = new Date(formData.ignitionDateTime).toISOString()
@@ -113,8 +117,8 @@ const WildfireSimulation = ({
       parameters: {
         start: startDateTime,
         end: endDateTime,
-        time_limit: formData.simulationTimeLimit,
-        probabilityRange: formData.probabilityRange,
+        time_limit: +formData.simulationTimeLimit,
+        probabilityRange: +formData.probabilityRange,
         do_spotting: formData.simulationFireSpotting,
         boundary_conditions,
       }
@@ -144,12 +148,17 @@ const WildfireSimulation = ({
           <Formik
             initialValues={{
               simulationTitle: '',
-              probabilityRange: '75%',
+              probabilityRange: 0.75,
               mapSelection: '',
               simulationTimeLimit: 1,
               ignitionDateTime: null,
               simulationFireSpotting: false,
-              boundaryConditions: [],
+              boundaryConditions: [{
+                timeOffset: 0,
+                windDirection: '',
+                windSpeed: '',
+                fuelMoistureContent: ''
+              }],
             }}
             validationSchema={WildfireSimulationSchema}
             onSubmit={onSubmit}
@@ -224,24 +233,24 @@ const WildfireSimulation = ({
                           </Label>
                         </Row>
                         <Row className='d-flex justify-content-start flex-nowrap gap-2'>
-                          {PROBABILITY_RANGES.map(range => (
+                          {PROBABILITY_RANGES.map(({label, value}) => (
                             <Label
-                              key={range}
-                              id={range}
+                              key={label}
+                              id={label}
                               check
                               className='w-auto'
                             >
                               <Input
-                                id={range}
+                                id={label}
                                 name='probabilityRange'
                                 type="radio"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
-                                checked={values.probabilityRange === range}
-                                value={range}
+                                checked={+values.probabilityRange === value}
+                                value={value}
                                 className='me-2'
                               />
-                              {range}
+                              {label}
                             </Label>
                           ))}
                         </Row>
@@ -406,6 +415,7 @@ const WildfireSimulation = ({
                                       name={`boundaryConditions.${position}.timeOffset`}
                                       id={`boundaryConditions.${position}.timeOffset`}
                                       value={values.boundaryConditions[position]?.timeOffset ?? ''}
+                                      disabled={position === 0}
                                       placeholder='[type here]'
                                       onChange={handleChange}
                                       onBlur={handleBlur}
