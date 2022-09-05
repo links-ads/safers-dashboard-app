@@ -3,11 +3,11 @@ import PropTypes from 'prop-types';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText } from 'reactstrap';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
+import JsonFormatter from '../../components/JsonFormatter';
 import { resetMetaData } from '../../store/appAction';
 
 import TreeView from './TreeView';
 import { formatDate } from '../../store/utility';
-import highlight from 'json-format-highlight';
 import { BitmapLayer } from 'deck.gl';
 
 import { withTranslation } from 'react-i18next'
@@ -67,30 +67,12 @@ const DataLayer = ({
     ) : null
   );
 
-  const print = (data) => {
-    
-    const jsonTheme = {
-      keyColor: '#ffffff',
-      numberColor: '#007bff',
-      stringColor: '#B3B2B2',
-      trueColor: '#199891'
-    };
-
-    return <pre className="px-3">
-      <code
-        dangerouslySetInnerHTML={{
-          __html: highlight(data, jsonTheme)
-        }}
-      />
-    </pre>
-  };
-
   const switchRHPanel = () => {
     if(isMetaDataLoading || metaData){
       return (
         <Card color="dark default-panel">
           <h4 className='ps-3 pt-3 mb-2'>Meta Info: <i className='meta-close' onClick={()=>{dispatch(resetMetaData());}}>x</i></h4>
-          {!metaData ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}>{print(metaData)}</SimpleBar>}
+          {!metaData ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}><JsonFormatter data={metaData} /></SimpleBar>}
         </Card>
       );
     }
