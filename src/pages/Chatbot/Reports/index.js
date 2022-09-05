@@ -134,7 +134,6 @@ const Reports = () => {
             t={t}
             sortOrder={sortOrder}
             setSortOrder={setSortOrder}
-            category={category}
             setCategory={setCategory}
             missionId={missionId}
             setMissionId={setMissionId}

@@ -11,7 +11,6 @@ const SortSection = ({
   t, 
   sortOrder, 
   setSortOrder,
-  category,
   setCategory,
   missionId,
   setMissionId
@@ -78,7 +77,6 @@ const SortSection = ({
             onChange={({ target: { value } }) => 
               setCategory(value.toLowerCase())
             }
-            value={category}
             data-testid='reportAlertCategory'
           >
             <option value={''}>{t('Category')}: All</option>
@@ -95,7 +93,6 @@ const SortSection = ({
 SortSection.propTypes = {
   sortOrder: PropTypes.string,
   setSortOrder: PropTypes.func,
-  category: PropTypes.string,
   setCategory: PropTypes.func,
   t: PropTypes.func,
   missionId: PropTypes.string,
