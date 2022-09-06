@@ -7,7 +7,8 @@ const JsonFormatter = ({data}) => {
     keyColor: '#ffffff',
     numberColor: '#007bff',
     stringColor: '#B3B2B2',
-    trueColor: '#199891'
+    trueColor: '#199891',
+    nullColor: '#ffffff'
   };
 
   return(
