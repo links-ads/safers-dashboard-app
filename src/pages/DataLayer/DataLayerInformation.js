@@ -54,11 +54,11 @@ const DataLayerInformationComponent = ({
         setChartValues(array.map(data=> {
           const [x, y] = data.split(',')
           const x2 = x //new Date(x)
-          const y2 = +Number(y).toFixed(4)
+          const y2 = y ? +Number(y).toFixed(4): null
           return {
             x: x2,
             y: y2,
-            label: ` ${y2}, ${formatDate(x2)} `
+            label: y2 ? ` ${y2}, ${formatDate(x2)} ` : null
           }
         }));
       } else {
