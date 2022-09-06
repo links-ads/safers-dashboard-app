@@ -163,7 +163,7 @@ const EventAlerts = ({ t }) => {
 
   const showTooltip = info => {
     if (info.picked && info.object) {
-      setSelectedAlert(info.object.id);
+      setSelectedAlert(info.object.properties.id);
       setHoverInfo(info);
     } else {
       setHoverInfo({});
