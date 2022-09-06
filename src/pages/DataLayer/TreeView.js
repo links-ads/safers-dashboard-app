@@ -10,9 +10,11 @@ import { getMetaData, resetMetaData } from '../../store/appAction';
 
 const TreeView = ({ data, setCurrentLayer}) => {
   const [itemState, setItemState] = useState({});
-  const [selectedLayer, setSelectedLayer] = useState({});
+  const [selectedLayer, setSelectedLayer] = useState({});// Only parent node is set here - used by callback fn
+  const [selectedNode, setSelNode] = useState(null);
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
   const [metaActive, setMetaActive] = useState('');
+
   const { metaData } = useSelector(state => state.dataLayer);
   const dispatch = useDispatch();
 
@@ -39,10 +41,10 @@ const TreeView = ({ data, setCurrentLayer}) => {
       toggleExpandCollapse(id); 
       setMetaActive('');
       dispatch(resetMetaData());
-    }
-    else {
+    } else {
       setSelectedLayer(node);
     }
+    setSelNode(node);
   }
 
   const toggleMetaInfo = (metaURL) => {
@@ -55,6 +57,22 @@ const TreeView = ({ data, setCurrentLayer}) => {
     }
   }
 
+  const isParentOfSelected = (id) => {
+    /*
+    * Node id should follow a syntax inheriting the parent id 
+    * i.e. parent node - {parent id}, child - {parent id}.{child id}
+    * This fn is also appllied to leaf node
+    */
+    if(!selectedNode) {
+      return false;
+    }
+
+    if(selectedNode.id.substring(0,id.length) === id && id.startsWith(selectedNode.id.split('.')[0])) {
+      return true;
+    }
+    return false;
+  }
+
   const mapper = (nodes, parentId, lvl) => {
     return nodes?.map((node, index) => {
       
@@ -64,7 +82,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
         <>
           <ListGroupItem
             key={index + id}
-            className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? `${metaActive} selected` : ''} mb-2`}
+            className={`dl-item ${isParentOfSelected(id) ? `${metaActive} selected` : ''} mb-2`}
             onClick={() => { onClickDLItem(id, node) }}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
@@ -85,7 +103,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
                   :
                   <>
                     {(node.metadata_url) &&
-                      <i className={`bx bx-file font-size-18 me-2 meta-icon ${metaActive ? 'text-primary': ''}`} onClick={()=>{toggleMetaInfo(node.metadata_url)}} />
+                      <i className={`bx bx-file font-size-18 me-2 meta-icon ${selectedNode && node.id === selectedNode.id && metaData ? 'text-primary': ''}`} onClick={()=>{toggleMetaInfo(node.metadata_url)}} />
                     }
                     {moment(node.text).format('LLL')}
                   </>
