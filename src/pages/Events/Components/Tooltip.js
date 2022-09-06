@@ -242,7 +242,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t
             : <>
               <Row className='g-0'>
                 {event &&
-                  <Button color="secondary" className='create-event-button' onClick={() => {
+                  <Button disabled color="primary" className='create-event-button' onClick={() => {
                     navigate(`/event-dashboard/${object.id}`);
                   }}>
                     {t('show-info', { ns: 'common' })}
