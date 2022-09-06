@@ -7,8 +7,7 @@ import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
 import { setFavorite } from '../../../../store/missions/action';
 import Mission from './Mission';
-
-const MAP_TYPE = 'missions';
+import { MAP_TYPES } from '../../../../constants/common';
 
 const MissionList = ({ missionId, currentZoomLevel, setViewState, setMissionId, setIconLayer }) => {
   const { allMissions: OrgMissionList, filteredMissions } = useSelector(state => state.missions);
@@ -29,16 +28,16 @@ const MissionList = ({ missionId, currentZoomLevel, setViewState, setMissionId, 
       let missionList = _.cloneDeep(allMissions);
       let selectedMission = _.find(missionList, { id:mission_id });
       selectedMission.isSelected = true;
-      setIconLayer(getIconLayer(missionList, MAP_TYPE));
+      setIconLayer(getIconLayer(missionList, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState));
       setViewState(getViewState(selectedMission.location, currentZoomLevel))
     } else {
       setMissionId(undefined);
-      setIconLayer(getIconLayer(allMissions, MAP_TYPE));
+      setIconLayer(getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState));
     }
   }
   const updatePage = data => {
     setMissionId(undefined);
-    setIconLayer(getIconLayer(data, MAP_TYPE));
+    setIconLayer(getIconLayer(data, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState));
     setPageData(data);
   };
 

@@ -3,47 +3,16 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
-import { getViewState, getIconColorFromContext } from '../../../../helpers/mapHelper';
+import { getViewState } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
 import Comm from './Comm';
-import { GeoJsonPinLayer } from '../../../../components/BaseMap/GeoJsonPinLayer';
-const MAP_TYPE = 'reports';
 import { MAP_TYPES } from '../../../../constants/common';
+import { getIconLayer } from '../../../../helpers/mapHelper';
 
 const CommsList = ({ commID, currentZoomLevel, setViewState, setCommID, setIconLayer }) => {
   const { allComms, filteredComms } = useSelector(state => state.comms);
   const [pageData, setPageData] = useState([]);
   const dispatch = useDispatch();
-
-  const getIconLayer = (alerts) => {
-    const data = alerts?.map((alert) => {
-      const {
-        geometry,
-        ...properties
-      } = alert;
-      return {
-        type: 'Feature',
-        properties: properties,
-        geometry: geometry,
-      };
-    });
-
-    return new GeoJsonPinLayer({
-      data,
-      dispatch,
-      setViewState,
-      getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.COMMUNICATIONS,feature),
-      icon: 'communications',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18,-18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
 
   const commList = filteredComms || allComms;
 
@@ -53,16 +22,16 @@ const CommsList = ({ commID, currentZoomLevel, setViewState, setCommID, setIconL
       let copyCommList = _.cloneDeep(commList);
       let selectedComm = _.find(copyCommList, { id: mission_id });
       selectedComm.isSelected = true;
-      setIconLayer(getIconLayer(copyCommList, MAP_TYPE));
+      setIconLayer(getIconLayer(copyCommList, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState));
       setViewState(getViewState(selectedComm.location, currentZoomLevel))
     } else {
       setCommID(undefined);
-      setIconLayer(getIconLayer(commList, MAP_TYPE));
+      setIconLayer(getIconLayer(commList, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState));
     }
   }
   const updatePage = data => {
     setCommID(undefined);
-    setIconLayer(getIconLayer(data, MAP_TYPE));
+    setIconLayer(getIconLayer(data, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState));
     setPageData(data);
   };
 
