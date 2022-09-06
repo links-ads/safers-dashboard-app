@@ -1,11 +1,12 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getViewState } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
-import { setFavorite } from '../../../../store/reports/action';
+import { setFavorite, setFilterdReports } from '../../../../store/reports/action';
+import { getFilteredRec } from '../../filter';
 import Report from './Report';
 
 const MAP_TYPE = 'reports';
@@ -13,11 +14,33 @@ import { MAP_TYPES } from '../../../../constants/common';
 import { GeoJsonPinLayer } from '../../../../components/BaseMap/GeoJsonPinLayer';
 import { getIconColorFromContext } from '../../../../helpers/mapHelper';
 
-const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, setIconLayer }) => {
+const ReportList = ({ 
+  reportId, 
+  currentZoomLevel, 
+  setViewState, 
+  setReportId, 
+  setIconLayer,
+  missionId,
+  category,
+  sortOrder
+}) => {
   const { allReports: OrgReportList, filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
 
   const dispatch = useDispatch();
+
+  const allReports = filteredReports ?? [];
+
+  useEffect(() => {
+    const filters = { 
+      categories: category,
+      mission_id:  missionId
+    };
+  
+    const sort = { fieldName: 'timestamp', order: sortOrder };
+    const actFiltered = getFilteredRec(OrgReportList, filters, sort);
+    dispatch(setFilterdReports(actFiltered));
+  }, [category, missionId, sortOrder, OrgReportList])
 
   const getIconLayer = (alerts) => {
     const data = alerts?.map((alert) => {
@@ -42,13 +65,12 @@ const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, set
       iconColor: '#ffffff',
       clusterIconSize: 35,
       getPinSize: () => 35,
+      pixelOffset: [-18,-18],
       pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
     });
   };
-
-  const allReports = filteredReports || OrgReportList;
 
   const setFavoriteFlag = (id) => {
     let selectedReport = _.find(pageData, { id });
@@ -79,14 +101,15 @@ const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, set
     <>
       <Row>
         {
-          pageData.map((report) =>
+          pageData.map((report) => (
             <Report
               key={report.report_id}
               card={report}
               reportId={reportId}
               setSelectedReport={setSelectedReport}
               setFavorite={setFavoriteFlag}
-            />)
+            />
+          ))
         }
       </Row>
       <Row className='text-center'>
@@ -101,6 +124,9 @@ ReportList.propTypes = {
   setViewState: PropTypes.func,
   setReportId: PropTypes.func,
   setIconLayer: PropTypes.func,
+  missionId: PropTypes.string,
+  category: PropTypes.string,
+  sortOrder: PropTypes.string
 }
 
 export default ReportList;

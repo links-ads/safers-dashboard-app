@@ -23,7 +23,7 @@ const SummaryContainer = ({reportDetail, t}) => {
     return null;
 
   const iconLayer = getIconLayer([reportDetail], MAP_TYPES.REPORTS);
-  const viewState= getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel);
+  const viewState= getViewState(reportDetail.location, defaultAoi.features[0].properties.zoomLevel);
 
 
 
@@ -52,6 +52,9 @@ const SummaryContainer = ({reportDetail, t}) => {
           </Row>
           <Row className='my-3'>
             <span>{t('Status')}: {reportDetail.status}</span>
+          </Row>
+          <Row className='my-3'>
+            <span>{t('Category')}: {reportDetail.categories.join(' ,')}</span>
           </Row>
           <Row className='mt-5 mb-2'>
             <span>{t('Description')}</span>
