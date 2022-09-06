@@ -14,6 +14,8 @@ const TreeView = ({ data, setCurrentLayer}) => {
   const [selectedNode, setSelNode] = useState(null);
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
   const [metaActive, setMetaActive] = useState('');
+  const [currentMetaURL, setMetaURL] = useState(null);
+
   const { metaData } = useSelector(state => state.dataLayer);
   const dispatch = useDispatch();
 
@@ -47,13 +49,14 @@ const TreeView = ({ data, setCurrentLayer}) => {
   }
 
   const toggleMetaInfo = (metaURL) => {
-    if(!metaData){
+    if(currentMetaURL !== metaURL){
       setMetaActive('alert-card-active');
       dispatch(getMetaData(metaURL))
     }
     else {
       dispatch(resetMetaData());
     }
+    setMetaURL(metaURL);
   }
 
   const isParentOfSelected = (id) => {
@@ -65,7 +68,8 @@ const TreeView = ({ data, setCurrentLayer}) => {
     if(!selectedNode) {
       return false;
     }
-    if(selectedNode.id.includes(id) && id.startsWith(selectedNode.id.split('.')[0])) {
+
+    if(selectedNode.id.substring(0,id.length) === id && id.startsWith(selectedNode.id.split('.')[0])) {
       return true;
     }
     return false;

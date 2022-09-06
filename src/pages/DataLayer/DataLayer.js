@@ -81,7 +81,7 @@ const DataLayer = ({
       return (
         <Card color="dark default-panel">
           <h4 className='ps-3 pt-3 mb-2'>Meta Info: <i className='meta-close' onClick={()=>{dispatch(resetMetaData());}}>x</i></h4>
-          {!metaData ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}><JsonFormatter data={metaData} /></SimpleBar>}
+          {!metaData || isMetaDataLoading ? <p className='p-3'>{t('Loadng')}...</p> : <SimpleBar style={{ height: 670 }}><JsonFormatter data={metaData} /></SimpleBar>}
         </Card>
       );
     }
