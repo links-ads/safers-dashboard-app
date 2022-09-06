@@ -36,7 +36,7 @@ const DataLayer = ({
   bitmapLayer,
   viewState,
   timestamp,
-  getAllTitles,
+  searchDataTree,
   dispatch
 }) => {
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
@@ -53,16 +53,7 @@ const DataLayer = ({
 
   const handleSearch = ({ target: { value } }) => {
     if (!value) setSearchedDataLayers(operationalMapLayers);
-  
-    const searchResult = operationalMapLayers.filter(
-      layer => {
-        const titles = getAllTitles([layer]);
-        return titles.some(
-          str => str.toLowerCase().includes(value.toLowerCase())
-        )
-      }
-    );
-  
+    const searchResult = searchDataTree(operationalMapLayers, value)
     setSearchedDataLayers(searchResult);
   };
 
@@ -236,7 +227,7 @@ DataLayer.propTypes = {
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
-  getAllTitles: PropTypes.func,
+  searchDataTree: PropTypes.func,
   dispatch: PropTypes.func
 }
 

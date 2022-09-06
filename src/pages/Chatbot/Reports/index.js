@@ -26,14 +26,14 @@ const Reports = () => {
   const [reportId, setReportId] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortOrder, setSortOrder] = useState(undefined);
-  const [reportSource, setReportSource] = useState(undefined);
-  const [category, setCategory] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState('');
+  const [category, setCategory] = useState('');
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
+  const [missionId, setMissionId] = useState('')
 
   const dispatch = useDispatch();
 
@@ -77,7 +77,6 @@ const Reports = () => {
     setReportId(undefined);
     const reportParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: reportSource ? reportSource : undefined,
       category: category ? category : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
@@ -85,7 +84,7 @@ const Reports = () => {
       ...dateRangeParams
     };
     dispatch(getAllReports(reportParams));
-  }, [dateRange, reportSource, sortOrder, boundingBox, category])
+  }, [dateRange, sortOrder, boundingBox, category])
 
   useEffect(() => {
     if (success?.detail) {
@@ -132,11 +131,12 @@ const Reports = () => {
       <Row>
         <Col xl={5}>
           <SortSection
-            reportSource={reportSource}
+            t={t}
             sortOrder={sortOrder}
-            setReportSource={setReportSource}
             setSortOrder={setSortOrder}
             setCategory={setCategory}
+            missionId={missionId}
+            setMissionId={setMissionId}
           />
           <Row>
             <Col xl={12} className='px-3'>
@@ -145,7 +145,11 @@ const Reports = () => {
                 currentZoomLevel={currentZoomLevel}
                 setViewState={setViewState}
                 setReportId={setReportId}
-                setIconLayer={setIconLayer} />
+                setIconLayer={setIconLayer} 
+                missionId={missionId}
+                category={category}
+                sortOrder={sortOrder}
+              />
             </Col>
           </Row>
         </Col>

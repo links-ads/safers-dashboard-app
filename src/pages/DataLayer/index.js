@@ -168,18 +168,28 @@ const DataLayerDashboard = () => {
     }
   }, [isPlaying]);
 
-  const getAllTitles = (arr) => {
-    let titles = [];
-
-    const aggregate = data => data.forEach(datum => {
-      if (datum.children) {
-        aggregate(datum.children);
+  // This takes an array of objects and recursively filters out sibling 
+  // objects that do not match the search term. It retains the original data 
+  // shape and all children of matching objects.
+  const searchDataTree = (data, str) => {
+    const searchTerm = str.toLowerCase();
+    return data.reduce((acc, datum) => {
+      if (datum.text.toLowerCase().includes(searchTerm)) {
+        return [...acc, datum];
       }
-      titles = [...titles, datum.text];
-    });
-    
-    aggregate(arr);
-    return titles;
+
+      let children = [];
+      if (datum.children) {
+        const filteredChildren = searchDataTree(datum.children, searchTerm);
+        children = filteredChildren;
+      }
+
+      const hasChildren = !!children.length;
+
+      return hasChildren
+        ? [...acc, { ...datum, children }]
+        : acc;
+    }, []);
   }
 
   const backToOnDemandPanel = () => { 
@@ -307,7 +317,7 @@ const DataLayerDashboard = () => {
     handleResetAOI,
     timeSeriesData,
     featureInfoData,
-    getAllTitles,
+    searchDataTree,
     timestamp
   };
 

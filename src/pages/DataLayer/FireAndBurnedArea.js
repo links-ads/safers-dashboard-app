@@ -51,8 +51,8 @@ const FireAndBurnedArea = ({
       parameters: {
         start: `${formData.startDate}T00:00:00.000`,
         end: `${formData.endDate}T00:00:00.000`,
-        frequency: formData.frequency,
-        resolution: formData.resolution,
+        frequency: formData.frequency || null,
+        resolution: formData.resolution || null,
       },
     }
 

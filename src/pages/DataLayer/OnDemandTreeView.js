@@ -159,7 +159,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
               aria-haspopup="true"
               role={tooltipInfo || node.info}
               place='right'
-              class="alert-tooltip data-layers-alert-tooltip text-light"
+              class="alert-tooltip data-layers-alert-tooltip"
             >
               {tooltipDisplay ?? 'Loading...'}
             </ReactTooltip>}
