@@ -52,13 +52,13 @@ const DataLayerInformationComponent = ({
         }));
 
         setChartValues(array.map(data=> {
-          const tempY = data.split(',')[1].replace(/\d+\.\d+/g, function(match) {
-            return Number(match).toFixed(2);
-          })
+          const [x, y] = data.split(',')
+          const x2 = x //new Date(x)
+          const y2 = +Number(y).toFixed(4)
           return {
-            x: data.split(',')[0],
-            y: tempY? tempY : '0',
-            label: tempY? ` ${tempY}, ${formatDate(data.split(',')[0])} ` : '0'
+            x: x2,
+            y: y2,
+            label: ` ${y2}, ${formatDate(x2)} `
           }
         }));
       } else {
