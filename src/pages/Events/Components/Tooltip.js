@@ -176,7 +176,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t
                 {
                   editToggle ?
                     <Input type='text' className='tootip-input ms-2' value={damage ? damage : ''} onChange={(e) => { setDamage(e.target.value) }} />
-                    : event ? event.damage : 'not recorded'
+                    : event ? event.estimated_damage : 'not recorded'
                 }
               </CardSubtitle>
             </Col>
@@ -242,7 +242,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t
             : <>
               <Row className='g-0'>
                 {event &&
-                  <Button color="secondary" className='create-event-button' onClick={() => {
+                  <Button disabled color="primary" className='create-event-button' onClick={() => {
                     navigate(`/event-dashboard/${object.id}`);
                   }}>
                     {t('show-info', { ns: 'common' })}

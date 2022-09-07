@@ -1,22 +1,43 @@
 import _ from 'lodash';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
-import { setFavorite } from '../../../../store/reports/action';
+import { setFavorite, setFilterdReports } from '../../../../store/reports/action';
+import { getFilteredRec } from '../../filter';
 import Report from './Report';
 
 import { MAP_TYPES } from '../../../../constants/common';
 
-const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, setIconLayer }) => {
+const ReportList = ({ 
+  reportId, 
+  currentZoomLevel, 
+  setViewState, 
+  setReportId, 
+  setIconLayer,
+  missionId,
+  category,
+  sortOrder
+}) => {
   const { allReports: OrgReportList, filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
 
   const dispatch = useDispatch();
 
-  const allReports = filteredReports || OrgReportList;
+  const allReports = filteredReports ?? [];
+
+  useEffect(() => {
+    const filters = { 
+      categories: category,
+      mission_id:  missionId
+    };
+  
+    const sort = { fieldName: 'timestamp', order: sortOrder };
+    const actFiltered = getFilteredRec(OrgReportList, filters, sort);
+    dispatch(setFilterdReports(actFiltered));
+  }, [category, missionId, sortOrder, OrgReportList])
 
   const setFavoriteFlag = (id) => {
     let selectedReport = _.find(pageData, { id });
@@ -47,14 +68,15 @@ const ReportList = ({ reportId, currentZoomLevel, setViewState, setReportId, set
     <>
       <Row>
         {
-          pageData.map((report) =>
+          pageData.map((report) => (
             <Report
               key={report.report_id}
               card={report}
               reportId={reportId}
               setSelectedReport={setSelectedReport}
               setFavorite={setFavoriteFlag}
-            />)
+            />
+          ))
         }
       </Row>
       <Row className='text-center'>
@@ -69,6 +91,9 @@ ReportList.propTypes = {
   setViewState: PropTypes.func,
   setReportId: PropTypes.func,
   setIconLayer: PropTypes.func,
+  missionId: PropTypes.string,
+  category: PropTypes.string,
+  sortOrder: PropTypes.string
 }
 
 export default ReportList;
