@@ -281,7 +281,6 @@ const PostEventMonitoring = ({
                             setFieldValue('mapSelection', wktConversion);
 
                             const area = getFeatureArea(originalGeojson);
-                            console.log('area map: ', area);
                             if (area) {
                               setFieldValue('mapSelectionArea', Math.ceil(area));
                             }

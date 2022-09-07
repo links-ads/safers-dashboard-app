@@ -22,7 +22,7 @@ import moment from  'moment';
 // 40,000 km2 = 40 million m2
 const MAX_GEOMETRY_AREA = {
   label: '40,000 square kilometres',
-  value: 40000000
+  value: 40000000000
 };
 
 const TIME_LIMIT = 72;
@@ -41,18 +41,24 @@ const PROBABILITY_RANGES = [
 ];
 
 Yup.addMethod(Yup.array, 'uniqueTimeOffset', function (
-  message,
-  map
+  errorMessage,
 ) {
   return this.test(
     'uniqueTimeOffset',
-    message,
-    (list = [], { createError }) => {
-      const noDuplicates = list.length === new Set(list.map(map)).size;
+    errorMessage,
+    (boundaryConditions = [], { createError }) => {
+
+      const uniqueTimeOffsetValues = new Set(
+        boundaryConditions.map(obj => obj.timeOffset)
+      );
+
+      const noDuplicates = 
+        boundaryConditions.length === uniqueTimeOffsetValues.size;
+
       if (!noDuplicates) {
         return createError({
           path: 'uniqueTimeOffset',
-          message,
+          errorMessage,
         });
       }
     }
@@ -102,7 +108,7 @@ const WildfireSimulationSchema = Yup.object().shape({
           .max(100, 'Fuel moisture must be between 0% and 100%')
           .required('This field cannot be empty')
       }))
-    .uniqueTimeOffset('Time offsets must be unique', value => value.timeOffset),
+    .uniqueTimeOffset('Time offsets must be unique'),
 });
 
 const renderDynamicError = errorMessage => (
