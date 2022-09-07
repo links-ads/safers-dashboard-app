@@ -8,7 +8,7 @@ import { resetMetaData } from '../../store/appAction';
 
 import TreeView from './TreeView';
 import { formatDate } from '../../store/utility';
-import { BitmapLayer } from 'deck.gl';
+import { TileLayer } from 'deck.gl';
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
@@ -87,7 +87,8 @@ const DataLayer = ({
           menuId={'DataLayerMapMenu'}
         >
           <BaseMap
-            layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
+            layers={[new TileLayer(bitmapLayer), tempLayerData]}
+            // layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
             initialViewState={viewState}
             widgets={[]}
             screenControlPosition='top-right'

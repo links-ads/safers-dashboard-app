@@ -15,6 +15,7 @@
   background: none;
   border: none;
   box-shadow: none;
+  padding: 10px;
 
   .tooltip-img {
     height: 115px;
@@ -46,6 +47,12 @@
   box-shadow: 12px 8px 24px -12px rgba(0, 0, 0, 0.5);
   background: #333f48 !important;
 }
+.cameras-tooltip > .mapboxgl-popup-content {
+  max-height: 400px !important;
+  overflow-y: auto;
+  overflow-x: clip;
+}
+
 .mapboxgl-popup-close-button {
   display: none !important;
 }

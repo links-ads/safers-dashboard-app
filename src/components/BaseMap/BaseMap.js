@@ -41,7 +41,6 @@ const BaseMap = ({
   navControlPosition = 'bottom-left',
   mapStyle = 'mb_streets'
 }) => {
-
   const mapRef = useRef();
   const finalLayerSet = [
     ...layers ? layers : null
@@ -56,8 +55,9 @@ const BaseMap = ({
   }, [layers]);
 
   const handleClick = (info, event) => {
+    console.log('INFO: ', info);
     if (info?.object?.properties?.cluster) {
-      if (info.object.properties.expansion_zoom <= MAX_ZOOM)
+      if (info.object.properties.expansion_zoom <= MAX_ZOOM) {
         setViewState({
           longitude: info.object.geometry.coordinates[0],
           latitude: info.object.geometry.coordinates[1],
@@ -66,8 +66,15 @@ const BaseMap = ({
           transitionEasing: easeInOutCubic,
           transitionInterpolator: new FlyToInterpolator(),
         });
+      } else {
+        if (info.objects) {
+          onClick(info.objects, event);
+        }
+      }
     } else {
-      onClick(info, event);
+      if (info.object) {
+        onClick([info.object], event);
+      }
     }
   }
 

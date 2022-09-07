@@ -18,16 +18,11 @@ const MapSection = ({
 
   const renderTooltip = (info) => {
     if (!info) return null
-    const { object, coordinate } = info;
-    if (object) {
+
+    if (info[0].properties) {
       return <ToolTip
-        key={object.id}
-        object={object}
-        coordinate={coordinate}
+        object={info}
       />
-    }
-    if (!object) {
-      return null;
     }
   }
 

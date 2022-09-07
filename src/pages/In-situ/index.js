@@ -40,7 +40,7 @@ const InSituAlerts = () => {
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
-  const [hoverInfo, setHoverInfo] = useState({});
+  const [hoverInfo, setHoverInfo] = useState(undefined);
   const [checkedStatus, setCheckedStatus] = useState([])
   const [isViewStateChanged, setIsViewStateChanged] = useState(false);
   const [newWidth, setNewWidth] = useState(600);
@@ -53,12 +53,12 @@ const InSituAlerts = () => {
     const data = alerts?.map((alert) => {
       const {
         geometry,
-        ...properties
+        properties
       } = alert;
       return {
         type: 'Feature',
-        properties: properties,
-        geometry: geometry,
+        properties,
+        geometry,
       };
     });
 
@@ -144,10 +144,12 @@ const InSituAlerts = () => {
   }, []);
 
   const showTooltip = info => {
-    if (info.picked && info.object) {
+    console.log('SHOW TOOLTIP: ', info);
+    if (info) {
+      console.log('SETTING INFO HOVERED: ', info);
       setHoverInfo(info);
     } else {
-      setHoverInfo({});
+      setHoverInfo(undefined);
     }
   };
 
@@ -157,7 +159,7 @@ const InSituAlerts = () => {
       setCurrentZoomLevel(e.viewState.zoom);
     }
     setIsViewStateChanged(viewStateCHanged);
-    setHoverInfo({});
+    setHoverInfo(undefined);
   };
 
   const getCamByArea = () => {

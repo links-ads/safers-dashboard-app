@@ -1,6 +1,7 @@
+/* eslint-disable react/prop-types */
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
+import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
 import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
@@ -15,7 +16,8 @@ import PostEventMonitoringForm from './PostEventMonitoringForm'
 import WildfireSimulation from './WildfireSimulation'
 import { getAllDataLayers, setNewMapRequestState, setAlertApiParams } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
-import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
+import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
+// import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { setFilteredAlerts } from '../../store/alerts/action';
@@ -125,10 +127,12 @@ const DataLayerDashboard = () => {
     setIsPlaying(false);
     if (currentLayer && currentLayer.urls) {
       const urls = getUrls();
+      console.log('INITIAL URLS: ', urls);
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue])
-      const imageUrl = urls[0].replace('{bbox}', EUROPEAN_BBOX);
-      setBitmapLayer(getBitmapLayer(imageUrl));
+      // const imageUrl = urls[0].replace('{bbox}', EUROPEAN_BBOX);
+      // setBitmapLayer(getBitmapLayer(imageUrl));
+      setBitmapLayer(getBitmapLayer(urls[0]));
       setSliderRangeLimit(urls.length - 1);
     }
   }, [currentLayer]);
@@ -137,9 +141,11 @@ const DataLayerDashboard = () => {
     if (currentLayer?.urls) {
       if (sliderChangeComplete) {
         const urls = getUrls();
+        console.log('INITIAL SLIDER URLS: ', urls);
         if (urls[sliderValue]) {
-          const imageUrl = urls[sliderValue].replace('{bbox}', EUROPEAN_BBOX);
-          setBitmapLayer(getBitmapLayer(imageUrl));
+          // const imageUrl = urls[sliderValue].replace('{bbox}', EUROPEAN_BBOX);
+          // setBitmapLayer(getBitmapLayer(imageUrl));
+          setBitmapLayer(getBitmapLayer(urls[sliderValue]));
         }
       }
       const timestamps = getTimestamps();
@@ -203,11 +209,29 @@ const DataLayerDashboard = () => {
   }
 
   const getBitmapLayer = (url) => {
+    console.log('LAYER URL: ', url);
+    // const wmtsUrl = 'https://geoserver-test.safers-project.cloud/geoserver/gwc/service/wmts?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=ermes%3A32101_fwi_32001_6f317557-e807-4332-9b25-284487e565cb&TILEMATRIXSET=EPSG%3A900913&TILEMATRIX=EPSG%3A900913%3A{z}&TILEROW={y}&TILECOL={x}&FORMAT=image%2Fpng&STYLE=ermes%3Araster_fwi';
+
+    // https://geoserver-test.safers-project.cloud/geoserver/gwc/service/wmts?service=WMTS&request=GetTile&version=1.0.0&tilematrixset=EPSG%3A900913&layer=ermes%3A32101_fwi_32001_555c6148-a316-4155-b97b-2fccee34cdca&time=2022-09-09T12%3A00%3A00Z&tilematrix=EPSG%3A900913%3A{z}&tilerow={y}&tilecol={x}&format=image%2Fpng
     return {
       id: 'bitmap-layer',
-      bounds: EUROPEAN_BBOX,
-      image: url,
-      _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+      data: url,
+      // data: wmtsUrl,
+      minZoom: 0,
+      maxZoom: 20,
+      tileSize: 256,
+
+      renderSubLayers: props => {
+        const {
+          bbox: {west, south, east, north}
+        } = props.tile;
+
+        return new BitmapLayer(props, {
+          data: null,
+          image: props.data,
+          bounds: [west, south, east, north],
+        });
+      }
     }
   }
 
