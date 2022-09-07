@@ -11,7 +11,7 @@ const PropsPanel = (node) => {
   node2.parameters['geometry'] = node2?.geometry_wkt;
   return (
     <div className="props_box">
-      <JsonFormatter  data={node2} />
+      <JsonFormatter  data={node2?.parameters} />
     </div>
   );
 };
