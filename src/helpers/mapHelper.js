@@ -52,7 +52,7 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconColorFromContext = (mapType, feature, selectedItem) => {
+export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
   let color = GRAY;
   if ( feature.properties.id === selectedItem.id ) {
     color=ORANGE;
