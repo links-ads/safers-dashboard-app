@@ -19,8 +19,11 @@ import {
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 
-// Fifty thousand acres = 202.3 km2 = 202.3 million m2
-const MAX_GEOMETRY_AREA = 202300000;
+// Fifty thousand hectares = 500 km2 = 500 million m2
+const MAX_GEOMETRY_AREA = {
+  label: '50,000 hectares',
+  value: 500000000
+};
 
 const MIN_START_DATE = {
   label: 'May 1st, 2018',
@@ -36,7 +39,7 @@ const postEventMonitoringSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   mapSelectionArea: Yup.number()
     .typeError('Selected area must be valid Well-Known Text')
-    .max(MAX_GEOMETRY_AREA, 'Selected Area must be no greater than 50 acres'),
+    .max(MAX_GEOMETRY_AREA.value, `Selected Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
   startDate: Yup.date()
     .typeError('Must be valid date selection')
     .required('This field cannot be empty')
