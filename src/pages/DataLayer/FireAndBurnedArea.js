@@ -20,9 +20,11 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
   mapSelection: Yup.string()
     .required('This field cannot be empty'),
   startDate: Yup.date()
+    .typeError('Must be valid date selection')
     .required('This field cannot be empty'),
   endDate: Yup.date()
-    .required('This field cannot be empty'), 
+    .typeError('Must be valid date selection')
+    .required('This field cannot be empty'),
   frequency: Yup.number()
     .integer('This field must be an integer')
     .typeError('This field must be a number')
@@ -49,8 +51,8 @@ const FireAndBurnedArea = ({
       geometry: formData.mapSelection,
       title: formData.requestTitle,
       parameters: {
-        start: `${formData.startDate}T00:00:00.000`,
-        end: `${formData.endDate}T00:00:00.000`,
+        start: new Date(formData.startDate).toISOString(),
+        end: new Date(formData.endDate).toISOString(),
         frequency: formData.frequency || null,
         resolution: formData.resolution || null,
       },
