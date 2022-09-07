@@ -27,7 +27,6 @@ const commonReducer = (state = initialState, action) => {
   case actionTypes.CM_GET_ROLELIST_FAIL: return getRoleListFail(state, action);
   case actionTypes.GET_AOI_SUCCESS: return getAoiSuccess(state, action);
   case actionTypes.GET_AOI_FAIL: return getAoiFail(state, action);
-  case actionTypes.GET_IS_DATE_RANGE_DISABLED: return getDateRangeDisabled(state, action);
   case actionTypes.SET_SELECTED_AOI: return selectAoi(state, action);
   case actionTypes.SET_VIEW_STATE: return setViewState(state, action);
   case actionTypes.SET_POLYGON_LAYER: return setPolygonLayer(state, action);
@@ -133,13 +132,6 @@ const setDateRange = (state, action) => {
 }
 
 //isDateRangeDisabled
-const getDateRangeDisabled = (state, action) => {
-  const updatedState = {
-    isDateRangeDisabled: action.payload
-  }
-  return updateObject(state, updatedState);
-}
-
 const setDateRangeDisabled = (state, action) => {
   const updatedState = {
     isDateRangeDisabled: action.payload
