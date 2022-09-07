@@ -13,7 +13,6 @@ import { getAllComms, resetCommsResponseState } from '../../../store/comms/actio
 import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
-import { getIconColorFromContext } from '../../../helpers/mapHelper';
 import { getIconLayer } from '../../../helpers/mapHelper';
 
 const Comms = () => {

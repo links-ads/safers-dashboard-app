@@ -22,16 +22,16 @@ const CommsList = ({ commID, currentZoomLevel, setViewState, setCommID, setIconL
       let copyCommList = _.cloneDeep(commList);
       let selectedComm = _.find(copyCommList, { id: mission_id });
       selectedComm.isSelected = true;
-      setIconLayer(getIconLayer(copyCommList, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState));
+      setIconLayer(getIconLayer(copyCommList, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState, selectedComm));
       setViewState(getViewState(selectedComm.location, currentZoomLevel))
     } else {
       setCommID(undefined);
-      setIconLayer(getIconLayer(commList, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState));
+      setIconLayer(getIconLayer(commList, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState, {}));
     }
   }
   const updatePage = data => {
     setCommID(undefined);
-    setIconLayer(getIconLayer(data, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState));
+    setIconLayer(getIconLayer(data, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState, {}));
     setPageData(data);
   };
 

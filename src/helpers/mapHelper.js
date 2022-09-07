@@ -1,8 +1,6 @@
 import { FlyToInterpolator } from 'deck.gl';
 import { PolygonLayer } from '@deck.gl/layers';
-import { MAP_TYPES } from '../constants/common';
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
-
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
@@ -54,22 +52,19 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconColorFromContext = (mapType, feature) => {
-  let color = [127,127,127];
-  switch (mapType) {
-  case MAP_TYPES.REPORTS:
-    color = feature?.isSelected ? ORANGE : DARK_GRAY;
-    break;
-  case MAP_TYPES.IN_SITU:
-    color = feature?.isSelected ? ORANGE : DARK_GRAY;
-    break;
-  default:
-    color = feature?.isSelected ? ORANGE : feature?.status == 'CLOSED' ? GRAY : RED;
+export const getIconColorFromContext = (mapType, feature, selectedItem) => {
+  let color = GRAY;
+  if ( feature.properties.id === selectedItem.id ) {
+    color=ORANGE;
+  } else if (feature?.status==='Created' || feature?.status==='Active' || feature?.status === 'Ongoing') {
+    color=RED;
+  } else if (feature?.status==='Closed' || feature?.status==='Inactive' || feature?.status==='Expired') {
+    color=DARK_GRAY;
   }
   return color;
 }
 
-export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState) => {
+export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem={}) => {
   const data = alerts.map((alert) => {
     const {
       geometry,
@@ -87,7 +82,7 @@ export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setV
     dispatch,
     setViewState,
     getPosition: (feature) => feature.geometry.coordinates,
-    getPinColor: feature => getIconColorFromContext(mapType,feature),
+    getPinColor: feature => getIconColorFromContext(mapType,feature, selectedItem),
     icon: markerName,
     iconColor: '#ffffff',
     clusterIconSize: 35,

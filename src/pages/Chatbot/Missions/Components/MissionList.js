@@ -28,16 +28,16 @@ const MissionList = ({ missionId, currentZoomLevel, setViewState, setMissionId, 
       let missionList = _.cloneDeep(allMissions);
       let selectedMission = _.find(missionList, { id:mission_id });
       selectedMission.isSelected = true;
-      setIconLayer(getIconLayer(missionList, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState));
+      setIconLayer(getIconLayer(missionList, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState, selectedMission));
       setViewState(getViewState(selectedMission.location, currentZoomLevel))
     } else {
       setMissionId(undefined);
-      setIconLayer(getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState));
+      setIconLayer(getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState, {}));
     }
   }
   const updatePage = data => {
     setMissionId(undefined);
-    setIconLayer(getIconLayer(data, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState));
+    setIconLayer(getIconLayer(data, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState, {}));
     setPageData(data);
   };
 

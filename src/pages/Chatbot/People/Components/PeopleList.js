@@ -21,16 +21,16 @@ const PeopleList = ({ peopleId, currentZoomLevel, setViewState, setPeopleId, set
       let peopleList = _.cloneDeep(allPeople);
       let selectedPeople = _.find(peopleList, { id:people_id });
       selectedPeople.isSelected = true;
-      setIconLayer(getIconLayer(peopleList, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState));
+      setIconLayer(getIconLayer(peopleList, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, selectedPeople));
       setViewState(getViewState(selectedPeople.location, currentZoomLevel))
     } else {
       setPeopleId(undefined);
-      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState));
+      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, {}));
     }
   }
   const updatePage = data => {
     setPeopleId(undefined);
-    setIconLayer(getIconLayer(data, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState));
+    setIconLayer(getIconLayer(data, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, {}));
     setPageData(data);
   };
 
