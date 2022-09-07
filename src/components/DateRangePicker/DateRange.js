@@ -12,12 +12,20 @@ const DateComponent = ({
   setDates = () => { }, 
   clearDates = () => { }, 
   defaultDateRange,
-  placeholder=null
+  placeholder=null,
+  isDateRangeDisabled=false
 }) => {
   const fp = useRef(null);
   const defaultDate = defaultDateRange?.map(date => 
     moment(date).format('DD/MM/YY')
   ) ?? []
+
+  const onClearClick = () => {
+    if(!isDateRangeDisabled) {
+      fp.current.flatpickr.clear();
+      clearDates()
+    }
+  }
   return (
     <div className='mb-0'>
       <InputGroup>
@@ -33,6 +41,7 @@ const DateComponent = ({
             dates.length > 1 && setDates(dates);
             dates.length == 0 && clearDates();
           }}
+          disabled={isDateRangeDisabled}
           options={{
             mode: 'range',
             dateFormat: 'd/m/y',
@@ -40,7 +49,7 @@ const DateComponent = ({
           }}
         />
 
-        <div className='bg-white d-flex border-none calender-right' onClick={() => { fp.current.flatpickr.clear(); clearDates() }}>
+        <div className='bg-white d-flex border-none calender-right' onClick={onClearClick}>
           <i className='fa fa-sync px-2 m-auto bg-white border-none'></i>
         </div>
       </InputGroup>
@@ -52,7 +61,8 @@ DateComponent.propTypes = {
   setDates: PropTypes.func,
   clearDates: PropTypes.func,
   defaultDateRange: PropTypes.array,
-  placeholder: PropTypes.string
+  placeholder: PropTypes.string,
+  isDateRangeDisabled: PropTypes.bool
 }
 
 export default DateComponent

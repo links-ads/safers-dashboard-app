@@ -13,7 +13,8 @@ const initialState = {
   polygonLayer: undefined,
   isLoading: false,
   loadingMsg: null,
-  dateRange: getDefaultDateRange()
+  dateRange: getDefaultDateRange(),
+  isDateRangeDisabled: false
 };
 
 const commonReducer = (state = initialState, action) => {
@@ -26,11 +27,13 @@ const commonReducer = (state = initialState, action) => {
   case actionTypes.CM_GET_ROLELIST_FAIL: return getRoleListFail(state, action);
   case actionTypes.GET_AOI_SUCCESS: return getAoiSuccess(state, action);
   case actionTypes.GET_AOI_FAIL: return getAoiFail(state, action);
+  case actionTypes.GET_IS_DATE_RANGE_DISABLED: return getDateRangeDisabled(state, action);
   case actionTypes.SET_SELECTED_AOI: return selectAoi(state, action);
   case actionTypes.SET_VIEW_STATE: return setViewState(state, action);
   case actionTypes.SET_POLYGON_LAYER: return setPolygonLayer(state, action);
   case actionTypes.SET_DATE_RANGE: return setDateRange(state, action);
   case actionTypes.CM_WIP: return isSiteLoading(state, action);
+  case actionTypes.SET_IS_DATE_RANGE_DISABLED: return setDateRangeDisabled(state, action);
   default:
     return state;
   }
@@ -125,6 +128,21 @@ const setPolygonLayer = (state, action) => {
 const setDateRange = (state, action) => {
   const updatedState = {
     dateRange: action.payload
+  }
+  return updateObject(state, updatedState);
+}
+
+//isDateRangeDisabled
+const getDateRangeDisabled = (state, action) => {
+  const updatedState = {
+    isDateRangeDisabled: action.payload
+  }
+  return updateObject(state, updatedState);
+}
+
+const setDateRangeDisabled = (state, action) => {
+  const updatedState = {
+    isDateRangeDisabled: action.payload
   }
   return updateObject(state, updatedState);
 }
