@@ -102,20 +102,23 @@ const DataLayerDashboard = () => {
   }, [dataLayers]);
 
   useEffect(() => {
-    const dateRangeParams = dateRange 
-      ? { start: dateRange[0], end: dateRange[1] } 
-      : {};
+    // Remove comments if it's required to send date-time range and bbox value for filter
+    // const dateRangeParams = dateRange 
+    //   ? { start: dateRange[0], end: dateRange[1] } 
+    //   : {};
 
     const options = {
       order: sortByDate,
       source: layerSource ? layerSource : undefined,
       domain: dataDomain ? dataDomain : undefined,
-      start: dateRange[0],
-      end: dateRange[1],
-      default_start: false,
-      default_end: false,
-      default_bbox: false,
-      ...dateRangeParams,
+      
+      // Remove comments if it's required to send date-time range and bbox value for filter
+      // start: dateRange[0],
+      // end: dateRange[1],
+      // default_start: false,
+      // default_end: false,
+      // default_bbox: false,
+      // ...dateRangeParams,
     }
       
     dispatch(getAllDataLayers(options));
