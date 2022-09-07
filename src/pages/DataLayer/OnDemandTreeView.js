@@ -3,30 +3,17 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
-
-
-const formatParameter = (node, key) => {
-  let value = '';
-  if (typeof node.parameters[key]==='object') {
-    value = JSON.stringify(node.parameters[key], null, 2);
-  } else {
-    value = `${node.parameters[key]}`
-  }
-  return `${key} : ${value}`
-}
+import JsonFormatter from '../../components/JsonFormatter'
 
 const PropsPanel = (node) => {
   const node2=node.node;
   if (!node2.parameters) return null;
   node2.parameters['geometry'] = node2?.geometry_wkt;
-  const parameters = Object.keys(node2.parameters);
-  // TODO: get a better key once we have node numbering from backend
-  const paramaters = parameters.map((key,ix)=><div className="props-line" key={ix}>{formatParameter(node2, key)}</div>) ;
   return (
-    <div className="props-box">
-      {paramaters}
+    <div className="props_box">
+      <JsonFormatter  data={node2?.parameters} />
     </div>
-  )
+  );
 };
 
 const OnDemandTreeView = ({ data, setCurrentLayer}) => {
@@ -53,39 +40,6 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
     }));
   }
 
-
-  // TODO this is a temporary thing to let me continue working while
-  // waiting on the API to be developed. It looks up the data layer name from
-  // the code, and injects a random status
-
-  // const MOCK_LEAF_NODE = (node) => {
-  //   const lookup_table = [
-  //     {id: '36004', name:'Impact quantification'},
-  //     {id: '36005', name:'Fire front and smoke'},
-  //     {id: '36003', name:'Burned area geospatial image'},
-  //     {id: '36002', name:'Burned area severity map'},
-  //     {id: '36001', name:'Burned area delineation map'},
-  //     {id: '37006', name: 'Generate vegetation recovery map'},
-  //     {id: '37005', name: 'Generate historical severity map (dNBR)'},
-  //     {id: '37004', name: 'Provide landslide susceptibility information'},
-  //     {id: '37003', name: 'Generate soil recovery map (Vegetation Index)'},
-  //     {id: '37002', name: 'Generate burn severity map (dNBR)'},
-  //     {id: '32005', name: 'Get critical points of infrastructure, e.g. airports, motorways, hospitals, etc.'},
-  //     {id: '35006', name:'Fire Simulation'},
-  //     {id: '35011', name:'Max rate of spread'},
-  //     {id: '35010', name:'Mean rate of spread'},
-  //     {id: '35009', name:'Max fireline intensity'},
-  //     {id: '35008', name:'Mean fireline intensity'},
-  //     {id: '35007', name:'Fire perimeter simulation as isochrones maps'},
-  //   ];
-  //   let name = lookup_table.find(item=>item.id === node.datatype_id);
-  //   if (name) {
-  //     name=name.name;
-  //   }
-  //   const statuses = ['IN PROGRESS', 'FAILED', 'SUCCESS']
-  //   const status = statuses[_.random(0,2)];
-  //   return {name, status};
-  // }
 
   const mapper = (nodes, parentId, lvl) => {
     return nodes?.map((node, index) => {
