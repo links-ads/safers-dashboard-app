@@ -20,7 +20,10 @@ import 'react-rangeslider/lib/index.css'
 import moment from  'moment';
 
 // 40,000 km2 = 40 million m2
-const MAX_GEOMETRY_AREA = 40000000;
+const MAX_GEOMETRY_AREA = {
+  label: '40,000 square kilometres',
+  value: 40000000
+};
 
 const TIME_LIMIT = 72;
 
@@ -70,7 +73,7 @@ const WildfireSimulationSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   mapSelectionArea: Yup.number()
     .typeError('Area must be valid Well-Known Text')
-    .max(MAX_GEOMETRY_AREA, 'Area must be no greater than 40,000 square kms'),
+    .max(MAX_GEOMETRY_AREA.value, `Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
   ignitionDateTime: Yup.date()
     .typeError('This field must be a valid date selection')
     .required('This field cannot be empty'),
