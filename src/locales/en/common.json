@@ -50,5 +50,7 @@
   "Location": "Location",
   "save-aoi-success-msg": "Area of ​​interest set successfully",
   "open": "OPEN",
-  "All" : "All"
+  "All": "All",
+  "Mission Title": "Mission Title",
+  "Mission Description": "Mission Description"
 }

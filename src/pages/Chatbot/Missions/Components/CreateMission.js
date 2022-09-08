@@ -7,6 +7,7 @@ import MapInput from '../../../../components/BaseMap/MapInput';
 import { getError }  from '../../../../helpers/errorHelper';
 import { createMission } from '../../../../store/missions/action';
 import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 
 import _ from 'lodash';
 
@@ -102,7 +103,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         id="mission-title-input"
         className={`${getError('title', errors, errors)}`}
         name="title"
-        placeholder='Message Title'
+        placeholder={t('Mission Title')}
         type="text"
         onChange={(e) => {setTitle(e.target.value); validate({name:'title'});}}
         value={title}
@@ -187,7 +188,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         className={`${getError('desc', errors, errors)}`}
         type='textarea'
         name="message-description"
-        placeholder='Message Description'
+        placeholder={t('Mission Description')}
         onChange={(e) => {setDesc(e.target.value); validate();}}
         value={desc}
         rows="10"
@@ -219,4 +220,5 @@ CreateMission.propTypes = {
   setCoordinates: PropTypes.func
 }
 
-export default CreateMission;
+//export default CreateMission;
+export default withTranslation(['common'])(CreateMission);
