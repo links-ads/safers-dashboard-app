@@ -13,7 +13,7 @@ import OnDemandDataLayer from './OnDemandDataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
 import PostEventMonitoringForm from './PostEventMonitoringForm'
 import WildfireSimulation from './WildfireSimulation'
-import { getAllDataLayers, setNewMapRequestState, setAlertApiParams } from '../../store/appAction';
+import { getAllDataLayers, setNewMapRequestState, setAlertApiParams, setDateRangeDisabled } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
@@ -76,9 +76,11 @@ const DataLayerDashboard = () => {
 
   useEffect(() => {
     dispatch(setNewMapRequestState(false, true));
+    dispatch(setDateRangeDisabled(true));
     return () => {
       dispatch(setAlertApiParams(undefined));
       dispatch(setNewMapRequestState(false, false));
+      dispatch(setDateRangeDisabled(false));
     }
   }, []);
 
@@ -100,20 +102,23 @@ const DataLayerDashboard = () => {
   }, [dataLayers]);
 
   useEffect(() => {
-    const dateRangeParams = dateRange 
-      ? { start: dateRange[0], end: dateRange[1] } 
-      : {};
+    // Remove comments if it's required to send date-time range and bbox value for filter
+    // const dateRangeParams = dateRange 
+    //   ? { start: dateRange[0], end: dateRange[1] } 
+    //   : {};
 
     const options = {
       order: sortByDate,
       source: layerSource ? layerSource : undefined,
       domain: dataDomain ? dataDomain : undefined,
-      start: dateRange[0],
-      end: dateRange[1],
-      default_start: false,
-      default_end: false,
-      default_bbox: false,
-      ...dateRangeParams,
+      
+      // Remove comments if it's required to send date-time range and bbox value for filter
+      // start: dateRange[0],
+      // end: dateRange[1],
+      // default_start: false,
+      // default_end: false,
+      // default_bbox: false,
+      // ...dateRangeParams,
     }
       
     dispatch(getAllDataLayers(options));
