@@ -27,6 +27,11 @@ export const formatDate = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
   return moment(date).format(format)
 }
 
+export const formatDateOnly = (date, format = 'YYYY-MM-DD') => {
+  return moment(date).format(format)
+}
+
+
 export const getPropertyValue = (searchObject = {}, targetProperty) => {
   const match = searchObject[targetProperty];
   const children = searchObject?.children;
