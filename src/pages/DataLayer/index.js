@@ -213,6 +213,7 @@ const DataLayerDashboard = () => {
       bounds: EUROPEAN_BBOX,
       image: url,
       _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+      opacity: 0.5
     }
   }
 
