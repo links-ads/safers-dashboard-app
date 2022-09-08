@@ -145,7 +145,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
         />
         {getError('coordinates', errors, errors, false)}
       </FormGroup>
-      <Label className='form-label mt-3 mb-0'>{t('Organisation')}: {orgName}</Label>
+      <Label className='form-label mt-3 mb-0'>{t('Organization')}: {orgName}</Label>
       <Row className='my-3'>
         <Col xl={1} md={2}><Label htmlFor="target">{t('Target')}: </Label></Col>
         <Col xl={5} className="pe-xl-0 text-center">

@@ -7,7 +7,7 @@ import SignUp from './SignUp';
 import ForgotPassword from './ForgotPassword';
 import PreLoader from '../../components/PreLoader';
 import ResetPassword from './ResetPassword';
-import { isRemembered, setAoiSuccess, getAllAreas } from '../../store/appAction';
+import { isRemembered, setAoiSuccess, getAllAreas, setUserInfo } from '../../store/appAction';
 import { SIGNIN_REDIRECT } from '../../config';
 import _ from 'lodash';
 
@@ -31,8 +31,10 @@ const Authentication = () => {
   }, []);
 
   // AOI ID is filetered and complete object is stored in user store.
+  // User info is recorded in user store
   useEffect(() => {
     if (isLoggedIn) {
+      dispatch(setUserInfo(user));
       if(user.default_aoi){
         const objAoi = _.find(allAoi, { features: [{ properties: { id: user.default_aoi } }] });
         dispatch(setAoiSuccess(objAoi));
