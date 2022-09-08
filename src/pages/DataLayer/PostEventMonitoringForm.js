@@ -80,7 +80,7 @@ const postEventMonitoringSchema = Yup.object().shape({
       MIN_END_DATE, 
       `Date must be greater than ${MIN_START_DATE.label}`
     )
-    .max30Days('End date be no greater than 30 days from start date')
+    .max30Days('End date must be no greater than 30 days from start date')
 });
 
 const PostEventMonitoring = ({
