@@ -40,30 +40,26 @@ const PROBABILITY_RANGES = [
   {label: '90%', value: 0.9}
 ];
 
-Yup.addMethod(Yup.array, 'uniqueTimeOffset', function (
-  errorMessage,
-) {
+Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
   return this.test(
     'uniqueTimeOffset',
-    errorMessage,
-    (boundaryConditions = [], { createError }) => {
+    message,
+    (timeOffset, { from }) => {
+      // 'from' is an array of parent objects moving from closest 
+      // to furthest relatives. [0] is the immediate parent object, 
+      // while [1] is the higher parent array of all of those objects.  
+      const allTimeOffsets = from[1].value.boundaryConditions.map(d => +d.timeOffset);
 
-      const uniqueTimeOffsetValues = new Set(
-        boundaryConditions.map(obj => obj.timeOffset)
-      );
+      const matchCount = allTimeOffsets.filter(d => d === timeOffset).length;
 
-      const noDuplicates = 
-        boundaryConditions.length === uniqueTimeOffsetValues.size;
-
-      if (!noDuplicates) {
-        return createError({
-          path: 'uniqueTimeOffset',
-          errorMessage,
-        });
+      if (matchCount <= 1) {
+        return true;
+      } else if (matchCount > 1) {
+        return false;
       }
     }
   )
-});
+})
 
 const WildfireSimulationSchema = Yup.object().shape({
   simulationTitle: Yup.string()
@@ -91,6 +87,7 @@ const WildfireSimulationSchema = Yup.object().shape({
           .typeError('This field must be a number')
           .min(0, `Time offset must be between 1 and ${TIME_LIMIT} hours`)
           .max(TIME_LIMIT, `Time offset must be between 1 and ${TIME_LIMIT} hours`)
+          .uniqueTimeOffset('Time offset values must be unique')
           .required('This field cannot be empty'),
         windDirection: Yup.number('This field must be a number')
           .typeError('This field must be a number')
@@ -108,7 +105,6 @@ const WildfireSimulationSchema = Yup.object().shape({
           .max(100, 'Fuel moisture must be between 0% and 100%')
           .required('This field cannot be empty')
       }))
-    .uniqueTimeOffset('Time offsets must be unique'),
 });
 
 const renderDynamicError = errorMessage => (
@@ -485,7 +481,6 @@ const WildfireSimulation = ({
                                       onBlur={handleBlur}
                                     />
                                     {renderDynamicError(errors.boundaryConditions?.[position]?.timeOffset)}
-                                    {renderDynamicError(errors.uniqueTimeOffset)}
                                   </td>
                                   <td>
                                     <Input
