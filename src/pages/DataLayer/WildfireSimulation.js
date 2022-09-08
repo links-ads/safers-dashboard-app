@@ -51,12 +51,7 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
       const allTimeOffsets = from[1].value.boundaryConditions.map(d => +d.timeOffset);
 
       const matchCount = allTimeOffsets.filter(d => d === timeOffset).length;
-
-      if (matchCount <= 1) {
-        return true;
-      } else if (matchCount > 1) {
-        return false;
-      }
+      return matchCount <= 1;
     }
   )
 })

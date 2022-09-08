@@ -31,11 +31,7 @@ Yup.addMethod(Yup.date, 'max30Days', function (message) {
         moment(startDate).add(30, 'days')
       )
 
-      if (!rangeCheck) {
-        return false;
-      } else if (rangeCheck) {
-        return true;
-      }
+      return rangeCheck;
     }
   )
 })
