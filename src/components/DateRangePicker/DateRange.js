@@ -27,7 +27,7 @@ const DateComponent = ({
     }
   }
   return (
-    <div className='mb-0'>
+    <div className={`mb-0 ${isDateRangeDisabled? 'custom-disabled-container' : ''}`}>
       <InputGroup>
         <div className='bg-white d-flex border-none calender-left'>
           <i className='fa fa-calendar px-2 m-auto calender-icon '></i>
