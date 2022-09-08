@@ -122,12 +122,13 @@ const PolygonMap = ({
 
   const handleUpdate = (val) => {
     if (val.editType === 'addFeature') {
+      const originalGeojson = val.data[0].geometry;
       setFeatures(val.data);
-      const tempStr = wkt.stringify(val.data[0].geometry);
-      const tempStr2 = tempStr.replace(/\d+\.\d+/g, function(match) {
+      const wktConversion = wkt.stringify(originalGeojson);
+      const formattedWkt = wktConversion.replace(/\d+\.\d+/g, function(match) {
         return Number(match).toFixed(6);
       });
-      setCoordinates(tempStr2);
+      setCoordinates(formattedWkt, originalGeojson);
       toggleMode('');
     } else {
       setFeatures([])
