@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { Formik } from 'formik';
+import moment from 'moment';
 import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
@@ -12,6 +13,32 @@ import {
   postMapRequest,
   getAllMapRequests
 } from '../../store/appAction';
+
+Yup.addMethod(Yup.date, 'max30Days', function (message) {
+  return this.test(
+    'max30Days',
+    message,
+    (date, { parent }) => {
+      const startDate = parent.startDate;
+
+      // if startDate not yet been entered, allow validation to pass
+      if (startDate.toString() === 'Invalid Date') {
+        return true;
+      }
+
+      const rangeCheck = moment(date).isBetween(
+        startDate, 
+        moment(startDate).add(30, 'days')
+      )
+
+      if (!rangeCheck) {
+        return false;
+      } else if (rangeCheck) {
+        return true;
+      }
+    }
+  )
+})
 
 const fireAndBurnedAreaSchema = Yup.object().shape({
   dataLayerType: Yup.array()
@@ -24,7 +51,8 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   endDate: Yup.date()
     .typeError('Must be valid date selection')
-    .required('This field cannot be empty'),
+    .required('This field cannot be empty')
+    .max30Days('End date must be no greater than 30 days from start date'),
   frequency: Yup.number()
     .integer('This field must be an integer')
     .typeError('This field must be a number')

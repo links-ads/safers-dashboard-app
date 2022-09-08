@@ -8,7 +8,6 @@ import {
 } from '@turf/turf';
 import wkt from 'wkt';
 import { Formik } from 'formik';
-import moment from 'moment';
 import MapSection from './Map';
 import * as Yup from 'yup'
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
@@ -32,32 +31,6 @@ const MIN_START_DATE = {
 };
 const MIN_END_DATE = '2018-05-02';
 
-Yup.addMethod(Yup.date, 'max30Days', function (message) {
-  return this.test(
-    'max30Days',
-    message,
-    (date, { parent }) => {
-      const startDate = parent.startDate;
-
-      // if startDate not yet been entered, allow validation to pass
-      if (startDate.toString() === 'Invalid Date') {
-        return true;
-      }
-
-      const rangeCheck = moment(date).isBetween(
-        startDate, 
-        moment(startDate).add(30, 'days')
-      )
-
-      if (!rangeCheck) {
-        return false;
-      } else if (rangeCheck) {
-        return true;
-      }
-    }
-  )
-})
-
 const postEventMonitoringSchema = Yup.object().shape({
   dataLayerType: Yup.array()
     .required('This field cannot be empty'),
@@ -80,7 +53,6 @@ const postEventMonitoringSchema = Yup.object().shape({
       MIN_END_DATE, 
       `Date must be greater than ${MIN_START_DATE.label}`
     )
-    .max30Days('End date must be no greater than 30 days from start date')
 });
 
 const PostEventMonitoring = ({
