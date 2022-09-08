@@ -64,19 +64,23 @@ export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
   return color;
 }
 
-export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem={}) => {
-  const data = alerts.map((alert) => {
+
+export const getAsGeoJSON = (data) => {
+  return data.map((datum) => {
     const {
       geometry,
       ...properties
-    } = alert;
+    } = datum;
     return {
       type: 'Feature',
-      properties: properties,
-      //...properties,
-      geometry: geometry,
+      properties,
+      geometry,
     };
   });
+}
+
+export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem={}) => {
+  const data = getAsGeoJSON(alerts);
   return new GeoJsonPinLayer({
     data,
     dispatch,
@@ -93,43 +97,6 @@ export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setV
     onPointClick: true,
   });
 };
-
-// export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts, customIcon = '', customData = {}) => {
-//   const icon = customIcon? customIcon : (mapType == MAP_TYPES.REPORTS || MAP_TYPES.IN_SITU ? locationPin : firePin)
-//   return (new IconLayer({
-//     data: alerts,
-//     pickable: true,
-//     getPosition: d => {
-//       switch (mapType) {
-//       case MAP_TYPES.EVENTS:
-//         return d.center
-//         // case MAP_TYPES.REPORTS:
-//         //   return d.location
-//       default:
-//         return d.geometry.coordinates;
-//       }
-//     },
-//     iconAtlas: icon,
-//     iconMapping: ICON_MAPPING,
-//     // onHover: !hoverInfo.objects && setHoverInfo,
-//     id: 'icon',
-//     getIcon: () => 'marker',
-//     getColor: d => {
-//       switch (mapType) {
-//       case MAP_TYPES.REPORTS:
-//         return (d.isSelected ? ORANGE : DARK_GRAY);
-//       case MAP_TYPES.IN_SITU:
-//         return (d.isSelected ? ORANGE : DARK_GRAY);
-//       default:
-//         return (d.isSelected ? ORANGE : d.status == 'CLOSED' ? GRAY : RED);
-//       }
-//     },
-//     sizeMinPixels: 80,
-//     sizeMaxPixels: 100,
-//     sizeScale: 0.5,
-//     ...customData
-//   }))
-// }
 
 const toRadians = (degrees) => {
   return degrees * Math.PI / 180;

@@ -2,17 +2,14 @@ import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Input, Card } from 'reactstrap';
-//import { IconLayer } from 'deck.gl';
 import _ from 'lodash';
 import Pagination from 'rc-pagination';
 import toastr from 'toastr';
-//i18n
 import { withTranslation } from 'react-i18next';
-import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { getBoundingBox, getViewState, getIconColorFromContext } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import SearchButton from '../../components/SearchButton';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
@@ -31,7 +28,8 @@ import Alert from './Alert';
 import Tooltip from './Tooltip';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types';
 import { MAP_TYPES } from '../../constants/common';
-
+import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
+import { getIconColorFromContext } from '../../helpers/mapHelper'
 
 const PAGE_SIZE = 4;
 
@@ -53,7 +51,7 @@ const FireAlerts = ({ t }) => {
   const [alertId, setAlertId] = useState(undefined);
   const [isEdit, setIsEdit] = useState(false);
   const [isViewStateChanged, setIsViewStateChanged] = useState(false);
-  const [hoverInfo, setHoverInfo] = useState({});
+  const [hoverInfo, setHoverInfo] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
   const [newWidth, setNewWidth] = useState(600);
@@ -90,7 +88,7 @@ const FireAlerts = ({ t }) => {
 
   useEffect(() => {
     setAlertId(undefined);
-    setIconLayer(getIconLayer(filteredAlerts));
+    setIconLayer(getFireAlertLayer(filteredAlerts));
     if (!viewState) {
       setViewState(
         getViewState(
@@ -150,7 +148,7 @@ const FireAlerts = ({ t }) => {
 
   const updatePage = (page) => {
     setAlertId(undefined);
-    setIconLayer(getIconLayer(filteredAlerts));
+    setIconLayer(getFireAlertLayer(filteredAlerts));
     setCurrentPage(page);
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
@@ -198,26 +196,28 @@ const FireAlerts = ({ t }) => {
           coordinate: selectedAlert.center,
         });
       setAlertId(id);
-      setIconLayer(getIconLayer(clonedAlerts));
+      setIconLayer(getFireAlertLayer(clonedAlerts));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(filteredAlerts));
+      setIconLayer(getFireAlertLayer(filteredAlerts));
     }
   };
 
-  const getIconLayer = (alerts) => {
+  const getFireAlertLayer = (alerts) => {
     const data = alerts.map((alert) => {
       const {
-        geometry: { features },
+        center,
         ...properties
       } = alert;
       return {
         type: 'Feature',
         properties: {
-          ...properties,
-          ...features[0].properties,
+          properties,
         },
-        geometry: features[0].geometry,
+        geometry: {
+          type: 'Point',
+          coordinates: center
+        },
       };
     });
 
@@ -254,25 +254,28 @@ const FireAlerts = ({ t }) => {
       setCurrentZoomLevel(e.viewState.zoom);
     }
     setIsViewStateChanged(true);
-    setHoverInfo({});
+    setHoverInfo(undefined);
   };
 
   const showTooltip = (info) => {
+    console.log('showTooltip', info);
     if (info.picked && info.object) {
+      console.log('picked and object');
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
     } else {
-      setHoverInfo({});
+      setHoverInfo(undefined);
     }
   };
 
   const renderTooltip = (info) => {
+    console.log('renderTooltip info', info);
     const { object, coordinate } = info;
     if (object) {
       return (
         <Tooltip
           key={object.id}
-          object={object?.properties}
+          object={object}
           coordinate={coordinate}
           isEdit={isEdit}
           setIsEdit={setIsEdit}
