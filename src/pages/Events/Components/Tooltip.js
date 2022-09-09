@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 import { Popup } from 'react-map-gl';
 import { useNavigate } from 'react-router-dom';
-import { formatDate, formatDateOnly } from '../../../store/utility';
+import { formatDate } from '../../../store/utility';
 import classnames from 'classnames';
 import DatePicker from '../../../components/DateRangePicker/DatePicker';
 
@@ -124,7 +124,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t
                         isTooltipInput={true}
                         date={endDate}
                       />
-                      : event && event.end_date ? formatDateOnly(event.end_date) : 'not set'
+                      : event && event.end_date ? formatDate(event.end_date, 'YYYY-MM-DD') : 'not set'
                   }
                 </div>
               </CardSubtitle>
