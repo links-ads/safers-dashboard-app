@@ -35,12 +35,12 @@ export const getInfo = (id) => async (dispatch) => {
   const url = endpoints.user.profile + id;
   const response = await api.get(url);
   if (response.status === 200) {
-    return dispatch(getInfoSuccess(response.data));
+    return dispatch(setUserInfo(response.data));
   }
   else
     return dispatch(getInfoFail(response.error));
 };
-const getInfoSuccess = (user) => {
+export const setUserInfo = (user) => {
   return {
     type: actionTypes.MP_GET_SUCCESS,
     payload: user
@@ -137,7 +137,7 @@ export const updateInfo = (id, userInfo) => async (dispatch) => {
     address: userInfo.address
   });
   if (response.status === 200) {
-    dispatch(getInfoSuccess(response.data))
+    dispatch(setUserInfo(response.data))
     return dispatch(updateInfoSuccess());
   }
   else
