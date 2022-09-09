@@ -93,10 +93,10 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const validateCoord = (returnErr=false) => {
     const tempError = {...errors};
     if (!coordinates || coordinates === '') {
-      tempError['coordinates'] = 'Please select your area on the map';
+      tempError['coordinates'] = t('Select Area', { ns: 'chatBot' });
     }
     else if (!validCoords) {
-      tempError['coordinates'] = 'Please correct your coordinates';
+      tempError['coordinates'] = t('Correct Coordinates', { ns: 'chatBot' });
     }
     else {
       delete tempError['coordinates'];
@@ -111,7 +111,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const validateField = (attrib, val, returnErr=false) => {
     const tempError = {...errors};
     if(!val || val == ''){
-      tempError[attrib] = attrib === 'dateRange' ? 'Please select start/end date' : 'This field is required';
+      tempError[attrib] = attrib === 'dateRange' ? t('Select Date', { ns: 'chatBot' }) : t('This field is required');
     }
     else {
       delete tempError[attrib];
@@ -153,7 +153,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       <FormGroup className="form-group mt-3">
         <DateRangePicker
           type='text'
-          placeholder='Start Date | End date'
+          placeholder={t('Start Date | End date')}
           className={`${getError('dateRange', errors, errors)}`}
           setDates={handleDateRangePicker}
           isTooltipInput={true}
@@ -168,11 +168,12 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           className={`${getError('coordinates', errors, errors)}`}
           type='textarea'
           name="coordinates-value"
-          placeholder='Map Selection, please edit and draw on the map'
+          placeholder={t('Map Selection', { ns: 'chatBot' })}
           rows="10"
           coordinates={coordinates}
           setCoordinates={setCoordinates}
           isValidFormat={isValidCoordFormat}
+          onBlur={()=> { validateCoord(); }}
         />
         {getError('coordinates', errors, errors, false)}
       </FormGroup>
@@ -218,7 +219,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           className={`${getError('desc', errors, errors)}`}
           type='textarea'
           name="message-description"
-          placeholder='Message Description'
+          placeholder={t('Message Description', { ns: 'chatBot' })}
           onChange={(e) => { setDesc(e.target.value); }}
           onBlur={(e) => {validateField('desc', e.target.value)}}
           rows="10"
@@ -230,14 +231,14 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           type="button"
           onClick={onCancel}
         >
-          Cancel
+          {t('Cancel')}
         </Button>
         <Button
           type="button"
           className="mx-3"
           onClick={submitMsg}
         >
-          Send
+          {t('Send')}
         </Button>
       </div>
     </>
