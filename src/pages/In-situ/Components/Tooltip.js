@@ -25,10 +25,10 @@ const Tooltip = ({ object = {}, coordinate }) => {
           </Col>
           <Col md={10} className='text-white ms-auto'>
             <p className='mb-1'>Camera Number: {id}</p>
-            <p className='mb-1'>
+            {location && <p className='mb-1'>
               Camera Location: Lon. {location.longitude}, 
               Lat. {location.latitude}
-            </p>
+            </p>}
             <p className='mb-1'>Camera Direction: {direction}&#176;</p>
             <p className='mb-1'>
               Last Uploaded feed: 
