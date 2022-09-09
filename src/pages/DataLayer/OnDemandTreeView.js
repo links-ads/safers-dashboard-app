@@ -11,7 +11,7 @@ const PropsPanel = (node) => {
   node2.parameters['geometry'] = node2?.geometry_wkt;
   return (
     <div className="props_box">
-      <JsonFormatter  data={node2} />
+      <JsonFormatter  data={node2?.parameters} />
     </div>
   );
 };
@@ -113,7 +113,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
               aria-haspopup="true"
               role={tooltipInfo || node.info}
               place='right'
-              class="alert-tooltip data-layers-alert-tooltip text-light"
+              class="alert-tooltip data-layers-alert-tooltip"
             >
               {tooltipDisplay ?? 'Loading...'}
             </ReactTooltip>}

@@ -7,12 +7,14 @@ import People from './People';
 import Reports from './Reports';
 import Comms from './Comms';
 import Missions from './Missions';
+import { useNavigate } from 'react-router-dom';
 
 const Chatbot = () => {
 
-  const [customActiveTab, setCustomActiveTab] = useState('1');
+  const [customActiveTab, setCustomActiveTab] = useState();
   const { t } = useTranslation();
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(()=>{
     const queryString = location.search;
@@ -20,15 +22,9 @@ const Chatbot = () => {
     const tab = params.get('tab');
     if (tab && customActiveTab !== tab) {
       setCustomActiveTab(tab)
-    }
-  },[])
-
-  const toggleCustom = (tab) => {
-    if (customActiveTab !== tab) {
-      setCustomActiveTab(tab)
-    }
-  }
-
+    } 
+  },[location.search]);
+  
   const renderContent = (tab) => {
     if(customActiveTab !== tab) {
       return null;
@@ -58,7 +54,7 @@ const Chatbot = () => {
                   active: customActiveTab === '1',
                 })}
                 onClick={() => {
-                  toggleCustom('1')
+                  navigate('/chatbot?tab=1')
                 }}
               >
                 <span className='d-none d-sm-block me-2'><i className='fas fa-user-alt'></i></span>
@@ -72,7 +68,7 @@ const Chatbot = () => {
                   active: customActiveTab === '2',
                 })}
                 onClick={() => {
-                  toggleCustom('2')
+                  navigate('/chatbot?tab=2')
                 }}
                 data-testid="updateProfilePasswordBtn"
               >
@@ -87,7 +83,7 @@ const Chatbot = () => {
                   active: customActiveTab === '3',
                 })}
                 onClick={() => {
-                  toggleCustom('3')
+                  navigate('/chatbot?tab=3')
                 }}
               >
                 <span className='d-none d-sm-block me-2'><i className='fas fa-flag-checkered'></i></span>
@@ -101,7 +97,7 @@ const Chatbot = () => {
                   active: customActiveTab === '4',
                 })}
                 onClick={() => {
-                  toggleCustom('4')
+                  navigate('/chatbot?tab=4')
                 }}
               >
                 <span className='d-none d-sm-block me-2'><i className='fas fa-file-image'></i></span>

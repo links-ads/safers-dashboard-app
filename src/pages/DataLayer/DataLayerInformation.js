@@ -52,13 +52,13 @@ const DataLayerInformationComponent = ({
         }));
 
         setChartValues(array.map(data=> {
-          const tempY = data.split(',')[1].replace(/\d+\.\d+/g, function(match) {
-            return Number(match).toFixed(2);
-          })
+          const [x, y] = data.split(',')
+          const x2 = x //new Date(x)
+          const y2 = y ? +Number(y).toFixed(4): null
           return {
-            x: data.split(',')[0],
-            y: tempY? tempY : '0',
-            label: tempY? ` ${tempY}, ${formatDate(data.split(',')[0])} ` : '0'
+            x: x2,
+            y: y2,
+            label: y2 ? ` ${y2}, ${formatDate(x2)} ` : null
           }
         }));
       } else {
@@ -94,13 +94,13 @@ const DataLayerInformationComponent = ({
           <div className='p-3 empty-loading'>
             {getPixelValue()}
           </div>
-          <h4 className='ps-3 mb-0'><i className='meta-close' onClick={()=>clearInfo()}>x</i></h4>
+          <h4 className='ps-3 mb-0'><i className='meta-close' onClick={clearInfo}>x</i></h4>
         </div>
       </Card>}
 
       {layerData && !featureOnly && 
       <Card color="dark default-panel mt-3">
-        <h4 className='ps-3 pt-3 mb-2'><i className='meta-close' onClick={()=>clearInfo()}>x</i></h4>
+        <h4 className='ps-3 pt-3 mb-2'><i className='meta-close' onClick={clearInfo}>x</i></h4>
         <div ref={chartContainerRef} className='d-flex'>
           <div style={{width: '60%'}}>
             <VictoryChart padding={{ top: 5, left: 50, right: 50, bottom: 50 }} scale={{ x: 'time' }} containerComponent={<VictoryZoomContainer
@@ -220,7 +220,10 @@ const DataLayerInformationComponent = ({
       </>
     )
   }, [chartValues, selectedPixel, featureInfoData, zoomDomain, selectedDomain])
-  
+
+  useEffect(()=> {
+    clearInfo();
+  }, [currentLayer])
 
   const apiFetch = (requestType) => {
     var tempUrl = ''
@@ -250,6 +253,8 @@ const DataLayerInformationComponent = ({
     setLayerData(null);
     setTempLayerData(null);
     setChartValues([]);
+    setZoomDomain(null);
+    setSelectedDomain(null);
   }
 
   const getPixelValue = () => {

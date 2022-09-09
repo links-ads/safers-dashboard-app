@@ -2,6 +2,11 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
+import { 
+  area as getFeatureArea, 
+  featureCollection 
+} from '@turf/turf';
+import wkt from 'wkt';
 import { FieldArray, Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
@@ -12,7 +17,15 @@ import {
   getAllMapRequests
 } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css'
-import moment from 'moment';
+import moment from  'moment';
+
+// 40,000 km2 = 40 million m2
+const MAX_GEOMETRY_AREA = {
+  label: '40,000 square kilometres',
+  value: 40000000000
+};
+
+const TIME_LIMIT = 72;
 
 const TABLE_HEADERS = [
   'timeHours',
@@ -27,43 +40,66 @@ const PROBABILITY_RANGES = [
   {label: '90%', value: 0.9}
 ];
 
+Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
+  return this.test(
+    'uniqueTimeOffset',
+    message,
+    (timeOffset, { from }) => {
+      // 'from' is an array of parent objects moving from closest 
+      // to furthest relatives. [0] is the immediate parent object, 
+      // while [1] is the higher parent array of all of those objects.  
+      const allTimeOffsets = from[1].value.boundaryConditions.map(d => +d.timeOffset);
+
+      const matchCount = allTimeOffsets.filter(d => d === timeOffset).length;
+      return matchCount <= 1;
+    }
+  )
+})
+
 const WildfireSimulationSchema = Yup.object().shape({
   simulationTitle: Yup.string()
     .required('This field cannot be empty'),
   simulationTimeLimit: Yup.number()
     .typeError('This field must be a number')
-    .min(1, 'Simulation time limit must be between 1 and 48')
-    .max(48, 'Simulation time limit must be between 1 and 48')
+    .min(1, `Simulation time limit must be between 1 and ${TIME_LIMIT} hours`)
+    .max(TIME_LIMIT, `Simulation time limit must be between 1 and ${TIME_LIMIT} hours`)
     .required('This field cannot be empty'),
   probabilityRange: Yup.string()
     .required('This field cannot be empty'),
   mapSelection: Yup.string()
     .required('This field cannot be empty'),
-  ignitionDateTime: Yup.date().required('This field cannot be empty'),
-  boundaryConditions: Yup.array().of(
-    Yup.object().shape({
-      timeOffset: Yup.number()
-        .typeError('This field must be a number')
-        .min(0, 'Time offset must be between 1 and 48 hours')
-        .max(48, 'Time offset must be between 1 and 48 hours')
-        .required('This field cannot be empty'),
-      windDirection: Yup.number('This field must be a number')
-        .typeError('This field must be a number')
-        .min(0, 'Wind direction must be between 0 and 360 degrees')
-        .max(360, 'Wind direction must be between 0 and 360 degrees')
-        .required('This field cannot be empty'),
-      windSpeed: Yup.number('This field must be a number')
-        .typeError('This field must be a number')
-        .min(0, 'Wind speed must be between 0 and 300 km/h')
-        .max(300, 'Wind speed must be between 0 and 300 km/h')
-        .required('This field cannot be empty'),
-      fuelMoistureContent: Yup.number('This field must be a number')
-        .typeError('This field must be a number')
-        .min(0, 'Fuel moisture must be between 0% and 100%')
-        .max(100, 'Fuel moisture must be between 0% and 100%')
-        .required('This field cannot be empty')
-    })
-  ),
+  mapSelectionArea: Yup.number()
+    .typeError('Area must be valid Well-Known Text')
+    .max(MAX_GEOMETRY_AREA.value, `Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
+  ignitionDateTime: Yup.date()
+    .typeError('This field must be a valid date selection')
+    .required('This field cannot be empty'),
+  boundaryConditions: Yup
+    .array()
+    .of(
+      Yup.object().shape({
+        timeOffset: Yup.number()
+          .typeError('This field must be a number')
+          .min(0, `Time offset must be between 1 and ${TIME_LIMIT} hours`)
+          .max(TIME_LIMIT, `Time offset must be between 1 and ${TIME_LIMIT} hours`)
+          .uniqueTimeOffset('Time offset values must be unique')
+          .required('This field cannot be empty'),
+        windDirection: Yup.number('This field must be a number')
+          .typeError('This field must be a number')
+          .min(0, 'Wind direction must be between 0 and 360 degrees')
+          .max(360, 'Wind direction must be between 0 and 360 degrees')
+          .required('This field cannot be empty'),
+        windSpeed: Yup.number('This field must be a number')
+          .typeError('This field must be a number')
+          .min(0, 'Wind speed must be between 0 and 300 km/h')
+          .max(300, 'Wind speed must be between 0 and 300 km/h')
+          .required('This field cannot be empty'),
+        fuelMoistureContent: Yup.number('This field must be a number')
+          .typeError('This field must be a number')
+          .min(0, 'Fuel moisture must be between 0% and 100%')
+          .max(100, 'Fuel moisture must be between 0% and 100%')
+          .required('This field cannot be empty')
+      }))
 });
 
 const renderDynamicError = errorMessage => (
@@ -150,6 +186,7 @@ const WildfireSimulation = ({
               simulationTitle: '',
               probabilityRange: 0.75,
               mapSelection: '',
+              mapSelectionArea: null,
               simulationTimeLimit: 1,
               ignitionDateTime: null,
               simulationFireSpotting: false,
@@ -288,12 +325,24 @@ const WildfireSimulation = ({
                           type="textarea"
                           rows="5"
                           className={errors.mapSelection ? 'is-invalid' : ''}
-                          onChange={handleChange}
+                          onChange={({ target: { value } }) => {
+                            setFieldValue('mapSelection', value);
+
+                            const { features } = featureCollection(
+                              wkt.parse(value)
+                            );
+
+                            if (features) {
+                              const area = getFeatureArea(features);
+                              setFieldValue('mapSelectionArea', Math.ceil(area));
+                            }
+                          }}
                           onBlur={handleBlur}
                           value={values.mapSelection}
                           placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {getError('mapSelection', errors, touched, false)}
+                        {getError('mapSelectionArea', errors, touched, false)}
                       </FormGroup>
                     </Row>
 
@@ -331,6 +380,7 @@ const WildfireSimulation = ({
                               }
                             />
                           </Col>
+                          {getError('ignitionDateTime', errors, touched, false)}
                         </Row>
                       </FormGroup>
                     </Row>
@@ -360,8 +410,13 @@ const WildfireSimulation = ({
                   <Col xl={7} className='mx-auto'>
                     <Card className='map-card mb-0' style={{ height: 670 }}>
                       <MapSection
-                        setCoordinates={value => {
-                          setFieldValue('mapSelection', value)
+                        setCoordinates={(wktConversion, originalGeojson) => {
+                          setFieldValue('mapSelection', wktConversion);
+
+                          const area = getFeatureArea(originalGeojson);
+                          if (area) {
+                            setFieldValue('mapSelectionArea', Math.ceil(area));
+                          }
                         }}
                         coordinates={values.mapSelection}
                         togglePolygonMap={true}

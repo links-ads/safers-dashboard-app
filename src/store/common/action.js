@@ -127,3 +127,11 @@ export const setDateRange = (dateRange) => {
     payload: dateRange
   }
 }
+
+//IsDateRangeDisabled
+export const setDateRangeDisabled = (isDateRangeDisabled) => {
+  return {
+    type: actionTypes.SET_IS_DATE_RANGE_DISABLED,
+    payload: isDateRangeDisabled
+  }
+}

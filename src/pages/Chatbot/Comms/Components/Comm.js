@@ -60,7 +60,7 @@ const Comm = ({ card, commID, setSelectedComm }) => {
             <Row className='mt-0 mb-1'>
               <Col>
                 <p className="text-muted no-wrap">
-                  {t('Assigned to', { ns: 'chatBot' })}: {card.assigned_to}
+                  {t('Target', { ns: 'chatBot' })}: {card.assigned_to}
                 </p>
                 <CardText>
                   {t('Message', { ns: 'common' })}: {getMsg(card.message)}
