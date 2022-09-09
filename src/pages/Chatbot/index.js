@@ -20,7 +20,9 @@ const Chatbot = () => {
     const queryString = location.search;
     const params = new URLSearchParams(queryString);
     const tab = params.get('tab');
-    if (tab && customActiveTab !== tab) {
+    if(!tab) {
+      setCustomActiveTab('1')
+    } else if (tab && customActiveTab !== tab) {
       setCustomActiveTab(tab)
     } 
   },[location.search]);
