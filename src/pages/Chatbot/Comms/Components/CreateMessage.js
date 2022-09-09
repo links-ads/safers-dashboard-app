@@ -58,16 +58,17 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     if (msgCreated) {
       toastr.success(msgCreated.msg, '');
       resetState();
+      onCancel();
     }
 
   }, [msgCreated]);
 
   useEffect(() => {
-    if (dateRange) {// On blur validation after setting values
-      validate();
+    if(coordinates){
+      validateCoord();
     }
+  }, [coordinates, validCoords]);
 
-  }, [scope, dateRange, desc, restriction, coordinates, validCoords]);
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date =>
@@ -75,32 +76,61 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     );
   }
 
-
-  const validate = () => {
-    let errors = {};
-
-    if (!desc)
-      errors['desc'] = 'This field is required';
-
-    if (!scope || scope === '')
-      errors['scope'] = 'This field is required';
-
+  const validateRestriction = (returnErr=false) => {
+    const tempError = {...errors};
     if (scope && scope == 'Restricted' && (!restriction || restriction === '')) {
-      errors['restriction'] = 'This field is required';
+      tempError['restriction'] = 'This field is required';
+    } 
+    else {
+      delete tempError['restriction'];
     }
+    if(returnErr){
+      return tempError;
+    }
+    setErrors(tempError);
+  }
 
-    if (!coordinates) {
-      errors['coordinates'] = 'Please select your area on the map';
+  const validateCoord = (returnErr=false) => {
+    const tempError = {...errors};
+    if (!coordinates || coordinates === '') {
+      tempError['coordinates'] = 'Please select your area on the map';
     }
     else if (!validCoords) {
-      errors['coordinates'] = 'Please correct your coordinates';
+      tempError['coordinates'] = 'Please correct your coordinates';
+    }
+    else {
+      delete tempError['coordinates'];
     }
 
+    if(returnErr){
+      return tempError
+    }
+    setErrors(tempError);
+  }
 
-    if (!dateRange)
-      errors['dateRange'] = 'Please select start/end date';
+  const validateField = (attrib, val, returnErr=false) => {
+    const tempError = {...errors};
+    if(!val || val == ''){
+      tempError[attrib] = attrib === 'dateRange' ? 'Please select start/end date' : 'This field is required';
+    }
+    else {
+      delete tempError[attrib];
+    }
 
-    setErrors(errors);
+    if(returnErr){
+      return tempError
+    }
+    setErrors(tempError);
+  }
+
+  const validate = () => {
+    const valDateRange = validateField('dateRange', dateRange, true);
+    const valDesc = validateField('desc', desc, true);
+    const valScope = validateField('scope', scope, true);
+    const valRestriction =  validateRestriction(true);
+    const valCoordinates = validateCoord(true);
+    const tempErrors = {...valDateRange, ...valDesc, ...valScope, ...valRestriction, ...valCoordinates};
+    setErrors(tempErrors);
   }
 
   const submitMsg = () => {
@@ -128,6 +158,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           setDates={handleDateRangePicker}
           isTooltipInput={true}
           showIcons={true}
+          onChange={(dates) => {validateField('dateRange', dates)}}
         />
         {getError('dateRange', errors, errors, false)}
       </FormGroup>
@@ -155,6 +186,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
             name="scope"
             type="select"
             onChange={(e) => { setScope(e.target.value) }}
+            onBlur={(e) => {validateField('scope', e.target.value)}}
           >
             <option value="">--{t('Scope')}--</option>
             <option value="Public">{t('Public')}</option>
@@ -169,6 +201,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
             name="restriction"
             type="select"
             onChange={(e) => { setRestriction(e.target.value) }}
+            onBlur={validateRestriction}
             value={restriction}
           >
             <option value="">--{t('Restrictions')}--</option>
@@ -187,6 +220,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           name="message-description"
           placeholder='Message Description'
           onChange={(e) => { setDesc(e.target.value); }}
+          onBlur={(e) => {validateField('desc', e.target.value)}}
           rows="10"
         />
         {getError('desc', errors, errors, false)}

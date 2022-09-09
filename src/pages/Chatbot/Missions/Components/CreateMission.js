@@ -41,16 +41,17 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   useEffect(() => {
     if (missionCreated) {
       toastr.success(missionCreated.msg, '');
+      onCancel();
     }
 
   }, [missionCreated]);
 
   useEffect(() => {
-    if(dateRange){// On blur validation after setting values
-      validate();
+    if(coordinates){
+      validateCoord();
     }
+  }, [coordinates, validCoords]);
 
-  }, [title, dateRange, desc, coordinates, validCoords]);
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date => 
@@ -58,27 +59,45 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     );
   }
 
-  const validate = () => {
-    let errors = {};
+  const validateField = (attrib, val, returnErr=false) => {
+    const tempError = {...errors};
+    if(!val || val == ''){
+      tempError[attrib] = 'This field is required';
+    }
+    else {
+      delete tempError[attrib];
+    }
+    if(returnErr){
+      return tempError
+    }
+    setErrors(tempError);
+  }
 
-    if(!title)
-      errors['title'] = 'This field is required';
-
-    if(!desc)
-      errors['desc'] = 'This field is required' ;
-
-    if(!coordinates){
-      errors['coordinates'] = 'Please select your area on the map' ;
+  const validateCoord = (returnErr=false) => {
+    const tempError = {...errors};
+    if (!coordinates || coordinates === '') {
+      tempError['coordinates'] = 'Please select your area on the map';
     }
     else if (!validCoords) {
-      errors['coordinates'] = 'Please correct your coordinates' ;
+      tempError['coordinates'] = 'Please correct your coordinates';
     }
-      
+    else {
+      delete tempError['coordinates'];
+    }
 
-    if(!dateRange)
-      errors['dateRange'] = 'Please select start/end date' ;
-    
-    setErrors(errors);
+    if(returnErr){
+      return tempError
+    }
+    setErrors(tempError);
+  }
+
+  const validate = () => {
+    const valTitle = validateField('title', title, true);
+    const valDesc = validateField('desc', desc, true);
+    const valDateRange = validateField('dateRange', dateRange, true);
+    const valCoordinates = validateCoord(true);
+    const tempErrors = { ...valTitle, ...valDesc, ...valDateRange, ...valCoordinates };
+    setErrors(tempErrors);
   }
 
   const submitMsg = () => {
@@ -104,7 +123,8 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         name="title"
         placeholder='Message Title'
         type="text"
-        onChange={(e) => {setTitle(e.target.value); validate({name:'title'});}}
+        onChange={(e) => {setTitle(e.target.value);}}
+        onBlur={(e) => {validateField('title', e.target.value)}}
         value={title}
       />
       {getError('title', errors, errors, false)}
@@ -119,6 +139,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         defaultDateRange={dateRange}
         isTooltipInput={true}
         showIcons={true}
+        onChange={(dates) => {validateField('dateRange', dates)}}
       />
       {getError('dateRange', errors, errors, false)}
     </FormGroup>
@@ -133,6 +154,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         coordinates={coordinates}
         setCoordinates={setCoordinates}
         isValidFormat={isValidCoordFormat}
+        onBlur={()=> { validateCoord(); }}
       />
       {getError('coordinates', errors, errors, false)}
     </FormGroup>
@@ -188,7 +210,8 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         type='textarea'
         name="message-description"
         placeholder='Message Description'
-        onChange={(e) => {setDesc(e.target.value); validate();}}
+        onChange={(e) => {setDesc(e.target.value)}}
+        onBlur={(e)=>{validateField('desc', e.target.value)}}
         value={desc}
         rows="10"
       />
