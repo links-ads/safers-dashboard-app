@@ -9,12 +9,10 @@ import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
 import { getAllReports, resetReportResponseState } from '../../../store/reports/action';
-import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
-import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
+import { getBoundingBox, getViewState, getIconLayer } from '../../../helpers/mapHelper';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
-import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -38,37 +36,7 @@ const Reports = () => {
   const dispatch = useDispatch();
 
   const allReports = filteredReports || OrgReportList;
-
-  const getIconLayer = (alerts) => {
-    const data = alerts.map((alert) => {
-      const {
-        geometry,
-        ...properties
-      } = alert;
-      return {
-        type: 'Feature',
-        properties: properties,
-        geometry: geometry,
-      };
-    });
-
-    return new GeoJsonPinLayer({
-      data,
-      dispatch,
-      setViewState,
-      getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.REPORTS,feature),
-      icon: 'report',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18,-18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
-
+  
   useEffect(() => {
     const dateRangeParams = dateRange
       ? { start: dateRange[0], end: dateRange[1] }
@@ -96,7 +64,7 @@ const Reports = () => {
 
   useEffect(() => {
     if (allReports.length > 0) {
-      setIconLayer(getIconLayer(allReports, MAP_TYPES.REPORTS));
+      setIconLayer(getIconLayer(allReports, MAP_TYPES.REPORTS, 'report', dispatch, setViewState));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }

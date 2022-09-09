@@ -57,7 +57,7 @@ const BaseMap = ({
 
   const handleClick = (info, event) => {
     if (info?.object?.properties?.cluster) {
-      if (info.object.properties.expansion_zoom <= MAX_ZOOM)
+      if (info?.object?.properties?.expansion_zoom <= MAX_ZOOM)
         setViewState({
           longitude: info.object.geometry.coordinates[0],
           latitude: info.object.geometry.coordinates[1],
