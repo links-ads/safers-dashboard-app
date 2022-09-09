@@ -271,7 +271,7 @@ const WildfireSimulation = ({
                             type="textarea"
                             rows="2"
                             className={
-                              errors.description ? 'is-invalid' : null
+                              errors.simulationDescription ? 'is-invalid' : null
                             }
                             onChange={handleChange}
                             onBlur={handleBlur}
