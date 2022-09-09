@@ -22,7 +22,8 @@ export {
   getRoleList,
   getAllAreas,
   generalInProgress,
-  getConfig
+  getConfig,
+  setDateRangeDisabled
 } from './common/action'
 export {
   getAllEventAlerts,

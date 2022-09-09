@@ -120,3 +120,8 @@
 pre {
   font-size: 90%;
 }
+
+.custom-disabled-container * {
+    color: $gray-500 !important;
+    cursor: default !important;
+}

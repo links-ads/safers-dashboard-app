@@ -20,7 +20,8 @@ const Header = () => {
   const dispatch = useDispatch()
 
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  const dateRange = useSelector(state => state.common.dateRange)
+  const dateRange = useSelector(state => state.common.dateRange);
+  const isDateRangeDisabled = useSelector(state => state.common.isDateRangeDisabled);
 
   const clearDates = () => {
     dispatch(setDateRange(getDefaultDateRange()))
@@ -87,6 +88,7 @@ const Header = () => {
               setDates={handleDateRangePicker}
               clearDates={clearDates}
               defaultDateRange={dateRange}
+              isDateRangeDisabled={isDateRangeDisabled}
             />
             <div className='dropdown d-none d-lg-inline-block ms-1'>
               <button

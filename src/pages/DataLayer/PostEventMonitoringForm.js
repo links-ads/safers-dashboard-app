@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
+import { 
+  area as getFeatureArea, 
+  featureCollection 
+} from '@turf/turf';
+import wkt from 'wkt';
 import { Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
@@ -14,16 +19,40 @@ import {
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 
+// Fifty thousand hectares = 500 km2 = 500 million m2
+const MAX_GEOMETRY_AREA = {
+  label: '50,000 hectares',
+  value: 500000000
+};
+
+const MIN_START_DATE = {
+  label: 'May 1st, 2018',
+  date: '2018-05-01',
+};
+const MIN_END_DATE = '2018-05-02';
+
 const postEventMonitoringSchema = Yup.object().shape({
   dataLayerType: Yup.array()
     .required('This field cannot be empty'),
   requestTitle: Yup.string().optional(),
   mapSelection: Yup.string()
     .required('This field cannot be empty'),
+  mapSelectionArea: Yup.number()
+    .typeError('Selected area must be valid Well-Known Text')
+    .max(MAX_GEOMETRY_AREA.value, `Selected Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
   startDate: Yup.date()
-    .required('This field cannot be empty'),
+    .typeError('Must be valid date selection')
+    .required('This field cannot be empty')
+    .min(
+      MIN_START_DATE.date, 
+      `Date must be at least ${MIN_START_DATE.label}`
+    ),
   endDate: Yup.date()
-    .required('This field cannot be empty'),
+    .typeError('Must be valid date selection')
+    .min(
+      MIN_END_DATE, 
+      `Date must be greater than ${MIN_START_DATE.label}`
+    )
 });
 
 const PostEventMonitoring = ({
@@ -40,8 +69,8 @@ const PostEventMonitoring = ({
       geometry: formData.mapSelection,
       title: formData.requestTitle,
       parameters: {
-        start: `${formData.startDate}T00:00:00.000`,
-        end: `${formData.endDate}T00:00:00.000`,
+        start: new Date(formData.startDate).toISOString(),
+        end: new Date(formData.endDate).toISOString(),
       },
     }
     
@@ -52,12 +81,8 @@ const PostEventMonitoring = ({
 
   // hardcoded for now, this will be replaced with an API call in time
   const layerTypes = [
-    {id: '37006', name: 'Generate vegetation recovery map'},
-    {id: '37005', name: 'Generate historical severity map (dNBR)'},
-    {id: '37004', name: 'Provide landslide susceptibility information'},
     {id: '37003', name: 'Generate soil recovery map (Vegetation Index)'},
     {id: '37002', name: 'Generate burn severity map (dNBR)'},
-    {id: '32005', name: 'Get critical points of infrastructure, e.g. airports, motorways, hospitals, etc.'}
   ];
 
   return (
@@ -69,6 +94,7 @@ const PostEventMonitoring = ({
               dataLayerType: '', 
               requestTitle: '', 
               mapSelection: '', 
+              mapSelectionArea: null,
               startDate: null, 
               endDate: null, 
             }}
@@ -162,14 +188,24 @@ const PostEventMonitoring = ({
                               type="textarea"
                               rows="5"
                               className={errors.mapSelection ? 'is-invalid' : ''}
-                              onChange={({ target: { value } })=>{
-                                setFieldValue('mapSelection', value)
+                              onChange={({ target: { value } }) => {
+                                setFieldValue('mapSelection', value);
+
+                                const { features } = featureCollection(
+                                  wkt.parse(value)
+                                );
+
+                                if (features) {
+                                  const area = getFeatureArea(features);
+                                  setFieldValue('mapSelectionArea', Math.ceil(area));
+                                }
                               }}
                               onBlur={handleBlur}
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {getError('mapSelection', errors, touched, false)}
+                            {getError('mapSelectionArea', errors, touched, false)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -237,9 +273,14 @@ const PostEventMonitoring = ({
                     </Col>
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
-                        <MapSection 
-                          setCoordinates={value => {
-                            setFieldValue('mapSelection', value)
+                        <MapSection
+                          setCoordinates={(wktConversion, originalGeojson) => {
+                            setFieldValue('mapSelection', wktConversion);
+
+                            const area = getFeatureArea(originalGeojson);
+                            if (area) {
+                              setFieldValue('mapSelectionArea', Math.ceil(area));
+                            }
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}
