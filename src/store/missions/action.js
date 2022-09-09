@@ -2,21 +2,40 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-export const getAllMissions = (options) => async (dispatch) => {
-  // const response = await api.get(endpoints.chatbot.missions.getMissions, options);
-  //To Do - remove this and use api.get when actual APIs are ready
-  const custOption = {...options, baseURL: 'https://safers-dashboard-mock.herokuapp.com/api/',}
-  const response = await api.getCustom(endpoints.chatbot.missions.getMissions, custOption);
+export const createMission = (payload) => async (dispatch) => {
+  const response = await api.post(endpoints.chatbot.missions.createMission, payload);
   if (response.status === 200) {
-    return dispatch(getMissionsSuccess(response.data));
+    return dispatch(createMissionSuccess(response.data));
+  }
+  else
+    return dispatch(createMissionsFail(response.error));
+};
+const createMissionSuccess = (data) => {
+  return {
+    type: actionTypes.CREATE_MISSION_SUCCESS,
+    payload: data,
+  };
+};
+const createMissionsFail = (error) => {
+  return {
+    type: actionTypes.CREATE_MISSION_FAIL,
+    payload: error
+  };
+
+};
+export const getAllMissions = (options, feFilters) => async (dispatch) => {
+  const response = await api.get(endpoints.chatbot.missions.getMissions, options);
+  if (response.status === 200) {
+    return dispatch(getMissionsSuccess(response.data, feFilters));
   }
   else
     return dispatch(getMissionsFail(response.error));
 };
-const getMissionsSuccess = (alerts) => {
+const getMissionsSuccess = (alerts, feFilters) => {
   return {
     type: actionTypes.GET_MISSIONS_SUCCESS,
-    payload: alerts
+    payload: alerts,
+    feFilters
   };
 };
 const getMissionsFail = (error) => {

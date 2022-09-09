@@ -19,8 +19,10 @@ import {
   setFilteredEventAlerts,
   setEventFavoriteAlert
 } from '../../store/appAction';
-import { getBoundingBox, getIconLayer, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE, SET_FAV_EVENT_ALERT_SUCCESS } from '../../store/events/types';
+import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
+import { getIconColorFromContext } from '../../helpers/mapHelper';
 
 //i18n
 import { withTranslation } from 'react-i18next'
@@ -50,6 +52,40 @@ const EventAlerts = ({ t }) => {
   const [newHeight, setNewHeight] = useState(600);
 
   const dispatch = useDispatch();
+
+  const getIconLayer = (alerts) => {
+    const data = alerts.map((alert) => {
+      const {
+        geometry: { features },
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: {
+          ...properties,
+          ...features[0].properties,
+        },
+        geometry: features[0].geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.COMMUNICATIONS,feature),
+      icon: 'flag',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pixelOffset: [-18,-18],
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
+
 
   useEffect(() => {
     dispatch(setNewEventState(false, true));
@@ -127,7 +163,7 @@ const EventAlerts = ({ t }) => {
 
   const showTooltip = info => {
     if (info.picked && info.object) {
-      setSelectedAlert(info.object.id);
+      setSelectedAlert(info.object.properties.id);
       setHoverInfo(info);
     } else {
       setHoverInfo({});

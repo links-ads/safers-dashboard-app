@@ -4,16 +4,16 @@ import { Card, CardBody, CardText, CardTitle, Col, Row, Badge } from 'reactstrap
 import { formatDate } from '../../../../store/utility';
 import { useTranslation } from 'react-i18next';
 
-const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {  
+const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
 
   const { t } = useTranslation();
 
-  const isSelected = card.people_id === peopleId
+  const isSelected = card.id === peopleId
 
-  const getBadge = () => {    
+  const getBadge = () => {
     return (
       <>
-        <Badge color={card.status === 'Active' ? 'success' : 'secondary'} className='me-1 rounded-pill alert-badge py-0 px-2 pb-0 mb-0'>
+        <Badge color={card.status === 'Active' ? 'success' : 'info'} className='me-1 rounded-pill alert-badge py-0 px-2 pb-0 mb-0'>
           <span className='text-capitalize'>{card.status}</span>
         </Badge>
       </>
@@ -22,7 +22,7 @@ const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
 
   return (
     <Card
-      onClick={() => setSelectedPeople(!isSelected ? card.people_id : null)}
+      onClick={() => setSelectedPeople(!isSelected ? card.id : null)}
       className={'alerts-card mb-2 ' + (isSelected ? 'alert-card-active' : '')}>
       <CardBody className='p-0 m-2'>
         <Row className='mt-2'>

@@ -24,10 +24,10 @@
 }
 
 .legend {
-    max-height: 10rem;
+    max-height: 30rem;
     position: absolute;
-    bottom: 9rem;
-    left: 60rem;
+    top: 20%;
+    left: 50%;
     z-index: 1;
 
     img {
@@ -35,10 +35,47 @@
     }
 }
 
-.props-box {
+.props_box {
     margin: 0;
+    background-color: #2c2d34;
 }
 
 .props-line {
     margin: 0;
+}
+
+.timestamp-container {
+    position: absolute;
+    z-index: 100;
+    bottom: 100px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.timestamp-display {
+    font-size: 1.5rem;
+    color: $orange;
+}
+
+.meta-icon {
+    &:hover {
+        cursor: pointer;
+        color: $primary;
+    }
+}
+
+.meta-close {
+    float: right;
+    margin-right:  35px;
+    cursor: pointer;
+}
+
+.custom-clear-btn {
+    width: 29px;
+    height: 29px;
+    border: 0;
+    cursor: pointer;
+    border-radius: 0.25rem;
 }

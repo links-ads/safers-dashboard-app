@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { updateObject } from '../utility';
+import { getFilteredRec } from '../../pages/Chatbot/filter';
 
 const initialState = {
   allMissions: [],
@@ -8,7 +9,8 @@ const initialState = {
   error: false,
   success: null,
   filteredMissions: null,
-  missionDetail: null
+  missionDetail: null,
+  missionCreated: null
 };
 
 const missionReducer = (state = initialState, action) => {
@@ -21,10 +23,27 @@ const missionReducer = (state = initialState, action) => {
   case actionTypes.SET_MISSION_FILTERS: return setFilters(state, action);
   case actionTypes.GET_MISSION_DETAIL_SUCCESS: return getMissionDetailSuccess(state, action);
   case actionTypes.GET_MISSION_DETAIL_FAIL: return getMissionDetailFail(state, action);
+  case actionTypes.CREATE_MISSION_SUCCESS: return createMissionSuccess(state, action);
+  case actionTypes.CREATE_MISSION_FAIL: return createMissionsFail(state, action);
   default:
     return state;
   }
 };
+
+const createMissionSuccess = (state, action) => {
+  const updatedState = {
+    missionCreated: action.payload,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const createMissionsFail = (state) => {
+  const updatedState = {
+    error: true,
+  }
+  return updateObject(state, updatedState);
+}
 
 const getMissionDetailSuccess = (state, action) => {
   const updatedState = {
@@ -42,7 +61,13 @@ const getMissionDetailFail = (state) => {
 }
 
 const getMissionsSuccess = (state, action) => {
+  const {order, status} = action.feFilters;
+  const filters = { status };
+  const sort = {fieldName: 'start', order };
+  const filteredMissions = getFilteredRec( action.payload, filters, sort );
+  
   const updatedState = {
+    filteredMissions,
     allMissions: action.payload,
     error: false,
   }

@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'reactstrap'
 import MetaTags from 'react-meta-tags';
 
 //Import Images
-import error from '../assets/images/error-img.png' 
+import error from '../assets/images/error-img.png'
 
 const Pages404 = () => {
   return (
@@ -25,7 +25,7 @@ const Pages404 = () => {
                 <div className="mt-5 text-center">
                   <Link
                     className="btn btn-primary "
-                    to="/dashboard"
+                    to="/"
                   >
                     Back to Dashboard
                   </Link>

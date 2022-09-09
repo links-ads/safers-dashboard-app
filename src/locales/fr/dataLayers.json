@@ -1,3 +1,16 @@
 {
-  "Data Layers": "Couches de données"
+  "Data Layers": "Couches de données",
+  "requestMap": "Demander une carte",
+  "aoiLocation": "Domaine d’intérêt",
+  "layerType": "Types de couches",
+  "fireAndBurnedAreas": "Incendie et zones brûlées",
+  "dataLayerType": "Type de couche de données",
+  "requestTitle": "Titre de la demande",
+  "mapSelection": "Domaine d’intérêt",
+  "startDate": "Date de début",
+  "endDate": "Date de fin",
+  "request": "Demander",
+  "cancel": "Annuler",
+  "frequency": "Fréquence (en jours)",
+  "resolution": "Résolution spatiale (m)"
 }

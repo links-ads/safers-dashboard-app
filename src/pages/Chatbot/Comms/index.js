@@ -10,10 +10,12 @@ import MapSection from './Components/Map';
 import CommsList from './Components/CommsList';
 import CreateMessage from './Components/CreateMessage';
 import { getAllComms, resetCommsResponseState } from '../../../store/comms/action';
-import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
+import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const Comms = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -22,12 +24,12 @@ const Comms = () => {
 
   const { t } = useTranslation();
 
-  const [reportId, setReportId] = useState(undefined);
+  const [commID, setCommID] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortOrder, setSortOrder] = useState(undefined);
-  const [commStatus, setcommStatus] = useState(undefined);
-  const [target, setTarget] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [commStatus, setcommStatus] = useState('');
+  const [target, setTarget] = useState('');
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
@@ -41,23 +43,54 @@ const Comms = () => {
 
   const allReports = filteredComms || allComms;
 
-  useEffect(() => {
+  const getIconLayer = (alerts) => {
+    const data = alerts.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.COMMUNICATIONS,feature),
+      icon: 'communications',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pixelOffset: [-18,-18],
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
+
+  const loadComms = () => {
     const dateRangeParams = dateRange
       ? { start: dateRange[0], end: dateRange[1] }
       : {};
 
-    setReportId(undefined);
+    setCommID(undefined);
     const reportParams = {
-      order: sortOrder ? sortOrder : '-date',
-      status: commStatus ? commStatus : undefined,
-      target: target ? target : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
-    dispatch(getAllComms(reportParams));
-  }, [dateRange, commStatus, sortOrder, boundingBox, target])
+    dispatch(getAllComms(reportParams, {sortOrder, status:commStatus, target}));
+  }
+
+  useEffect(() => {
+    loadComms();
+  }, [dateRange, boundingBox])
 
   useEffect(() => {
     if (success?.detail) {
@@ -92,6 +125,13 @@ const Comms = () => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
+  const onCancel = () => {
+    setTogglePolygonMap(false);
+    setToggleCreateNewMessage(false);
+    setCoordinates('');
+    loadComms();
+  }
+
   return (
     <div className='mx-2'>
       <Row className="justify-content-end mb-2">
@@ -115,21 +155,17 @@ const Comms = () => {
           <Row>
             <Col xl={12} className='px-3'>
               <CommsList
-                reportId={reportId}
+                commID={commID}
                 currentZoomLevel={currentZoomLevel}
                 setViewState={setViewState}
-                setReportId={setReportId}
+                setCommID={setCommID}
                 setIconLayer={setIconLayer} />
             </Col>
           </Row>
         </Col>}
         {toggleCreateNewMessage && <Col xl={5}>
           <CreateMessage
-            onCancel={() => {
-              setTogglePolygonMap(false);
-              setToggleCreateNewMessage(false);
-              setCoordinates('');
-            }}
+            onCancel={onCancel}
             coordinates={coordinates}
             setCoordinates={setCoordinates}
           />

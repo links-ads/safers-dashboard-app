@@ -1,5 +1,6 @@
 import * as actionTypes from './types';
 import { updateObject } from '../utility';
+import { getFilteredRec } from '../../pages/Chatbot/filter';
 
 const initialState = {
   allPeople: [],
@@ -23,7 +24,12 @@ const peopleReducer = (state = initialState, action) => {
 };
 
 const getPeopleSuccess = (state, action) => {
+  const {activity, status, sortOrder} = action.feFilters;
+  const filters = {activity, status};
+  const sort = {fieldName: 'timestamp', order: sortOrder};
+  const filteredPeople = getFilteredRec(action.payload, filters, sort);
   const updatedState = {
+    filteredPeople,
     allPeople: action.payload,
     error: false,
   }

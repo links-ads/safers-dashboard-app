@@ -13,9 +13,7 @@ const MAP_TYPE = 'missions';
 const MissionList = ({ missionId, currentZoomLevel, setViewState, setMissionId, setIconLayer }) => {
   const { allMissions: OrgMissionList, filteredMissions } = useSelector(state => state.missions);
   const [pageData, setPageData] = useState([]);
-
   const dispatch = useDispatch();
-
 
   const allMissions = filteredMissions || OrgMissionList;
 
@@ -29,7 +27,7 @@ const MissionList = ({ missionId, currentZoomLevel, setViewState, setMissionId, 
     if (mission_id) {
       setMissionId(mission_id);
       let missionList = _.cloneDeep(allMissions);
-      let selectedMission = _.find(missionList, { mission_id });
+      let selectedMission = _.find(missionList, { id:mission_id });
       selectedMission.isSelected = true;
       setIconLayer(getIconLayer(missionList, MAP_TYPE));
       setViewState(getViewState(selectedMission.location, currentZoomLevel))

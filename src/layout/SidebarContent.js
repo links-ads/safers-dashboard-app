@@ -21,6 +21,12 @@ const SidebarContent = (props) => {
   const isNewEvent = useSelector(state => state.eventAlerts.isNewEvent);
   const newEventsCount = useSelector(state => state.eventAlerts.newItemsCount);
   const {isNewNotification, newItemsCount:newNotificationsCount } = useSelector(state => state.notifications);
+  const { 
+    isNewAlert: isNewMapRequestAlert, 
+    newItemsCount: newMapRequestCount,
+    isPageActive: isMapRequestPageActive
+  } = useSelector(state => state.dataLayer);
+
   const ref = useRef();
   const location = useLocation();
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
@@ -132,6 +138,13 @@ const SidebarContent = (props) => {
               <Link to='/data-layer' className=''>
                 <i className='bx bx-copy'></i>
                 <span>{props.t('Data Layers')}</span>
+                {isNewMapRequestAlert && !isMapRequestPageActive 
+                  ? (
+                    <span className='new-info-indicator float-end'>               
+                      {newMapRequestCount}
+                    </span>
+                  ) 
+                  : null}
               </Link>
             </li>
             <li>

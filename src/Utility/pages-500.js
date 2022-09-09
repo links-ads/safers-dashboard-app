@@ -25,7 +25,7 @@ const Pages500 = () => {
                 <div className="mt-5 text-center">
                   <Link
                     className="btn btn-primary "
-                    to="/dashboard"
+                    to="/"
                   >
                     Back to Dashboard
                   </Link>

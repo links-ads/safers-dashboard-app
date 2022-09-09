@@ -9,24 +9,28 @@ import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import PeopleList from './Components/PeopleList';
 import { getAllPeople, resetPeopleResponseState } from '../../../store/people/action';
-import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
+import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const People = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allPeople: OrgPeopleList, success, filteredPeople } = useSelector(state => state.people);
+  const { allPeople: orgPplList, filteredPeople, success } = useSelector(state => state.people);
   const dateRange = useSelector(state => state.common.dateRange);
+
+  let allPeople = filteredPeople || orgPplList;
 
   const { t } = useTranslation();
 
   const [peopleId, setPeopleId] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortOrder, setSortOrder] = useState(undefined);
-  const [status, setStatus] = useState(undefined);
-  const [activity, setActivity] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState('desc');
+  const [status, setStatus] = useState('');
+  const [activity, setActivity] = useState('');
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
@@ -35,7 +39,35 @@ const People = () => {
 
   const dispatch = useDispatch();
 
-  const allPeople = filteredPeople || OrgPeopleList;
+  const getIconLayer = (alerts) => {
+    const data = alerts.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.PEOPLE,feature),
+      icon: 'people',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pixelOffset: [-18,-18],
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   useEffect(() => {
     const dateRangeParams = dateRange
@@ -44,16 +76,18 @@ const People = () => {
 
     setPeopleId(undefined);
     const peopleParams = {
-      order: sortOrder ? sortOrder : '-date',
-      status: status ? status : undefined,
-      activity: activity ? activity : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
-    dispatch(getAllPeople(peopleParams));
-  }, [dateRange, status, activity, sortOrder, boundingBox])
+    const feFilters = {      
+      activity,
+      status,
+      sortOrder
+    }
+    dispatch(getAllPeople(peopleParams, feFilters));
+  }, [dateRange, boundingBox])
 
   useEffect(() => {
     if (success?.detail) {

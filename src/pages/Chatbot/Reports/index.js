@@ -9,10 +9,12 @@ import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
 import { getAllReports, resetReportResponseState } from '../../../store/reports/action';
-import { getBoundingBox, getIconLayer, getViewState } from '../../../helpers/mapHelper';
+import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
+import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -24,18 +26,48 @@ const Reports = () => {
   const [reportId, setReportId] = useState(undefined);
   const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortOrder, setSortOrder] = useState(undefined);
-  const [reportSource, setReportSource] = useState(undefined);
-  const [category, setCategory] = useState(undefined);
+  const [sortOrder, setSortOrder] = useState('');
+  const [category, setCategory] = useState('');
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
+  const [missionId, setMissionId] = useState('')
 
   const dispatch = useDispatch();
 
   const allReports = filteredReports || OrgReportList;
+
+  const getIconLayer = (alerts) => {
+    const data = alerts.map((alert) => {
+      const {
+        geometry,
+        ...properties
+      } = alert;
+      return {
+        type: 'Feature',
+        properties: properties,
+        geometry: geometry,
+      };
+    });
+
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.REPORTS,feature),
+      icon: 'report',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pixelOffset: [-18,-18],
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   useEffect(() => {
     const dateRangeParams = dateRange
@@ -45,7 +77,6 @@ const Reports = () => {
     setReportId(undefined);
     const reportParams = {
       order: sortOrder ? sortOrder : '-date',
-      source: reportSource ? reportSource : undefined,
       category: category ? category : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
@@ -53,7 +84,7 @@ const Reports = () => {
       ...dateRangeParams
     };
     dispatch(getAllReports(reportParams));
-  }, [dateRange, reportSource, sortOrder, boundingBox, category])
+  }, [dateRange, sortOrder, boundingBox, category])
 
   useEffect(() => {
     if (success?.detail) {
@@ -100,11 +131,12 @@ const Reports = () => {
       <Row>
         <Col xl={5}>
           <SortSection
-            reportSource={reportSource}
+            t={t}
             sortOrder={sortOrder}
-            setReportSource={setReportSource}
             setSortOrder={setSortOrder}
             setCategory={setCategory}
+            missionId={missionId}
+            setMissionId={setMissionId}
           />
           <Row>
             <Col xl={12} className='px-3'>
@@ -113,7 +145,11 @@ const Reports = () => {
                 currentZoomLevel={currentZoomLevel}
                 setViewState={setViewState}
                 setReportId={setReportId}
-                setIconLayer={setIconLayer} />
+                setIconLayer={setIconLayer} 
+                missionId={missionId}
+                category={category}
+                sortOrder={sortOrder}
+              />
             </Col>
           </Row>
         </Col>

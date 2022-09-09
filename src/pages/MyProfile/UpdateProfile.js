@@ -58,8 +58,13 @@ const UpdateProfile = ({t}) => {
   }  
   useEffect(() => {
     if(user && roles.length) {
-      const role = _.find(roles, { id: user.role });
-      setCurrentRole(role.name);
+      const currentRoleObj = _.find(roles, { id: user.role });
+      if(currentRoleObj){
+        setCurrentRole(currentRoleObj.name);
+      }
+      const objCitizen = _.find(roles, { name: 'Citizen' });
+      setcitizenId(objCitizen.id)
+
     }  
   }, [user, roles]);
 
@@ -84,13 +89,6 @@ const UpdateProfile = ({t}) => {
       setorgName(organization.name.split('-')[0])
     }
   }, [orgList, user]);
-
-  useEffect(() => {
-    if(roles.length){
-      const role = _.find(roles, { name: 'Citizen' });
-      setcitizenId(role.id)
-    }
-  }, [roles]);
 
   const onChangeFile = (event) => {
     event.stopPropagation();

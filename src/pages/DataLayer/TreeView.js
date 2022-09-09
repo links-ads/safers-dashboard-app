@@ -4,16 +4,30 @@ import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { getMetaData, resetMetaData } from '../../store/appAction';
 
 const TreeView = ({ data, setCurrentLayer}) => {
   const [itemState, setItemState] = useState({});
-  const [selectedLayer, setSelectedLayer] = useState({});
+  const [selectedLayer, setSelectedLayer] = useState({});// Only parent node is set here - used by callback fn
+  const [selectedNode, setSelNode] = useState(null);
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
+  const [metaActive, setMetaActive] = useState('');
+
+  const { metaData } = useSelector(state => state.dataLayer);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     //TODO: when single layer selected
     setCurrentLayer(selectedLayer);
   }, [selectedLayer]);
+
+  useEffect(() => {
+    if(!metaData){
+      setMetaActive('');
+    }
+  }, [metaData]);
 
   const toggleExpandCollapse = id => {
     setItemState(prevState => ({
@@ -22,8 +36,45 @@ const TreeView = ({ data, setCurrentLayer}) => {
     }));
   }
 
+  const onClickDLItem = (id, node) => {
+    if(node.children){
+      toggleExpandCollapse(id); 
+      setMetaActive('');
+      dispatch(resetMetaData());
+    } else {
+      setSelectedLayer(node);
+    }
+    setSelNode(node);
+  }
+
+  const toggleMetaInfo = (metaURL) => {
+    if(!metaData){
+      setMetaActive('alert-card-active');
+      dispatch(getMetaData(metaURL))
+    }
+    else {
+      dispatch(resetMetaData());
+    }
+  }
+
+  const isParentOfSelected = (id) => {
+    /*
+    * Node id should follow a syntax inheriting the parent id 
+    * i.e. parent node - {parent id}, child - {parent id}.{child id}
+    * This fn is also appllied to leaf node
+    */
+    if(!selectedNode) {
+      return false;
+    }
+
+    if(selectedNode.id.substring(0,id.length) === id && id.startsWith(selectedNode.id.split('.')[0])) {
+      return true;
+    }
+    return false;
+  }
+
   const mapper = (nodes, parentId, lvl) => {
-    return nodes.map((node, index) => {
+    return nodes?.map((node, index) => {
       
       const id = node.id;
       const tooltipDisplay = tooltipInfo || node.info
@@ -31,8 +82,8 @@ const TreeView = ({ data, setCurrentLayer}) => {
         <>
           <ListGroupItem
             key={index + id}
-            className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? 'selected' : ''} mb-2`}
-            onClick={() => node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)}
+            className={`dl-item ${isParentOfSelected(id) ? `${metaActive} selected` : ''} mb-2`}
+            onClick={() => { onClickDLItem(id, node) }}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
               setTooltipInfo(await fetchEndpoint(node.info_url));
@@ -40,17 +91,22 @@ const TreeView = ({ data, setCurrentLayer}) => {
             onMouseLeave={() => setTooltipInfo(undefined)}
           >
             <>
-              {(node.info || node.info_url) &&
-                <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
-              }
               {
                 node.children ?
                   <>
+                    {(node.info || node.info_url) &&
+                      <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
+                    }
                     <i className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
                     {node.text}
                   </>
                   :
-                  moment(node.text).format('LLL')
+                  <>
+                    {(node.metadata_url) &&
+                      <i className={`bx bx-file font-size-18 me-2 meta-icon ${selectedNode && node.id === selectedNode.id && metaData ? 'text-primary': ''}`} onClick={()=>{toggleMetaInfo(node.metadata_url)}} />
+                    }
+                    {moment(node.text).format('LLL')}
+                  </>
               }
             </>
           </ListGroupItem>
@@ -69,7 +125,7 @@ const TreeView = ({ data, setCurrentLayer}) => {
               aria-haspopup="true"
               role={tooltipInfo || node.info}
               place='right'
-              class="alert-tooltip data-layers-alert-tooltip text-light"
+              class="alert-tooltip data-layers-alert-tooltip"
             >
               {tooltipDisplay ?? 'Loading...'}
             </ReactTooltip>}
