@@ -3,50 +3,15 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
-import { getViewState } from '../../../../helpers/mapHelper';
+import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
 import People from './People';
 import { MAP_TYPES } from '../../../../constants/common';
-import { getIconColorFromContext } from '../../../../helpers/mapHelper';
-import { GeoJsonPinLayer } from '../../../../components/BaseMap/GeoJsonPinLayer';
-
-
-const MAP_TYPE = 'people';
 
 const PeopleList = ({ peopleId, currentZoomLevel, setViewState, setPeopleId, setIconLayer }) => {
   const { allPeople: OrgPeopleList, filteredPeople } = useSelector(state => { return state.people });
   const [pageData, setPageData] = useState([]);
   const dispatch = useDispatch();
-
-  const getIconLayer = (alerts) => {
-    const data = alerts?.map((alert) => {
-      const {
-        geometry,
-        ...properties
-      } = alert;
-      return {
-        type: 'Feature',
-        properties: properties,
-        geometry: geometry,
-      };
-    });
-
-    return new GeoJsonPinLayer({
-      data,
-      dispatch,
-      setViewState,
-      getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.PEOPLE,feature),
-      icon: 'people',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18,-18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
 
   const allPeople = filteredPeople || OrgPeopleList;
 
@@ -56,16 +21,16 @@ const PeopleList = ({ peopleId, currentZoomLevel, setViewState, setPeopleId, set
       let peopleList = _.cloneDeep(allPeople);
       let selectedPeople = _.find(peopleList, { id:people_id });
       selectedPeople.isSelected = true;
-      setIconLayer(getIconLayer(peopleList, MAP_TYPE));
+      setIconLayer(getIconLayer(peopleList, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, selectedPeople));
       setViewState(getViewState(selectedPeople.location, currentZoomLevel))
     } else {
       setPeopleId(undefined);
-      setIconLayer(getIconLayer(allPeople, MAP_TYPE));
+      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, {}));
     }
   }
   const updatePage = data => {
     setPeopleId(undefined);
-    setIconLayer(getIconLayer(data, MAP_TYPE));
+    setIconLayer(getIconLayer(data, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, {}));
     setPageData(data);
   };
 
