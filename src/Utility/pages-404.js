@@ -1,7 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
-import MetaTags from 'react-meta-tags';
 
 //Import Images
 import error from '../assets/images/error-img.png'
@@ -10,9 +9,6 @@ const Pages404 = () => {
   return (
     <React.Fragment>
       <div className="account-pages my-5 pt-5">
-        <MetaTags>
-          <title>404 Error Page | Safers</title>
-        </MetaTags>
         <Container>
           <Row>
             <Col lg="12">
