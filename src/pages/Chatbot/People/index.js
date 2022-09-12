@@ -13,6 +13,7 @@ import { getBoundingBox, getViewState, getIconLayer } from '../../../helpers/map
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
+import { fetchEndpoint } from '../../../helpers/apiHelper';
 
 const People = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -34,8 +35,18 @@ const People = () => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
+  const [activitiesOptions, setActivitiesOptions] = useState([]);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      const activitiesOptions = await fetchEndpoint(
+        '/chatbot/people/activities'
+      );
+      setActivitiesOptions(activitiesOptions);
+    })();
+  }, [])
 
   useEffect(() => {
     const dateRangeParams = dateRange
@@ -108,6 +119,7 @@ const People = () => {
             setStatus={setStatus}
             setActivity={setActivity}
             setSortOrder={setSortOrder}
+            activitiesOptions={activitiesOptions}
           />
           <Row>
             <Col xl={12} className='px-3'>
