@@ -13,7 +13,8 @@ const DateComponent = ({
   clearDates = () => { }, 
   defaultDateRange,
   placeholder=null,
-  isDateRangeDisabled=false
+  isDateRangeDisabled=false,
+  onChange= () => {}
 }) => {
   const fp = useRef(null);
   const defaultDate = defaultDateRange?.map(date => 
@@ -40,6 +41,7 @@ const DateComponent = ({
           onChange={(dates) => {
             dates.length > 1 && setDates(dates);
             dates.length == 0 && clearDates();
+            onChange(dates);
           }}
           disabled={isDateRangeDisabled}
           options={{
@@ -59,6 +61,7 @@ const DateComponent = ({
 
 DateComponent.propTypes = {
   setDates: PropTypes.func,
+  onChange: PropTypes.func,
   clearDates: PropTypes.func,
   defaultDateRange: PropTypes.array,
   placeholder: PropTypes.string,
