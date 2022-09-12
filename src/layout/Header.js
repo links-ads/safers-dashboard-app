@@ -15,16 +15,19 @@ import ProfileMenu from './TopbarDropdown/ProfileMenu'
 
 import DateRangePicker from '../components/DateRangePicker/DateRange';
 
-
 const Header = () => {
   const dispatch = useDispatch()
+  const defaultDate = getDefaultDateRange()
 
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  const dateRange = useSelector(state => state.common.dateRange);
   const isDateRangeDisabled = useSelector(state => state.common.isDateRangeDisabled);
 
   const clearDates = () => {
-    dispatch(setDateRange(getDefaultDateRange()))
+    dispatch(setDateRange(null))
+  }
+
+  const resetDates = () => {
+    dispatch(setDateRange(defaultDate))
   }
 
   const handleDateRangePicker = (dates) => {
@@ -86,8 +89,9 @@ const Header = () => {
           <div className='d-flex align-items-center'>
             <DateRangePicker 
               setDates={handleDateRangePicker}
+              resetDates={resetDates}
               clearDates={clearDates}
-              defaultDateRange={dateRange}
+              defaultDateRange={defaultDate}
               isDateRangeDisabled={isDateRangeDisabled}
             />
             <div className='dropdown d-none d-lg-inline-block ms-1'>
