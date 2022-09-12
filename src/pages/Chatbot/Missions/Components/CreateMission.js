@@ -5,7 +5,7 @@ import { Input, Button, Row, Col, Label, FormGroup } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import MapInput from '../../../../components/BaseMap/MapInput';
 import { getError }  from '../../../../helpers/errorHelper';
-import { createMission } from '../../../../store/missions/action';
+import { createMission, resetMissionResponseState } from '../../../../store/missions/action';
 import moment from 'moment'
 
 import _ from 'lodash';
@@ -54,6 +54,12 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     }
   }, [coordinates, validCoords]);
 
+  //Clear success states on component unmount
+  useEffect(() => {
+    return () => {
+      dispatch(resetMissionResponseState());
+    };
+  }, []);
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date => 

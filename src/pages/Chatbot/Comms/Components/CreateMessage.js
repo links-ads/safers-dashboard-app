@@ -10,7 +10,7 @@ import {
 } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import MapInput from '../../../../components/BaseMap/MapInput';
-import { createMsg } from '../../../../store/comms/action';
+import { createMsg, resetCommsResponseState } from '../../../../store/comms/action';
 import { getError } from '../../../../helpers/errorHelper';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -69,6 +69,12 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     }
   }, [coordinates, validCoords]);
 
+  //Clear success states on component unmount
+  useEffect(() => {
+    return () => {
+      dispatch(resetCommsResponseState());
+    };
+  }, []);
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date =>
