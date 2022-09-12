@@ -9,12 +9,10 @@ import SortSection from './Components/SortSection';
 import MapSection from './Components/Map';
 import PeopleList from './Components/PeopleList';
 import { getAllPeople, resetPeopleResponseState } from '../../../store/people/action';
-import { getBoundingBox, getViewState } from '../../../helpers/mapHelper';
-import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
+import { getBoundingBox, getViewState, getIconLayer } from '../../../helpers/mapHelper';
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
-import { getIconColorFromContext } from '../../../helpers/mapHelper';
 
 const People = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -38,36 +36,6 @@ const People = () => {
   const [newHeight, setNewHeight] = useState(600);
 
   const dispatch = useDispatch();
-
-  const getIconLayer = (alerts) => {
-    const data = alerts.map((alert) => {
-      const {
-        geometry,
-        ...properties
-      } = alert;
-      return {
-        type: 'Feature',
-        properties: properties,
-        geometry: geometry,
-      };
-    });
-
-    return new GeoJsonPinLayer({
-      data,
-      dispatch,
-      setViewState,
-      getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.PEOPLE,feature),
-      icon: 'people',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18,-18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
 
   useEffect(() => {
     const dateRangeParams = dateRange
@@ -99,7 +67,7 @@ const People = () => {
 
   useEffect(() => {
     if (allPeople.length > 0) {
-      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE));
+      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState));
       if (!viewState) {
         setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
       }

@@ -8,7 +8,7 @@ import { Popup } from 'react-map-gl';
 import { formatDate } from '../../../store/utility';
 
 const Tooltip = ({ object = {}, coordinate }) => {
-  const { id, description, location, direction, last_update } = object.properties;
+  const { id, description, location, direction, last_update } = object;
   return (
     <Popup
       longitude={coordinate[0]}

@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
-import { 
-  area as getFeatureArea, 
-  featureCollection 
+import {
+  area as getFeatureArea,
+  featureCollection
 } from '@turf/turf';
 import wkt from 'wkt';
 import { FieldArray, Formik } from 'formik';
@@ -17,7 +17,7 @@ import {
   getAllMapRequests
 } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css'
-import moment from  'moment';
+import moment from 'moment';
 
 // 40,000 km2 = 40 million m2
 const MAX_GEOMETRY_AREA = {
@@ -35,9 +35,9 @@ const TABLE_HEADERS = [
 ];
 
 const PROBABILITY_RANGES = [
-  {label: '50%', value: 0.5}, 
-  {label: '75%', value: 0.75}, 
-  {label: '90%', value: 0.9}
+  { label: '50%', value: 0.5 },
+  { label: '75%', value: 0.75 },
+  { label: '90%', value: 0.9 }
 ];
 
 Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
@@ -58,6 +58,8 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
 
 const WildfireSimulationSchema = Yup.object().shape({
   simulationTitle: Yup.string()
+    .required('This field cannot be empty'),
+  simulationDescription: Yup.string()
     .required('This field cannot be empty'),
   simulationTimeLimit: Yup.number()
     .typeError('This field must be a number')
@@ -151,6 +153,7 @@ const WildfireSimulation = ({
       geometry: transformedGeometry,
       title: formData.simulationTitle,
       parameters: {
+        description: formData.simulationDescription,
         start: startDateTime,
         end: endDateTime,
         time_limit: +formData.simulationTimeLimit,
@@ -184,6 +187,7 @@ const WildfireSimulation = ({
           <Formik
             initialValues={{
               simulationTitle: '',
+              simulationDescription: '',
               probabilityRange: 0.75,
               mapSelection: '',
               mapSelectionArea: null,
@@ -255,6 +259,28 @@ const WildfireSimulation = ({
                           {getError('simulationTitle', errors, touched, false)}
                         </FormGroup>
                       </Row>
+
+                      <Row>
+                        <FormGroup className="form-group">
+                          <Label for="simulationDescription">
+                            {t('Simulation Description')}
+                          </Label>
+                          <Input
+                            id="simulationDescription"
+                            name="simulationDescription"
+                            type="textarea"
+                            rows="2"
+                            className={
+                              errors.simulationDescription ? 'is-invalid' : null
+                            }
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.simulationDescription}
+                            placeholder="Simulation description"
+                          />
+                          {getError('simulationDescription', errors, touched, false)}
+                        </FormGroup>
+                      </Row>
                     </div>
 
                     <Row>
@@ -270,7 +296,7 @@ const WildfireSimulation = ({
                           </Label>
                         </Row>
                         <Row className='d-flex justify-content-start flex-nowrap gap-2'>
-                          {PROBABILITY_RANGES.map(({label, value}) => (
+                          {PROBABILITY_RANGES.map(({ label, value }) => (
                             <Label
                               key={label}
                               id={label}

@@ -21,7 +21,8 @@ const UpdateProfile = ({t}) => {
   toastr.options = {
     preventDuplicates: true,
   }
-  const {id} = useSelector(state => state.auth.user);
+
+  const { id } = useSelector(state => state.user.info);
   const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus, info:user, defaultAoi } = useSelector(state => state.user);
   const { orgList = [], roleList:roles = [] } = useSelector(state => state.common);
   const [modal_backdrop, setmodal_backdrop] = useState(false);
