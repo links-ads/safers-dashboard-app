@@ -13,7 +13,7 @@ import DataLayerInformation from './DataLayerInformation';
 const OnDemandDataLayer = ({ 
   t,
   mapRequests,
-  sourceOptions,
+  onDemandSourceOptions,
   domainOptions,
   setActiveTab,
   setCurrentLayer,
@@ -141,7 +141,7 @@ const OnDemandDataLayer = ({
                     value={layerSource}
                   >
                     <option value={''} >Source: All</option>
-                    {sourceOptions?.map((option) => (
+                    {onDemandSourceOptions?.map((option) => (
                       <option key={option} value={option}>
                           Source: {option}
                       </option>
@@ -239,7 +239,7 @@ const OnDemandDataLayer = ({
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
   mapRequests: PropTypes.any,
-  sourceOptions: PropTypes.array,
+  onDemandSourceOptions: PropTypes.array,
   domainOptions: PropTypes.array,
   setActiveTab: PropTypes.func,
   setCurrentLayer: PropTypes.any,

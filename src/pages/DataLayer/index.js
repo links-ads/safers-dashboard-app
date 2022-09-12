@@ -53,7 +53,7 @@ const DataLayerDashboard = () => {
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
   const [timestamp, setTimestamp] = useState('')
 
-  const { sourceOptions, domainOptions } = selectOptions;
+  const { operationalSourceOptions, domainOptions } = selectOptions;
 
   // This is to prevent the component from automatically updating
   // when new map requests appear in global state (should show toast)
@@ -66,11 +66,11 @@ const DataLayerDashboard = () => {
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
     (async () => {
-      const [sourceOptions, domainOptions] = await Promise.all([
+      const [operationalSourceOptions, domainOptions] = await Promise.all([
         fetchEndpoint('/data/layers/sources'), 
         fetchEndpoint('/data/layers/domains')
       ])
-      setSelectOptions({ sourceOptions, domainOptions });
+      setSelectOptions({ operationalSourceOptions, domainOptions });
     })()
   }, [])
 
@@ -308,7 +308,6 @@ const DataLayerDashboard = () => {
     t,
     layerSource,
     setLayerSource,
-    sourceOptions,
     domainOptions,
     currentLayer,
     setCurrentLayer,
@@ -390,6 +389,7 @@ const DataLayerDashboard = () => {
                 source: layerSource, 
                 domain: dataDomain
               })}
+              operationalSourceOptions={operationalSourceOptions}
               dispatch={dispatch}
               metaData={metaData}
               isMetaDataLoading={isMetaDataLoading}
@@ -402,6 +402,8 @@ const DataLayerDashboard = () => {
                 source: layerSource, 
                 domain: dataDomain
               })}
+              // TODO: update when API is ready
+              onDemandSourceOptions={[]}
               dispatch={dispatch}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
