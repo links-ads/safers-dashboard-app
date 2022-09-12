@@ -54,6 +54,9 @@ export const getPolygonLayer = (aoi) => {
 
 export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
   let color = GRAY;
+  console.log('A feature==>', feature);
+  console.log('B selectedalert==>', selectedItem);
+  console.log('C isSelected==>', feature?.isSelected);
   if ( feature.properties.id === selectedItem.id ) {
     color=ORANGE;
   } else if (feature?.status==='Created' || feature?.status==='Active' || feature?.status === 'Ongoing') {
@@ -63,7 +66,6 @@ export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
   }
   return color;
 }
-
 
 export const getAsGeoJSON = (data) => {
   return data.map((datum) => {

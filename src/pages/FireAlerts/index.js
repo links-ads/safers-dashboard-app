@@ -88,7 +88,7 @@ const FireAlerts = ({ t }) => {
 
   useEffect(() => {
     setAlertId(undefined);
-    setIconLayer(getFireAlertLayer(filteredAlerts));
+    setIconLayer(getFireAlertLayer(filteredAlerts, {}));
     if (!viewState) {
       setViewState(
         getViewState(
@@ -148,7 +148,7 @@ const FireAlerts = ({ t }) => {
 
   const updatePage = (page) => {
     setAlertId(undefined);
-    setIconLayer(getFireAlertLayer(filteredAlerts));
+    setIconLayer(getFireAlertLayer(filteredAlerts, {}));
     setCurrentPage(page);
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
@@ -176,10 +176,17 @@ const FireAlerts = ({ t }) => {
   };
 
   const setSelectedAlert = (id, isEdit) => {
+    console.log(`in getSelectedAlert(${id})`);
     if (id) {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
+      console.log('clonedAlerts', clonedAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
+      console.log('selectedAlert is', selectedAlert);
       selectedAlert.isSelected = true;
+      console.log('id is', id);
+      setAlertId(id);
+      console.log('set selectedAlertId to', alertId);
+      
       setIsEdit(isEdit);
       !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged
         ? setViewState(
@@ -195,38 +202,49 @@ const FireAlerts = ({ t }) => {
           object: selectedAlert,
           coordinate: selectedAlert.center,
         });
-      setAlertId(id);
-      setIconLayer(getFireAlertLayer(clonedAlerts));
+      // setAlertId(id);
+      // console.log('set selectedAlertId to', alertId);
+      setIconLayer(getFireAlertLayer(clonedAlerts, selectedAlert));
     } else {
       setAlertId(undefined);
-      setIconLayer(getFireAlertLayer(filteredAlerts));
+      setIconLayer(getFireAlertLayer(filteredAlerts, {}));
     }
   };
 
-  const getFireAlertLayer = (alerts) => {
+  const getFireAlertLayer = (alerts, selectedAlert) => {
+    console.log('selected alert', selectedAlert)
+    console.log('alerts', alerts);
     const data = alerts.map((alert) => {
+      console.log('alert:', alert);
       const {
         center,
+        id, // added
         ...properties
       } = alert;
       return {
         type: 'Feature',
         properties: {
-          properties,
+          //..properties,
+          ...properties
         },
+        //...properties,
+        newid: id, // pass in the corresponding id in UUID format
         geometry: {
           type: 'Point',
           coordinates: center
         },
       };
     });
-
+    console.log('selectedAlert.id', selectedAlert?.id);
+    const selectedFeature = data.find(item => item.newid === selectedAlert.id);
+    console.log('data', data);
+    console.log('selectedFeature!!!', selectedFeature);
     return new GeoJsonPinLayer({
       data,
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.Alert,feature),
+      getPinColor: feature => getIconColorFromContext(MAP_TYPES.Alert,feature, selectedFeature),
       icon: 'fire',
       iconColor: '#ffffff',
       clusterIconSize: 35,
@@ -269,7 +287,7 @@ const FireAlerts = ({ t }) => {
   };
 
   const renderTooltip = (info) => {
-    console.log('renderTooltip info', info);
+    //console.log('renderTooltip info', info);
     const { object, coordinate } = info;
     if (object) {
       return (
