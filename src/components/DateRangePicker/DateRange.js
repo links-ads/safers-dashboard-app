@@ -41,8 +41,8 @@ const DateComponent = ({
           placeholder={placeholder ? placeholder : 'dd/mm/yy'}
           ref={fp}
           onChange={(dates) => {
-            if (dates.length > 1) setDates(dates)
-            else if (dates.length === 0) clearDates()
+            dates.length > 1 && setDates(dates);
+            dates.length == 0 && clearDates();
           }}
           disabled={isDateRangeDisabled}
           options={{
