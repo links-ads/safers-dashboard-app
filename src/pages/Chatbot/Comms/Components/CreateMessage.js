@@ -10,7 +10,7 @@ import {
 } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import MapInput from '../../../../components/BaseMap/MapInput';
-import { createMsg } from '../../../../store/comms/action';
+import { createMsg, resetCommsResponseState } from '../../../../store/comms/action';
 import { getError } from '../../../../helpers/errorHelper';
 
 import { useDispatch, useSelector } from 'react-redux';
@@ -58,16 +58,23 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     if (msgCreated) {
       toastr.success(msgCreated.msg, '');
       resetState();
+      onCancel();
     }
 
   }, [msgCreated]);
 
   useEffect(() => {
-    if (dateRange) {// On blur validation after setting values
-      validate();
+    if(coordinates){
+      validateCoord();
     }
+  }, [coordinates, validCoords]);
 
-  }, [scope, dateRange, desc, restriction, coordinates, validCoords]);
+  //Clear success states on component unmount
+  useEffect(() => {
+    return () => {
+      dispatch(resetCommsResponseState());
+    };
+  }, []);
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date =>
@@ -75,32 +82,61 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     );
   }
 
-
-  const validate = () => {
-    let errors = {};
-
-    if (!desc)
-      errors['desc'] = 'This field is required';
-
-    if (!scope || scope === '')
-      errors['scope'] = 'This field is required';
-
+  const validateRestriction = (returnErr=false) => {
+    const tempError = {...errors};
     if (scope && scope == 'Restricted' && (!restriction || restriction === '')) {
-      errors['restriction'] = 'This field is required';
+      tempError['restriction'] = 'This field is required';
+    } 
+    else {
+      delete tempError['restriction'];
     }
+    if(returnErr){
+      return tempError;
+    }
+    setErrors(tempError);
+  }
 
-    if (!coordinates) {
-      errors['coordinates'] = 'Please select your area on the map';
+  const validateCoord = (returnErr=false) => {
+    const tempError = {...errors};
+    if (!coordinates || coordinates === '') {
+      tempError['coordinates'] = t('Select Area', { ns: 'chatBot' });
     }
     else if (!validCoords) {
-      errors['coordinates'] = 'Please correct your coordinates';
+      tempError['coordinates'] = t('Correct Coordinates', { ns: 'chatBot' });
+    }
+    else {
+      delete tempError['coordinates'];
     }
 
+    if(returnErr){
+      return tempError
+    }
+    setErrors(tempError);
+  }
 
-    if (!dateRange)
-      errors['dateRange'] = 'Please select start/end date';
+  const validateField = (attrib, val, returnErr=false) => {
+    const tempError = {...errors};
+    if(!val || val == ''){
+      tempError[attrib] = attrib === 'dateRange' ? t('Select Date', { ns: 'chatBot' }) : t('This field is required');
+    }
+    else {
+      delete tempError[attrib];
+    }
 
-    setErrors(errors);
+    if(returnErr){
+      return tempError
+    }
+    setErrors(tempError);
+  }
+
+  const validate = () => {
+    const valDateRange = validateField('dateRange', dateRange, true);
+    const valDesc = validateField('desc', desc, true);
+    const valScope = validateField('scope', scope, true);
+    const valRestriction =  validateRestriction(true);
+    const valCoordinates = validateCoord(true);
+    const tempErrors = {...valDateRange, ...valDesc, ...valScope, ...valRestriction, ...valCoordinates};
+    setErrors(tempErrors);
   }
 
   const submitMsg = () => {
@@ -123,11 +159,12 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       <FormGroup className="form-group mt-3">
         <DateRangePicker
           type='text'
-          placeholder='Start Date | End date'
+          placeholder={t('Start Date | End date')}
           className={`${getError('dateRange', errors, errors)}`}
           setDates={handleDateRangePicker}
           isTooltipInput={true}
           showIcons={true}
+          onChange={(dates) => {validateField('dateRange', dates)}}
         />
         {getError('dateRange', errors, errors, false)}
       </FormGroup>
@@ -137,15 +174,16 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           className={`${getError('coordinates', errors, errors)}`}
           type='textarea'
           name="coordinates-value"
-          placeholder='Map Selection, please edit and draw on the map'
+          placeholder={t('Map Selection', { ns: 'chatBot' })}
           rows="10"
           coordinates={coordinates}
           setCoordinates={setCoordinates}
           isValidFormat={isValidCoordFormat}
+          onBlur={()=> { validateCoord(); }}
         />
         {getError('coordinates', errors, errors, false)}
       </FormGroup>
-      <Label className='form-label mt-3 mb-0'>{t('Organisation')}: {orgName}</Label>
+      <Label className='form-label mt-3 mb-0'>{t('Organization')}: {orgName}</Label>
       <Row className='my-3'>
         <Col xl={1} md={2}><Label htmlFor="target">{t('Target')}: </Label></Col>
         <Col xl={5} className="pe-xl-0 text-center">
@@ -155,6 +193,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
             name="scope"
             type="select"
             onChange={(e) => { setScope(e.target.value) }}
+            onBlur={(e) => {validateField('scope', e.target.value)}}
           >
             <option value="">--{t('Scope')}--</option>
             <option value="Public">{t('Public')}</option>
@@ -169,6 +208,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
             name="restriction"
             type="select"
             onChange={(e) => { setRestriction(e.target.value) }}
+            onBlur={validateRestriction}
             value={restriction}
           >
             <option value="">--{t('Restrictions')}--</option>
@@ -185,8 +225,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           className={`${getError('desc', errors, errors)}`}
           type='textarea'
           name="message-description"
-          placeholder='Message Description'
+          placeholder={t('Message Description', { ns: 'chatBot' })}
           onChange={(e) => { setDesc(e.target.value); }}
+          onBlur={(e) => {validateField('desc', e.target.value)}}
           rows="10"
         />
         {getError('desc', errors, errors, false)}
@@ -196,14 +237,14 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           type="button"
           onClick={onCancel}
         >
-          Cancel
+          {t('Cancel')}
         </Button>
         <Button
           type="button"
           className="mx-3"
           onClick={submitMsg}
         >
-          Send
+          {t('Send')}
         </Button>
       </div>
     </>

@@ -1,14 +1,9 @@
-import { FlyToInterpolator, IconLayer } from 'deck.gl';
+import { FlyToInterpolator } from 'deck.gl';
 import { PolygonLayer } from '@deck.gl/layers';
-import firePin from '../assets/images/atoms-general-icon-fire-drop.png'
-import locationPin from '../assets/images/map/map.png';
-import { MAP_TYPES } from '../constants/common';
+import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
-const ICON_MAPPING = {
-  marker: { x: 0, y: 0, width: 100, height: 100, mask: true }
-};
 
 const ORANGE = [226, 123, 29];
 const GRAY = [128, 128, 128];
@@ -57,57 +52,51 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconColorFromContext = (mapType, feature) => {
-  let color = [127,127,127];
-  switch (mapType) {
-  case MAP_TYPES.REPORTS:
-    color = feature?.isSelected ? ORANGE : DARK_GRAY;
-    break;
-  case MAP_TYPES.IN_SITU:
-    color = feature?.isSelected ? ORANGE : DARK_GRAY;
-    break;
-  default:
-    color = feature?.isSelected ? ORANGE : feature?.status == 'CLOSED' ? GRAY : RED;
+export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
+  let color = GRAY;
+  if ( feature.properties.id === selectedItem.id ) {
+    color=ORANGE;
+  } else if (feature?.status==='Created' || feature?.status==='Active' || feature?.status === 'Ongoing') {
+    color=RED;
+  } else if (feature?.status==='Closed' || feature?.status==='Inactive' || feature?.status==='Expired') {
+    color=DARK_GRAY;
   }
   return color;
 }
 
-export const getIconLayer = (alerts, mapType = MAP_TYPES.alerts, customIcon = '', customData = {}) => {
-  const icon = customIcon? customIcon : (mapType == MAP_TYPES.REPORTS || MAP_TYPES.IN_SITU ? locationPin : firePin)
-  return (new IconLayer({
-    data: alerts,
-    pickable: true,
-    getPosition: d => {
-      switch (mapType) {
-      case MAP_TYPES.EVENTS:
-        return d.center
-        // case MAP_TYPES.REPORTS:
-        //   return d.location
-      default:
-        return d.geometry.coordinates;
-      }
-    },
-    iconAtlas: icon,
-    iconMapping: ICON_MAPPING,
-    // onHover: !hoverInfo.objects && setHoverInfo,
-    id: 'icon',
-    getIcon: () => 'marker',
-    getColor: d => {
-      switch (mapType) {
-      case MAP_TYPES.REPORTS:
-        return (d.isSelected ? ORANGE : DARK_GRAY);
-      case MAP_TYPES.IN_SITU:
-        return (d.isSelected ? ORANGE : DARK_GRAY);
-      default:
-        return (d.isSelected ? ORANGE : d.status == 'CLOSED' ? GRAY : RED);
-      }
-    },
-    sizeMinPixels: 80,
-    sizeMaxPixels: 100,
-    sizeScale: 0.5,
-    ...customData
-  }))
+
+export const getAsGeoJSON = (data) => {
+  return data.map((datum) => {
+    const {
+      geometry,
+      ...properties
+    } = datum;
+    return {
+      type: 'Feature',
+      properties,
+      geometry,
+    };
+  });
 }
+
+export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem={}) => {
+  const data = getAsGeoJSON(alerts);
+  return new GeoJsonPinLayer({
+    data,
+    dispatch,
+    setViewState,
+    getPosition: (feature) => feature.geometry.coordinates,
+    getPinColor: feature => getIconColorFromContext(mapType,feature, selectedItem),
+    icon: markerName,
+    iconColor: '#ffffff',
+    clusterIconSize: 35,
+    getPinSize: () => 35,
+    pixelOffset: [-18,-18],
+    pinSize: 25,
+    onGroupClick: true,
+    onPointClick: true,
+  });
+};
 
 const toRadians = (degrees) => {
   return degrees * Math.PI / 180;

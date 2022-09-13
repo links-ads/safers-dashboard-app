@@ -106,6 +106,7 @@ const setFavoriteFail = (state) => {
 const resetMissionResponseState = (state) => {
   const updatedState = {
     error: false,
+    missionCreated: null,
     success: null
   }
   return updateObject(state, updatedState);

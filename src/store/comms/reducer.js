@@ -71,6 +71,7 @@ const setFilters = (state, action) => {
 const resetCommsResponseState = (state) => {
   const updatedState = {
     error: false,
+    msgCreated: null,
     success: null
   }
   return updateObject(state, updatedState);
