@@ -5,10 +5,10 @@ import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
 
-export const ORANGE = [226, 123, 29];
-export const GRAY = [128, 128, 128];
-export const RED = [230, 51, 79];
-export const DARK_GRAY = [57, 58, 58];
+const ORANGE = [226, 123, 29];
+const GRAY = [128, 128, 128];
+const RED = [230, 51, 79];
+const DARK_GRAY = [57, 58, 58];
 
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
   return {
@@ -54,21 +54,7 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
-  // used in chatbot modules
-  let color = GRAY;
-  if ( feature.properties.id === selectedItem.id ) {
-    color=ORANGE;
-  } else if (feature?.status==='Created' || feature?.status==='Active' || feature?.status === 'Ongoing') {
-    color=RED;
-  } else if (feature?.status==='Closed' || feature?.status==='Inactive' || feature?.status==='Expired') {
-    color=DARK_GRAY;
-  }
-  return color;
-}
-
 export const getAlertIconColorFromContext = (mapType, feature, selectedItem={}) => {
-  // used in Fire Alert and Events
   let color = GRAY;
   if ( feature.properties.id === selectedItem.id ) {
     color=ORANGE;
@@ -102,7 +88,7 @@ export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setV
     dispatch,
     setViewState,
     getPosition: (feature) => feature.geometry.coordinates,
-    getPinColor: feature => getIconColorFromContext(mapType,feature, selectedItem),
+    getPinColor: feature => getAlertIconColorFromContext(mapType,feature, selectedItem),
     icon: markerName,
     iconColor: '#ffffff',
     clusterIconSize: 35,

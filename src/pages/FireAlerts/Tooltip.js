@@ -32,7 +32,6 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, v
     setFavToggle(object.favorite);
   }, [object.favorite]);
 
-  
   return (
     <Popup
       longitude={coordinate[0]}

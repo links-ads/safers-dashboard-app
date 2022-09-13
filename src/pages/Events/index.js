@@ -19,10 +19,12 @@ import {
   setFilteredEventAlerts,
   setEventFavoriteAlert
 } from '../../store/appAction';
-import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState, getAlertIconColorFromContext } from '../../helpers/mapHelper';
 import { PAGE_SIZE, SET_FAV_EVENT_ALERT_SUCCESS } from '../../store/events/types';
 import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import { ORANGE, RED, GRAY } from '../../helpers/mapHelper';
+import { MAP_TYPES } from '../../constants/common';
+
+
 //i18n
 import { withTranslation } from 'react-i18next'
 
@@ -72,16 +74,7 @@ const EventAlerts = ({ t }) => {
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => {
-        console.log('feature', feature);
-        let color=GRAY;
-        if (feature.properties.id === selectedAlert.id) {
-          return ORANGE;
-        } else if (feature?.properties?.status==='Created' || feature?.properties?.status==='Active' || feature?.properties?.status === 'Ongoing') {
-          color=RED;
-        } 
-        return color;
-      },
+      getPinColor: feature =>  getAlertIconColorFromContext(MAP_TYPES.ALERTS, feature, selectedAlert),
       icon: 'flag',
       iconColor: '#ffffff',
       clusterIconSize: 35,
@@ -282,7 +275,7 @@ const EventAlerts = ({ t }) => {
           </Col>
         </Row>
       </div>
-    </div >
+    </div>
   );
 }
 
