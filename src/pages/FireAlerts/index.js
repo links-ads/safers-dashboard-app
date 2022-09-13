@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -58,7 +59,6 @@ const FireAlerts = ({ t }) => {
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
 
-  console.log('hoverinfo', hoverInfo);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -180,24 +180,17 @@ const FireAlerts = ({ t }) => {
   };
 
   const setSelectedAlert = (id, isEdit) => {
-    //console.log(`in getSelectedAlert(${id})`);
     if (id) {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
-      //console.log('clonedAlerts', clonedAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
-      console.log('selectedAlert is', selectedAlert);
       selectedAlert.isSelected = true;
-      //console.log('id is', id);
-      setAlertId(id);
-      //console.log('set selectedAlertId to', alertId);
-      
+      setAlertId(id);      
       const obj = {
         object: {
           properties: selectedAlert
         },
         coordinate: selectedAlert.center,
       };
-      console.log('obj', obj);
       setIsEdit(isEdit);
       !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged
         ? setViewState(
@@ -211,8 +204,8 @@ const FireAlerts = ({ t }) => {
         )
         : setHoverInfo(obj);
       // setAlertId(id);
-      // console.log('set selectedAlertId to', alertId);
       setIconLayer(getFireAlertLayer(clonedAlerts, selectedAlert));
+      
     } else {
       setAlertId(undefined);
       setIconLayer(getFireAlertLayer(filteredAlerts, {}));
@@ -220,10 +213,8 @@ const FireAlerts = ({ t }) => {
   };
 
   const getFireAlertLayer = (alerts, selectedAlert) => {
-    console.log('selected alert', selectedAlert)
-    //console.log('alerts', alerts);
+    console.log('selectedAlert', selectedAlert);
     const data = alerts.map((alert) => {
-      //console.log('alert:', alert);
       const {
         center,
         id, // added
@@ -233,6 +224,7 @@ const FireAlerts = ({ t }) => {
         type: 'Feature',
         properties: {
           //..properties,
+          id,
           ...properties
         },
         //...properties,
@@ -243,19 +235,19 @@ const FireAlerts = ({ t }) => {
         },
       };
     });
-    //console.log('selectedAlert.id', selectedAlert?.id);
-    //const selectedFeature = data.find(item => item.newid === selectedAlert.id);
-    //console.log('data', data);
-    //console.log('selectedFeature!!!', selectedFeature);
     return new GeoJsonPinLayer({
       data,
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      //getPinColor: feature => getIconColorFromContext(MAP_TYPES.ALERTS, feature, selectedAlert),
       getPinColor: feature => {
         console.log('feature', feature);
         let color=GRAY;
+        if (feature.properties.id === selectedAlert.id) {
+          return ORANGE;
+        } else if (feature?.properties?.status==='Created' || feature?.properties?.status==='Active' || feature?.properties?.status === 'Ongoing') {
+          color=RED;
+        } 
         return color;
       },
       pickable: true,
@@ -300,7 +292,6 @@ const FireAlerts = ({ t }) => {
   };
 
   const renderTooltip = (info) => {
-    console.log('renderTooltip info', info);
     const { object, coordinate } = info;
     if (object) {
       return (

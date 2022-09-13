@@ -56,19 +56,13 @@ export const getPolygonLayer = (aoi) => {
 
 export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
   let color = GRAY;
-  //console.log('maptype', mapType);
-  //console.log('A feature==>', feature);
-  //console.log('B selecteditem==>', selectedItem);
-  //console.log('C isSelected==>', feature?.isSelected);
   if ( feature.properties.id === selectedItem.id ) {
-    //console.log('hello world');
     color=ORANGE;
   } else if (feature?.status==='Created' || feature?.status==='Active' || feature?.status === 'Ongoing') {
     color=RED;
   } else if (feature?.status==='Closed' || feature?.status==='Inactive' || feature?.status==='Expired') {
     color=DARK_GRAY;
   }
-  //('color', color);
   return color;
 }
 

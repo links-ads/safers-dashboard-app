@@ -78,18 +78,14 @@ export class PinLayer extends CompositeLayer {
           info.object
         );
         if (mode !== 'hover') {
-          //console.log('getPickingInfo() and clicked', info);
           info.objects = this.state.index.getLeaves(
             info.object.properties.cluster_id,
             Infinity
           );
-          //console.log('picked cluster object', info);
         }
       }
     }
-    //console.log('picked leaf object', info);
     return info;
-    //return info.object;
   }
 
   // ===== Pin/Cluster Layer Functions =====

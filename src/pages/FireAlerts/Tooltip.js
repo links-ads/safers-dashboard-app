@@ -19,7 +19,6 @@ import { formatDate } from '../../store/utility';
 import { withTranslation } from 'react-i18next'
 
 const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, validateEvent, editInfo, t }) => {
-  //console.log('tooltip object', object);
   const [confirmEventToggle, setConfirmEventToggle] = useState(false);
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState(object.favorite);
