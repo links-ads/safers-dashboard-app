@@ -5,10 +5,10 @@ import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
 
-const ORANGE = [226, 123, 29];
-const GRAY = [128, 128, 128];
-const RED = [230, 51, 79];
-const DARK_GRAY = [57, 58, 58];
+export const ORANGE = [226, 123, 29];
+export const GRAY = [128, 128, 128];
+export const RED = [230, 51, 79];
+export const DARK_GRAY = [57, 58, 58];
 
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
   return {
@@ -23,7 +23,9 @@ export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInf
     onTransitionEnd: () => {
       if (selectedAlert) {
         setHoverInfoRef({
-          object: selectedAlert,
+          object: {
+            properties: selectedAlert,
+          },
           coordinate: selectedAlert?.center || selectedAlert?.geometry?.coordinates
         });
         setViewStateChangeRef(false);
@@ -54,16 +56,19 @@ export const getPolygonLayer = (aoi) => {
 
 export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
   let color = GRAY;
-  console.log('A feature==>', feature);
-  console.log('B selectedalert==>', selectedItem);
-  console.log('C isSelected==>', feature?.isSelected);
+  //console.log('maptype', mapType);
+  //console.log('A feature==>', feature);
+  //console.log('B selecteditem==>', selectedItem);
+  //console.log('C isSelected==>', feature?.isSelected);
   if ( feature.properties.id === selectedItem.id ) {
+    //console.log('hello world');
     color=ORANGE;
   } else if (feature?.status==='Created' || feature?.status==='Active' || feature?.status === 'Ongoing') {
     color=RED;
   } else if (feature?.status==='Closed' || feature?.status==='Inactive' || feature?.status==='Expired') {
     color=DARK_GRAY;
   }
+  //('color', color);
   return color;
 }
 

@@ -11,6 +11,7 @@ import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import SearchButton from '../../components/SearchButton';
+import { ORANGE, RED, GRAY, DARK_GRAY } from '../../helpers/mapHelper';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 import {
@@ -29,7 +30,7 @@ import Tooltip from './Tooltip';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types';
 import { MAP_TYPES } from '../../constants/common';
 import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import { getIconColorFromContext } from '../../helpers/mapHelper'
+//import { getIconColorFromContext } from '../../helpers/mapHelper'
 
 const PAGE_SIZE = 4;
 
@@ -57,6 +58,7 @@ const FireAlerts = ({ t }) => {
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
 
+  console.log('hoverinfo', hoverInfo);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -115,7 +117,9 @@ const FireAlerts = ({ t }) => {
         selectedAlert.favorite = !selectedAlert.favorite;
         hoverInfo.object &&
           setHoverInfo({
-            object: selectedAlert,
+            object: {
+              properies: selectedAlert,
+            },
             coordinate: selectedAlert.center,
           });
         const to = PAGE_SIZE * currentPage;
@@ -176,17 +180,24 @@ const FireAlerts = ({ t }) => {
   };
 
   const setSelectedAlert = (id, isEdit) => {
-    console.log(`in getSelectedAlert(${id})`);
+    //console.log(`in getSelectedAlert(${id})`);
     if (id) {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
-      console.log('clonedAlerts', clonedAlerts);
+      //console.log('clonedAlerts', clonedAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       console.log('selectedAlert is', selectedAlert);
       selectedAlert.isSelected = true;
-      console.log('id is', id);
+      //console.log('id is', id);
       setAlertId(id);
-      console.log('set selectedAlertId to', alertId);
+      //console.log('set selectedAlertId to', alertId);
       
+      const obj = {
+        object: {
+          properties: selectedAlert
+        },
+        coordinate: selectedAlert.center,
+      };
+      console.log('obj', obj);
       setIsEdit(isEdit);
       !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged
         ? setViewState(
@@ -198,10 +209,7 @@ const FireAlerts = ({ t }) => {
             setIsViewStateChanged
           )
         )
-        : setHoverInfo({
-          object: selectedAlert,
-          coordinate: selectedAlert.center,
-        });
+        : setHoverInfo(obj);
       // setAlertId(id);
       // console.log('set selectedAlertId to', alertId);
       setIconLayer(getFireAlertLayer(clonedAlerts, selectedAlert));
@@ -213,9 +221,9 @@ const FireAlerts = ({ t }) => {
 
   const getFireAlertLayer = (alerts, selectedAlert) => {
     console.log('selected alert', selectedAlert)
-    console.log('alerts', alerts);
+    //console.log('alerts', alerts);
     const data = alerts.map((alert) => {
-      console.log('alert:', alert);
+      //console.log('alert:', alert);
       const {
         center,
         id, // added
@@ -235,16 +243,22 @@ const FireAlerts = ({ t }) => {
         },
       };
     });
-    console.log('selectedAlert.id', selectedAlert?.id);
-    const selectedFeature = data.find(item => item.newid === selectedAlert.id);
-    console.log('data', data);
-    console.log('selectedFeature!!!', selectedFeature);
+    //console.log('selectedAlert.id', selectedAlert?.id);
+    //const selectedFeature = data.find(item => item.newid === selectedAlert.id);
+    //console.log('data', data);
+    //console.log('selectedFeature!!!', selectedFeature);
     return new GeoJsonPinLayer({
       data,
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.Alert,feature, selectedFeature),
+      //getPinColor: feature => getIconColorFromContext(MAP_TYPES.ALERTS, feature, selectedAlert),
+      getPinColor: feature => {
+        console.log('feature', feature);
+        let color=GRAY;
+        return color;
+      },
+      pickable: true,
       icon: 'fire',
       iconColor: '#ffffff',
       clusterIconSize: 35,
@@ -278,7 +292,6 @@ const FireAlerts = ({ t }) => {
   const showTooltip = (info) => {
     console.log('showTooltip', info);
     if (info.picked && info.object) {
-      console.log('picked and object');
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
     } else {
@@ -287,13 +300,13 @@ const FireAlerts = ({ t }) => {
   };
 
   const renderTooltip = (info) => {
-    //console.log('renderTooltip info', info);
+    console.log('renderTooltip info', info);
     const { object, coordinate } = info;
     if (object) {
       return (
         <Tooltip
           key={object.id}
-          object={object}
+          object={object?.properties}
           coordinate={coordinate}
           isEdit={isEdit}
           setIsEdit={setIsEdit}
