@@ -55,6 +55,7 @@ export const getPolygonLayer = (aoi) => {
 }
 
 export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
+  // used in chatbot modules
   let color = GRAY;
   if ( feature.properties.id === selectedItem.id ) {
     color=ORANGE;
@@ -65,6 +66,20 @@ export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
   }
   return color;
 }
+
+export const getAlertIconColorFromContext = (mapType, feature, selectedItem={}) => {
+  // used in Fire Alert and Events
+  let color = GRAY;
+  if ( feature.properties.id === selectedItem.id ) {
+    color=ORANGE;
+  } else if (feature?.properties?.status==='Created' || feature?.properties?.status==='Active' || feature?.properties?.status === 'Ongoing') {
+    color=RED;
+  } else if (feature?.properties?.status==='Closed' || feature?.properties?.status==='Inactive' || feature?.properties?.status==='Expired') {
+    color=DARK_GRAY;
+  }
+  return color;
+}
+
 
 export const getAsGeoJSON = (data) => {
   return data.map((datum) => {

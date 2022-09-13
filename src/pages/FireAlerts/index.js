@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import React, { useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +11,6 @@ import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import SearchButton from '../../components/SearchButton';
-import { ORANGE, RED, GRAY } from '../../helpers/mapHelper';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 import {
@@ -31,7 +29,7 @@ import Tooltip from './Tooltip';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types';
 import { MAP_TYPES } from '../../constants/common';
 import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-//import { getIconColorFromContext } from '../../helpers/mapHelper'
+import { getAlertIconColorFromContext } from '../../helpers/mapHelper'
 
 const PAGE_SIZE = 4;
 
@@ -90,7 +88,7 @@ const FireAlerts = ({ t }) => {
 
   useEffect(() => {
     setAlertId(undefined);
-    setIconLayer(getFireAlertLayer(filteredAlerts, {}));
+    setIconLayer(getFireAlertLayer(filteredAlerts));
     if (!viewState) {
       setViewState(
         getViewState(
@@ -152,7 +150,7 @@ const FireAlerts = ({ t }) => {
 
   const updatePage = (page) => {
     setAlertId(undefined);
-    setIconLayer(getFireAlertLayer(filteredAlerts, {}));
+    setIconLayer(getFireAlertLayer(filteredAlerts));
     setCurrentPage(page);
     const to = PAGE_SIZE * page;
     const from = to - PAGE_SIZE;
@@ -185,7 +183,7 @@ const FireAlerts = ({ t }) => {
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
       setAlertId(id);      
-      const obj = {
+      const pickedInfo = {
         object: {
           properties: selectedAlert
         },
@@ -202,17 +200,16 @@ const FireAlerts = ({ t }) => {
             setIsViewStateChanged
           )
         )
-        : setHoverInfo(obj);
-      // setAlertId(id);
+        : setHoverInfo(pickedInfo);
       setIconLayer(getFireAlertLayer(clonedAlerts, selectedAlert));
       
     } else {
       setAlertId(undefined);
-      setIconLayer(getFireAlertLayer(filteredAlerts, {}));
+      setIconLayer(getFireAlertLayer(filteredAlerts));
     }
   };
 
-  const getFireAlertLayer = (alerts, selectedAlert) => {
+  const getFireAlertLayer = (alerts, selectedAlert={}) => {
     const data = alerts.map((alert) => {
       const {
         center,
@@ -237,16 +234,7 @@ const FireAlerts = ({ t }) => {
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => {
-        let color=GRAY;
-        if (feature.properties.id === selectedAlert.id) {
-          return ORANGE;
-        } else if (feature?.properties?.status==='Created' || feature?.properties?.status==='Active' || feature?.properties?.status === 'Ongoing') {
-          color=RED;
-        } 
-        return color;
-      },
-      pickable: true,
+      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.ALERTS, feature, selectedAlert),
       icon: 'fire',
       iconColor: '#ffffff',
       clusterIconSize: 35,

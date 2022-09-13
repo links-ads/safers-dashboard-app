@@ -72,7 +72,6 @@ export class PinLayer extends CompositeLayer {
   getPickingInfo({ info, mode }) {
    
     if (info.picked) {
-      
       if (info.object.properties.cluster) {
         info.object.properties.expansion_zoom = this._getExpansionZoom(
           info.object

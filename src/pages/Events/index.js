@@ -51,7 +51,7 @@ const EventAlerts = ({ t }) => {
 
   const dispatch = useDispatch();
 
-  const getIconLayer = (alerts, selectedAlert) => {
+  const getIconLayer = (alerts, selectedAlert={}) => {
     const data = alerts.map((alert) => {
       const {
         geometry: { features },
@@ -122,7 +122,7 @@ const EventAlerts = ({ t }) => {
   }, [alerts]);
 
   useEffect(() => {
-    setIconLayer(getIconLayer(filteredAlerts, {}));
+    setIconLayer(getIconLayer(filteredAlerts));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }
@@ -196,7 +196,7 @@ const EventAlerts = ({ t }) => {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      const obj = {
+      const pickedInfo = {
         object: {
           properties: selectedAlert
         },
@@ -205,12 +205,12 @@ const EventAlerts = ({ t }) => {
       setIsEdit(isEdit);
       !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged ?
         setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo, setIsViewStateChanged))
-        : setHoverInfo(obj);
+        : setHoverInfo(pickedInfo);
       setAlertId(id);
       setIconLayer(getIconLayer(clonedAlerts, selectedAlert));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(filteredAlerts, {}));
+      setIconLayer(getIconLayer(filteredAlerts));
     }
   }
 
