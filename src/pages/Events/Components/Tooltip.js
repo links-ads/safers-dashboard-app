@@ -124,7 +124,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t
                         isTooltipInput={true}
                         date={endDate}
                       />
-                      : event && event.end_date ? formatDate(event.end_date) : 'not set'
+                      : event && event.end_date ? formatDate(event.end_date, 'YYYY-MM-DD') : 'not set'
                   }
                 </div>
               </CardSubtitle>
