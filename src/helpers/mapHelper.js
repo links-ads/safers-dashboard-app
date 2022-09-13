@@ -23,7 +23,9 @@ export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInf
     onTransitionEnd: () => {
       if (selectedAlert) {
         setHoverInfoRef({
-          object: selectedAlert,
+          object: {
+            properties: selectedAlert,
+          },
           coordinate: selectedAlert?.center || selectedAlert?.geometry?.coordinates
         });
         setViewStateChangeRef(false);
@@ -52,13 +54,13 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getIconColorFromContext = (mapType, feature, selectedItem={}) => {
+export const getAlertIconColorFromContext = (mapType, feature, selectedItem={}) => {
   let color = GRAY;
   if ( feature.properties.id === selectedItem.id ) {
     color=ORANGE;
-  } else if (feature?.status==='Created' || feature?.status==='Active' || feature?.status === 'Ongoing') {
+  } else if (feature?.properties?.status==='Created' || feature?.properties?.status==='Active' || feature?.properties?.status === 'Ongoing') {
     color=RED;
-  } else if (feature?.status==='Closed' || feature?.status==='Inactive' || feature?.status==='Expired') {
+  } else if (feature?.properties?.status==='Closed' || feature?.properties?.status==='Inactive' || feature?.properties?.status==='Expired') {
     color=DARK_GRAY;
   }
   return color;
@@ -86,7 +88,7 @@ export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setV
     dispatch,
     setViewState,
     getPosition: (feature) => feature.geometry.coordinates,
-    getPinColor: feature => getIconColorFromContext(mapType,feature, selectedItem),
+    getPinColor: feature => getAlertIconColorFromContext(mapType,feature, selectedItem),
     icon: markerName,
     iconColor: '#ffffff',
     clusterIconSize: 35,

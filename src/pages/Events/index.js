@@ -19,14 +19,14 @@ import {
   setFilteredEventAlerts,
   setEventFavoriteAlert
 } from '../../store/appAction';
-import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState, getAlertIconColorFromContext } from '../../helpers/mapHelper';
 import { PAGE_SIZE, SET_FAV_EVENT_ALERT_SUCCESS } from '../../store/events/types';
 import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import { getIconColorFromContext } from '../../helpers/mapHelper';
+import { MAP_TYPES } from '../../constants/common';
+
 
 //i18n
 import { withTranslation } from 'react-i18next'
-import { MAP_TYPES } from '../../constants/common';
 
 const EventAlerts = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -53,7 +53,7 @@ const EventAlerts = ({ t }) => {
 
   const dispatch = useDispatch();
 
-  const getIconLayer = (alerts) => {
+  const getIconLayer = (alerts, selectedAlert={}) => {
     const data = alerts.map((alert) => {
       const {
         geometry: { features },
@@ -74,7 +74,7 @@ const EventAlerts = ({ t }) => {
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.COMMUNICATIONS,feature),
+      getPinColor: feature =>  getAlertIconColorFromContext(MAP_TYPES.ALERTS, feature, selectedAlert),
       icon: 'flag',
       iconColor: '#ffffff',
       clusterIconSize: 35,
@@ -115,7 +115,7 @@ const EventAlerts = ({ t }) => {
   }, [alerts]);
 
   useEffect(() => {
-    setIconLayer(getIconLayer(filteredAlerts, MAP_TYPES.EVENTS));
+    setIconLayer(getIconLayer(filteredAlerts));
     if (!viewState) {
       setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
     }
@@ -189,15 +189,21 @@ const EventAlerts = ({ t }) => {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
+      const pickedInfo = {
+        object: {
+          properties: selectedAlert
+        },
+        coordinate: selectedAlert.center,
+      }
       setIsEdit(isEdit);
       !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged ?
         setViewState(getViewState(selectedAlert.center, currentZoomLevel, selectedAlert, setHoverInfo, setIsViewStateChanged))
-        : setHoverInfo({ object: selectedAlert, coordinate: selectedAlert.center });
+        : setHoverInfo(pickedInfo);
       setAlertId(id);
-      setIconLayer(getIconLayer(clonedAlerts, MAP_TYPES.EVENTS));
+      setIconLayer(getIconLayer(clonedAlerts, selectedAlert));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(filteredAlerts, MAP_TYPES.EVENTS));
+      setIconLayer(getIconLayer(filteredAlerts));
     }
   }
 
@@ -269,7 +275,7 @@ const EventAlerts = ({ t }) => {
           </Col>
         </Row>
       </div>
-    </div >
+    </div>
   );
 }
 

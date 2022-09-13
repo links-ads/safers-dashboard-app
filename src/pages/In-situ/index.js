@@ -25,7 +25,7 @@ import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
 //i18n
 import { useTranslation } from 'react-i18next'
 import { MAP_TYPES } from '../../constants/common';
-import { getIconColorFromContext } from '../../helpers/mapHelper';
+import { getAlertIconColorFromContext } from '../../helpers/mapHelper';
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -55,7 +55,7 @@ const InSituAlerts = () => {
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.IN_SITU,feature),
+      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.IN_SITU,feature),
       icon: 'camera',
       iconColor: '#ffffff',
       clusterIconSize: 35,

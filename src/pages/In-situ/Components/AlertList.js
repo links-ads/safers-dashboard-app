@@ -9,7 +9,7 @@ import { setCurrentPage, setInSituFavoriteAlert, setPaginatedAlerts, getCamera }
 import { PAGE_SIZE, SET_FAV_INSITU_ALERT_SUCCESS } from '../../../store/insitu/types';
 import Alert from './Alert';
 import { MAP_TYPES } from '../../../constants/common';
-import { getIconColorFromContext } from '../../../helpers/mapHelper';
+import { getAlertIconColorFromContext } from '../../../helpers/mapHelper';
 import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 
 const AlertList = ({
@@ -47,7 +47,7 @@ const AlertList = ({
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.IN_SITU,feature),
+      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.IN_SITU,feature),
       icon: 'camera',
       iconColor: '#ffffff',
       clusterIconSize: 35,
