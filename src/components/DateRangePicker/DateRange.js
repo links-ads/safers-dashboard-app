@@ -10,21 +10,24 @@ import 'flatpickr/dist/themes/material_blue.css'
 
 const DateComponent = ({ 
   setDates = () => { }, 
-  clearDates = () => { }, 
+  clearDates = () => { },
+  resetDates = () => { },
   defaultDateRange,
   placeholder=null,
   isDateRangeDisabled=false,
   onChange= () => {}
 }) => {
   const fp = useRef(null);
+
   const defaultDate = defaultDateRange?.map(date => 
     moment(date).format('DD/MM/YY')
   ) ?? []
 
   const onClearClick = () => {
     if(!isDateRangeDisabled) {
-      fp.current.flatpickr.clear();
-      clearDates()
+      const picker = fp.current.flatpickr;
+      picker.setDate(defaultDate);
+      resetDates();
     }
   }
   return (
@@ -51,7 +54,10 @@ const DateComponent = ({
           }}
         />
 
-        <div className='bg-white d-flex border-none calender-right' onClick={onClearClick}>
+        <div 
+          className='bg-white d-flex border-none calender-right' 
+          onClick={onClearClick}
+        >
           <i className='fa fa-sync px-2 m-auto bg-white border-none'></i>
         </div>
       </InputGroup>
@@ -63,6 +69,7 @@ DateComponent.propTypes = {
   setDates: PropTypes.func,
   onChange: PropTypes.func,
   clearDates: PropTypes.func,
+  resetDates: PropTypes.func,
   defaultDateRange: PropTypes.array,
   placeholder: PropTypes.string,
   isDateRangeDisabled: PropTypes.bool
