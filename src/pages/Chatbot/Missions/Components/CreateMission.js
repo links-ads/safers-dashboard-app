@@ -10,8 +10,6 @@ import moment from 'moment'
 import { withTranslation } from 'react-i18next'
 
 import _ from 'lodash';
-//i18N
-import { withTranslation } from 'react-i18next';
 
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css'
