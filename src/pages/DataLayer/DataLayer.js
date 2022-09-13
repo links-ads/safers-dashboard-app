@@ -20,8 +20,8 @@ const DataLayer = ({
   setLayerSource,
   metaData,
   isMetaDataLoading,
-  sourceOptions,
-  domainOptions,
+  operationalSourceOptions,
+  operationalDomainOptions,
   layerSource,
   operationalMapLayers,
   dataDomain,
@@ -132,7 +132,7 @@ const DataLayer = ({
                   value={layerSource}
                 >
                   <option value={''} >Source: All</option>
-                  {sourceOptions?.map((option) => (
+                  {operationalSourceOptions?.map((option) => (
                     <option key={option} value={option}>
                       Source: {option}
                     </option>
@@ -150,7 +150,7 @@ const DataLayer = ({
                   value={dataDomain}
                 >
                   <option value={''} >Domain: All</option>
-                  {domainOptions?.map((option) => (
+                  {operationalDomainOptions?.map((option) => (
                     <option key={option} value={option}>
                       Domain: {option}
                     </option>
@@ -211,8 +211,8 @@ DataLayer.propTypes = {
   setLayerSource: PropTypes.any,
   metaData: PropTypes.object,
   isMetaDataLoading: PropTypes.bool,
-  sourceOptions: PropTypes.array,
-  domainOptions: PropTypes.array,
+  operationalSourceOptions: PropTypes.array,
+  operationalDomainOptions: PropTypes.array,
   layerSource: PropTypes.any,
   operationalMapLayers: PropTypes.any,
   dataDomain: PropTypes.any,
