@@ -1,3 +1,10 @@
 {
-  "Assigned to": "Assigned to"
+  "Assigned to": "Assigned to",
+  "Message Description": "Message Description",
+  "Team": "Team",
+  "Map Selection": "Map Selection, please edit and draw on the map",
+  "Correct Coordinates": "Please correct your coordinates",
+  "Message Title": "Message Title",
+  "Select Area": "Please select your area on the map",
+  "Select Date": "Please select start/end date"
 }

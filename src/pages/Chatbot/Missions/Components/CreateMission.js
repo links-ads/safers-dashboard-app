@@ -5,8 +5,9 @@ import { Input, Button, Row, Col, Label, FormGroup } from 'reactstrap';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import MapInput from '../../../../components/BaseMap/MapInput';
 import { getError }  from '../../../../helpers/errorHelper';
-import { createMission } from '../../../../store/missions/action';
+import { createMission, resetMissionResponseState } from '../../../../store/missions/action';
 import moment from 'moment'
+import { withTranslation } from 'react-i18next'
 
 import _ from 'lodash';
 
@@ -41,16 +42,23 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   useEffect(() => {
     if (missionCreated) {
       toastr.success(missionCreated.msg, '');
+      onCancel();
     }
 
   }, [missionCreated]);
 
   useEffect(() => {
-    if(dateRange){// On blur validation after setting values
-      validate();
+    if(coordinates){
+      validateCoord();
     }
+  }, [coordinates, validCoords]);
 
-  }, [title, dateRange, desc, coordinates, validCoords]);
+  //Clear success states on component unmount
+  useEffect(() => {
+    return () => {
+      dispatch(resetMissionResponseState());
+    };
+  }, []);
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date => 
@@ -58,27 +66,45 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     );
   }
 
-  const validate = () => {
-    let errors = {};
+  const validateField = (attrib, val, returnErr=false) => {
+    const tempError = {...errors};
+    if(!val || val == ''){
+      tempError[attrib] = t('This field is required');
+    }
+    else {
+      delete tempError[attrib];
+    }
+    if(returnErr){
+      return tempError
+    }
+    setErrors(tempError);
+  }
 
-    if(!title)
-      errors['title'] = 'This field is required';
-
-    if(!desc)
-      errors['desc'] = 'This field is required' ;
-
-    if(!coordinates){
-      errors['coordinates'] = 'Please select your area on the map' ;
+  const validateCoord = (returnErr=false) => {
+    const tempError = {...errors};
+    if (!coordinates || coordinates === '') {
+      tempError['coordinates'] = t('Select Area', { ns: 'chatBot' });
     }
     else if (!validCoords) {
-      errors['coordinates'] = 'Please correct your coordinates' ;
+      tempError['coordinates'] = t('Correct Coordinates', { ns: 'chatBot' });
     }
-      
+    else {
+      delete tempError['coordinates'];
+    }
 
-    if(!dateRange)
-      errors['dateRange'] = 'Please select start/end date' ;
-    
-    setErrors(errors);
+    if(returnErr){
+      return tempError
+    }
+    setErrors(tempError);
+  }
+
+  const validate = () => {
+    const valTitle = validateField('title', title, true);
+    const valDesc = validateField('desc', desc, true);
+    const valDateRange = validateField('dateRange', dateRange, true);
+    const valCoordinates = validateCoord(true);
+    const tempErrors = { ...valTitle, ...valDesc, ...valDateRange, ...valCoordinates };
+    setErrors(tempErrors);
   }
 
   const submitMsg = () => {
@@ -102,9 +128,10 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         id="mission-title-input"
         className={`${getError('title', errors, errors)}`}
         name="title"
-        placeholder='Message Title'
+        placeholder={t('Message Title', { ns: 'chatBot' })}
         type="text"
-        onChange={(e) => {setTitle(e.target.value); validate({name:'title'});}}
+        onChange={(e) => {setTitle(e.target.value);}}
+        onBlur={(e) => {validateField('title', e.target.value)}}
         value={title}
       />
       {getError('title', errors, errors, false)}
@@ -113,12 +140,13 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     <FormGroup className="form-group mt-3">
       <DateRangePicker
         type='text'
-        placeholder='Start Date - End Date'
+        placeholder={`${t('Start Date')} - ${t('End Date')}`}
         className={`${getError('dateRange', errors, errors)}`}
         setDates={handleDateRangePicker}
         defaultDateRange={dateRange}
         isTooltipInput={true}
         showIcons={true}
+        onChange={(dates) => {validateField('dateRange', dates)}}
       />
       {getError('dateRange', errors, errors, false)}
     </FormGroup>
@@ -128,11 +156,12 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         className={`${getError('coordinates', errors, errors)}`}
         type='textarea'
         name="coordinates-value"
-        placeholder='Map Selection'
+        placeholder={t('Map Selection', { ns: 'chatBot' })}
         rows="10"
         coordinates={coordinates}
         setCoordinates={setCoordinates}
         isValidFormat={isValidCoordFormat}
+        onBlur={()=> { validateCoord(); }}
       />
       {getError('coordinates', errors, errors, false)}
     </FormGroup>
@@ -145,7 +174,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
             id="team"
             className="btn-sm sort-select-input"
             name="team"
-            placeholder="Team"
+            placeholder={t('Team', { ns: 'chatBot' })}
             type="select"
             onChange={(e) => {
               setTeam(e.target.value);
@@ -187,8 +216,9 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         className={`${getError('desc', errors, errors)}`}
         type='textarea'
         name="message-description"
-        placeholder='Message Description'
-        onChange={(e) => {setDesc(e.target.value); validate();}}
+        placeholder={t('Message Description', { ns: 'chatBot' })}
+        onChange={(e) => {setDesc(e.target.value)}}
+        onBlur={(e)=>{validateField('desc', e.target.value)}}
         value={desc}
         rows="10"
       />
@@ -199,14 +229,14 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         type="button"
         onClick={onCancel}
       >
-        Cancel
+        {t('Cancel')}
       </Button>
       <Button
         type="button"
         className="mx-3"
         onClick={submitMsg}
       >
-        Send
+        {t('Send')}
       </Button>
     </div>
   </>)
@@ -219,4 +249,4 @@ CreateMission.propTypes = {
   setCoordinates: PropTypes.func
 }
 
-export default CreateMission;
+export default withTranslation(['common'])(CreateMission);
