@@ -27,14 +27,14 @@ const DataLayerDashboard = () => {
 
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const {
-    dataLayers, 
-    metaData, 
+    dataLayers,
+    metaData,
     isMetaDataLoading,
     timeSeries: timeSeriesData,
     featureInfo: featureInfoData
   } = useSelector(state => state.dataLayer);
   const dateRange = useSelector(state => state.common.dateRange);
-  const { allMapRequests, isNewAlert } = useSelector(state=> state?.dataLayer);
+  const { allMapRequests, isNewAlert } = useSelector(state => state?.dataLayer);
 
   const [mapRequests, setMapRequests] = useState([])
   const [viewState, setViewState] = useState(undefined);
@@ -53,7 +53,7 @@ const DataLayerDashboard = () => {
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
   const [timestamp, setTimestamp] = useState('')
 
-  const { operationalSourceOptions, domainOptions } = selectOptions;
+  const { operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions } = selectOptions;
 
   // This is to prevent the component from automatically updating
   // when new map requests appear in global state (should show toast)
@@ -66,11 +66,13 @@ const DataLayerDashboard = () => {
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
     (async () => {
-      const [operationalSourceOptions, domainOptions] = await Promise.all([
-        fetchEndpoint('/data/layers/sources'), 
-        fetchEndpoint('/data/layers/domains')
+      const [operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions] = await Promise.all([
+        fetchEndpoint('/data/layers/sources'),
+        fetchEndpoint('/data/maprequests/sources'),
+        fetchEndpoint('/data/layers/domains'),
+        fetchEndpoint('/data/maprequests/domains')
       ])
-      setSelectOptions({ operationalSourceOptions, domainOptions });
+      setSelectOptions({ operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions });
     })()
   }, [])
 
@@ -111,7 +113,7 @@ const DataLayerDashboard = () => {
       order: sortByDate,
       source: layerSource ? layerSource : undefined,
       domain: dataDomain ? dataDomain : undefined,
-      
+
       // Remove comments if it's required to send date-time range and bbox value for filter
       // start: dateRange[0],
       // end: dateRange[1],
@@ -120,7 +122,7 @@ const DataLayerDashboard = () => {
       // default_bbox: false,
       // ...dateRangeParams,
     }
-      
+
     dispatch(getAllDataLayers(options));
     dispatch(getAllMapRequests(options, true))
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
@@ -197,7 +199,7 @@ const DataLayerDashboard = () => {
     }, []);
   }
 
-  const backToOnDemandPanel = () => { 
+  const backToOnDemandPanel = () => {
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
   }
 
@@ -284,7 +286,7 @@ const DataLayerDashboard = () => {
             onClick={() => setShowLegend(!showLegend)}
           >
             <i className="h4 mdi mdi-map-legend">legend</i>
-          </button>     
+          </button>
         </div>
       );
     }
@@ -308,7 +310,7 @@ const DataLayerDashboard = () => {
     t,
     layerSource,
     setLayerSource,
-    domainOptions,
+    operationalDomainOptions,
     currentLayer,
     setCurrentLayer,
     dataDomain,
@@ -326,11 +328,11 @@ const DataLayerDashboard = () => {
     timestamp
   };
 
-  return(
+  return (
     <div className='page-content'>
       {showLegend ? (
         <div className='legend'>
-          <img src={currentLayer.legend_url}/>
+          <img src={currentLayer.legend_url} />
         </div>
       ) : null}
       <div className='mx-2 sign-up-aoi-map-bg'>
@@ -358,7 +360,7 @@ const DataLayerDashboard = () => {
                     <NavItem>
                       <NavLink
                         className={{
-                          'active': activeTab === DATA_LAYERS_PANELS.mapLayers 
+                          'active': activeTab === DATA_LAYERS_PANELS.mapLayers
                         }}
                         onClick={() => setActiveTab(DATA_LAYERS_PANELS.mapLayers)}
                       >
@@ -367,8 +369,8 @@ const DataLayerDashboard = () => {
                     </NavItem>
                     <NavItem>
                       <NavLink
-                        className={{ 
-                          'active': activeTab === DATA_LAYERS_PANELS.onDemandMapLayers 
+                        className={{
+                          'active': activeTab === DATA_LAYERS_PANELS.onDemandMapLayers
                         }}
                         onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
                       >
@@ -380,13 +382,13 @@ const DataLayerDashboard = () => {
               </Col>
             </Row>
           </Col>
-          <Col xl={7}/>
+          <Col xl={7} />
         </Row>
         <TabContent activeTab={activeTab}>
           <TabPane tabId={DATA_LAYERS_PANELS.mapLayers}>
             <DataLayer
               operationalMapLayers={filterNodesByProperty(dataLayers, {
-                source: layerSource, 
+                source: layerSource,
                 domain: dataDomain
               })}
               operationalSourceOptions={operationalSourceOptions}
@@ -399,11 +401,10 @@ const DataLayerDashboard = () => {
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
             <OnDemandDataLayer
               mapRequests={filterNodesByProperty(mapRequests, {
-                source: layerSource, 
+                source: layerSource,
                 domain: dataDomain
               })}
-              // TODO: update when API is ready
-              onDemandSourceOptions={[]}
+              onDemandSourceOptions={onDemandSourceOptions}
               dispatch={dispatch}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
@@ -412,7 +413,7 @@ const DataLayerDashboard = () => {
           <TabPane tabId={DATA_LAYERS_PANELS.fireAndBurnedAreas}>
             {/* ternary here to unmount and clear form */}
             {activeTab === DATA_LAYERS_PANELS.fireAndBurnedAreas ? (
-              <FireAndBurnedArea 
+              <FireAndBurnedArea
                 t={t}
                 handleResetAOI={handleResetAOI}
                 backToOnDemandPanel={backToOnDemandPanel}
@@ -422,8 +423,8 @@ const DataLayerDashboard = () => {
           <TabPane tabId={DATA_LAYERS_PANELS.postEventMonitoring}>
             {/* ternary here to unmount and clear form */}
             {activeTab === DATA_LAYERS_PANELS.postEventMonitoring ? (
-              <PostEventMonitoringForm 
-                t={t} 
+              <PostEventMonitoringForm
+                t={t}
                 handleResetAOI={handleResetAOI}
                 backToOnDemandPanel={backToOnDemandPanel}
               />
@@ -432,7 +433,7 @@ const DataLayerDashboard = () => {
           <TabPane tabId={DATA_LAYERS_PANELS.wildfireSimulation}>
             {/* ternary here to unmount and clear form */}
             {activeTab === DATA_LAYERS_PANELS.wildfireSimulation ? (
-              <WildfireSimulation 
+              <WildfireSimulation
                 t={t}
                 handleResetAOI={handleResetAOI}
                 backToOnDemandPanel={backToOnDemandPanel}
