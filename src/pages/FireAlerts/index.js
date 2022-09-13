@@ -12,7 +12,7 @@ import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import SearchButton from '../../components/SearchButton';
-import { ORANGE, RED, GRAY, DARK_GRAY } from '../../helpers/mapHelper';
+import { ORANGE, RED, GRAY } from '../../helpers/mapHelper';
 
 import BaseMap from '../../components/BaseMap/BaseMap';
 import {
@@ -213,22 +213,19 @@ const FireAlerts = ({ t }) => {
   };
 
   const getFireAlertLayer = (alerts, selectedAlert) => {
-    console.log('selectedAlert', selectedAlert);
     const data = alerts.map((alert) => {
       const {
         center,
-        id, // added
+        id, 
         ...properties
       } = alert;
       return {
         type: 'Feature',
         properties: {
-          //..properties,
           id,
           ...properties
         },
-        //...properties,
-        newid: id, // pass in the corresponding id in UUID format
+        newid: id, 
         geometry: {
           type: 'Point',
           coordinates: center
@@ -241,7 +238,6 @@ const FireAlerts = ({ t }) => {
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
       getPinColor: feature => {
-        console.log('feature', feature);
         let color=GRAY;
         if (feature.properties.id === selectedAlert.id) {
           return ORANGE;
@@ -282,7 +278,6 @@ const FireAlerts = ({ t }) => {
   };
 
   const showTooltip = (info) => {
-    console.log('showTooltip', info);
     if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
