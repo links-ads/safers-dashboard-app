@@ -310,7 +310,6 @@ const DataLayerDashboard = () => {
     t,
     layerSource,
     setLayerSource,
-    operationalDomainOptions,
     currentLayer,
     setCurrentLayer,
     dataDomain,
@@ -392,6 +391,7 @@ const DataLayerDashboard = () => {
                 domain: dataDomain
               })}
               operationalSourceOptions={operationalSourceOptions}
+              operationalDomainOptions={operationalDomainOptions}
               dispatch={dispatch}
               metaData={metaData}
               isMetaDataLoading={isMetaDataLoading}
@@ -405,6 +405,7 @@ const DataLayerDashboard = () => {
                 domain: dataDomain
               })}
               onDemandSourceOptions={onDemandSourceOptions}
+              onDemandDomainOptions={onDemandDomainOptions}
               dispatch={dispatch}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}

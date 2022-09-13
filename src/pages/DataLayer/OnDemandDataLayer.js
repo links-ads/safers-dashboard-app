@@ -14,7 +14,7 @@ const OnDemandDataLayer = ({
   t,
   mapRequests,
   onDemandSourceOptions,
-  domainOptions,
+  onDemandDomainOptions,
   setActiveTab,
   setCurrentLayer,
   layerSource,
@@ -159,7 +159,7 @@ const OnDemandDataLayer = ({
                     value={dataDomain}
                   >
                     <option value={''} >Domain : All</option>
-                    {domainOptions?.map((option) => (
+                    {onDemandDomainOptions?.map((option) => (
                       <option key={option} value={option}>
                           Domain: {option}
                       </option>
@@ -240,7 +240,7 @@ OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
   mapRequests: PropTypes.any,
   onDemandSourceOptions: PropTypes.array,
-  domainOptions: PropTypes.array,
+  onDemandDomainOptions: PropTypes.array,
   setActiveTab: PropTypes.func,
   setCurrentLayer: PropTypes.any,
   layerSource: PropTypes.any,
