@@ -327,7 +327,10 @@ const FireAndBurnedArea = ({
                                   className={
                                     errors.resolution ? 'is-invalid' : ''
                                   }
-                                  onChange={handleChange}
+                                  onChange={({ target: { value } }) => {
+                                    setFieldValue('resolution', parseInt(value));
+                                    setFieldValue('isAreaValid',checkRasterSizeWithinLimits(values.mapSelection, parseInt(value)));
+                                  }}
                                   onBlur={handleBlur}
                                   value={values.resolution}
                                 />
