@@ -36,6 +36,9 @@ const DataLayer = ({
   bitmapLayer,
   viewState,
   timestamp,
+  showLegend,
+  setShowLegend,
+  legendUrl,
   searchDataTree,
   dispatch
 }) => {
@@ -69,6 +72,7 @@ const DataLayer = ({
 
   const switchRHPanel = () => {
     if(isMetaDataLoading || metaData){
+      if (showLegend) setShowLegend(false);
       return (
         <Card color="dark default-panel">
           <h4 className='ps-3 pt-3 mb-2'>Meta Info: <i className='meta-close' onClick={()=>{dispatch(resetMetaData());}}>x</i></h4>
@@ -78,6 +82,11 @@ const DataLayer = ({
     }
     return(
       <Card className='map-card mb-0' style={{ height: 670 }}>
+        {showLegend && !!legendUrl ? (
+          <div className='legend'>
+            <img src={legendUrl} />
+          </div>
+        ) : null}
         <DataLayerInformation   
           currentLayer={currentLayer}
           tempLayerData={tempLayerData}
@@ -227,6 +236,9 @@ DataLayer.propTypes = {
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
+  showLegend: PropTypes.bool,
+  setShowLegend: PropTypes.func,
+  legendUrl: PropTypes.string,
   searchDataTree: PropTypes.func,
   dispatch: PropTypes.func
 }

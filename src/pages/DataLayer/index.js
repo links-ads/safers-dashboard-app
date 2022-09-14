@@ -275,17 +275,23 @@ const DataLayerDashboard = () => {
         <div style={{
           position: 'absolute',
           zIndex: 1,
-          bottom: '30px',
-          width: '100%',
+          top: '0.625rem',
+          left: '0.625rem',
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          padding: '0.25rem 0.41rem',
+          width: '1.813',
+          height: '1.813',
+          backgroundColor: '#fff',
+          borderRadius: '0.25rem'
         }}>
           <button
             type="button"
-            className="btn btn-layers-slider-play float-start me-2 p-0"
+            className="btn float-start p-0"
+            style={{ color: '#000' }}
             onClick={() => setShowLegend(!showLegend)}
           >
-            <i className="h4 mdi mdi-map-legend">legend</i>
+            <i className="h4 mdi mdi-map-legend" />
           </button>
         </div>
       );
@@ -324,16 +330,20 @@ const DataLayerDashboard = () => {
     timeSeriesData,
     featureInfoData,
     searchDataTree,
-    timestamp
+    timestamp,
+    showLegend,
+    setShowLegend,
+    legendUrl: currentLayer?.legend_url
   };
+
+  const handleTabClick = (tab) => {
+    if (showLegend) setShowLegend(false);
+    setActiveTab(tab);
+  }
 
   return (
     <div className='page-content'>
-      {showLegend ? (
-        <div className='legend'>
-          <img src={currentLayer.legend_url} />
-        </div>
-      ) : null}
+      {/* Parent div no longer needed? */}
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='mb-3'>
@@ -361,7 +371,7 @@ const DataLayerDashboard = () => {
                         className={{
                           'active': activeTab === DATA_LAYERS_PANELS.mapLayers
                         }}
-                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.mapLayers)}
+                        onClick={() => handleTabClick(DATA_LAYERS_PANELS.mapLayers)}
                       >
                         {t('Operational Map Layers')}
                       </NavLink>
@@ -371,7 +381,7 @@ const DataLayerDashboard = () => {
                         className={{
                           'active': activeTab === DATA_LAYERS_PANELS.onDemandMapLayers
                         }}
-                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
+                        onClick={() => handleTabClick(DATA_LAYERS_PANELS.onDemandMapLayers)}
                       >
                         {t('On-Demand Map Layers')}
                       </NavLink>

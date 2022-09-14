@@ -30,6 +30,8 @@ const OnDemandDataLayer = ({
   searchDataTree,
   viewState,
   currentLayer,
+  showLegend,
+  legendUrl,
   dispatch
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -209,6 +211,11 @@ const OnDemandDataLayer = ({
         </Col>
         <Col xl={7} className='mx-auto'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
+            {showLegend && !!legendUrl ? (
+              <div className='legend'>
+                <img src={legendUrl} />
+              </div>
+            ) : null}
             <DataLayerInformation   
               currentLayer={currentLayer}
               tempLayerData={tempLayerData}
@@ -257,6 +264,8 @@ OnDemandDataLayer.propTypes = {
   handleResetAOI: PropTypes.any,
   featureInfoData: PropTypes.any,
   currentLayer: PropTypes.any,
+  showLegend: PropTypes.bool,
+  legendUrl: PropTypes.string,
   dispatch: PropTypes.any
 }
 
