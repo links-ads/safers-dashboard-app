@@ -54,7 +54,15 @@ const SummaryContainer = ({reportDetail, t}) => {
             <span>{t('Status')}: {reportDetail.status}</span>
           </Row>
           <Row className='my-3'>
-            <span>{t('Category')}: {reportDetail.categories.join(' ,')}</span>
+            <span>{t('Category')}: {reportDetail.categories.join(', ')}</span>
+            <Row>
+              <Col>
+                <span>{t('Details')}: </span>
+              </Col>
+              <Col>
+                {reportDetail.categories_info.map(info => <div>{info}</div>)}
+              </Col>
+            </Row>
           </Row>
           <Row className='mt-5 mb-2'>
             <span>{t('Description')}</span>
