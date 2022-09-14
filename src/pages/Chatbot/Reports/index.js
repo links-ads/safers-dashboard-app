@@ -44,7 +44,6 @@ const Reports = () => {
 
     setReportId(undefined);
     const reportParams = {
-      order: sortOrder ? sortOrder : '-date',
       category: category ? category : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
@@ -52,7 +51,7 @@ const Reports = () => {
       ...dateRangeParams
     };
     dispatch(getAllReports(reportParams));
-  }, [dateRange, sortOrder, boundingBox, category])
+  }, [dateRange, boundingBox, category])
 
   useEffect(() => {
     if (success?.detail) {
