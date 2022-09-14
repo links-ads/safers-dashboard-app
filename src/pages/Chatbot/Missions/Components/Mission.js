@@ -58,7 +58,7 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
                   {t('Start date', { ns: 'common' })}: {formatDate(card.start_date, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.end_date, 'YYYY-MM-DD')}
                 </p>
                 <p className="text-muted no-wrap">
-                  {t('Assigned to', { ns: 'chatBot' })}: {card.assigned_to}
+                  {t('Assigned to', { ns: 'chatBot' })}: {card.organization}
                 </p>
               </Col>
             </Row>
