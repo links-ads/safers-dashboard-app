@@ -17,18 +17,9 @@ const MapSection = ({
 }) => {
 
   const renderTooltip = (info) => {
-    if (!info) return null
-    const { object, coordinate } = info;
-    if (object) {
-      return <ToolTip
-        key={object.id}
-        object={object}
-        coordinate={coordinate}
-      />
-    }
-    if (!object) {
-      return null;
-    }
+    if (!info || !info.picked) return null
+
+    return <ToolTip object={info} />
   }
 
 
