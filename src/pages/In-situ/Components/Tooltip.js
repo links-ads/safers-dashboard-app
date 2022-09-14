@@ -34,8 +34,7 @@ const Tooltip = ({ object }) => {
                   </p>
                   <p className='mb-1'>Camera Direction: {direction}&#176;</p>
                   <p className='mb-1'>
-                    Last Uploaded feed: 
-                    {last_update ? formatDate(last_update) : '-'}
+                    Last Uploaded feed: {last_update ? formatDate(last_update) : '-'}
                   </p>
                 </Col>
               </Row>
