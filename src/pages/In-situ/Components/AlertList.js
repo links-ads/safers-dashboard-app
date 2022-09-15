@@ -51,7 +51,7 @@ const AlertList = ({
     if (selCam) {
       !_.isEqual(viewState.midPoint, cameraInfo?.geometry?.coordinates) || isViewStateChanged ?
         setViewState(getViewState(cameraInfo?.geometry?.coordinates, currentZoomLevel, cameraInfo, setHoverInfo, setIsViewStateChanged))
-        : setHoverInfo({ object: cameraInfo, coordinate: cameraInfo?.geometry?.coordinates });
+        : setHoverInfo({ object: { properties: cameraInfo, geometry: cameraInfo?.geometry}, picked: true });
       setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
     }
   }, [cameraInfo]);
