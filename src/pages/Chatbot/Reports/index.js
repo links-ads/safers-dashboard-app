@@ -22,7 +22,7 @@ const Reports = () => {
   const { t } = useTranslation();
 
   const [reportId, setReportId] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
+  const [viewState, setViewState] = useState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('');
   const [category, setCategory] = useState('');
@@ -64,9 +64,6 @@ const Reports = () => {
   useEffect(() => {
     if (allReports.length > 0) {
       setIconLayer(getIconLayer(allReports, MAP_TYPES.REPORTS, 'report', dispatch, setViewState));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
     }
   }, [allReports]);
 
