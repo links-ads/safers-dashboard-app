@@ -47,17 +47,26 @@ const SummaryContainer = ({reportDetail, t}) => {
           <Row className='mb-3'>
             <span className='text-title'>{reportDetail.name}</span>
           </Row>
-          <Row className='my-3'>
+          <Row className='my-2'>
             <span>{t('Hazard Type')}: {reportDetail.hazard}</span>
           </Row>
-          <Row className='my-3'>
+          <Row className='my-2'>
             <span>{t('Status')}: {reportDetail.status}</span>
           </Row>
-          <Row className='my-3'>
-            <span>{t('Category')}: {reportDetail.categories.join(' ,')}</span>
+          <Row className='my-2'>
+            <span>{t('Category')}: {reportDetail.categories.join(', ')}</span>
           </Row>
-          <Row className='mt-5 mb-2'>
-            <span>{t('Description')}</span>
+          <Row className='my-2'>
+            <Col lg={2}  id="cat-info">
+              <span>{t('Details')}: </span>
+            </Col>
+            <Col lg={1}>&nbsp;</Col>
+            <Col lg={9} className="mt-lg-0 ms-lg-0 mt-sm-2 ms-sm-2" aria-labelledby="cat-info">
+              {reportDetail.categories_info.map((info, index) => <div key={index}>{info}</div>)}
+            </Col>
+          </Row>
+          <Row className='mt-3 mb-2'>
+            <span>{t('Description')}:</span>
           </Row>
           <Row>
             <span>{reportDetail.description}</span>
