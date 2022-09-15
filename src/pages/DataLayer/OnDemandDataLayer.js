@@ -211,8 +211,10 @@ const OnDemandDataLayer = ({
         <Col xl={7} className='mx-auto'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
             {showLegend && !!legendUrl ? (
-              <div className='legend'>
-                <img src={legendUrl} />
+              <div className='legend-container'>
+                <div className='legend'>
+                  <img src={legendUrl} />
+                </div>
               </div>
             ) : null}
             <DataLayerInformation   

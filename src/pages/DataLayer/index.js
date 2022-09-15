@@ -341,10 +341,6 @@ const DataLayerDashboard = () => {
     legendUrl: currentLayer?.legend_url
   };
 
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-  }
-
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
@@ -374,7 +370,7 @@ const DataLayerDashboard = () => {
                         className={{
                           'active': activeTab === DATA_LAYERS_PANELS.mapLayers
                         }}
-                        onClick={() => handleTabClick(DATA_LAYERS_PANELS.mapLayers)}
+                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.mapLayers)}
                       >
                         {t('Operational Map Layers')}
                       </NavLink>
@@ -384,7 +380,7 @@ const DataLayerDashboard = () => {
                         className={{
                           'active': activeTab === DATA_LAYERS_PANELS.onDemandMapLayers
                         }}
-                        onClick={() => handleTabClick(DATA_LAYERS_PANELS.onDemandMapLayers)}
+                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
                       >
                         {t('On-Demand Map Layers')}
                       </NavLink>
