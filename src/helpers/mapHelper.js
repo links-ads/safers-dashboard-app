@@ -25,8 +25,11 @@ export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInf
         setHoverInfoRef({
           object: {
             properties: selectedAlert,
+            geometry: {
+              coordinates: selectedAlert?.center || selectedAlert?.geometry?.coordinates,
+            }
           },
-          coordinate: selectedAlert?.center || selectedAlert?.geometry?.coordinates
+          picked: true
         });
         setViewStateChangeRef(false);
       }
