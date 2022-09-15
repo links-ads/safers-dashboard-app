@@ -103,7 +103,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t
             </Col>
             <Col md={10} sm={10}>
               <CardSubtitle className="my-auto">
-                {event ? event.location : 'N/A'}
+                {event?.center ? `Center: ${event.center[0]}, ${event.center[1]}` : 'N/A'}
               </CardSubtitle>
             </Col>
           </Row>
