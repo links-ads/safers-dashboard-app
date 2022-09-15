@@ -8,7 +8,6 @@ const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
 const ORANGE = [226, 123, 29];
 const GRAY = [128, 128, 128];
 const RED = [230, 51, 79];
-const DARK_GRAY = [57, 58, 58];
 
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
   return {
@@ -54,14 +53,17 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getAlertIconColorFromContext = (mapType, feature, selectedItem={}) => {
+export const getAlertIconColorFromContext = (mapType, feature, selectedItem = {}) => {
   let color = GRAY;
-  if ( feature.properties.id === selectedItem.id ) {
-    color=ORANGE;
-  } else if (feature?.properties?.status==='Created' || feature?.properties?.status==='Active' || feature?.properties?.status === 'Ongoing') {
-    color=RED;
-  } else if (feature?.properties?.status==='Closed' || feature?.properties?.status==='Inactive' || feature?.properties?.status==='Expired') {
-    color=DARK_GRAY;
+  if (!feature.properties.report_id && !selectedItem.report_id) {
+    return color;
+  }
+
+  const whitelist = ['Created', 'Active', 'Ongoing'];
+  if (feature.properties.report_id === selectedItem.report_id) {
+    color = ORANGE;
+  } else if (whitelist.includes(feature?.properties?.status)) {
+    color = RED;
   }
   return color;
 }
@@ -81,22 +83,20 @@ export const getAsGeoJSON = (data) => {
   });
 }
 
-export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem={}) => {
+export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem = {}) => {
   const data = getAsGeoJSON(alerts);
   return new GeoJsonPinLayer({
     data,
     dispatch,
     setViewState,
     getPosition: (feature) => feature.geometry.coordinates,
-    getPinColor: feature => getAlertIconColorFromContext(mapType,feature, selectedItem),
+    getPinColor: feature => getAlertIconColorFromContext(mapType, feature, selectedItem),
     icon: markerName,
     iconColor: '#ffffff',
     clusterIconSize: 35,
     getPinSize: () => 35,
     pixelOffset: [-18,-18],
-    pinSize: 25,
-    onGroupClick: true,
-    onPointClick: true,
+    pinSize: 25
   });
 };
 
