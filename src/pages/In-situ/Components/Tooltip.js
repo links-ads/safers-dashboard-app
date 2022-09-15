@@ -9,12 +9,14 @@ import { formatDate } from '../../../store/utility';
 
 const Tooltip = ({ object }) => {
   const obj = (object?.objects) ? object.objects : [object.object];
+
   return (
     <Popup
       longitude={obj[0].geometry.coordinates[0]}
       latitude={obj[0].geometry.coordinates[1]}
       offsetLeft={15}
       dynamicPosition={true}
+      captureScroll={true}
       anchor='left'
       className="cameras-tooltip"
       style={{ borderRadius: '10px' }}>

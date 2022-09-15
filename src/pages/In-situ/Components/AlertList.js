@@ -30,20 +30,8 @@ const AlertList = ({
   const dispatch = useDispatch();
 
   const getIconLayer = (alerts) => {
-    const data = alerts?.map((alert) => {
-      const {
-        geometry,
-        ...properties
-      } = alert;
-      return {
-        type: 'Feature',
-        properties: properties,
-        geometry: geometry,
-      };
-    });
-
     return new GeoJsonPinLayer({
-      data,
+      data: alerts,
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
