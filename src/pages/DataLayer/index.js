@@ -175,6 +175,12 @@ const DataLayerDashboard = () => {
     }
   }, [isPlaying]);
 
+  useEffect(() => {
+    if (showLegend) {
+      setShowLegend(false);
+    }
+  }, [activeTab, currentLayer, metaData]);
+
   // This takes an array of objects and recursively filters out sibling 
   // objects that do not match the search term. It retains the original data 
   // shape and all children of matching objects.
@@ -332,18 +338,15 @@ const DataLayerDashboard = () => {
     searchDataTree,
     timestamp,
     showLegend,
-    setShowLegend,
     legendUrl: currentLayer?.legend_url
   };
 
   const handleTabClick = (tab) => {
-    if (showLegend) setShowLegend(false);
     setActiveTab(tab);
   }
 
   return (
     <div className='page-content'>
-      {/* Parent div no longer needed? */}
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='mb-3'>

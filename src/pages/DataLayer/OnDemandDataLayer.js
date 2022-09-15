@@ -36,7 +36,6 @@ const OnDemandDataLayer = ({
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [searchedMapRequests, setSearchedMapRequests] = useState(null);  
-  
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);

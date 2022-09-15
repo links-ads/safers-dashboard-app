@@ -23,16 +23,23 @@
     height: 40px;
 }
 
-.legend {
+.legend-container {
     display: flex;
     align-items: center;
     height: 100%;
     z-index: 1;
 
     img {
-        height: 75%;
-        max-width: 15rem;
+        max-width: 12.5rem;
     }
+}
+
+.legend {
+    display: flex;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 80%;
 }
 
 .props_box {
