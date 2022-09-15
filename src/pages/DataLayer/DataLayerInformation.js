@@ -41,7 +41,7 @@ const DataLayerInformationComponent = ({
 
   let title = currentLayer?.title
   if (currentLayer?.units) {
-    title = title + ` ${currentLayer.units}`
+    title = `${title} ${currentLayer.units}`
   }
 
   useEffect(() => {
@@ -272,7 +272,7 @@ const DataLayerInformationComponent = ({
         }
       }
       if (currentLayer?.units) {
-        valueString = valueString + ` ${currentLayer?.units}`
+        valueString = `${valueString} ${currentLayer?.units}`
       }
     }
     return valueString;
