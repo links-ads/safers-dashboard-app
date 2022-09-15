@@ -60,7 +60,8 @@ const SummaryContainer = ({reportDetail, t}) => {
             <Col lg={2}  id="cat-info">
               <span>{t('Details')}: </span>
             </Col>
-            <Col  lg={10} className="mt-lg-0 ms-lg-0 mt-sm-2 ms-sm-2" aria-labelledby="cat-info">
+            <Col lg={1}>&nbsp;</Col>
+            <Col lg={9} className="mt-lg-0 ms-lg-0 mt-sm-2 ms-sm-2" aria-labelledby="cat-info">
               {reportDetail.categories_info.map((info, index) => <div key={index}>{info}</div>)}
             </Col>
           </Row>
