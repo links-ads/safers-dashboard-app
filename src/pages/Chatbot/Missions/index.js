@@ -25,7 +25,7 @@ const Missions = () => {
   const { t } = useTranslation();
 
   const [missionId, setMissionId] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
+  const [viewState, setViewState] = useState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
   const [missionStatus, setMissionStatus] = useState('');
@@ -85,9 +85,6 @@ const Missions = () => {
   useEffect(() => {
     if (allMissions.length > 0) {
       setIconLayer(getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState, {}));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
     }
   }, [allMissions]);
 

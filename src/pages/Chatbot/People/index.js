@@ -25,7 +25,7 @@ const People = () => {
   const { t } = useTranslation();
 
   const [peopleId, setPeopleId] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
+  const [viewState, setViewState] = useState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
   const [status, setStatus] = useState('');
@@ -79,9 +79,6 @@ const People = () => {
   useEffect(() => {
     if (allPeople.length > 0) {
       setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
     }
   }, [allPeople]);
 
@@ -136,7 +133,6 @@ const People = () => {
           <MapSection
             viewState={viewState}
             iconLayer={iconLayer}
-            setViewState={setViewState}
             getPeopleByArea={getPeopleByArea}
             handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
