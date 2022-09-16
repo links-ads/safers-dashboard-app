@@ -2,6 +2,7 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import queryString from 'query-string';
+import { InProgress } from '../../store/authentication/action';
 
 
 export const getSource = () => async (dispatch) => {
@@ -27,14 +28,24 @@ const getSourceFail = (error) => {
 };
 
 
-export const getAllFireAlerts = (options, fromPage) => async (dispatch) => {
+export const getAllFireAlerts = (options, fromPage, isLoading) => async (dispatch) => {
+  if(isLoading) {
+    dispatch(InProgress(true, 'Loading..'));
+  }
   const response = await api.get(endpoints.fireAlerts.getAll.concat('?', queryString.stringify(options)));
   if (response && response.status === 200) {
     fromPage && dispatch(setFilteredAlerts(response?.data));
+    if(isLoading) {
+      dispatch(InProgress(false));
+    }
     return dispatch(getAlertsSuccess(response?.data));
   }
-  else
+  else {    
+    if(isLoading) {
+      dispatch(InProgress(false));
+    }
     return dispatch(getAlertsFail(response?.error));
+  }
 };
 const getAlertsSuccess = (alerts) => {
   return {

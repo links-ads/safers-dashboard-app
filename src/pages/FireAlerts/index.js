@@ -69,7 +69,7 @@ const FireAlerts = ({ t }) => {
   }, []);
 
   useEffect(() => {
-    getAlerts();
+    getAlerts(true);
   }, [sortByDate, alertSource, dateRange, boundingBox]);
 
   useEffect(() => {
@@ -158,7 +158,7 @@ const FireAlerts = ({ t }) => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
-  const getAlerts = () => {
+  const getAlerts = (isLoading) => {
     const dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {};
@@ -174,7 +174,7 @@ const FireAlerts = ({ t }) => {
     };
 
     dispatch(setAlertApiParams(alertParams));
-    dispatch(getAllFireAlerts(alertParams, true));
+    dispatch(getAllFireAlerts(alertParams, true, isLoading));
   };
 
   const setSelectedAlert = (id, isEdit) => {
