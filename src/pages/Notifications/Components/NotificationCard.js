@@ -21,15 +21,15 @@ const NotificatonCard = ({ card }) => {
 
   return (
     <Card
-      className={'alerts-card mb-2 '}>
+      className={'notifications-card mb-2 '}>
       <CardBody className='px-0 py-1 my-2'>
         <Row>
           <Col className='ms-4'>
             <Row>
               <Col>
                 <CardText className='mb-2'>
-                  {getBadge(BADGETYPES.TYPE)}
-                  {getBadge(BADGETYPES.STATUS)}
+                  { card?.type ? getBadge(BADGETYPES.TYPE) : null }
+                  { card?.status ? getBadge(BADGETYPES.STATUS) : null }
                 </CardText>
               </Col>
             </Row>

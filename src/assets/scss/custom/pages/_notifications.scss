@@ -1,0 +1,7 @@
+.notifications-card {
+  @extend .alerts-card;
+
+  &:hover {
+    cursor: default;
+  }
+}
