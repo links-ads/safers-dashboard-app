@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import PropTypes from 'prop-types'
 import {
   Dropdown,
@@ -21,6 +21,8 @@ const ProfileMenu = props => {
   const [menu, setMenu] = useState(false);  
 
   const dispatch = useDispatch();
+  const { username } = useSelector(state => state.user.info);
+
 
   return (
     <React.Fragment>
@@ -39,7 +41,7 @@ const ProfileMenu = props => {
             src={user1}
             alt='Header Avatar'
           />
-          <span className='d-none d-xl-inline-block ms-2 me-1'>{props.t('Admin')}</span>
+          <span className='d-none d-xl-inline-block ms-2 me-1 text-capitalize'>{username}</span>
           <i className='mdi mdi-chevron-down d-none d-xl-inline-block' />
         </DropdownToggle>
         <DropdownMenu className='dropdown-menu-end'>
