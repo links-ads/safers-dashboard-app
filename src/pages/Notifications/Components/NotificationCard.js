@@ -21,7 +21,7 @@ const NotificatonCard = ({ card }) => {
 
   return (
     <Card
-      className={'alerts-card mb-2 '}>
+      className={'notifications-card mb-2 '}>
       <CardBody className='px-0 py-1 my-2'>
         <Row>
           <Col className='ms-4'>
