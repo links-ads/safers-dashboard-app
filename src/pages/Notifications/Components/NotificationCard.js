@@ -28,8 +28,8 @@ const NotificatonCard = ({ card }) => {
             <Row>
               <Col>
                 <CardText className='mb-2'>
-                  {getBadge(BADGETYPES.TYPE)}
-                  {getBadge(BADGETYPES.STATUS)}
+                  { card?.type ? getBadge(BADGETYPES.TYPE) : null }
+                  { card?.status ? getBadge(BADGETYPES.STATUS) : null }
                 </CardText>
               </Col>
             </Row>
