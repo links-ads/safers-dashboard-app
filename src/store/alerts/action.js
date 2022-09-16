@@ -2,7 +2,7 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import queryString from 'query-string';
-import { InProgress } from '../../store/authentication/action';
+import { InProgress } from '../authentication/action';
 
 
 export const getSource = () => async (dispatch) => {
@@ -28,7 +28,7 @@ const getSourceFail = (error) => {
 };
 
 
-export const getAllFireAlerts = (options, fromPage, isLoading) => async (dispatch) => {
+export const getAllFireAlerts = (options, fromPage, isLoading = false) => async (dispatch) => {
   if(isLoading) {
     dispatch(InProgress(true, 'Loading..'));
   }

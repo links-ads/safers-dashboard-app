@@ -4,7 +4,7 @@ import * as api from '../../api/base';
 import { InProgress } from '../authentication/action';
 import queryString from 'query-string';
 
-export const getAllEventAlerts = (options, fromPage, isLoading) => async (dispatch) => {
+export const getAllEventAlerts = (options, fromPage, isLoading = false) => async (dispatch) => {
   if(isLoading) {
     dispatch(InProgress(true, 'Loading..'));
   }

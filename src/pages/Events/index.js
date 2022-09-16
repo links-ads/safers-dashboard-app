@@ -96,7 +96,7 @@ const EventAlerts = ({ t }) => {
   }, []);
 
   useEffect(() => {
-    getEvents(true);
+    getEvents();
   }, [dateRange, sortOrder, boundingBox, checkedStatus])
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const EventAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
 
-  const getEvents = (isLoading) => {
+  const getEvents = (isLoading = true) => {
     const dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {};

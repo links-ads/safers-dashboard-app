@@ -69,7 +69,7 @@ const FireAlerts = ({ t }) => {
   }, []);
 
   useEffect(() => {
-    getAlerts(true);
+    getAlerts();
   }, [sortByDate, alertSource, dateRange, boundingBox]);
 
   useEffect(() => {
@@ -158,7 +158,7 @@ const FireAlerts = ({ t }) => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
-  const getAlerts = (isLoading) => {
+  const getAlerts = (isLoading = true) => {
     const dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {};
