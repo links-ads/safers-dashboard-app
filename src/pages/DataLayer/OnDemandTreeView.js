@@ -44,19 +44,11 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
   const mapper = (nodes, parentId, lvl) => {
     return nodes?.map((node, index) => {
 
-      // set children according to level. Prioritise leaf over branch or root
-      if (!node.children) {
-        node.children= node?.layers || node?.requests || undefined;
-      }
-      
-      //const mockleafnode = MOCK_LEAF_NODE(node);
-
       // use tree level to define main text
       const nodeTextByLevel = [
-        `${node.key} : ${node.category}`,
-        `${node.key} : ${node.title || node.id}`,
-        //`${node.key} : ${node.datatype} [${node.status}]`
-        `${node.key} : ${node.datatype_id}: DATA_LAYER_NAME [STATUS}]`
+        `${node.key} : ${node.title}`,
+        `${node.key} : ${node.title || node.key}`,
+        `${node.key} : ${node.datatype_id}: ${node.title}`
       ]
       node.text = nodeTextByLevel[lvl];
       node.info = 'I\'m a tooltip';
@@ -73,12 +65,14 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
             }}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
-              setTooltipInfo(await fetchEndpoint(node.info_url));
+              if (node.info_url) {
+                setTooltipInfo(await fetchEndpoint(node.info_url));
+              }
             }}
             onMouseLeave={() => setTooltipInfo(undefined)}
           >
             <>
-              {(node.info || node.info_url) &&
+              {node.info_url &&
                 <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx font-size-16 me-1' />
               }
               {
@@ -88,14 +82,29 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                     {node.text}
                   </>
                   :
-                  node.text
+                  <div className="on-demand-leaf">
+                    <div>
+                      {node.info_url &&
+                        <i data-tip data-for={`${parentId}-${index}-tooltip`} className="bx bx-info-circle font-size-16 me-1" />
+                      }
+                      {node.text}
+                    </div>
+                    <span data-tip data-for={`${parentId}-${index}-status`} className={`${node.status?.toLowerCase()}`}>{node.status}</span>
+                  </div>
               }
               { node?.parameters ? 
                 <>
                   &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
+                  &nbsp;<i onClick={async (event)=> {
+                    event.stopPropagation();
+                    console.log('DELETE REQUEST: ', node);
+                  }} className="bx bx-trash font-size-16" />
                 </> : null
               }
-              { node?.parameters &&  itemPropsState[id] ?  <div className="mt-2"><PropsPanel node={node} /></div>: null}
+              { node?.parameters && itemPropsState[id]
+                ? <div className="mt-2"><PropsPanel node={node} /></div>
+                : null
+              }
             </>
           </ListGroupItem>
           {
@@ -108,7 +117,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
               {mapper(node.children, id, (lvl || 0) + 1)}
             </Collapse>
           }
-          {(node.info || node.info_url) &&
+          {node.info_url &&
             <ReactTooltip id={`${parentId}-${index}-tooltip`}
               aria-haspopup="true"
               role={tooltipInfo || node.info}
@@ -117,6 +126,15 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
             >
               {tooltipDisplay ?? 'Loading...'}
             </ReactTooltip>}
+          {node.message &&
+            <ReactTooltip id={`${parentId}-${index}-status`}
+              aria-haspopup="true"
+              place='right'
+              class="alert-tooltip data-layers-alert-tooltip"
+            >
+              {node.message}
+            </ReactTooltip>
+          }
         </>
       return item;
     });
