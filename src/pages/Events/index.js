@@ -125,7 +125,7 @@ const EventAlerts = ({ t }) => {
   }, [filteredAlerts]);
 
 
-  const getEvents = () => {
+  const getEvents = (isLoading = true) => {
     const dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {};
@@ -140,7 +140,7 @@ const EventAlerts = ({ t }) => {
     };
 
     dispatch(setEventParams(eventParams))
-    dispatch(getAllEventAlerts(eventParams, true));
+    dispatch(getAllEventAlerts(eventParams, true, isLoading));
   }
 
   const getAlertsByArea = () => {
