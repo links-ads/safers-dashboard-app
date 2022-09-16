@@ -175,6 +175,12 @@ const DataLayerDashboard = () => {
     }
   }, [isPlaying]);
 
+  useEffect(() => {
+    if (showLegend) {
+      setShowLegend(false);
+    }
+  }, [activeTab, currentLayer, metaData]);
+
   // This takes an array of objects and recursively filters out sibling 
   // objects that do not match the search term. It retains the original data 
   // shape and all children of matching objects.
@@ -275,17 +281,23 @@ const DataLayerDashboard = () => {
         <div style={{
           position: 'absolute',
           zIndex: 1,
-          bottom: '30px',
-          width: '100%',
+          top: '0.625rem',
+          left: '0.625rem',
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          padding: '0.25rem 0.41rem',
+          width: '1.813',
+          height: '1.813',
+          backgroundColor: '#fff',
+          borderRadius: '0.25rem'
         }}>
           <button
             type="button"
-            className="btn btn-layers-slider-play float-start me-2 p-0"
+            className="btn float-start p-0"
+            style={{ color: '#000' }}
             onClick={() => setShowLegend(!showLegend)}
           >
-            <i className="h4 mdi mdi-map-legend">legend</i>
+            <i className="h4 mdi mdi-map-legend" />
           </button>
         </div>
       );
@@ -324,16 +336,13 @@ const DataLayerDashboard = () => {
     timeSeriesData,
     featureInfoData,
     searchDataTree,
-    timestamp
+    timestamp,
+    showLegend,
+    legendUrl: currentLayer?.legend_url
   };
 
   return (
     <div className='page-content'>
-      {showLegend ? (
-        <div className='legend'>
-          <img src={currentLayer.legend_url} />
-        </div>
-      ) : null}
       <div className='mx-2 sign-up-aoi-map-bg'>
         <Row>
           <Col xl={5} className='mb-3'>

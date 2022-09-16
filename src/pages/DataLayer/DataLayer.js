@@ -36,6 +36,8 @@ const DataLayer = ({
   bitmapLayer,
   viewState,
   timestamp,
+  showLegend,
+  legendUrl,
   searchDataTree,
   dispatch
 }) => {
@@ -78,6 +80,13 @@ const DataLayer = ({
     }
     return(
       <Card className='map-card mb-0' style={{ height: 670 }}>
+        {showLegend && !!legendUrl ? (
+          <div className='legend-container'>
+            <div className='legend'>
+              <img src={legendUrl} />
+            </div>
+          </div>
+        ) : null}
         <DataLayerInformation   
           currentLayer={currentLayer}
           tempLayerData={tempLayerData}
@@ -227,6 +236,8 @@ DataLayer.propTypes = {
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
+  showLegend: PropTypes.bool,
+  legendUrl: PropTypes.string,
   searchDataTree: PropTypes.func,
   dispatch: PropTypes.func
 }

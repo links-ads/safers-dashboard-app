@@ -275,7 +275,8 @@ const FireAlerts = ({ t }) => {
   };
 
   const renderTooltip = (info) => {
-    const { object, coordinate } = info;
+    const { object, coordinate:tempCoords } = info;
+    const coordinate = tempCoords || object?.geometry.coordinates;
     if (object) {
       return (
         <Tooltip
