@@ -182,7 +182,8 @@ const FireAlerts = ({ t }) => {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
-      setAlertId(id);      
+      setAlertId(id);   
+      console.log('selectedAlert.center..', selectedAlert.center);   
       const pickedInfo = {
         object: {
           properties: selectedAlert
@@ -190,8 +191,8 @@ const FireAlerts = ({ t }) => {
         coordinate: selectedAlert.center,
       };
       setIsEdit(isEdit);
-      !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged
-        ? setViewState(
+      if(!_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged){
+        setViewState(
           getViewState(
             selectedAlert.center,
             currentZoomLevel,
@@ -200,7 +201,9 @@ const FireAlerts = ({ t }) => {
             setIsViewStateChanged
           )
         )
-        : setHoverInfo(pickedInfo);
+      }
+      console.log('pickedInfo..', pickedInfo); 
+      setHoverInfo(pickedInfo);
       setIconLayer(getFireAlertLayer(clonedAlerts, selectedAlert));
       
     } else {
@@ -275,7 +278,8 @@ const FireAlerts = ({ t }) => {
   };
 
   const renderTooltip = (info) => {
-    const { object, coordinate } = info;
+    const { object, coordinate:tempCoords } = info;
+    const coordinate = tempCoords || object?.geometry.coordinates;
     if (object) {
       return (
         <Tooltip
