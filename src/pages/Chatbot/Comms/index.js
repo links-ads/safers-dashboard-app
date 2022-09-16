@@ -97,6 +97,10 @@ const Comms = () => {
     loadComms();
   }
 
+  const onClick = (info) => {
+    console.log('CLICKED COMMS PIN: ', info);
+  }
+
   return (
     <div className='mx-2'>
       <Row className="justify-content-end mb-2">
@@ -147,6 +151,7 @@ const Comms = () => {
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}
+            onClick={onClick}
           />
         </Col>
       </Row>

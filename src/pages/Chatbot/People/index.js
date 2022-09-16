@@ -98,6 +98,10 @@ const People = () => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
+  const onClick = (info) => {
+    console.log('CLICKED PEOPLE PIN: ', info);
+  }
+
   return (
     <div className='mx-2'>
       <Row className="justify-content-end mb-2">
@@ -134,9 +138,11 @@ const People = () => {
             viewState={viewState}
             iconLayer={iconLayer}
             getPeopleByArea={getPeopleByArea}
+            setViewState={setViewState}
             handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
+            onClick={onClick}
           />
         </Col>
       </Row>

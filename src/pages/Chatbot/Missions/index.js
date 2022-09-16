@@ -104,6 +104,10 @@ const Missions = () => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
+  const onClick = (info) => {
+    console.log('CLICKED MISSIONS PIN: ', info);
+  }
+
   return (
     <div className='mx-2'>
       <Row className="justify-content-end mb-2">
@@ -150,6 +154,7 @@ const Missions = () => {
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}
+            onClick={onClick}
           />
         </Col>
       </Row>
