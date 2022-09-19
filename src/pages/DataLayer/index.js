@@ -92,6 +92,15 @@ const DataLayerDashboard = () => {
     }
   }, [isNewAlert]);
 
+  useEffect(()=> {
+    setSliderValue(0);
+    setIsPlaying(false);
+    setTimestamp('');
+    setBitmapLayer(null);
+    setSliderRangeLimit(0);
+    setCurrentLayer(undefined);
+  }, [activeTab])
+
   useEffect(() => {
     setBoundingBox(
       getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel, 300, 300));
