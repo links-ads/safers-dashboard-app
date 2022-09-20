@@ -78,6 +78,9 @@ const SortSection = ({ t, commStatus, sortOrder, setcommStatus, setSortOrder, ta
           >
             <option value={''} >--Target--</option>
             <option value="Public">{t('Public')}</option>
+            <option value="Citizen">{t('Citizen')}</option>
+            <option value="Professional">{t('Professional')}</option>
+            <option value="Organization">{t('Organisation')}</option>
           </Input>
         </Col>
       </Row>
