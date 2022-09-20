@@ -70,7 +70,7 @@ const Comms = () => {
 
   useEffect(() => {
     if (allReports.length > 0) {
-      setIconLayer(getIconLayer(allReports, MAP_TYPES.REPORTS, 'report', dispatch, setViewState));
+      setIconLayer(getIconLayer(allReports, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState));
     }
   }, [allReports]);
 
