@@ -54,6 +54,9 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
             </Row>
             <Row className='mt-2'>
               <Col>
+                <p className="text-muted no-wrap">
+                  {t('ID', { ns: 'chatBot' })}: {card.id}
+                </p>
                 <p className="text-muted no-wrap mb-0">
                   {t('Start date', { ns: 'common' })}: {formatDate(card.start, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.end, 'YYYY-MM-DD')}
                 </p>
@@ -65,7 +68,8 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
             <Row className='mt-0'>
               <Col md={10}>
                 <p className="text-muted no-wrap mb-0">
-                  {t('Associated files', { ns: 'common' })}: <Button color='link' onClick={() => { navigate(`/reports-dashboard/${card.report_id}`); }} className='align-self-baseline pe-0'>{t(card.report_title, { ns: 'common' })}</Button>
+                  {t('Associated reports', { ns: 'common' })}: 
+                  {card?.reports.map((report) => <Button key={report.id} color='link' className='align-self-baseline pe-0' onClick={() => { navigate(`/reports-dashboard/${report.id}`)}}>{report.name}</Button>)}
                 </p>
               </Col>
             </Row>
