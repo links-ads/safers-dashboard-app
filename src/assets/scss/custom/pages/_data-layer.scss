@@ -29,7 +29,6 @@
     height: 100%;
     width: fit-content;
     z-index: 1;
-
     img {
         max-width: 12.5rem;
     }
@@ -55,16 +54,19 @@
 .timestamp-container {
     position: absolute;
     z-index: 100;
-    bottom: 100px;
+    bottom: 25px;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
+    pointer-events: none;
+    user-select: none;
 }
 
 .timestamp-display {
     font-size: 1.5rem;
-    color: $orange;
+    color: $white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .meta-icon {
@@ -76,7 +78,7 @@
 
 .meta-close {
     float: right;
-    margin-right:  35px;
+    margin-right: 35px;
     cursor: pointer;
 }
 
