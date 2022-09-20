@@ -69,7 +69,7 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
               <Col md={10}>
                 <p className="text-muted no-wrap mb-0">
                   {t('Associated reports', { ns: 'common' })}: 
-                  {card?.reports.map((report) => <Button color='link' className='align-self-baseline pe-0' onClick={() => { navigate(`/reports-dashboard/${report.id}`) }}>{report.name}</Button>)}
+                  {card?.reports.map((report) => <Button key={report.id} color='link' className='align-self-baseline pe-0' onClick={() => { navigate(`/reports-dashboard/${report.id}`)}}>{report.name}</Button>)}
                 </p>
               </Col>
             </Row>
