@@ -70,9 +70,9 @@ const Comms = () => {
 
   useEffect(() => {
     if (allReports.length > 0) {
-      setIconLayer(getIconLayer(allReports, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState));
+      setIconLayer(getIconLayer(allReports, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState, {id: commID}));
     }
-  }, [allReports]);
+  }, [allReports, commID]);
 
   const getReportsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -98,7 +98,8 @@ const Comms = () => {
   }
 
   const onClick = (info) => {
-    console.log('CLICKED COMMS PIN: ', info);
+    const { id } = info?.object?.properties ?? {};
+    setCommID(commID === id ? undefined : id)
   }
 
   return (

@@ -84,9 +84,9 @@ const Missions = () => {
 
   useEffect(() => {
     if (allMissions.length > 0) {
-      setIconLayer(getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState, {}));
+      setIconLayer(getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState, {id: missionId}));
     }
-  }, [allMissions]);
+  }, [allMissions, missionId]);
 
   const getMissionsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -105,7 +105,8 @@ const Missions = () => {
   }, []);
 
   const onClick = (info) => {
-    console.log('CLICKED MISSIONS PIN: ', info);
+    const { id } = info?.object?.properties ?? {};
+    setMissionId(missionId === id ? undefined : id)
   }
 
   return (

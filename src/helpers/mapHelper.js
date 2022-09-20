@@ -55,12 +55,12 @@ export const getPolygonLayer = (aoi) => {
 
 export const getAlertIconColorFromContext = (mapType, feature, selectedItem = {}) => {
   let color = GRAY;
-  if (!feature.properties.report_id && !selectedItem.report_id) {
+  if (!feature.properties.id && !selectedItem.id) {
     return color;
   }
 
   const whitelist = ['Created', 'Active', 'Ongoing'];
-  if (feature.properties.report_id === selectedItem.report_id) {
+  if (feature.properties.id === selectedItem.id) {
     color = ORANGE;
   } else if (whitelist.includes(feature?.properties?.status)) {
     color = RED;

@@ -63,9 +63,13 @@ const Reports = () => {
 
   useEffect(() => {
     if (allReports.length > 0) {
-      setIconLayer(getIconLayer(allReports, MAP_TYPES.REPORTS, 'report', dispatch, setViewState, { report_id: reportId }));
+      const reshapedReports = allReports.map(report => {
+        const {report_id: id, ...rest} = report;
+        return { id, ...rest };
+      })
+
+      setIconLayer(getIconLayer(reshapedReports, MAP_TYPES.REPORTS, 'report', dispatch, setViewState, { id: reportId }, 'report_id'));
     }
-    // TODO: check this dep
   }, [allReports, reportId]);
 
   const getReportsByArea = () => {
@@ -85,8 +89,8 @@ const Reports = () => {
   }, []);
 
   const handleClick = (info) => {
-    const { report_id } = info?.object?.properties ?? {};
-    setReportId(reportId === report_id ? undefined : report_id)
+    const { id } = info?.object?.properties ?? {};
+    setReportId(reportId === id ? undefined : id)
   }
 
   return (

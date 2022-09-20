@@ -78,9 +78,9 @@ const People = () => {
 
   useEffect(() => {
     if (allPeople.length > 0) {
-      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState));
+      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, {id: peopleId}));
     }
-  }, [allPeople]);
+  }, [allPeople, peopleId]);
 
   const getPeopleByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -99,7 +99,8 @@ const People = () => {
   }, []);
 
   const onClick = (info) => {
-    console.log('CLICKED PEOPLE PIN: ', info);
+    const { id } = info?.object?.properties ?? {};
+    setPeopleId(peopleId === id ? undefined : id)
   }
 
   return (
