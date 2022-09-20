@@ -96,7 +96,7 @@ const DataLayerDashboard = () => {
     setSliderValue(0);
     setIsPlaying(false);
     setTimestamp('');
-    setBitmapLayer(null);
+    setBitmapLayer(undefined);
     setSliderRangeLimit(0);
     setCurrentLayer(undefined);
   }, [activeTab])
