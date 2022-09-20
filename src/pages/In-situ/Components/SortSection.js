@@ -1,26 +1,17 @@
 import React from 'react';
-import { Row, Col, Input, Label, FormGroup } from 'reactstrap';
+import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
 //i18n
 import { withTranslation } from 'react-i18next'
-
-const FILTER_IMAGE = 'IMAGE';
-const FILTER_VIDEO = 'VIDEO';
 
 const SortSection = ({ t,
   sortOrder,
   inSituSource,
-  checkedStatus,
   setSortOrder,
   setInSituSource,
-  setCheckedStatus
 }) => {
-  const { filteredAlerts, allAlerts: alerts, cameraSources } = useSelector(state => state.inSituAlerts);
-
-  const photo = _.filter(alerts, ({ type }) => type == FILTER_IMAGE);
-  const video = _.filter(alerts, ({ type }) => type == FILTER_VIDEO);
+  const { filteredAlerts, cameraSources } = useSelector(state => state.inSituAlerts);
 
   const filterByAlertSource = (inSituSource) => {
     setInSituSource(inSituSource);
@@ -29,51 +20,8 @@ const SortSection = ({ t,
     setSortOrder(sortOrder)
   };
 
-  const handleChecked = (value) => {
-    if (checkedStatus.includes(value)) {
-      setCheckedStatus(_.without(checkedStatus, value))
-    } else {
-      setCheckedStatus([...checkedStatus, value])
-    }
-  };
-
   return (
     <>
-      <div>
-        <FormGroup className="form-group d-inline-block" check>
-          <Input
-            id="photo"
-            data-testid="photo"
-            name="status"
-            type="checkbox"
-            value={FILTER_IMAGE}
-            onChange={(e) => handleChecked(e.target.value)}
-          />
-          <Label
-            check
-            for="photo"
-          >
-            {t('Photos', { ns: 'inSitu' })} ({photo.length})
-          </Label>
-        </FormGroup>
-        <FormGroup className="form-group d-inline-block ms-4" check>
-          <Input
-            id="video"
-            data-testid="video"
-            name="status"
-            type="checkbox"
-            value={FILTER_VIDEO}
-            onChange={(e) => handleChecked(e.target.value)}
-          />
-          <Label
-            check
-            for="video"
-          >
-            {t('Videos', { ns: 'inSitu' })} ({video.length})
-          </Label>
-        </FormGroup>
-      </div>
-
       <Row>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
