@@ -92,6 +92,15 @@ const DataLayerDashboard = () => {
     }
   }, [isNewAlert]);
 
+  useEffect(()=> {
+    setSliderValue(0);
+    setIsPlaying(false);
+    setTimestamp('');
+    setBitmapLayer(undefined);
+    setSliderRangeLimit(0);
+    setCurrentLayer(undefined);
+  }, [activeTab])
+
   useEffect(() => {
     setBoundingBox(
       getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel, 300, 300));
@@ -400,7 +409,7 @@ const DataLayerDashboard = () => {
         </Row>
         <TabContent activeTab={activeTab}>
           <TabPane tabId={DATA_LAYERS_PANELS.mapLayers}>
-            <DataLayer
+            {activeTab === DATA_LAYERS_PANELS.mapLayers && <DataLayer
               operationalMapLayers={filterNodesByProperty(dataLayers, {
                 source: layerSource,
                 domain: dataDomain
@@ -411,10 +420,10 @@ const DataLayerDashboard = () => {
               metaData={metaData}
               isMetaDataLoading={isMetaDataLoading}
               {...sharedMapLayersProps}
-            />
+            />}
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
-            <OnDemandDataLayer
+            {activeTab === DATA_LAYERS_PANELS.onDemandMapLayers && <OnDemandDataLayer
               mapRequests={filterNodesByProperty(mapRequests, {
                 source: layerSource,
                 domain: dataDomain
@@ -424,7 +433,7 @@ const DataLayerDashboard = () => {
               dispatch={dispatch}
               setActiveTab={setActiveTab}
               {...sharedMapLayersProps}
-            />
+            />}
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.fireAndBurnedAreas}>
             {/* ternary here to unmount and clear form */}
