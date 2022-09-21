@@ -28,21 +28,18 @@ const MapSection = ({
   const dispatch = useDispatch();
 
   const renderTooltip = (info) => {
-    const { object, coordinate } = info;
+    const { object } = info;
     if (object) {
       return <ToolTip
-        key={object.id}
-        object={object}
-        coordinate={coordinate}
+        key={object.properties.id}
+        object={object.properties}
+        coordinate={object.properties.center}
         isEdit={isEdit}
         setIsEdit={setIsEdit}
         setFavorite={setFavorite}
         validateEvent={validateEvent}
         editInfo={editInfo}
       />
-    }
-    if (!object) {
-      return null;
     }
   }
 
