@@ -249,18 +249,9 @@ const DataLayerDashboard = () => {
         }}>
           <div className="mapboxgl-ctrl mapboxgl-ctrl-group mx-2">
             <button onClick={() => setIsPlaying(!isPlaying)} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
-              {/* <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i> */}
               <i className={`h4 mb-0 mdi ${isPlaying ? 'mdi-stop' : 'mdi-play'}`} style={{ fontSize: '20px' }}/>
             </button>
           </div>
-          {/* <button
-            type="button"
-            className="btn btn-layers-slider-play float-start me-3 p-0"
-            onClick={() => setIsPlaying(!isPlaying)}
-            aria-label='play-data-layers'
-          >
-            <i className={`h4 mdi ${isPlaying ? 'mdi-stop' : 'mdi-play'}`} />
-          </button> */}
           <Slider
             key={index}
             value={sliderValue}
