@@ -242,10 +242,9 @@ const DataLayerDashboard = () => {
         <div style={{
           position: 'absolute',
           zIndex: 1,
-          bottom: '70px',
+          bottom: '0px',
           width: '100%',
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center'
         }}>
           <div className="mapboxgl-ctrl mapboxgl-ctrl-group mx-2">
