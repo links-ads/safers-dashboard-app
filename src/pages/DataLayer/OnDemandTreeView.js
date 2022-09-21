@@ -48,9 +48,9 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
 
       // use tree level to define main text
       const nodeTextByLevel = [
-        `${node.key} : ${node.title}`,
-        `${node.key} : ${node.title || node.key}`,
-        `${node.key} : ${node.datatype_id}: ${node.title}`
+        node.title,
+        `${node.title || node.key}`,
+        `${node.datatype_id}: ${node.title}`
       ]
       node.text = nodeTextByLevel[lvl];
       node.info = 'I\'m a tooltip';
