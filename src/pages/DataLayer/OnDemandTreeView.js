@@ -61,7 +61,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
         <>
           <ListGroupItem
             key={index + id}
-            className={`dl-item ${node.children && itemState[id] || selectedLayer.id == node.id ? 'selected' : ''} mb-2`}
+            className={`dl-item ${node.children && itemState[id] || selectedLayer.title == node.title ? 'selected' : ''} mb-2`}
             onClick={() => {
               return node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
             }}
