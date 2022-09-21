@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
+import * as api from '../../api/base';
+import { endpoints } from '../../api/endpoints';
 import JsonFormatter from '../../components/JsonFormatter'
 
 const PropsPanel = (node) => {
@@ -97,7 +99,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                   &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
-                    console.log('DELETE REQUEST: ', node);
+                    api.del(`${endpoints.dataLayers.mapRequests}${node.id}`)
                   }} className="bx bx-trash font-size-16" />
                 </> : null
               }
