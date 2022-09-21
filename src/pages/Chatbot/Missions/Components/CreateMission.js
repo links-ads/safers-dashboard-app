@@ -128,7 +128,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         id="mission-title-input"
         className={`${getError('title', errors, errors)}`}
         name="title"
-        placeholder={t('Message Title', { ns: 'chatBot' })}
+        placeholder={t('Mission Title', { ns: 'chatBot' })}
         type="text"
         onChange={(e) => {setTitle(e.target.value);}}
         onBlur={(e) => {validateField('title', e.target.value)}}
@@ -212,11 +212,11 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     </div>
     <FormGroup className="form-group mt-3">
       <Input
-        id="message-description-input"
+        id="mission-description-input"
         className={`${getError('desc', errors, errors)}`}
         type='textarea'
-        name="message-description"
-        placeholder={t('Message Description', { ns: 'chatBot' })}
+        name="mission-description"
+        placeholder={t('Mission Description', { ns: 'chatBot' })}
         onChange={(e) => {setDesc(e.target.value)}}
         onBlur={(e)=>{validateField('desc', e.target.value)}}
         value={desc}
