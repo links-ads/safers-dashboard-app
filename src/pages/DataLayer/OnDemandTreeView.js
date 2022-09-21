@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
+import { Badge, ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import * as api from '../../api/base';
 import { endpoints } from '../../api/endpoints';
@@ -91,7 +91,9 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                       }
                       {node.text}
                     </div>
-                    <span data-tip data-for={`${parentId}-${index}-status`} className={`${node.status?.toLowerCase()}`}>{node.status}</span>
+                    <Badge data-tip data-for={`${parentId}-${index}-status`} className='rounded-pill alert-badge event-alert-badge d-inline-flex justify-content-center align-items-center'>
+                      <span className={`${node.status?.toLowerCase()}`}>{node.status}</span>
+                    </Badge>
                   </div>
               }
               { node?.parameters ? 
