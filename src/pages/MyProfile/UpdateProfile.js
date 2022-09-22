@@ -63,7 +63,7 @@ const UpdateProfile = ({t}) => {
       if(currentRoleObj){
         setCurrentRole(currentRoleObj.name);
       }
-      const objCitizen = _.find(roles, { name: 'Citizen' });
+      const objCitizen = _.find(roles, { name: 'citizen' });
       setcitizenId(objCitizen.id)
 
     }  
@@ -334,7 +334,7 @@ const UpdateProfile = ({t}) => {
                             data-testid="update-profile-role"
                           >
                             <option value={''} >--{t('Select your role')}--</option>
-                            {roles.map((roleObj, index) => { return (<option key={index} value={roleObj.id}>{roleObj.name}</option>) })}
+                            {roles.map((roleObj, index) => { return (<option key={index} value={roleObj.id}>{roleObj.label}</option>) })}
                           </Input>
                           {getError('role', errors, touched, false)}
                         </div>
