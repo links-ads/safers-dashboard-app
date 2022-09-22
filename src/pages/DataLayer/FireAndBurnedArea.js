@@ -145,252 +145,253 @@ const FireAndBurnedArea = ({
               handleSubmit,
               setFieldValue,
               isSubmitting,
-            }) => (
-              <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-between'>
-                <Row>
-                  <Col xl={5} className='d-flex flex-column justify-content-between'>
-                    <Row>
+            }) => {
+              return(
+                <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-between'>
+                  <Row>
+                    <Col xl={5} className='d-flex flex-column justify-content-between'>
                       <Row>
-                        <Col>
-                          <h4>{t('requestMap')}</h4>
-                        </Col>
-                        <Col className="d-flex justify-content-end align-items-center">
-                          <Button color='link'
-                            onClick={handleResetAOI} className='p-0'>
-                            {t('default-aoi')}
-                          </Button>
-                        </Col>
-                      </Row>
-                      <Row>
-                        {getGeneralErrors(error)}
-                      </Row>
-                      <Row>
-                        <h5>{t('fireAndBurnedAreas')}</h5>
-                      </Row>
-                      <Row>
-                        <FormGroup className="form-group">
-                          <Label for="dataLayerType">
-                            {t('dataLayerType')}
-                          </Label>
-                          <Input 
-                            name="dataLayerType"
-                            id="dataLayerType"
-                            type="select"
-                            className={
-                              errors.dataLayerType ? 'is-invalid' : ''
-                            }
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.dataLayerType}
-                            multiple
-                          >
-                            <option disabled value=''>
-                              {t('selectLayerTypes')}
-                            </option>
-                            {layerTypes.map(item => (
-                              <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
-                            ))}
-                          </Input>
-                          {getError('dataLayerType', errors, touched)}
-                        </FormGroup>
-                      </Row> 
-                      <Row>
-                        <FormGroup className="form-group">
-                          <Label for="requestTitle">
-                            {t('requestTitle')}
-                          </Label>
-                          <Input 
-                            name="requestTitle" 
-                            id="requestTitle"
-                            className={
-                              errors.requestTitle ? 'is-invalid' : ''
-                            }
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.requestTitle}
-                            placeholder="[Type Request Title]"
-                          />
-                          {getError('requestTitle', errors, touched, false)}
-                        </FormGroup>
-                      </Row>
-                      <Row>
-                        <FormGroup className='form-group'>
-                          <Label for="mapSelection">
-                            {t('mapSelection')}
-                          </Label>
-                          <Input
-                            id="mapSelection"
-                            name="mapSelection"
-                            type="textarea"
-                            rows="5"
-                            className={errors.mapSelection ? 'is-invalid' : ''}
-                            onChange={({ target: { value } }) => {
-                              setFieldValue('mapSelection', value);
-
-                              if (!value) {
-                                setFieldValue('isAreaValid', true);
-                              } else {
-                                const { features } = featureCollection(
-                                  wkt.parse(value)
-                                );
-                                const areaIsValid = checkRasterSizeWithinLimits(features, values.resolution);
-
-                                setFieldValue('isAreaValid', areaIsValid);
+                        <Row>
+                          <Col>
+                            <h4>{t('requestMap')}</h4>
+                          </Col>
+                          <Col className="d-flex justify-content-end align-items-center">
+                            <Button color='link'
+                              onClick={handleResetAOI} className='p-0'>
+                              {t('default-aoi')}
+                            </Button>
+                          </Col>
+                        </Row>
+                        <Row>
+                          {getGeneralErrors(error)}
+                        </Row>
+                        <Row>
+                          <h5>{t('fireAndBurnedAreas')}</h5>
+                        </Row>
+                        <Row>
+                          <FormGroup className="form-group">
+                            <Label for="dataLayerType">
+                              {t('dataLayerType')}
+                            </Label>
+                            <Input 
+                              name="dataLayerType"
+                              id="dataLayerType"
+                              type="select"
+                              className={
+                                errors.dataLayerType ? 'is-invalid' : ''
                               }
-                            }}
-                            onBlur={handleBlur}
-                            value={values.mapSelection}
-                            placeholder='Enter Well Known Text or draw a polygon on the map'
-                          />
-                          {getError('mapSelection', errors, touched, false)}
-                          {getError('isAreaValid', errors, touched, false, true)}
-                        </FormGroup>
-                      </Row>
-                      <Row>
-                        <FormGroup className='form-group'>
-                          <Row>
-                            <Col>
-                              <Label for="startDate">
-                                {t('startDate')}
-                              </Label>
-                              <Input
-                                id="startDate"
-                                name="startDate"
-                                type="date"
-                                className={
-                                  errors.startDate ? 'is-invalid' : ''
-                                }
-                                onChange={handleChange}
-                                onBlur={handleBlur} 
-                                value={values.startDate}
-                              />
-                              {getError('startDate', errors, touched, false)}
-                            </Col>
-                            <Col>
-                              <Label for="endDate">
-                                {t('endDate')}
-                              </Label>
-                              <Input
-                                id="endDate"
-                                name="endDate"
-                                type="date"
-                                className={
-                                  errors.endDate ? 'is-invalid' : ''
-                                }
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                value={values.endDate}
-                              />
-                              {getError('endDate', errors, touched, false)}
-                            </Col>
-                          </Row>
-                        </FormGroup>
-                      </Row>
-                      <Row>
-                        <FormGroup>
-                          <Row className='d-flex align-items-baseline'>
-                            <Col xl={3}>
-                              <Label for="frequency" className='mb-0'>
-                                {t('frequency')}
-                              </Label>
-                            </Col>
-                            <Col xl={4}>
-                              <Input
-                                id="frequency"
-                                name="frequency"
-                                type="num"
-                                className={
-                                  errors.frequency ? 'is-invalid' : ''
-                                }
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                                placeholder='[type here]'
-                                value={values.frequency}
-                              />
-                              {getError('frequency', errors, touched, false)}
-                            </Col>
-                            <Col xl={5} />
-                          </Row>
-                        </FormGroup>
-                      </Row>
-                      <Row>
-                        <FormGroup>
-                          <Row className='d-flex align-items-baseline'>
-                            <Col xl={3}>
-                              <Label for="resolution" className='mb-0'>
-                                {t('resolution')}
-                              </Label>
-                            </Col>
-                            <Col xl={4}>
-                              <Input
-                                id="resolution"
-                                name="resolution"
-                                type="num"
-                                placeholder='10'
-                                className={
-                                  errors.resolution ? 'is-invalid' : ''
-                                }
-                                onChange={({ target: { value } }) => {
-                                  const parsedValue = parseInt(value);
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.dataLayerType}
+                              multiple
+                            >
+                              <option disabled value=''>
+                                {t('selectLayerTypes')}
+                              </option>
+                              {layerTypes.map(item => (
+                                <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
+                              ))}
+                            </Input>
+                            {getError('dataLayerType', errors, touched)}
+                          </FormGroup>
+                        </Row> 
+                        <Row>
+                          <FormGroup className="form-group">
+                            <Label for="requestTitle">
+                              {t('requestTitle')}
+                            </Label>
+                            <Input 
+                              name="requestTitle" 
+                              id="requestTitle"
+                              className={
+                                errors.requestTitle ? 'is-invalid' : ''
+                              }
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              value={values.requestTitle}
+                              placeholder="[Type Request Title]"
+                            />
+                            {getError('requestTitle', errors, touched, false)}
+                          </FormGroup>
+                        </Row>
+                        <Row>
+                          <FormGroup className='form-group'>
+                            <Label for="mapSelection">
+                              {t('mapSelection')}
+                            </Label>
+                            <Input
+                              id="mapSelection"
+                              name="mapSelection"
+                              type="textarea"
+                              rows="5"
+                              className={errors.mapSelection ? 'is-invalid' : ''}
+                              onChange={({ target: { value } }) => {
+                                setFieldValue('mapSelection', value);
 
-                                  setFieldValue('resolution', parsedValue);
-
-                                  const areaIsValid = checkRasterSizeWithinLimits(values.mapSelection, parsedValue);
-
+                                if (!value) {
+                                  setFieldValue('isAreaValid', true);
+                                } else {
+                                  const { features } = featureCollection(
+                                    wkt.parse(value)
+                                  );
+                                  const areaIsValid = checkRasterSizeWithinLimits(features, values.resolution);
+  
                                   setFieldValue('isAreaValid', areaIsValid);
-                                }}
-                                onBlur={handleBlur}
-                                value={values.resolution}
-                              />
-                              {getError('resolution', errors, touched, false)}
-                            </Col>
-                            <Col xl={5} />
-                          </Row>
-                        </FormGroup>
-                      </Row>
-                    </Row>
-                    <Row>
-                      <Row>
-                        <Col>
-                          <Button 
-                            type="submit"
-                            disabled={isSubmitting}
-                            className='btn btn-primary'
-                            color="primary"
-                          >
-                            {t('request')}
-                          </Button>
-                          <Button
-                            onClick={backToOnDemandPanel}
-                            className='btn btn-secondary ms-3'
-                            color="secondary"
-                          >
-                            {t('cancel')}
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Row>
-                  </Col>
-                  <Col xl={7} className='mx-auto'>
-                    <Card className='map-card mb-0' style={{ height: 670 }}>
-                      <MapSection 
-                        setCoordinates={(wktConversion, areaIsValid) => {
-                          setFieldValue('mapSelection', wktConversion);
-                          setFieldValue('isAreaValid', areaIsValid);
-                        }}
-                        coordinates={values.mapSelection}
-                        togglePolygonMap={true}
-                        handleAreaValidation={feature => {
-                          const areaIsValid = checkRasterSizeWithinLimits(feature, values.resolution);
+                                }
+                              }}
+                              onBlur={handleBlur}
+                              value={values.mapSelection}
+                              placeholder='Enter Well Known Text or draw a polygon on the map'
+                            />
+                            {getError('mapSelection', errors, touched, false)}
+                            {getError('isAreaValid', errors, touched, false, true)}
+                          </FormGroup>
+                        </Row>
+                        <Row>
+                          <FormGroup className='form-group'>
+                            <Row>
+                              <Col>
+                                <Label for="startDate">
+                                  {t('startDate')}
+                                </Label>
+                                <Input
+                                  id="startDate"
+                                  name="startDate"
+                                  type="date"
+                                  className={
+                                    errors.startDate ? 'is-invalid' : ''
+                                  }
+                                  onChange={handleChange}
+                                  onBlur={handleBlur} 
+                                  value={values.startDate}
+                                />
+                                {getError('startDate', errors, touched, false)}
+                              </Col>
+                              <Col>
+                                <Label for="endDate">
+                                  {t('endDate')}
+                                </Label>
+                                <Input
+                                  id="endDate"
+                                  name="endDate"
+                                  type="date"
+                                  className={
+                                    errors.endDate ? 'is-invalid' : ''
+                                  }
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  value={values.endDate}
+                                />
+                                {getError('endDate', errors, touched, false)}
+                              </Col>
+                            </Row>
+                          </FormGroup>
+                        </Row>
+                        <Row>
+                          <FormGroup>
+                            <Row className='d-flex align-items-baseline'>
+                              <Col xl={3}>
+                                <Label for="frequency" className='mb-0'>
+                                  {t('frequency')}
+                                </Label>
+                              </Col>
+                              <Col xl={4}>
+                                <Input
+                                  id="frequency"
+                                  name="frequency"
+                                  type="num"
+                                  className={
+                                    errors.frequency ? 'is-invalid' : ''
+                                  }
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                  placeholder='[type here]'
+                                  value={values.frequency}
+                                />
+                                {getError('frequency', errors, touched, false)}
+                              </Col>
+                              <Col xl={5} />
+                            </Row>
+                          </FormGroup>
+                        </Row>
+                        <Row>
+                          <FormGroup>
+                            <Row className='d-flex align-items-baseline'>
+                              <Col xl={3}>
+                                <Label for="resolution" className='mb-0'>
+                                  {t('resolution')}
+                                </Label>
+                              </Col>
+                              <Col xl={4}>
+                                <Input
+                                  id="resolution"
+                                  name="resolution"
+                                  type="num"
+                                  placeholder='10'
+                                  className={
+                                    errors.resolution ? 'is-invalid' : ''
+                                  }
+                                  onChange={({ target: { value } }) => {
+                                    const parsedValue = parseInt(value);
 
-                          return areaIsValid;
-                        }}
-                      />
-                    </Card>
-                  </Col>
-                </Row>
-              </Form>
-            )}
+                                    setFieldValue('resolution', parsedValue);
+
+                                    const areaIsValid = checkRasterSizeWithinLimits(values.mapSelection, parsedValue);
+
+                                    setFieldValue('isAreaValid', areaIsValid);
+                                  }}
+                                  onBlur={handleBlur}
+                                  value={values.resolution}
+                                />
+                                {getError('resolution', errors, touched, false)}
+                              </Col>
+                              <Col xl={5} />
+                            </Row>
+                          </FormGroup>
+                        </Row>
+                      </Row>
+                      <Row>
+                        <Row>
+                          <Col>
+                            <Button 
+                              type="submit"
+                              disabled={isSubmitting}
+                              className='btn btn-primary'
+                              color="primary"
+                            >
+                              {t('request')}
+                            </Button>
+                            <Button
+                              onClick={backToOnDemandPanel}
+                              className='btn btn-secondary ms-3'
+                              color="secondary"
+                            >
+                              {t('cancel')}
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Row>
+                    </Col>
+                    <Col xl={7} className='mx-auto'>
+                      <Card className='map-card mb-0' style={{ height: 670 }}>
+                        <MapSection 
+                          setCoordinates={(wktConversion, areaIsValid) => {
+                            setFieldValue('mapSelection', wktConversion);
+                            setFieldValue('isAreaValid', areaIsValid);
+                          }}
+                          coordinates={values.mapSelection}
+                          togglePolygonMap={true}
+                          handleAreaValidation={feature => {
+                            const areaIsValid = checkRasterSizeWithinLimits(feature, values.resolution);
+
+                            return areaIsValid;
+                          }}
+                        />
+                      </Card>
+                    </Col>
+                  </Row>
+                </Form>
+              )}}
           </Formik>
         </Row>
       </Col>
