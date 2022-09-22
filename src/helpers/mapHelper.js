@@ -8,6 +8,12 @@ const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
 const ORANGE = [226, 123, 29];
 const GRAY = [128, 128, 128];
 const RED = [230, 51, 79];
+const DARK_GRAY = [57, 58, 58];
+
+const ALERT_TYPES = {
+  red: ['Created', 'Active', 'Ongoing'],
+  gray: ['Notified', 'Closed']
+};
 
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
   return {
@@ -54,16 +60,17 @@ export const getPolygonLayer = (aoi) => {
 }
 
 export const getAlertIconColorFromContext = (mapType, feature, selectedItem = {}) => {
-  let color = GRAY;
+  let color = DARK_GRAY;
   if (!feature.properties.id && !selectedItem.id) {
     return color;
   }
 
-  const whitelist = ['Created', 'Active', 'Ongoing'];
   if (feature.properties.id === selectedItem.id) {
     color = ORANGE;
-  } else if (whitelist.includes(feature?.properties?.status)) {
+  } else if (ALERT_TYPES.red.includes(feature?.properties?.status)) {
     color = RED;
+  } else if (ALERT_TYPES.gray.includes(feature?.properties?.status)) {
+    return GRAY;
   }
   return color;
 }
