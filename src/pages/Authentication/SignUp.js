@@ -40,7 +40,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if(roles.length){
-      const role = _.find(roles, { name: 'Citizen' });
+      const role = _.find(roles, { name: 'citizen' });
       setcitizenId(role.id)
     }
   }, [roles]);
@@ -211,7 +211,7 @@ const SignUp = () => {
                         data-testid="sign-up-role"
                       >
                         <option value={''}>--Select your role--</option>
-                        {roles.map((role) => { return (<option key={role.name} value={role.name}>{role.name}</option>); })}
+                        {roles.map((role) => { return (<option key={role.name} value={role.name}>{role.label}</option>); })}
                       </Input>
                       {getError('role', errors, touched, false)}
                     </FormGroup>
