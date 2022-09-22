@@ -11,8 +11,8 @@ const RED = [230, 51, 79];
 const DARK_GRAY = [57, 58, 58];
 
 const ALERT_TYPES = {
-  red: ['Created', 'Active', 'Ongoing'],
-  gray: ['Notified', 'Closed']
+  red: ['Created', 'Active', 'Ongoing', 'Available', 'Moving'],
+  gray: ['Notified', 'Closed', 'Expired', 'Completed']
 };
 
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
