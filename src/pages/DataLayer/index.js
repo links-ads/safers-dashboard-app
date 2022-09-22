@@ -245,7 +245,8 @@ const DataLayerDashboard = () => {
           bottom: '0px',
           width: '100%',
           display: 'flex',
-          alignItems: 'center'
+          alignItems: 'center',
+          justifyContent: 'center'
         }}>
           <div className="mapboxgl-ctrl mapboxgl-ctrl-group mx-2">
             <button onClick={() => setIsPlaying(!isPlaying)} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
@@ -343,7 +344,8 @@ const DataLayerDashboard = () => {
     searchDataTree,
     timestamp,
     showLegend,
-    legendUrl: currentLayer?.legend_url
+    legendUrl: currentLayer?.legend_url,
+    sliderChangeComplete
   };
 
   return (

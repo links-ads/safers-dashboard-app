@@ -39,7 +39,8 @@ const DataLayer = ({
   showLegend,
   legendUrl,
   searchDataTree,
-  dispatch
+  dispatch,
+  sliderChangeComplete
 }) => {
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
 
@@ -105,7 +106,7 @@ const DataLayer = ({
         </DataLayerInformation>        
         {getSlider()}
         {getLegend()}
-        {getCurrentTimestamp()}
+        {sliderChangeComplete && getCurrentTimestamp()}
       </Card>
     );
   };
@@ -239,7 +240,8 @@ DataLayer.propTypes = {
   showLegend: PropTypes.bool,
   legendUrl: PropTypes.string,
   searchDataTree: PropTypes.func,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  sliderChangeComplete: PropTypes.bool
 }
 
 export default withTranslation(['common'])(DataLayer);
