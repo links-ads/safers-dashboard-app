@@ -21,7 +21,7 @@ const Tooltip = ({ object }) => {
       className="cameras-tooltip"
       style={{ borderRadius: '10px' }}>
       <div>
-        {obj.map(({properties: { id, direction, last_update, description }}) => (
+        {obj.map(({properties: { id, direction, last_update, description, location }}) => (
           <React.Fragment key={id}>
             <div className='my-2 m-4 map-tooltip'>
               <Row className='mb-2'>
