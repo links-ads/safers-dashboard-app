@@ -15,6 +15,7 @@ const MapSection = ({
   setCoordinates,
   coordinates,
   togglePolygonMap = false,
+  handleAreaValidation
 }) => {
 
   const getSearchButton = (index) => (
@@ -56,6 +57,7 @@ const MapSection = ({
           setCoordinates={setCoordinates}
           coordinates={coordinates}
           key='comm-polygon-map'
+          handleAreaValidation={handleAreaValidation}
         />
       ) : null}
     </Card>
@@ -72,6 +74,7 @@ MapSection.propTypes = {
   setCoordinates: PropTypes.func,
   togglePolygonMap: PropTypes.any,
   coordinates: PropTypes.string,
+  handleAreaValidation: PropTypes.function
 }
 
 export default MapSection;

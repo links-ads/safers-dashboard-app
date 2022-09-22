@@ -29,9 +29,9 @@ export const getGeneralErrors = (errors) => {
   )
 }
 
-export const getError = (key, errors, touched, errStyle=true) => {
+export const getError = (key, errors, touched, errStyle=true, onBlur) => {
     
-  if(errors[key] && touched[key]){
+  if(errors[key] && (touched[key] || onBlur)){
     return (errStyle ? 'is-invalid': <div className="invalid-feedback d-block">{errors[key]}</div> )
   }
 }

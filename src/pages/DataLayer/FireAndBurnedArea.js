@@ -233,14 +233,17 @@ const FireAndBurnedArea = ({
                               className={errors.mapSelection ? 'is-invalid' : ''}
                               onChange={({ target: { value } }) => {
                                 setFieldValue('mapSelection', value);
-                                setFieldValue('isAreaValid',checkRasterSizeWithinLimits(value, values.resolution));
+
+                                const areaIsValid = checkRasterSizeWithinLimits(value, values.resolution);
+
+                                setFieldValue('isAreaValid', areaIsValid);
                               }}
                               onBlur={handleBlur}
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {getError('mapSelection', errors, touched, false)}
-                            {getError('isAreaValid', errors, touched, false)}
+                            {getError('isAreaValid', errors, touched, false, true)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -328,8 +331,13 @@ const FireAndBurnedArea = ({
                                     errors.resolution ? 'is-invalid' : ''
                                   }
                                   onChange={({ target: { value } }) => {
-                                    setFieldValue('resolution', parseInt(value));
-                                    setFieldValue('isAreaValid',checkRasterSizeWithinLimits(values.mapSelection, parseInt(value)));
+                                    const parsedValue = parseInt(value);
+
+                                    setFieldValue('resolution', parsedValue);
+
+                                    const areaIsValid = checkRasterSizeWithinLimits(values.mapSelection, parsedValue);
+
+                                    setFieldValue('isAreaValid', areaIsValid);
                                   }}
                                   onBlur={handleBlur}
                                   value={values.resolution}
@@ -366,12 +374,17 @@ const FireAndBurnedArea = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection 
-                          setCoordinates={value => {
+                          setCoordinates={(value, areaIsValid) => {
                             setFieldValue('mapSelection', value);
-                            setFieldValue('isAreaValid',checkRasterSizeWithinLimits(value, values.resolution));
+                            setFieldValue('isAreaValid', areaIsValid);
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}
+                          handleAreaValidation={feature => {
+                            const areaIsValid = checkRasterSizeWithinLimits(feature, values.resolution);
+
+                            return areaIsValid;
+                          }}
                         />
                       </Card>
                     </Col>

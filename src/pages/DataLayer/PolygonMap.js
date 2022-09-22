@@ -27,6 +27,7 @@ const MAP_STYLE = {
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
 const POLYGON_LINE_DASH = '10,2'
+const POLYGON_ERROR_COLOR = 'rgba(255, 0, 0, 0.5)'
 
 
 const PolygonMap = ({
@@ -44,7 +45,8 @@ const PolygonMap = ({
   navControlPosition = 'bottom-left',
   mapStyle = 'mb_streets',
   setCoordinates,
-  coordinates
+  coordinates,
+  handleAreaValidation
 }) => {
 
   const mapRef = useRef();
@@ -61,6 +63,7 @@ const PolygonMap = ({
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
   const [features, setFeatures] = useState([]);
+  const [areaIsValid, setAreaIsValid] = useState(true);
 
   useEffect(() => {
     window.addEventListener('resize', getMapSize);
@@ -101,18 +104,27 @@ const PolygonMap = ({
   };
 
   const renderToolbar = () => {
-
     return (<>
       <div className="" style={{ position: 'absolute', top: '50px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={() => { toggleMode(modeId ? '' : 'drawPolygon'); setFeatures([]); setCoordinates(''); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={() => {
+            setAreaIsValid(true);
+            toggleMode(modeId ? '' : 'drawPolygon'); 
+            setFeatures([]); 
+            setCoordinates('');
+          }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
       </div>
       <div className="" style={{ position: 'absolute', top: '90px', right: '10px' }}>
         <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button onClick={() => { toggleMode(''); setFeatures([]); setCoordinates(''); }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          <button onClick={() => {
+            setAreaIsValid(true);
+            toggleMode(''); 
+            setFeatures([]); 
+            setCoordinates(''); 
+          }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
             <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
           </button>
         </div>
@@ -122,13 +134,17 @@ const PolygonMap = ({
 
   const handleUpdate = (val) => {
     if (val.editType === 'addFeature') {
+      let areaValidation = true;
+      if (handleAreaValidation) {
+        areaValidation = handleAreaValidation(val.data[0]);
+      }
       const originalGeojson = val.data[0].geometry;
       setFeatures(val.data);
       const wktConversion = wkt.stringify(originalGeojson);
       const formattedWkt = wktConversion.replace(/\d+\.\d+/g, function(match) {
         return Number(match).toFixed(6);
       });
-      setCoordinates(formattedWkt, originalGeojson);
+      setCoordinates(formattedWkt, areaValidation);
       toggleMode('');
     } else {
       setFeatures([])
@@ -169,15 +185,18 @@ const PolygonMap = ({
           features={features}
           onUpdate={handleUpdate}
           featureStyle={(data) => {
+            if (data.index === 0 && handleAreaValidation) {
+              setAreaIsValid(handleAreaValidation(data.feature))
+            }
             if (data.state === RENDER_STATE.SELECTED) {
               return {
                 stroke: POLYGON_LINE_COLOR,
-                fill: POLYGON_FILL_COLOR,
+                fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               };
             }
             return {
               stroke: POLYGON_LINE_COLOR,
-              fill: POLYGON_FILL_COLOR,
+              fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
             };
           }}

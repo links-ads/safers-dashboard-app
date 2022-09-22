@@ -36,10 +36,10 @@ const postEventMonitoringSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   requestTitle: Yup.string().optional(),
   mapSelection: Yup.string()
-    .required('This field cannot be empty'),
-  mapSelectionArea: Yup.number()
     .typeError('Selected area must be valid Well-Known Text')
-    .max(MAX_GEOMETRY_AREA.value, `Selected Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
+    .required('This field cannot be empty'),
+  mapSelectionArea: Yup.boolean()
+    .oneOf([true], `Selected Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
   startDate: Yup.date()
     .typeError('Must be valid date selection')
     .required('This field cannot be empty')
@@ -94,7 +94,7 @@ const PostEventMonitoring = ({
               dataLayerType: '', 
               requestTitle: '', 
               mapSelection: '', 
-              mapSelectionArea: null,
+              mapSelectionArea: true,
               startDate: null, 
               endDate: null, 
             }}
@@ -195,17 +195,16 @@ const PostEventMonitoring = ({
                                   wkt.parse(value)
                                 );
 
-                                if (features) {
-                                  const area = getFeatureArea(features);
-                                  setFieldValue('mapSelectionArea', Math.ceil(area));
-                                }
+                                const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
+
+                                setFieldValue('mapSelectionArea', areaIsValid);
                               }}
                               onBlur={handleBlur}
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {getError('mapSelection', errors, touched, false)}
-                            {getError('mapSelectionArea', errors, touched, false)}
+                            {getError('mapSelectionArea', errors, touched, false, true)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -274,16 +273,16 @@ const PostEventMonitoring = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection
-                          setCoordinates={(wktConversion, originalGeojson) => {
+                          setCoordinates={(wktConversion, areaIsValid) => {
                             setFieldValue('mapSelection', wktConversion);
-
-                            const area = getFeatureArea(originalGeojson);
-                            if (area) {
-                              setFieldValue('mapSelectionArea', Math.ceil(area));
-                            }
+                            setFieldValue('mapSelectionArea', areaIsValid);
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}
+                          handleAreaValidation={feature => {
+                            const area = Math.ceil(getFeatureArea(feature));
+                            return area <= MAX_GEOMETRY_AREA.value;
+                          }}
                         />
                       </Card>
                     </Col>

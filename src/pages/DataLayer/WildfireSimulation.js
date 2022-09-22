@@ -69,10 +69,10 @@ const WildfireSimulationSchema = Yup.object().shape({
   probabilityRange: Yup.string()
     .required('This field cannot be empty'),
   mapSelection: Yup.string()
-    .required('This field cannot be empty'),
-  mapSelectionArea: Yup.number()
     .typeError('Area must be valid Well-Known Text')
-    .max(MAX_GEOMETRY_AREA.value, `Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
+    .required('This field cannot be empty'),
+  mapSelectionArea: Yup.boolean()
+    .oneOf([true], `Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
   ignitionDateTime: Yup.date()
     .typeError('This field must be a valid date selection')
     .required('This field cannot be empty'),
@@ -190,7 +190,7 @@ const WildfireSimulation = ({
               simulationDescription: '',
               probabilityRange: 0.75,
               mapSelection: '',
-              mapSelectionArea: null,
+              mapSelectionArea: true,
               simulationTimeLimit: 1,
               ignitionDateTime: null,
               simulationFireSpotting: false,
@@ -359,8 +359,9 @@ const WildfireSimulation = ({
                             );
 
                             if (features) {
-                              const area = getFeatureArea(features);
-                              setFieldValue('mapSelectionArea', Math.ceil(area));
+                              const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
+
+                              setFieldValue('mapSelectionArea', (areaIsValid));
                             }
                           }}
                           onBlur={handleBlur}
@@ -368,7 +369,7 @@ const WildfireSimulation = ({
                           placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {getError('mapSelection', errors, touched, false)}
-                        {getError('mapSelectionArea', errors, touched, false)}
+                        {getError('mapSelectionArea', errors, touched, false, true)}
                       </FormGroup>
                     </Row>
 
@@ -436,16 +437,16 @@ const WildfireSimulation = ({
                   <Col xl={7} className='mx-auto'>
                     <Card className='map-card mb-0' style={{ height: 670 }}>
                       <MapSection
-                        setCoordinates={(wktConversion, originalGeojson) => {
+                        setCoordinates={(wktConversion, areaIsValid) => {
                           setFieldValue('mapSelection', wktConversion);
-
-                          const area = getFeatureArea(originalGeojson);
-                          if (area) {
-                            setFieldValue('mapSelectionArea', Math.ceil(area));
-                          }
+                          setFieldValue('mapSelectionArea', areaIsValid);
                         }}
                         coordinates={values.mapSelection}
                         togglePolygonMap={true}
+                        handleAreaValidation={feature => {
+                          const area = Math.ceil(getFeatureArea(feature));
+                          return area <= MAX_GEOMETRY_AREA.value;
+                        }}
                       />
                     </Card>
                   </Col>
