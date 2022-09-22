@@ -6,6 +6,7 @@ const initialState = {
   aoiSetSuccess: null,
   error: false,
   getAOIerror: false,
+  updateStatus: null
 };
 
 const userReducer = (state = initialState, action) => {
@@ -22,6 +23,7 @@ const userReducer = (state = initialState, action) => {
   case actionTypes.MP_RESETPSW_FAIL: return resetPswFail(state, action);
   case actionTypes.MP_DELETE_SUCCESS: return deleteAccSuccess(state, action);
   case actionTypes.MP_DELETE_FAIL: return deleteAccFail(state, action);
+  case actionTypes.MP_RESET_STATUS: return resetStatus(state, action);
   default:
     return state;
   }
@@ -32,6 +34,13 @@ const setAoiSuccess = (state, action) => {
     defaultAoi: action.payload,
     aoiSetSuccess: action.msg,
     error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const resetStatus = (state) => {
+  const updatedState = {
+    updateStatus: null,
   }
   return updateObject(state, updatedState);
 }

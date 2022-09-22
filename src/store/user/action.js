@@ -125,10 +125,10 @@ const uploadFileFailed = (error) => {
 };
 
 /* Update user Info */
-export const updateInfo = (id, userInfo) => async (dispatch) => {
+export const updateInfo = (id, userInfo, isCitizen) => async (dispatch) => {
   const url = endpoints.user.profile + id;
   const response = await api.patch(url, {
-    organization: userInfo.organization, 
+    organization: isCitizen ? null : userInfo.organization, 
     role: userInfo.role, 
     first_name: userInfo.first_name,
     last_name: userInfo.last_name,
@@ -153,6 +153,12 @@ const updateInfoFail = (error) => {
   return {
     type: actionTypes.MP_UPDATE_FAIL,
     payload: error
+  };
+};
+
+export const resetStatus = () => {
+  return {
+    type: actionTypes.MP_RESET_STATUS,
   };
 };
 
