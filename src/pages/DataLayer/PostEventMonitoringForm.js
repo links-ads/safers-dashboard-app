@@ -191,13 +191,17 @@ const PostEventMonitoring = ({
                               onChange={({ target: { value } }) => {
                                 setFieldValue('mapSelection', value);
 
-                                const { features } = featureCollection(
-                                  wkt.parse(value)
-                                );
-
-                                const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-
-                                setFieldValue('mapSelectionArea', areaIsValid);
+                                if (!value) {
+                                  setFieldValue('mapSelectionArea', true);
+                                } else {
+                                  const { features } = featureCollection(
+                                    wkt.parse(value)
+                                  );
+  
+                                  const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
+  
+                                  setFieldValue('mapSelectionArea', areaIsValid);
+                                }
                               }}
                               onBlur={handleBlur}
                               value={values.mapSelection}
