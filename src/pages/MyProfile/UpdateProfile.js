@@ -4,7 +4,7 @@ import { Row, Col, Card, CardBody, CardTitle, Media, Form, Label, Input,   Modal
 import avatar from '../../assets/images/users/profile.png';
 import { Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
-import { getInfo, updateInfo, uploadProfImg, getRoleList, getOrgList, deleteAccount, signOut } from '../../store/appAction';
+import { getInfo, updateInfo, uploadProfImg, getRoleList, getOrgList, deleteAccount, signOut, resetStatus } from '../../store/appAction';
 import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
 import _ from 'lodash';
 
@@ -71,7 +71,8 @@ const UpdateProfile = ({t}) => {
 
   useEffect(() => {
     if(updateStatus) {
-      toastr.success('Updated your infomation.', '');
+      toastr.success(t('updated-info', { ns: 'common' }), '');
+      dispatch(resetStatus());
     }  
   }, [updateStatus]);
 
@@ -207,7 +208,7 @@ const UpdateProfile = ({t}) => {
                 initialValues={formInit}
                 validationSchema={myProfileSchema}
                 onSubmit={(values, { setSubmitting }) => {
-                  dispatch(updateInfo(id, values));
+                  dispatch(updateInfo(id, values, values.role === citizenId));
                   setSubmitting(false);
                 }}
               >
