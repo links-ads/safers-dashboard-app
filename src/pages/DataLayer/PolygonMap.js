@@ -103,34 +103,33 @@ const PolygonMap = ({
     setViewport(tempViewport);
   };
 
-  const renderToolbar = () => {
-    return (<>
-      <div className="" style={{ position: 'absolute', top: '50px', right: '10px' }}>
-        <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button style={modeId ? { backgroundColor: 'lightgray' } : {}} onClick={() => {
+  const MapControlButton = ({mode = '', top = '90px', children}) => (
+    <div className="" style={{ position: 'absolute', top, right: '10px' }}>
+      <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
+        <button 
+          style={modeId ? { backgroundColor: 'lightgray' } : {}} 
+          onClick={() => {
             setAreaIsValid(true);
-            toggleMode(modeId ? '' : 'drawPolygon'); 
+            toggleMode(mode); 
             setFeatures([]); 
             setCoordinates('');
           }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
-            <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
-          </button>
-        </div>
+          {children}
+        </button>
       </div>
-      <div className="" style={{ position: 'absolute', top: '90px', right: '10px' }}>
-        <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button onClick={() => {
-            setAreaIsValid(true);
-            toggleMode(''); 
-            setFeatures([]); 
-            setCoordinates(''); 
-          }} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
-            <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
-          </button>
-        </div>
-      </div>
-    </>)
-  }
+    </div>
+  )
+
+  const renderToolbar = () => (
+    <>
+      <MapControlButton mode={modeId ? '' : 'drawPolygon'} top='50px'>
+        <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
+      </MapControlButton>
+      <MapControlButton>
+        <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
+      </MapControlButton>
+    </>
+  )
 
   const handleUpdate = (val) => {
     if (val.editType === 'addFeature') {

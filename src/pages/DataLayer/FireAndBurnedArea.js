@@ -15,7 +15,6 @@ import {
 } from '../../store/appAction';
 import {
   area as getFeatureArea,
-  featureCollection,
   bbox,
   bboxPolygon
 } from '@turf/turf';
@@ -231,9 +230,7 @@ const FireAndBurnedArea = ({
                                 if (!value) {
                                   setFieldValue('isAreaValid', true);
                                 } else {
-                                  const { features } = featureCollection(
-                                    wkt.parse(value)
-                                  );
+                                  const features = wkt.parse(value);
                                   const areaIsValid = checkRasterSizeWithinLimits(features, values.resolution);
   
                                   setFieldValue('isAreaValid', areaIsValid);

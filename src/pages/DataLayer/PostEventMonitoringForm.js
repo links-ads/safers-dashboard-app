@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
 import { 
-  area as getFeatureArea, 
-  featureCollection 
+  area as getFeatureArea 
 } from '@turf/turf';
 import wkt from 'wkt';
 import { Formik } from 'formik';
@@ -194,9 +193,7 @@ const PostEventMonitoring = ({
                                 if (!value) {
                                   setFieldValue('mapSelectionArea', true);
                                 } else {
-                                  const { features } = featureCollection(
-                                    wkt.parse(value)
-                                  );
+                                  const features = wkt.parse(value);
   
                                   const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
   
