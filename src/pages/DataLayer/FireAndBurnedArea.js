@@ -15,7 +15,6 @@ import {
 } from '../../store/appAction';
 import {
   area as getFeatureArea,
-  featureCollection,
   bbox,
   bboxPolygon
 } from '@turf/turf';
@@ -104,13 +103,7 @@ const FireAndBurnedArea = ({
     {id: 36001, name:'Burned area delineation map'}
   ];
 
-  const checkRasterSizeWithinLimits = (wellKnownText, spatial_resolution) => {
-    // given WKT, make sure the size of the raster we're asking for is 
-    // under the limit that LINKS is willing to process
-    const { features } = featureCollection(
-      wkt.parse(wellKnownText)
-    );
-
+  const checkRasterSizeWithinLimits = (features, spatial_resolution) => {
     const MAX_RASTER_SIZE = 15000;
 
     if (features) {
@@ -233,14 +226,22 @@ const FireAndBurnedArea = ({
                               className={errors.mapSelection ? 'is-invalid' : ''}
                               onChange={({ target: { value } }) => {
                                 setFieldValue('mapSelection', value);
-                                setFieldValue('isAreaValid',checkRasterSizeWithinLimits(value, values.resolution));
+
+                                if (!value) {
+                                  setFieldValue('isAreaValid', true);
+                                } else {
+                                  const features = wkt.parse(value);
+                                  const areaIsValid = checkRasterSizeWithinLimits(features, values.resolution);
+  
+                                  setFieldValue('isAreaValid', areaIsValid);
+                                }
                               }}
                               onBlur={handleBlur}
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {getError('mapSelection', errors, touched, false)}
-                            {getError('isAreaValid', errors, touched, false)}
+                            {getError('isAreaValid', errors, touched, false, true)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -328,8 +329,13 @@ const FireAndBurnedArea = ({
                                     errors.resolution ? 'is-invalid' : ''
                                   }
                                   onChange={({ target: { value } }) => {
-                                    setFieldValue('resolution', parseInt(value));
-                                    setFieldValue('isAreaValid',checkRasterSizeWithinLimits(values.mapSelection, parseInt(value)));
+                                    const parsedValue = parseInt(value);
+
+                                    setFieldValue('resolution', parsedValue);
+
+                                    const areaIsValid = checkRasterSizeWithinLimits(values.mapSelection, parsedValue);
+
+                                    setFieldValue('isAreaValid', areaIsValid);
                                   }}
                                   onBlur={handleBlur}
                                   value={values.resolution}
@@ -366,12 +372,17 @@ const FireAndBurnedArea = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection 
-                          setCoordinates={value => {
-                            setFieldValue('mapSelection', value);
-                            setFieldValue('isAreaValid',checkRasterSizeWithinLimits(value, values.resolution));
+                          setCoordinates={(wktConversion, areaIsValid) => {
+                            setFieldValue('mapSelection', wktConversion);
+                            setFieldValue('isAreaValid', areaIsValid);
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}
+                          handleAreaValidation={feature => {
+                            const areaIsValid = checkRasterSizeWithinLimits(feature, values.resolution);
+
+                            return areaIsValid;
+                          }}
                         />
                       </Card>
                     </Col>
