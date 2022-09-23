@@ -80,9 +80,9 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
                   Location: {(card.location).join(', ')}
                 </p>
               </Col>
-              <Col md={3}>
+              <Col md={3} className='d-flex align-items-end justify-content-end'>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>
+                  <span className='float-end alert-source-text'>
                     {t('id', { ns: 'common' }).toUpperCase()}: {card.report_id} / {card.source.toUpperCase()}
                   </span>
                 </CardText>

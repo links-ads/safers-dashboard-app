@@ -63,10 +63,10 @@ const Comm = ({ card, commID, setSelectedComm }) => {
                   {t('Message', { ns: 'common' })}: {getMsg(card.message)}
                 </CardText>
               </Col>
-              <Col md={3}  className='d-flex align-items-end'>
+              <Col md={3}  className='d-flex align-items-end justify-content-end'>
                 <CardText>
-                  <span className='float-end alert-source-text me-2 no-wrap'>
-                    {card.source_organization}
+                  <span className='float-end alert-source-text no-wrap'>
+                    {card.source_organization?.toUpperCase()}
                   </span>
                 </CardText>
               </Col>
