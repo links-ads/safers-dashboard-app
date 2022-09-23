@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse } from 'reactstrap';
+import { useDispatch } from 'react-redux';
 import { fetchEndpoint } from '../../helpers/apiHelper';
-import * as api from '../../api/base';
-import { endpoints } from '../../api/endpoints';
+import { deleteMapRequest, getAllMapRequests } from '../../store/datalayer/action';
 import JsonFormatter from '../../components/JsonFormatter'
 
 const PropsPanel = (node) => {
@@ -19,6 +19,8 @@ const PropsPanel = (node) => {
 };
 
 const OnDemandTreeView = ({ data, setCurrentLayer}) => {
+  const dispatch = useDispatch();
+
   const [itemState, setItemState] = useState({});
   const [itemPropsState, setItemPropsState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
@@ -101,7 +103,8 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                   &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
-                    api.del(`${endpoints.dataLayers.mapRequests}${node.id}`)
+                    dispatch(deleteMapRequest(node.id))
+                    dispatch(getAllMapRequests())
                   }} className="bx bx-trash font-size-16" />
                 </> : null
               }
