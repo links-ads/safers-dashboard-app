@@ -2,7 +2,6 @@ import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
 import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
-import toastr from 'toastr';
 import { useTranslation } from 'react-i18next';
 
 import moment from 'moment';
@@ -34,9 +33,8 @@ const DataLayerDashboard = () => {
     featureInfo: featureInfoData
   } = useSelector(state => state.dataLayer);
   const dateRange = useSelector(state => state.common.dateRange);
-  const { allMapRequests, isNewAlert } = useSelector(state => state?.dataLayer);
+  const { allMapRequests } = useSelector(state => state?.dataLayer);
 
-  const [mapRequests, setMapRequests] = useState([])
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
@@ -54,14 +52,6 @@ const DataLayerDashboard = () => {
   const [timestamp, setTimestamp] = useState('')
 
   const { operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions } = selectOptions;
-
-  // This is to prevent the component from automatically updating
-  // when new map requests appear in global state (should show toast)
-  useEffect(() => {
-    if (!mapRequests.length) {
-      setMapRequests(allMapRequests)
-    }
-  }, [allMapRequests]);
 
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
@@ -85,12 +75,6 @@ const DataLayerDashboard = () => {
       dispatch(setDateRangeDisabled(false));
     }
   }, []);
-
-  useEffect(() => {
-    if (isNewAlert) {
-      toastr.success('New maps are received. Please refresh the list.', '', { preventDuplicates: true, });
-    }
-  }, [isNewAlert]);
 
   useEffect(()=> {
     setSliderValue(0);
@@ -414,7 +398,7 @@ const DataLayerDashboard = () => {
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
             {activeTab === DATA_LAYERS_PANELS.onDemandMapLayers && <OnDemandDataLayer
-              mapRequests={filterNodesByProperty(mapRequests, {
+              mapRequests={filterNodesByProperty(allMapRequests, {
                 source: layerSource,
                 domain: dataDomain
               })}
