@@ -57,13 +57,17 @@ const Comm = ({ card, commID, setSelectedComm }) => {
               </Col>
 
             </Row>
-            <Row className='mt-0 mb-1'>
+            <Row className='mt-0 mb-1 mt-3'>
               <Col>
-                <p className="text-muted no-wrap">
-                  {t('Target', { ns: 'chatBot' })}: {card.assigned_to}
-                </p>
                 <CardText>
                   {t('Message', { ns: 'common' })}: {getMsg(card.message)}
+                </CardText>
+              </Col>
+              <Col md={3}  className='d-flex align-items-end'>
+                <CardText>
+                  <span className='float-end alert-source-text me-2 no-wrap'>
+                    {card.source_organization}
+                  </span>
                 </CardText>
               </Col>
             </Row>
