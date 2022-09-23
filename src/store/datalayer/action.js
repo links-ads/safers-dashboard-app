@@ -2,6 +2,7 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import queryString from 'query-string';
+import toastr from 'toastr';
 
 // data layers
 
@@ -99,11 +100,14 @@ export const resetDataLayersResponseState = () => {
 // Request a map (POST)
 export const postMapRequest = (body) => async (dispatch) => {
   const response = await api.post(endpoints.dataLayers.mapRequests, body);
-  if (response.status === 200) {
+  if (response.status === 201) {
+    toastr.success(`Successfully create a map request called ${response?.data.title}`, response.data?.category_info?.group)
     return dispatch(postMapRequestSuccess(response.data));
   }
-  else
+  else {
+    toastr.error(`Failure: ${response.status} - ${response.statusText}`, 'Post Map Error')
     return dispatch(postMapRequestFail(response.error));
+  }
 };
 
 const postMapRequestSuccess = (mapRequest) => {
@@ -118,6 +122,21 @@ const postMapRequestFail = (error) => {
     payload: error
   };
 };
+
+export const deleteMapRequest = (id) => async (dispatch) => {
+  const response = await api.del(`${endpoints.dataLayers.mapRequests}${id}`);
+  if (response.status === 204) {
+    toastr.success(`Successfully deleted map request ${id}`, 'Delete Map Request')
+  }
+  else {
+    toastr.error(`Failure: ${response.status} - ${response.statusText}`, 'Delete Map Request Error')
+    return dispatch({
+      type: actionTypes.DELETE_MAP_REQUESTS_FAIL,
+      payload: response.error
+    });
+  }
+};
+
 
 // get All Map Requests (GET)
 export const getAllMapRequests = (options) => async (dispatch) => {

@@ -37,6 +37,7 @@ const dataLayerReducer = (state = initialState, action) => {
   case actionTypes.RESET_DATA_LAYER_STATE: return resetDataLayersResponseState(state, action);
   case actionTypes.POST_MAP_REQUESTS_SUCCESS: return postMapRequestSuccess(state, action);
   case actionTypes.POST_MAP_REQUESTS_FAIL: return postMapRequestFail(state, action);
+  case actionTypes.DELETE_MAP_REQUESTS_FAIL: return deleteMapRequestFail(state, action);
   case actionTypes.GET_ALL_MAP_REQUESTS_SUCCESS: return getAllMapRequestsSuccess(state, action);
   case actionTypes.GET_ALL_MAP_REQUESTS_FAIL: return getAllMapRequestsFail(state, action);
   case actionTypes.SET_NEW_MAP_REQUEST_STATE: return setNewMapRequestState(state, action);
@@ -81,6 +82,14 @@ const postMapRequestSuccess = (state, action) => {
   return updateObject(state, updatedState);
 }
 const postMapRequestFail = (state) => {
+  const updatedState = {
+    error: true,
+    isMetaDataLoading: false
+  }
+  return updateObject(state, updatedState);
+}
+
+const deleteMapRequestFail = (state) => {
   const updatedState = {
     error: true,
     isMetaDataLoading: false
