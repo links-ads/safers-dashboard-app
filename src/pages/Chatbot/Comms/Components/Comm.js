@@ -66,7 +66,7 @@ const Comm = ({ card, commID, setSelectedComm }) => {
               <Col md={3}  className='d-flex align-items-end'>
                 <CardText>
                   <span className='float-end alert-source-text me-2 no-wrap'>
-                    {card.assigned_to.join('')}
+                    {card.source_organization}
                   </span>
                 </CardText>
               </Col>
