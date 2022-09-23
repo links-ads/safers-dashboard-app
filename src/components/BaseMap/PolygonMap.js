@@ -110,8 +110,8 @@ const PolygonMap = ({
   };
 
   const editToggle = () => {
-    setAreaIsValid(true);
     if (singlePolygonOnly) {
+      setAreaIsValid(true);
       setFeatures([]);
     }
     toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon');
