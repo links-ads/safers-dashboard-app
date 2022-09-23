@@ -54,9 +54,6 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
             </Row>
             <Row className='mt-2'>
               <Col>
-                <p className="text-muted no-wrap">
-                  {t('ID', { ns: 'chatBot' })}: {card.id}
-                </p>
                 <p className="text-muted no-wrap mb-0">
                   {t('Start date', { ns: 'common' })}: {formatDate(card.start, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.end, 'YYYY-MM-DD')}
                 </p>
@@ -77,6 +74,13 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
               <Col>
                 <CardText>
                   {t('Description', { ns: 'common' })}: {getMsg(card.description)}
+                </CardText>
+              </Col>
+              <Col md={2}>
+                <CardText>
+                  <span className='float-end alert-source-text me-2'>
+                    {t('id', { ns: 'common' }).toUpperCase()}: {card.id}
+                  </span>
                 </CardText>
               </Col>
             </Row>

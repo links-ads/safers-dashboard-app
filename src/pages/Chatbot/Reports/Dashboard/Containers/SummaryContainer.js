@@ -135,6 +135,13 @@ const SummaryContainer = ({reportDetail, t}) => {
             <Row>
               <Col>
                 <CardText >
+                  {t('Report ID')}: {reportDetail.report_id}
+                </CardText>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <CardText >
                   {t('Mission ID')}: {reportDetail.mission_id}
                 </CardText>
               </Col>
