@@ -27,6 +27,8 @@ const MAP_STYLE = {
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
 const POLYGON_LINE_DASH = '10,2';
+const POLYGON_ERROR_COLOR = 'rgba(255, 0, 0, 0.5)'
+
 const POINT_RADIUS = 8;
 
 
@@ -45,7 +47,9 @@ const PolygonMap = ({
   navControlPosition = 'bottom-left',
   mapStyle = 'mb_streets',
   setCoordinates,
-  coordinates
+  coordinates,
+  handleAreaValidation,
+  singlePolygonOnly = false
 }) => {
 
   const mapRef = useRef();
@@ -63,6 +67,7 @@ const PolygonMap = ({
   const [modeHandler, setModeHandler] = useState(null);
   const [features, setFeatures] = useState([]);
   const [selectedFeatureData, setSelectedFeatureData] = useState(null);
+  const [areaIsValid, setAreaIsValid] = useState(true);
 
   useEffect(() => {
     window.addEventListener('resize', getMapSize);
@@ -105,10 +110,15 @@ const PolygonMap = ({
   };
 
   const editToggle = () => {
-    toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon'); 
+    setAreaIsValid(true);
+    if (singlePolygonOnly) {
+      setFeatures([]);
+    }
+    toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon');
   }
 
   const clearMap = () => {
+    setAreaIsValid(true);
     if(selectedFeatureData.selectedFeature) {
       const tempFeatures = [...features];
       tempFeatures.splice(selectedFeatureData.selectedFeatureIndex, 1);
@@ -120,34 +130,43 @@ const PolygonMap = ({
     }
   }
 
-  const renderToolbar = () => {
+  const MapControlButton = ({top = '90px', style = {}, onClick, children}) => (
+    <div className="" style={{ position: 'absolute', top, right: '10px' }}>
+      <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
+        <button style={{...style}} onClick={onClick} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+          {children}
+        </button>
+      </div>
+    </div>
+  )
 
-    return (<>
-      <div className="" style={{ position: 'absolute', top: '50px', right: '10px' }}>
-        <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}} onClick={editToggle} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
-            <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
-          </button>
-        </div>
-      </div>
-      <div className="" style={{ position: 'absolute', top: '90px', right: '10px' }}>
-        <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-          <button onClick={clearMap} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
-            <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
-          </button>
-        </div>
-      </div>
-    </>)
-  }
+  const renderToolbar = () => (
+    <>
+      <MapControlButton 
+        top='50px' 
+        style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}}
+        onClick={editToggle}
+      >
+        <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
+      </MapControlButton>
+      <MapControlButton onClick={clearMap}>
+        <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
+      </MapControlButton>
+    </>
+  )
 
   const handleUpdate = (val) => {
+    let areaValidation = true;
     if (val.editType === 'addFeature') {
+      if (handleAreaValidation) {
+        areaValidation = handleAreaValidation(val.data[0]);
+      }
       setFeatures(val.data);
-      setCoordinates(getWKTfromFeature(val.data));
+      setCoordinates(getWKTfromFeature(val.data), areaValidation);
       toggleMode('editing');
     } else if (val.editType === 'movePosition') {
       setFeatures(val.data);
-      setCoordinates(getWKTfromFeature(val.data));
+      setCoordinates(getWKTfromFeature(val.data), areaValidation);
     } 
   };
 
@@ -184,16 +203,19 @@ const PolygonMap = ({
             setSelectedFeatureData(selected);
           }}
           featureStyle={(data) => {
+            if (data.index === 0 && handleAreaValidation) {
+              setAreaIsValid(handleAreaValidation(data.feature))
+            }
             if (data.state === RENDER_STATE.SELECTED) {
               return {
                 stroke: POLYGON_LINE_COLOR,
-                fill: POLYGON_FILL_COLOR,
+                fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
                 r: POINT_RADIUS,
               };
             }
             return {
               stroke: POLYGON_LINE_COLOR,
-              fill: POLYGON_FILL_COLOR,
+              fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
               r: POINT_RADIUS,
             };
