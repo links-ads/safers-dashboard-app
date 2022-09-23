@@ -55,10 +55,9 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
         `${node.datatype_id}: ${node.title}`
       ]
       node.text = nodeTextByLevel[lvl];
-      node.info = 'I\'m a tooltip';
 
       const id = node.id ?? node.key;
-      const tooltipDisplay = tooltipInfo || node.category || node.id;
+      const tooltipDisplay = tooltipInfo || node.info;
       const item =
         <>
           <ListGroupItem
@@ -82,6 +81,9 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
               {
                 node.children ?
                   <>
+                    {node.info &&
+                      <i data-tip data-for={`${parentId}-${index}-tooltip`} className='bx bx-info-circle font-size-16 me-1' />
+                    }
                     <i className={`bx bx-caret-${itemState[id] ? 'down' : 'right'} font-size-16`} />
                     {node.text}
                   </>
@@ -93,9 +95,9 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                       }
                       {node.text}
                     </div>
-                    <Badge data-tip data-for={`${parentId}-${index}-status`} className='rounded-pill alert-badge event-alert-badge d-inline-flex justify-content-center align-items-center'>
+                    {node.status && (<Badge data-tip data-for={`${parentId}-${index}-status`} className='rounded-pill alert-badge event-alert-badge d-inline-flex justify-content-center align-items-center p-2'>
                       <span className={`${node.status?.toLowerCase()}`}>{node.status}</span>
-                    </Badge>
+                    </Badge>)}
                   </div>
               }
               { node?.parameters ? 
@@ -124,7 +126,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
               {mapper(node.children, id, (lvl || 0) + 1)}
             </Collapse>
           }
-          {node.info_url &&
+          {(node.info || node.info_url) &&
             <ReactTooltip id={`${parentId}-${index}-tooltip`}
               aria-haspopup="true"
               role={tooltipInfo || node.info}
