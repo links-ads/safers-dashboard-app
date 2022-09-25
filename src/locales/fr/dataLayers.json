@@ -12,5 +12,6 @@
   "request": "Demander",
   "cancel": "Annuler",
   "frequency": "Fréquence (en jours)",
-  "resolution": "Résolution spatiale (m)"
+  "resolution": "Résolution spatiale (m)",
+  "Confirm Delete Layer": "Are you sure you want to delete this request?"
 }
