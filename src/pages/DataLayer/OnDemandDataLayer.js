@@ -203,6 +203,7 @@ const OnDemandDataLayer = ({
                 <OnDemandTreeView
                   data={searchedMapRequests}
                   setCurrentLayer={setCurrentLayer}
+                  t={t}
                 />
               </SimpleBar>
             </Col>

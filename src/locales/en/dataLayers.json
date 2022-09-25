@@ -26,5 +26,6 @@
   "windDirection": "Wind Direction [°]",
   "windSpeed": "Wind Speed [km/h]",
   "fuelMoistureContent": "Fuel Moisture Content [%]",
-  "selectLayerTypes": "Select Data Layer Type(s)"
+  "selectLayerTypes": "Select Data Layer Type(s)",
+  "Confirm Delete Layer": "Are you sure you want to delete this request?"
 }

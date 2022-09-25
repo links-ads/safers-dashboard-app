@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
-import { Badge, ListGroup, ListGroupItem, Collapse } from 'reactstrap';
+import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 import { useDispatch } from 'react-redux';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { deleteMapRequest, getAllMapRequests } from '../../store/datalayer/action';
@@ -18,14 +18,16 @@ const PropsPanel = (node) => {
   );
 };
 
-const OnDemandTreeView = ({ data, setCurrentLayer}) => {
+const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
   const dispatch = useDispatch();
 
   const [itemState, setItemState] = useState({});
   const [itemPropsState, setItemPropsState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
-
+  const [isDeleteMapRequestDialogOpen, setIsDeleteMapRequestDialogOpen] = useState(false);
+  const [mapRequestToDelete, setMapRequestToDelete] = useState(null);
+  
   useEffect(() => {
     setCurrentLayer(selectedLayer);
   }, [selectedLayer]);
@@ -105,8 +107,8 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
                   &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
-                    dispatch(deleteMapRequest(node.id))
-                    dispatch(getAllMapRequests())
+                    setMapRequestToDelete(node)
+                    setIsDeleteMapRequestDialogOpen(!isDeleteMapRequestDialogOpen)
                   }} className="bx bx-trash font-size-16" />
                 </> : null
               }
@@ -149,9 +151,49 @@ const OnDemandTreeView = ({ data, setCurrentLayer}) => {
     });
   }
   return (
-    <ListGroup>
-      {mapper(data, undefined, 0)}
-    </ListGroup>
+    <>
+      <ListGroup>
+        {mapper(data, undefined, 0)}
+      </ListGroup>
+      <Modal
+        isOpen={isDeleteMapRequestDialogOpen}
+        toggle={() => {
+          setIsDeleteMapRequestDialogOpen(!isDeleteMapRequestDialogOpen)
+        }}
+        scrollable={true}
+        id="staticBackdrop"
+      >
+        <div className="modal-header">
+          <h5 className="modal-title" id="staticBackdropLabel">
+            {t('Warning', { ns: 'common' })}!
+          </h5>
+          <button type="button" className="btn-close"
+            onClick={() => {
+              setIsDeleteMapRequestDialogOpen(false)
+            }} aria-label="Close"></button>
+        </div>
+        
+        <div className="modal-body">
+          <p>{t('Confirm Delete Layer', { ns: 'dataLayers' })}</p>
+        </div>
+        
+        <div className="modal-footer">
+          <button type="button" className="btn btn-light" onClick={() => {
+            setIsDeleteMapRequestDialogOpen(false)
+          }}>
+            {t('Close', { ns: 'common' })}
+          </button>
+          
+          <button type="button" className="btn btn-primary" onClick={() => {
+            dispatch(deleteMapRequest(mapRequestToDelete.id))
+            dispatch(getAllMapRequests())
+            setIsDeleteMapRequestDialogOpen(false)
+          }}>
+            {t('Yes', { ns: 'common' })}
+          </button>
+        </div>
+      </Modal>
+    </>
   )
 }
 
@@ -159,6 +201,7 @@ OnDemandTreeView.propTypes = {
   data: PropTypes.any,
   setCurrentLayer: PropTypes.func,
   node: PropTypes.any,
+  t: PropTypes.func,
 }
 
 
