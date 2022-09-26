@@ -24,7 +24,10 @@ const DataLayerDashboard = () => {
   const dispatch = useDispatch();
   const timer = useRef(null);
 
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const config = useSelector(state => state.common.config);
+  const defaultAoi = useSelector(state => state.user?.defaultAoi);
+  const dataLayerBoundingBox = config?.restrict_data_to_aoi ? defaultAoi.features[0].bbox : EUROPEAN_BBOX
+
   const {
     dataLayers,
     metaData,
@@ -76,7 +79,7 @@ const DataLayerDashboard = () => {
     }
   }, []);
 
-  useEffect(()=> {
+  useEffect(() => {
     setSliderValue(0);
     setIsPlaying(false);
     setTimestamp('');
@@ -127,7 +130,7 @@ const DataLayerDashboard = () => {
       const urls = getUrls();
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue])
-      const imageUrl = urls[0].replace('{bbox}', EUROPEAN_BBOX);
+      const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
     }
@@ -138,7 +141,7 @@ const DataLayerDashboard = () => {
       if (sliderChangeComplete) {
         const urls = getUrls();
         if (urls[sliderValue]) {
-          const imageUrl = urls[sliderValue].replace('{bbox}', EUROPEAN_BBOX);
+          const imageUrl = urls[sliderValue].replace('{bbox}', dataLayerBoundingBox);
           setBitmapLayer(getBitmapLayer(imageUrl));
         }
       }
@@ -211,7 +214,7 @@ const DataLayerDashboard = () => {
   const getBitmapLayer = (url) => {
     return {
       id: 'bitmap-layer',
-      bounds: EUROPEAN_BBOX,
+      bounds: dataLayerBoundingBox,
       image: url,
       _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
       opacity: 0.5
@@ -234,7 +237,7 @@ const DataLayerDashboard = () => {
         }}>
           <div className="mapboxgl-ctrl mapboxgl-ctrl-group mx-2">
             <button onClick={() => setIsPlaying(!isPlaying)} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
-              <i className={`h4 mb-0 mdi ${isPlaying ? 'mdi-stop' : 'mdi-play'}`} style={{ fontSize: '20px' }}/>
+              <i className={`h4 mb-0 mdi ${isPlaying ? 'mdi-stop' : 'mdi-play'}`} style={{ fontSize: '20px' }} />
             </button>
           </div>
           <Slider
