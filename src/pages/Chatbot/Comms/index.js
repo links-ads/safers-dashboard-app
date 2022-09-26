@@ -70,9 +70,9 @@ const Comms = () => {
 
   useEffect(() => {
     if (allReports.length > 0) {
-      setIconLayer(getIconLayer(allReports, MAP_TYPES.REPORTS, 'report', dispatch, setViewState));
+      setIconLayer(getIconLayer(allReports, MAP_TYPES.COMMUNICATIONS, 'communications', dispatch, setViewState, {id: commID}));
     }
-  }, [allReports]);
+  }, [allReports, commID]);
 
   const getReportsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -95,6 +95,11 @@ const Comms = () => {
     setToggleCreateNewMessage(false);
     setCoordinates('');
     loadComms();
+  }
+
+  const onClick = (info) => {
+    const { id } = info?.object?.properties ?? {};
+    setCommID(commID === id ? undefined : id)
   }
 
   return (
@@ -147,6 +152,7 @@ const Comms = () => {
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}
+            onClick={onClick}
           />
         </Col>
       </Row>

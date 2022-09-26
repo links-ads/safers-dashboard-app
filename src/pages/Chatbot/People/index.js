@@ -78,9 +78,9 @@ const People = () => {
 
   useEffect(() => {
     if (allPeople.length > 0) {
-      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState));
+      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, {id: peopleId}));
     }
-  }, [allPeople]);
+  }, [allPeople, peopleId]);
 
   const getPeopleByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -97,6 +97,11 @@ const People = () => {
     setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
+
+  const onClick = (info) => {
+    const { id } = info?.object?.properties ?? {};
+    setPeopleId(peopleId === id ? undefined : id)
+  }
 
   return (
     <div className='mx-2'>
@@ -134,9 +139,11 @@ const People = () => {
             viewState={viewState}
             iconLayer={iconLayer}
             getPeopleByArea={getPeopleByArea}
+            setViewState={setViewState}
             handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
+            onClick={onClick}
           />
         </Col>
       </Row>

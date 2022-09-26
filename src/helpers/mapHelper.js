@@ -10,6 +10,11 @@ const GRAY = [128, 128, 128];
 const RED = [230, 51, 79];
 const DARK_GRAY = [57, 58, 58];
 
+const ALERT_TYPES = {
+  red: ['Created', 'Doing Activity', 'Ongoing', 'Available', 'Moving', 'Taken in Charge'],
+  gray: ['Notified', 'Closed', 'Expired', 'Completed', 'Off']
+};
+
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
   return {
     midPoint: midPoint,
@@ -57,14 +62,18 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-export const getAlertIconColorFromContext = (mapType, feature, selectedItem={}) => {
-  let color = GRAY;
-  if ( feature.properties.id === selectedItem.id ) {
-    color=ORANGE;
-  } else if (feature?.properties?.status==='Created' || feature?.properties?.status==='Active' || feature?.properties?.status === 'Ongoing') {
-    color=RED;
-  } else if (feature?.properties?.status==='Closed' || feature?.properties?.status==='Inactive' || feature?.properties?.status==='Expired') {
-    color=DARK_GRAY;
+export const getAlertIconColorFromContext = (mapType, feature, selectedItem = {}) => {
+  let color = DARK_GRAY;
+  if (!feature.properties.id && !selectedItem.id) {
+    return color;
+  }
+
+  if (feature.properties.id === selectedItem.id) {
+    color = ORANGE;
+  } else if (ALERT_TYPES.red.includes(feature?.properties?.status)) {
+    color = RED;
+  } else if (ALERT_TYPES.gray.includes(feature?.properties?.status)) {
+    return GRAY;
   }
   return color;
 }
@@ -84,22 +93,20 @@ export const getAsGeoJSON = (data) => {
   });
 }
 
-export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem={}) => {
+export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem = {}) => {
   const data = getAsGeoJSON(alerts);
   return new GeoJsonPinLayer({
     data,
     dispatch,
     setViewState,
     getPosition: (feature) => feature.geometry.coordinates,
-    getPinColor: feature => getAlertIconColorFromContext(mapType,feature, selectedItem),
+    getPinColor: feature => getAlertIconColorFromContext(mapType, feature, selectedItem),
     icon: markerName,
     iconColor: '#ffffff',
     clusterIconSize: 35,
     getPinSize: () => 35,
     pixelOffset: [-18,-18],
-    pinSize: 25,
-    onGroupClick: true,
-    onPointClick: true,
+    pinSize: 25
   });
 };
 

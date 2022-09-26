@@ -31,7 +31,7 @@ const Reports = () => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [missionId, setMissionId] = useState('')
+  const [missionId, setMissionId] = useState('');
 
   const dispatch = useDispatch();
 
@@ -63,9 +63,14 @@ const Reports = () => {
 
   useEffect(() => {
     if (allReports.length > 0) {
-      setIconLayer(getIconLayer(allReports, MAP_TYPES.REPORTS, 'report', dispatch, setViewState));
+      const reshapedReports = allReports.map(report => {
+        const {report_id: id, ...rest} = report;
+        return { id, ...rest };
+      })
+
+      setIconLayer(getIconLayer(reshapedReports, MAP_TYPES.REPORTS, 'report', dispatch, setViewState, { id: reportId }, 'report_id'));
     }
-  }, [allReports]);
+  }, [allReports, reportId]);
 
   const getReportsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -82,6 +87,11 @@ const Reports = () => {
     setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
+
+  const handleClick = (info) => {
+    const { id } = info?.object?.properties ?? {};
+    setReportId(reportId === id ? undefined : id)
+  }
 
   return (
     <div className='mx-2'>
@@ -126,6 +136,7 @@ const Reports = () => {
             handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
+            onClick={handleClick}
           />
         </Col>
       </Row>

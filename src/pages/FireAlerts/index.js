@@ -222,13 +222,13 @@ const FireAlerts = ({ t }) => {
           id,
           ...properties
         },
-        newid: id, 
         geometry: {
           type: 'Point',
           coordinates: center
         },
       };
     });
+
     return new GeoJsonPinLayer({
       data,
       dispatch,
@@ -241,8 +241,6 @@ const FireAlerts = ({ t }) => {
       getPinSize: () => 35,
       pixelOffset: [-18,-18],
       pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
     });
   };
 
@@ -266,7 +264,10 @@ const FireAlerts = ({ t }) => {
   };
 
   const showTooltip = (info) => {
-    if (info.picked && info.object) {
+    if (info.objects) {
+      // Prevents clicks on grouped icons
+      return;
+    } else if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
     } else {
