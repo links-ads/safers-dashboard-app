@@ -8,9 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { getMetaData, resetMetaData } from '../../store/appAction';
 
-const TreeView = ({ data, setCurrentLayer }) => {
+const TreeView = ({ data, setCurrentLayer, resetMap }) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});// Only parent node is set here - used by callback fn
+  const [, setPreviousLayer] = useState({});
+  
   const [selectedNode, setSelNode] = useState(null);
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
   const [metaActive, setMetaActive] = useState('');
@@ -19,7 +21,6 @@ const TreeView = ({ data, setCurrentLayer }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    //TODO: when single layer selected
     setCurrentLayer(selectedLayer);
   }, [selectedLayer]);
 
@@ -42,7 +43,12 @@ const TreeView = ({ data, setCurrentLayer }) => {
       setMetaActive('');
       dispatch(resetMetaData());
     } else {
+      if (selectedLayer?.id === id) {
+        resetMap();
+        return;
+      }
       setSelectedLayer(node);
+      setPreviousLayer(node);
     }
     setSelNode(node);
   }
@@ -142,7 +148,8 @@ const TreeView = ({ data, setCurrentLayer }) => {
 
 TreeView.propTypes = {
   data: PropTypes.any,
-  setCurrentLayer: PropTypes.func
+  setCurrentLayer: PropTypes.func,
+  resetMap: PropTypes.func,
 }
 
 

@@ -18,6 +18,7 @@ import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { setFilteredAlerts } from '../../store/alerts/action';
+import _ from 'lodash';
 
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
@@ -38,6 +39,7 @@ const DataLayerDashboard = () => {
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
+  const [previousLayer, setPreviousLayer] = useState(undefined);
   const [selectOptions, setSelectOptions] = useState({})
   const [dataDomain, setDataDomain] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
@@ -52,6 +54,11 @@ const DataLayerDashboard = () => {
   const [timestamp, setTimestamp] = useState('')
 
   const { operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions } = selectOptions;
+
+  const resetMap = () => {
+    setCurrentLayer(undefined);
+    setBitmapLayer(undefined);
+  };
 
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
@@ -83,6 +90,7 @@ const DataLayerDashboard = () => {
     setBitmapLayer(undefined);
     setSliderRangeLimit(0);
     setCurrentLayer(undefined);
+    setPreviousLayer(undefined);
   }, [activeTab])
 
   useEffect(() => {
@@ -120,7 +128,13 @@ const DataLayerDashboard = () => {
     dispatch(getAllMapRequests(options, true))
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
+  
+
   useEffect(() => {
+    if (_.isEqual(currentLayer, previousLayer)) {
+      resetMap();
+      return;
+    }
     setSliderValue(0);
     setIsPlaying(false);
     if (currentLayer && currentLayer.urls) {
@@ -131,9 +145,11 @@ const DataLayerDashboard = () => {
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
     }
+    setPreviousLayer(currentLayer);
   }, [currentLayer]);
 
   useEffect(() => {
+    
     if (currentLayer?.urls) {
       if (sliderChangeComplete) {
         const urls = getUrls();
@@ -329,7 +345,8 @@ const DataLayerDashboard = () => {
     timestamp,
     showLegend,
     legendUrl: currentLayer?.legend_url,
-    sliderChangeComplete
+    sliderChangeComplete,
+    resetMap
   };
 
   return (
