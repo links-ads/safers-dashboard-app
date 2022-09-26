@@ -19,8 +19,6 @@ const Reports = () => {
   const { allReports: OrgReportList, success, filteredReports } = useSelector(state => state.reports);
   const dateRange = useSelector(state => state.common.dateRange);
 
-  console.log('OrgReportList: ', OrgReportList.map(d => d.status))
-
   const { t } = useTranslation();
 
   const [reportId, setReportId] = useState(undefined);
