@@ -26,7 +26,7 @@ const DataLayerDashboard = () => {
 
   const config = useSelector(state => state.common.config);
   const defaultAoi = useSelector(state => state.user?.defaultAoi);
-  const bbox = config?.restrict_data_to_aoi ? defaultAoi.features[0].bbox : EUROPEAN_BBOX
+  const dataLayerBoundingBox = config?.restrict_data_to_aoi ? defaultAoi.features[0].bbox : EUROPEAN_BBOX
 
   const {
     dataLayers,
@@ -130,7 +130,7 @@ const DataLayerDashboard = () => {
       const urls = getUrls();
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue])
-      const imageUrl = urls[0].replace('{bbox}', EUROPEAN_BBOX);
+      const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
     }
@@ -141,7 +141,7 @@ const DataLayerDashboard = () => {
       if (sliderChangeComplete) {
         const urls = getUrls();
         if (urls[sliderValue]) {
-          const imageUrl = urls[sliderValue].replace('{bbox}', EUROPEAN_BBOX);
+          const imageUrl = urls[sliderValue].replace('{bbox}', dataLayerBoundingBox);
           setBitmapLayer(getBitmapLayer(imageUrl));
         }
       }
@@ -214,7 +214,7 @@ const DataLayerDashboard = () => {
   const getBitmapLayer = (url) => {
     return {
       id: 'bitmap-layer',
-      bounds: bbox,
+      bounds: dataLayerBoundingBox,
       image: url,
       _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
       opacity: 0.5
