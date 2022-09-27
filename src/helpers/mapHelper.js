@@ -62,10 +62,25 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
+const selectedItemIsInGroup = (feature, selectedItem) => {
+  const clusterCoords = feature.geometry.coordinates;
+  const selectedItemCoords = selectedItem.center.map(coord => coord.toFixed(2));
+
+  return clusterCoords.every(
+    coord => selectedItemCoords.includes(coord.toFixed(2))
+  );
+}
+
 export const getAlertIconColorFromContext = (mapType, feature, selectedItem = {}) => {
   let color = DARK_GRAY;
   if (!feature.properties.id && !selectedItem.id) {
     return color;
+  }
+
+  if (feature.properties.cluster) {
+    if (selectedItemIsInGroup(feature, selectedItem)) {
+      return ORANGE;
+    }
   }
 
   if (feature.properties.id === selectedItem.id) {
@@ -100,7 +115,7 @@ export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setV
     dispatch,
     setViewState,
     getPosition: (feature) => feature.geometry.coordinates,
-    getPinColor: feature => getAlertIconColorFromContext(mapType, feature, selectedItem),
+    getPinColor: (feature) => getAlertIconColorFromContext(mapType, feature, selectedItem),
     icon: markerName,
     iconColor: '#ffffff',
     clusterIconSize: 35,
