@@ -41,7 +41,7 @@ const SignUp = () => {
   useEffect(() => {
     if(roles.length){
       const role = _.find(roles, { name: 'citizen' });
-      setcitizenId(role.id)
+      setcitizenId(role.name)
     }
   }, [roles]);
 
@@ -78,6 +78,12 @@ const SignUp = () => {
     }
   });
 
+  const formSubmit = (values, setSubmitting) => {
+    values.organization = values.role === citizenId ? null : values.organization;
+    dispatch(registration(values));
+    setSubmitting(false);
+  }
+
   return (
     <Formik
       initialValues={{
@@ -91,10 +97,7 @@ const SignUp = () => {
       }}
       enableReinitialize={true}
       validationSchema={signUpSchema}
-      onSubmit={(values, { setSubmitting }) => {
-        dispatch(registration(values));
-        setSubmitting(false);
-      }}
+      onSubmit={(values, { setSubmitting }) => { formSubmit(values, setSubmitting) }}
       data-test="signUpComponent"
     >
       {({
@@ -216,7 +219,7 @@ const SignUp = () => {
                       {getError('role', errors, touched, false)}
                     </FormGroup>
                   </Col>
-                  <Col className={values.role == citizenId ? 'd-none' : ''}>
+                  <Col>
                     <FormGroup className="form-group">
                       <Label for="organization">
                         SELECT YOUR ORGANISATION:
@@ -229,8 +232,9 @@ const SignUp = () => {
                         type="select"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                        value={values.organization}
+                        value={values.role === citizenId ? '' : values.organization}
                         data-testid="sign-up-org"
+                        disabled={values.role === citizenId}
                       >
                         <option value={''}>--Select organisation--</option>
                         {orgList.map((org) => { return (<option key={org.name} value={org.name}>{org.name}</option>); })}
