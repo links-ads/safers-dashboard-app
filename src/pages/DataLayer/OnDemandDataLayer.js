@@ -229,7 +229,8 @@ const OnDemandDataLayer = ({
             >
               <BaseMap
                 layers={
-                  bitmapLayer ? [new BitmapLayer(bitmapLayer), tempLayerData] : []}
+                  bitmapLayer ? [new BitmapLayer(bitmapLayer), tempLayerData] : []
+                }
                 initialViewState={viewState}
                 widgets={[]}
                 screenControlPosition='top-right'

@@ -18,7 +18,6 @@ import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { setFilteredAlerts } from '../../store/alerts/action';
-import _ from 'lodash';
 
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
@@ -128,10 +127,8 @@ const DataLayerDashboard = () => {
     dispatch(getAllMapRequests(options, true))
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
-  
-
   useEffect(() => {
-    if (_.isEqual(currentLayer, previousLayer)) {
+    if (currentLayer?.id === previousLayer?.id) {
       resetMap();
       return;
     }
@@ -149,7 +146,6 @@ const DataLayerDashboard = () => {
   }, [currentLayer]);
 
   useEffect(() => {
-    
     if (currentLayer?.urls) {
       if (sliderChangeComplete) {
         const urls = getUrls();
