@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
@@ -33,6 +34,8 @@ const TABLE_HEADERS = [
   'fuelMoistureContent'
 ];
 
+const PROBABILITY_INFO = 'PROPAGATOR output for each time step is a probability (from 0 to 1) field that expresses for each pixel the probability of the fire to reach that specific point in the given time step. In order to derive a contour, we can select to show the contour related to the 0.5, 0.75 and 0.9 of the probability.  For example, the 50% - 0.5 probability contour encapsulates all the pixels who have more than 50% of probability to be reached by fire at the given simulation time.'
+
 const PROBABILITY_RANGES = [
   { label: '50%', value: 0.5 },
   { label: '75%', value: 0.75 },
@@ -44,9 +47,9 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
     'uniqueTimeOffset',
     message,
     (timeOffset, { from }) => {
-      // 'from' is an array of parent objects moving from closest 
-      // to furthest relatives. [0] is the immediate parent object, 
-      // while [1] is the higher parent array of all of those objects.  
+      // 'from' is an array of parent objects moving from closest
+      // to furthest relatives. [0] is the immediate parent object,
+      // while [1] is the higher parent array of all of those objects.
       const allTimeOffsets = from[1].value.boundaryConditions.map(d => +d.timeOffset);
 
       const matchCount = allTimeOffsets.filter(d => d === timeOffset).length;
@@ -123,7 +126,7 @@ const WildfireSimulation = ({
   // to manage number of dynamic (vertical) table rows in `Boundary Conditions`
   const [tableEntries, setTableEntries] = useState([0]);
 
-  // The other two forms allow user to select these from a dropdown. 
+  // The other two forms allow user to select these from a dropdown.
   // For this form we hard-code the list and pass along to the API
   // when we reshape the form data for submission
   const layerTypes = [
@@ -286,6 +289,13 @@ const WildfireSimulation = ({
                       <FormGroup className='d-flex-column'>
                         <Row>
                           <Label for="probabilityRange" className='d-flex align-items-center'>
+                            <ReactTooltip
+                              aria-haspopup="true"
+                              place='right'
+                              class="alert-tooltip data-layers-alert-tooltip"
+                            >
+                              {PROBABILITY_INFO}
+                            </ReactTooltip>
                             <i
                               data-tip
                               className='bx bx-info-circle font-size-8 p-0 me-1'
@@ -357,10 +367,10 @@ const WildfireSimulation = ({
                               setFieldValue('mapSelectionArea', true);
                             } else {
                               const features = wkt.parse(value);
-  
+
                               if (features) {
                                 const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-  
+
                                 setFieldValue('mapSelectionArea', areaIsValid);
                               }
                             }
