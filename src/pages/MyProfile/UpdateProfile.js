@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useRef }  from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, Card, CardBody, CardTitle, Media, Form, Label, Input,   Modal } from 'reactstrap';
+import { Row, Col, Card, CardBody, CardTitle, Media, Form, Label, Input, Modal } from 'reactstrap';
 import avatar from '../../assets/images/users/profile.png';
 import { Formik } from 'formik';
 import { useSelector, useDispatch } from 'react-redux';
 import { getInfo, updateInfo, uploadProfImg, getRoleList, getOrgList, deleteAccount, signOut, resetStatus } from '../../store/appAction';
-import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
+import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import _ from 'lodash';
 
-import countryList,{ getName }  from 'country-list';
+import countryList from 'country-list';
 import * as Yup from 'yup';
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css'
@@ -17,20 +17,20 @@ import 'toastr/build/toastr.min.css'
 import { withTranslation } from 'react-i18next'
 
 
-const UpdateProfile = ({t}) => {
+const UpdateProfile = ({ t }) => {
   toastr.options = {
     preventDuplicates: true,
   }
 
   const { id } = useSelector(state => state.user.info);
-  const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus, info:user, defaultAoi } = useSelector(state => state.user);
-  const { orgList = [], roleList:roles = [] } = useSelector(state => state.common);
+  const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus, info: user, defaultAoi } = useSelector(state => state.user);
+  const { orgList = [], roleList: roles = [] } = useSelector(state => state.common);
   const [modal_backdrop, setmodal_backdrop] = useState(false);
   const [orgName, setorgName] = useState('');
   const [citizenId, setcitizenId] = useState('');
   const [currentRole, setCurrentRole] = useState(null);
 
-  const formInit =   {
+  const formInit = {
     first_name: user?.first_name || '',
     last_name: user?.last_name || '',
     organization: user?.organization || '',
@@ -43,40 +43,39 @@ const UpdateProfile = ({t}) => {
   const fileUploader = useRef(null);
   const dispatch = useDispatch();
 
-  const countryObj = countryList.getNameList();
-  const countryNameArr = Object.keys(countryObj);
+  const countryNames = countryList.getNames().sort();
 
   useEffect(() => {
     dispatch(getInfo(id))
-    if(roles.length===0)
+    if (roles.length === 0)
       dispatch(getRoleList());
-    if(orgList.length===0)
+    if (orgList.length === 0)
       dispatch(getOrgList());
   }, []);
-  
-  if(uploadFileSuccessRes?.detail) {
+
+  if (uploadFileSuccessRes?.detail) {
     toastr.success(uploadFileSuccessRes.detail, '');
-  }  
+  }
   useEffect(() => {
-    if(user && roles.length) {
+    if (user && roles.length) {
       const currentRoleObj = _.find(roles, { id: user.role });
-      if(currentRoleObj){
+      if (currentRoleObj) {
         setCurrentRole(currentRoleObj.name);
       }
       const objCitizen = _.find(roles, { name: 'citizen' });
       setcitizenId(objCitizen.id)
 
-    }  
+    }
   }, [user, roles]);
 
   useEffect(() => {
-    if(updateStatus) {
+    if (updateStatus) {
       toastr.success(t('updated-info', { ns: 'common' }), '');
       dispatch(resetStatus());
-    }  
+    }
   }, [updateStatus]);
 
-  if(deleteAccSuccessRes){
+  if (deleteAccSuccessRes) {
     dispatch(signOut());
   }
 
@@ -86,7 +85,7 @@ const UpdateProfile = ({t}) => {
   }, [uploadFileFailRes, deleteAccFailRes]);
 
   useEffect(() => {
-    if(orgList.length && user?.organization){
+    if (orgList.length && user?.organization) {
       const organization = _.find(orgList, { id: user.organization });
       setorgName(organization.name.split('-')[0])
     }
@@ -132,9 +131,9 @@ const UpdateProfile = ({t}) => {
           organization: Yup.string().required('The field cannot be empty'),
         });
       }
-    });  
+    });
 
-  if(!user) {
+  if (!user) {
     return null;
   }
 
@@ -157,8 +156,8 @@ const UpdateProfile = ({t}) => {
                       alt=""
                       className="avatar-md rounded-circle img-thumbnail"
                     />
-                    <div className='text-center mt-2 d-none'><a className='lnk-edit' onClick={(e)=>{handleClick(e)}}>{t('Edit Image')}</a></div>
-                    <input type="file" id="file" ref={fileUploader} style={{display: 'none'}} onChange={(e) => {onChangeFile(e)}}/>
+                    <div className='text-center mt-2 d-none'><a className='lnk-edit' onClick={(e) => { handleClick(e) }}>{t('Edit Image')}</a></div>
+                    <input type="file" id="file" ref={fileUploader} style={{ display: 'none' }} onChange={(e) => { onChangeFile(e) }} />
                   </div>
                   <Media body className="ms-4 align-self-center">
                     <h1 className="h5">{user.first_name} {user.last_name}</h1>
@@ -175,19 +174,19 @@ const UpdateProfile = ({t}) => {
                     {user.email}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-map me-2'></i><span>{t('Location', {ns: 'common'})}</span> 
+                    <i className='bx bx-map me-2'></i><span>{t('Location', { ns: 'common' })}</span>
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    {user.address && user.address.length>0 ? `${user.address}, ` : ''}{user.city  && user.city.length>0 ? `${user.city}, ` : ''}{user.country && user.country.length>0 ? `${getName(user.country)}` : ''}
+                    {user.address && user.address.length > 0 ? `${user.address}, ` : ''}{user.city && user.city.length > 0 ? `${user.city}, ` : ''}{user.country && user.country.length > 0 ? `${user.country}` : ''}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-shopping-bag me-2'></i><span>{t('Organization', {ns: 'common'})}</span> 
+                    <i className='bx bx-shopping-bag me-2'></i><span>{t('Organization', { ns: 'common' })}</span>
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     {orgName}
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-map me-2'></i><span>{t('Area of Interest', {ns: 'common'})}</span> 
+                    <i className='bx bx-map me-2'></i><span>{t('Area of Interest', { ns: 'common' })}</span>
                   </Col>
                   <Col md="6" className='p-2 dflt-seperator'>
                     {defaultAoi?.features[0].properties.name}
@@ -296,7 +295,7 @@ const UpdateProfile = ({t}) => {
                             data-testid="update-profile-country"
                           >
                             <option value={''} >--{t('Select your country')}--</option>
-                            {countryNameArr.map((value) => { return (<option key={countryObj[value]} value={countryObj[value]}>{value}</option>) })}
+                            {countryNames.map((countryName) => { return (<option key={countryName} value={countryName}>{countryName}</option>) })}
                           </Input>
                           {getError('country', errors, touched, false)}
                         </div>
@@ -378,7 +377,7 @@ const UpdateProfile = ({t}) => {
                         id="staticBackdrop"
                       >
                         <div className="modal-header">
-                          <h5 className="modal-title" id="staticBackdropLabel">{t('Warning', { ns: 'common' } )}!</h5>
+                          <h5 className="modal-title" id="staticBackdropLabel">{t('Warning', { ns: 'common' })}!</h5>
                           <button type="button" className="btn-close"
                             onClick={() => {
                               setmodal_backdrop(false)
@@ -390,8 +389,8 @@ const UpdateProfile = ({t}) => {
                         <div className="modal-footer">
                           <button type="button" className="btn btn-light" onClick={() => {
                             setmodal_backdrop(false)
-                          }}>{t('Close', { ns: 'common' } )}</button>
-                          <button type="button" className="btn btn-primary" onClick={() => {confirmAccDelete()}}>{t('Yes', { ns: 'common' } )}</button>
+                          }}>{t('Close', { ns: 'common' })}</button>
+                          <button type="button" className="btn btn-primary" onClick={() => { confirmAccDelete() }}>{t('Yes', { ns: 'common' })}</button>
                         </div>
                       </Modal>
                     </div>
