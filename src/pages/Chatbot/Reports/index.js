@@ -24,7 +24,7 @@ const Reports = () => {
   const [reportId, setReportId] = useState(undefined);
   const [viewState, setViewState] = useState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortOrder, setSortOrder] = useState('');
+  const [sortOrder, setSortOrder] = useState('desc');
   const [category, setCategory] = useState('');
   const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -36,7 +36,7 @@ const Reports = () => {
   const dispatch = useDispatch();
 
   const allReports = filteredReports || OrgReportList;
-  
+
   useEffect(() => {
     const dateRangeParams = dateRange
       ? { start: dateRange[0], end: dateRange[1] }
@@ -64,7 +64,7 @@ const Reports = () => {
   useEffect(() => {
     if (allReports.length > 0) {
       const reshapedReports = allReports.map(report => {
-        const {report_id: id, ...rest} = report;
+        const { report_id: id, ...rest } = report;
         return { id, ...rest };
       })
 
@@ -119,7 +119,7 @@ const Reports = () => {
                 currentZoomLevel={currentZoomLevel}
                 setViewState={setViewState}
                 setReportId={setReportId}
-                setIconLayer={setIconLayer} 
+                setIconLayer={setIconLayer}
                 missionId={missionId}
                 category={category}
                 sortOrder={sortOrder}
