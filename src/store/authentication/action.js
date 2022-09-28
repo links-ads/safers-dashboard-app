@@ -3,6 +3,7 @@ import { CM_WIP } from '../common/types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import { setSession, deleteSession, getSession } from '../../helpers/authHelper';
+import { AUTH_BASE_URL, AUTH_CLIENT_ID, AUTH_TENANT_ID, CLIENT_BASE_URL, REDIRECT_URL  } from '../../config'
 import _ from 'lodash';
 
 
@@ -21,11 +22,12 @@ export const setAoiBySignInSuccess = (aoi) => {
   };
 };
 
-const setSessionData = (token, refreshToken, user, dispatch, rememberMe=false) => {
+const setSessionData = (token, refreshToken, user, dispatch, rememberMe=false, isSSOsession=false) => {
   const sessionData = {
     access_token: token, 
     refresh_token: refreshToken, 
-    userId: user.id
+    userId: user.id,
+    isSSOsession
   };
   setSession(sessionData, rememberMe);
   return dispatch(signInSuccess(user));
@@ -40,7 +42,7 @@ export const signInOauth2 = ({authCode}) => async (dispatch) => {
   const content = response.data;
   dispatch(InProgress(false));
   if (response.status === 200) {
-    return setSessionData(content.access_token, null, content.user, dispatch)
+    return setSessionData(content.access_token, null, content.user, dispatch, false , true)
   }
   return dispatch(signInFail(content.detail));
 }
@@ -164,12 +166,24 @@ const resetPswFail = (error) => {
   };
 };
 
+const OAuth2Signout = () => {
+  const params = {
+    client_id: AUTH_CLIENT_ID,
+    tenant_id: AUTH_TENANT_ID,
+    post_logout_redirect: `${CLIENT_BASE_URL}/${REDIRECT_URL}`,
+  };
+  const urlParams = new URLSearchParams(params).toString();
+  window.location = `${AUTH_BASE_URL}/oauth2/logout?${urlParams}`;
+}
 
-
-export const signOut = () => async (dispatch) => {
+export const signOut = (dispatch) => async () => {
+  const session = getSession();
   const response = await api.post(endpoints.authentication.signOut);
   if (response.status === 200) {
     deleteSession();
+    if(session.isSSOsession){
+      OAuth2Signout();// A redirection happens here
+    }
     return dispatch(signOutSuccess());
   }
 };
