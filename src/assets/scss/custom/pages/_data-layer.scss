@@ -4,7 +4,7 @@
 
 .dl-item {
     color: #fff;
-    width: 350px;
+    width: 450px;
     &.selected {
         background-color: #909090 !important;
     }
@@ -23,16 +23,23 @@
     height: 40px;
 }
 
-.legend {
-    max-height: 30rem;
-    position: absolute;
-    top: 20%;
-    left: 50%;
+.legend-container {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: fit-content;
     z-index: 1;
-
     img {
-        max-height: inherit;
+        max-width: 12.5rem;
     }
+}
+
+.legend {
+    display: flex;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 80%;
 }
 
 .props_box {
@@ -47,16 +54,19 @@
 .timestamp-container {
     position: absolute;
     z-index: 100;
-    bottom: 100px;
+    bottom: 25px;
     width: 100%;
     display: flex;
-    justify-content: center;
     align-items: center;
+    pointer-events: none;
+    user-select: none;
+    justify-content: center;
 }
 
 .timestamp-display {
     font-size: 1.5rem;
-    color: $orange;
+    color: $white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .meta-icon {
@@ -68,7 +78,7 @@
 
 .meta-close {
     float: right;
-    margin-right:  35px;
+    margin-right: 35px;
     cursor: pointer;
 }
 

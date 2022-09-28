@@ -61,7 +61,9 @@ const pollingHelper = (props) => {
     delete alertParams.default_date;
     delete eventParams.default_date;
     delete notificationParams.default_date;
-    dateRangeParams = { start_date: dateRange[0], end_date: dateRange[1] }
+    dateRangeParams = dateRange 
+      ? { start_date: dateRange[0], end_date: dateRange[1] }
+      : {}
   }
 
   const callAPIs = () => {

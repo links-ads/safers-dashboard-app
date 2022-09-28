@@ -25,7 +25,7 @@ const Missions = () => {
   const { t } = useTranslation();
 
   const [missionId, setMissionId] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
+  const [viewState, setViewState] = useState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
   const [missionStatus, setMissionStatus] = useState('');
@@ -84,12 +84,9 @@ const Missions = () => {
 
   useEffect(() => {
     if (allMissions.length > 0) {
-      setIconLayer(getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState, {}));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
+      setIconLayer(getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', dispatch, setViewState, {id: missionId}));
     }
-  }, [allMissions]);
+  }, [allMissions, missionId]);
 
   const getMissionsByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -106,6 +103,11 @@ const Missions = () => {
     setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
+
+  const onClick = (info) => {
+    const { id } = info?.object?.properties ?? {};
+    setMissionId(missionId === id ? undefined : id)
+  }
 
   return (
     <div className='mx-2'>
@@ -153,6 +155,7 @@ const Missions = () => {
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}
+            onClick={onClick}
           />
         </Col>
       </Row>

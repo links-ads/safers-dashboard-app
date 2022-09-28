@@ -4,14 +4,24 @@ import * as api from '../../api/base';
 import { InProgress } from '../authentication/action';
 import queryString from 'query-string';
 
-export const getAllEventAlerts = (options, fromPage) => async (dispatch) => {
+export const getAllEventAlerts = (options, fromPage, isLoading = false) => async (dispatch) => {
+  if(isLoading) {
+    dispatch(InProgress(true, 'Loading..'));
+  }
   const response = await api.get(endpoints.eventAlerts.getAll.concat('?', queryString.stringify(options)));
   if (response && response?.status === 200) {
+    if(isLoading) {
+      dispatch(InProgress(false));
+    }
     fromPage && dispatch(setFilteredEventAlerts(response?.data));
     return dispatch(getEventAlertsSuccess(response?.data));
   }
-  else
+  else {
+    if(isLoading) {
+      dispatch(InProgress(false));
+    }
     return dispatch(getEventAlertsFail(response?.error));
+  }
 };
 
 const getEventAlertsSuccess = (alerts) => {

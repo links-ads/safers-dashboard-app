@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { Row } from 'reactstrap';
-import { getIconColorFromContext } from '../../../helpers/mapHelper';
+import { getAlertIconColorFromContext } from '../../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../../store/events/types';
 import Alert from './Alert';
 import PaginationWrapper from '../../../components/Pagination';
@@ -42,7 +42,7 @@ const EventList = ({
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.EVENTS,feature),
+      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.EVENTS,feature),
       icon: 'flag',
       iconColor: '#ffffff',
       clusterIconSize: 35,

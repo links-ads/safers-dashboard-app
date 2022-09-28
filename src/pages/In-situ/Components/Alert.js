@@ -121,13 +121,13 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
             </Col>
           </Row>
         </CardBody>
-        <ReactTooltip id="smoke-column" aria-haspopup="true" role="example" place='right' class="alert-tooltip text-light">
+        <ReactTooltip id="smoke-column" aria-haspopup="true" role="example" place='right' class="alert-tooltip">
           <h5>{t('Smoke Column Class')}</h5>
           <p className='mb-2'>CL1 - {t('cl1-txt')}</p>
           <p className='mb-2'>CL2 - {t('cl2-txt')}</p>
           <p>CL3 - {t('cl3-txt')}</p>
         </ReactTooltip>
-        <ReactTooltip id="geo-direction" aria-haspopup="true" role="example" place='right' class="alert-tooltip text-light">
+        <ReactTooltip id="geo-direction" aria-haspopup="true" role="example" place='right' class="alert-tooltip">
           <h5>{t('Geographical Direction')}</h5>
           <p className='tooltip-desc'>{t('geo-direction-txt')}</p>
           <Row>

@@ -52,18 +52,22 @@ const Comm = ({ card, commID, setSelectedComm }) => {
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  {t('Start date', { ns: 'common' })}: {formatDate(card.startDate, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.endDate, 'YYYY-MM-DD')}
+                  {t('Start date', { ns: 'common' })}: {formatDate(card.start, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.end, 'YYYY-MM-DD')}
                 </p>
               </Col>
 
             </Row>
-            <Row className='mt-0 mb-1'>
+            <Row className='mt-0 mb-1 mt-3'>
               <Col>
-                <p className="text-muted no-wrap">
-                  {t('Target', { ns: 'chatBot' })}: {card.assigned_to}
-                </p>
                 <CardText>
                   {t('Message', { ns: 'common' })}: {getMsg(card.message)}
+                </CardText>
+              </Col>
+              <Col md={3}  className='d-flex align-items-end justify-content-end'>
+                <CardText>
+                  <span className='float-end alert-source-text no-wrap'>
+                    {card.source_organization?.toUpperCase()}
+                  </span>
                 </CardText>
               </Col>
             </Row>

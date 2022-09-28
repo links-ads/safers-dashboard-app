@@ -64,8 +64,8 @@ const SortSection = ({
             onChange={(e) => setSortOrder(e.target.value)}
             value={sortOrder}
           >
-            <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
-            <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
+            <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
+            <option value={'asc'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
         </Col>
         <Col xl={6} className='my-1'>

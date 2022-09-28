@@ -47,7 +47,7 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
       <CardBody className='p-0 m-2'>
         {card.mission_id ? (
           <Badge className='me-1 rounded-pill alert-badge mission-assigned-badge py-0 px-2 pb-0 mb-0'>
-            <span className='text-capitalize'>Mission {card.report_id}</span>
+            <span className='text-capitalize'>Mission {card.mission_id}</span>
           </Badge>
         ) : null}
         {card.categories.map(cat=>getBadge(cat))}
@@ -80,10 +80,10 @@ const Report = ({ card, reportId, setSelectedReport/*, setFavorite*/ }) => {
                   Location: {(card.location).join(', ')}
                 </p>
               </Col>
-              <Col md={2}>
+              <Col md={3} className='d-flex align-items-end justify-content-end'>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>
-                    {card.source.toUpperCase()}
+                  <span className='float-end alert-source-text'>
+                    {t('id', { ns: 'common' }).toUpperCase()}: {card.report_id} / {card.source.toUpperCase()}
                   </span>
                 </CardText>
               </Col>

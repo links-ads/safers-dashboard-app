@@ -20,8 +20,8 @@ const DataLayer = ({
   setLayerSource,
   metaData,
   isMetaDataLoading,
-  sourceOptions,
-  domainOptions,
+  operationalSourceOptions,
+  operationalDomainOptions,
   layerSource,
   operationalMapLayers,
   dataDomain,
@@ -36,8 +36,11 @@ const DataLayer = ({
   bitmapLayer,
   viewState,
   timestamp,
+  showLegend,
+  legendUrl,
   searchDataTree,
-  dispatch
+  dispatch,
+  sliderChangeComplete
 }) => {
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
 
@@ -78,6 +81,13 @@ const DataLayer = ({
     }
     return(
       <Card className='map-card mb-0' style={{ height: 670 }}>
+        {showLegend && !!legendUrl ? (
+          <div className='legend-container'>
+            <div className='legend'>
+              <img src={legendUrl} />
+            </div>
+          </div>
+        ) : null}
         <DataLayerInformation   
           currentLayer={currentLayer}
           tempLayerData={tempLayerData}
@@ -96,7 +106,7 @@ const DataLayer = ({
         </DataLayerInformation>        
         {getSlider()}
         {getLegend()}
-        {getCurrentTimestamp()}
+        {sliderChangeComplete && getCurrentTimestamp()}
       </Card>
     );
   };
@@ -132,7 +142,7 @@ const DataLayer = ({
                   value={layerSource}
                 >
                   <option value={''} >Source: All</option>
-                  {sourceOptions?.map((option) => (
+                  {operationalSourceOptions?.map((option) => (
                     <option key={option} value={option}>
                       Source: {option}
                     </option>
@@ -150,7 +160,7 @@ const DataLayer = ({
                   value={dataDomain}
                 >
                   <option value={''} >Domain: All</option>
-                  {domainOptions?.map((option) => (
+                  {operationalDomainOptions?.map((option) => (
                     <option key={option} value={option}>
                       Domain: {option}
                     </option>
@@ -211,8 +221,8 @@ DataLayer.propTypes = {
   setLayerSource: PropTypes.any,
   metaData: PropTypes.object,
   isMetaDataLoading: PropTypes.bool,
-  sourceOptions: PropTypes.array,
-  domainOptions: PropTypes.array,
+  operationalSourceOptions: PropTypes.array,
+  operationalDomainOptions: PropTypes.array,
   layerSource: PropTypes.any,
   operationalMapLayers: PropTypes.any,
   dataDomain: PropTypes.any,
@@ -227,8 +237,11 @@ DataLayer.propTypes = {
   bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
+  showLegend: PropTypes.bool,
+  legendUrl: PropTypes.string,
   searchDataTree: PropTypes.func,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  sliderChangeComplete: PropTypes.bool
 }
 
 export default withTranslation(['common'])(DataLayer);

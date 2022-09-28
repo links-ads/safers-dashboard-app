@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { getMetaData, resetMetaData } from '../../store/appAction';
 
-const TreeView = ({ data, setCurrentLayer}) => {
+const TreeView = ({ data, setCurrentLayer }) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});// Only parent node is set here - used by callback fn
   const [selectedNode, setSelNode] = useState(null);

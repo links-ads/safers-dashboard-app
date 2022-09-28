@@ -125,3 +125,18 @@ pre {
     color: $gray-500 !important;
     cursor: default !important;
 }
+
+.available {
+  color: green;
+}
+.processing {
+  color: teal;
+}
+.failed {
+  color:red;
+}
+
+.on-demand-leaf {
+  display: flex;
+  justify-content: space-between;
+}

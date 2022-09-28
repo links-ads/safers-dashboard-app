@@ -29,7 +29,7 @@ import Tooltip from './Tooltip';
 import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types';
 import { MAP_TYPES } from '../../constants/common';
 import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import { getIconColorFromContext } from '../../helpers/mapHelper'
+import { getAlertIconColorFromContext } from '../../helpers/mapHelper'
 
 const PAGE_SIZE = 4;
 
@@ -115,7 +115,9 @@ const FireAlerts = ({ t }) => {
         selectedAlert.favorite = !selectedAlert.favorite;
         hoverInfo.object &&
           setHoverInfo({
-            object: selectedAlert,
+            object: {
+              properies: selectedAlert,
+            },
             coordinate: selectedAlert.center,
           });
         const to = PAGE_SIZE * currentPage;
@@ -156,7 +158,7 @@ const FireAlerts = ({ t }) => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
-  const getAlerts = () => {
+  const getAlerts = (isLoading = true) => {
     const dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {};
@@ -172,7 +174,7 @@ const FireAlerts = ({ t }) => {
     };
 
     dispatch(setAlertApiParams(alertParams));
-    dispatch(getAllFireAlerts(alertParams, true));
+    dispatch(getAllFireAlerts(alertParams, true, isLoading));
   };
 
   const setSelectedAlert = (id, isEdit) => {
@@ -180,6 +182,13 @@ const FireAlerts = ({ t }) => {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
+      setAlertId(id);      
+      const pickedInfo = {
+        object: {
+          properties: selectedAlert
+        },
+        coordinate: selectedAlert.center,
+      };
       setIsEdit(isEdit);
       !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged
         ? setViewState(
@@ -191,28 +200,27 @@ const FireAlerts = ({ t }) => {
             setIsViewStateChanged
           )
         )
-        : setHoverInfo({
-          object: selectedAlert,
-          coordinate: selectedAlert.center,
-        });
-      setAlertId(id);
-      setIconLayer(getFireAlertLayer(clonedAlerts));
+        : setHoverInfo(pickedInfo);
+      setIconLayer(getFireAlertLayer(clonedAlerts, selectedAlert));
+      
     } else {
       setAlertId(undefined);
       setIconLayer(getFireAlertLayer(filteredAlerts));
     }
   };
 
-  const getFireAlertLayer = (alerts) => {
+  const getFireAlertLayer = (alerts, selectedAlert={}) => {
     const data = alerts.map((alert) => {
       const {
         center,
+        id, 
         ...properties
       } = alert;
       return {
         type: 'Feature',
         properties: {
-          properties,
+          id,
+          ...properties
         },
         geometry: {
           type: 'Point',
@@ -226,15 +234,13 @@ const FireAlerts = ({ t }) => {
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.Alert,feature),
+      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.ALERTS, feature, selectedAlert),
       icon: 'fire',
       iconColor: '#ffffff',
       clusterIconSize: 35,
       getPinSize: () => 35,
       pixelOffset: [-18,-18],
       pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
     });
   };
 
@@ -258,9 +264,10 @@ const FireAlerts = ({ t }) => {
   };
 
   const showTooltip = (info) => {
-    console.log('showTooltip', info);
-    if (info.picked && info.object) {
-      console.log('picked and object');
+    if (info.objects) {
+      // Prevents clicks on grouped icons
+      return;
+    } else if (info.picked && info.object) {
       setSelectedAlert(info.object.id);
       setHoverInfo(info);
     } else {
@@ -269,13 +276,13 @@ const FireAlerts = ({ t }) => {
   };
 
   const renderTooltip = (info) => {
-    console.log('renderTooltip info', info);
-    const { object, coordinate } = info;
+    const { object, coordinate:tempCoords } = info;
+    const coordinate = tempCoords || object?.geometry.coordinates;
     if (object) {
       return (
         <Tooltip
           key={object.id}
-          object={object}
+          object={object?.properties}
           coordinate={coordinate}
           isEdit={isEdit}
           setIsEdit={setIsEdit}

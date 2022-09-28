@@ -13,8 +13,8 @@ import DataLayerInformation from './DataLayerInformation';
 const OnDemandDataLayer = ({ 
   t,
   mapRequests,
-  sourceOptions,
-  domainOptions,
+  onDemandSourceOptions,
+  onDemandDomainOptions,
   setActiveTab,
   setCurrentLayer,
   layerSource,
@@ -30,11 +30,12 @@ const OnDemandDataLayer = ({
   searchDataTree,
   viewState,
   currentLayer,
+  showLegend,
+  legendUrl,
   dispatch
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [searchedMapRequests, setSearchedMapRequests] = useState(null);  
-  
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
@@ -141,7 +142,7 @@ const OnDemandDataLayer = ({
                     value={layerSource}
                   >
                     <option value={''} >Source: All</option>
-                    {sourceOptions?.map((option) => (
+                    {onDemandSourceOptions?.map((option) => (
                       <option key={option} value={option}>
                           Source: {option}
                       </option>
@@ -159,7 +160,7 @@ const OnDemandDataLayer = ({
                     value={dataDomain}
                   >
                     <option value={''} >Domain : All</option>
-                    {domainOptions?.map((option) => (
+                    {onDemandDomainOptions?.map((option) => (
                       <option key={option} value={option}>
                           Domain: {option}
                       </option>
@@ -202,6 +203,7 @@ const OnDemandDataLayer = ({
                 <OnDemandTreeView
                   data={searchedMapRequests}
                   setCurrentLayer={setCurrentLayer}
+                  t={t}
                 />
               </SimpleBar>
             </Col>
@@ -209,6 +211,13 @@ const OnDemandDataLayer = ({
         </Col>
         <Col xl={7} className='mx-auto'>
           <Card className='map-card mb-0' style={{ height: 670 }}>
+            {showLegend && !!legendUrl ? (
+              <div className='legend-container'>
+                <div className='legend'>
+                  <img src={legendUrl} />
+                </div>
+              </div>
+            ) : null}
             <DataLayerInformation   
               currentLayer={currentLayer}
               tempLayerData={tempLayerData}
@@ -239,8 +248,8 @@ const OnDemandDataLayer = ({
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
   mapRequests: PropTypes.any,
-  sourceOptions: PropTypes.array,
-  domainOptions: PropTypes.array,
+  onDemandSourceOptions: PropTypes.array,
+  onDemandDomainOptions: PropTypes.array,
   setActiveTab: PropTypes.func,
   setCurrentLayer: PropTypes.any,
   layerSource: PropTypes.any,
@@ -257,6 +266,8 @@ OnDemandDataLayer.propTypes = {
   handleResetAOI: PropTypes.any,
   featureInfoData: PropTypes.any,
   currentLayer: PropTypes.any,
+  showLegend: PropTypes.bool,
+  legendUrl: PropTypes.string,
   dispatch: PropTypes.any
 }
 

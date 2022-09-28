@@ -8,9 +8,11 @@ const MapSection = ({
   viewState,
   iconLayer,
   getPeopleByArea,
+  setViewState,
   handleViewStateChange,
   setNewWidth,
-  setNewHeight
+  setNewHeight,
+  onClick
 }) => {
 
   const getSearchButton = (index) => {
@@ -28,11 +30,13 @@ const MapSection = ({
         layers={[iconLayer]}
         initialViewState={viewState}
         widgets={[getSearchButton]}
+        setViewState={setViewState}
         onViewStateChange={handleViewStateChange}
         setWidth={setNewWidth}
         setHeight={setNewHeight}
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
+        onClick={onClick}
       />
     </Card>
   )
@@ -41,10 +45,12 @@ const MapSection = ({
 MapSection.propTypes = {
   viewState: PropTypes.any,
   iconLayer: PropTypes.any,
+  setViewState: PropTypes.func,
   getPeopleByArea: PropTypes.func,
   handleViewStateChange: PropTypes.func,
   setNewWidth: PropTypes.func,
-  setNewHeight: PropTypes.func
+  setNewHeight: PropTypes.func,
+  onClick: PropTypes.func
 }
 
 export default MapSection;

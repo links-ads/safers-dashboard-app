@@ -147,13 +147,6 @@ const SidebarContent = (props) => {
                   : null}
               </Link>
             </li>
-            <li>
-              <Link to='/notifications'>
-                <i className='bx bx-bell'></i>
-                <span>{props.t('Notifications')}</span>
-                {isNewNotification && <span className='new-info-indicator float-end'>{newNotificationsCount}</span>}
-              </Link>
-            </li>
             {/* <li>
               <Link to='/social-monitoring'>
                 <i className='bx bxl-twitter'></i>
@@ -172,7 +165,13 @@ const SidebarContent = (props) => {
                 <span>{props.t('Chatbot Module')}</span>
               </Link>
             </li>
-
+            <li>
+              <Link to='/notifications'>
+                <i className='bx bx-bell'></i>
+                <span>{props.t('Notifications')}</span>
+                {isNewNotification && <span className='new-info-indicator float-end'>{newNotificationsCount}</span>}
+              </Link>
+            </li>
           </ul>
         </div>
       </SimpleBar>

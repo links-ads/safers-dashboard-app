@@ -9,7 +9,7 @@ import { setCurrentPage, setInSituFavoriteAlert, setPaginatedAlerts, getCamera }
 import { PAGE_SIZE, SET_FAV_INSITU_ALERT_SUCCESS } from '../../../store/insitu/types';
 import Alert from './Alert';
 import { MAP_TYPES } from '../../../constants/common';
-import { getIconColorFromContext } from '../../../helpers/mapHelper';
+import { getAlertIconColorFromContext } from '../../../helpers/mapHelper';
 import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 
 const AlertList = ({
@@ -30,24 +30,12 @@ const AlertList = ({
   const dispatch = useDispatch();
 
   const getIconLayer = (alerts) => {
-    const data = alerts?.map((alert) => {
-      const {
-        geometry,
-        ...properties
-      } = alert;
-      return {
-        type: 'Feature',
-        properties: properties,
-        geometry: geometry,
-      };
-    });
-
     return new GeoJsonPinLayer({
-      data,
+      data: alerts,
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.IN_SITU,feature),
+      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.IN_SITU,feature),
       icon: 'camera',
       iconColor: '#ffffff',
       clusterIconSize: 35,
@@ -63,7 +51,7 @@ const AlertList = ({
     if (selCam) {
       !_.isEqual(viewState.midPoint, cameraInfo?.geometry?.coordinates) || isViewStateChanged ?
         setViewState(getViewState(cameraInfo?.geometry?.coordinates, currentZoomLevel, cameraInfo, setHoverInfo, setIsViewStateChanged))
-        : setHoverInfo({ object: cameraInfo, coordinate: cameraInfo?.geometry?.coordinates });
+        : setHoverInfo({ object: { properties: cameraInfo, geometry: cameraInfo?.geometry}, picked: true });
       setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
     }
   }, [cameraInfo]);

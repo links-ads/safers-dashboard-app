@@ -13,6 +13,7 @@ import { getBoundingBox, getViewState, getIconLayer } from '../../../helpers/map
 
 import { useTranslation } from 'react-i18next';
 import { MAP_TYPES } from '../../../constants/common';
+import { fetchEndpoint } from '../../../helpers/apiHelper';
 
 const People = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -24,7 +25,7 @@ const People = () => {
   const { t } = useTranslation();
 
   const [peopleId, setPeopleId] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
+  const [viewState, setViewState] = useState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
   const [status, setStatus] = useState('');
@@ -34,8 +35,18 @@ const People = () => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
+  const [activitiesOptions, setActivitiesOptions] = useState([]);
 
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    (async () => {
+      const activitiesOptions = await fetchEndpoint(
+        '/chatbot/people/activities'
+      );
+      setActivitiesOptions(activitiesOptions);
+    })();
+  }, [])
 
   useEffect(() => {
     const dateRangeParams = dateRange
@@ -67,12 +78,9 @@ const People = () => {
 
   useEffect(() => {
     if (allPeople.length > 0) {
-      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState));
-      if (!viewState) {
-        setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-      }
+      setIconLayer(getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', dispatch, setViewState, {id: peopleId}));
     }
-  }, [allPeople]);
+  }, [allPeople, peopleId]);
 
   const getPeopleByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));
@@ -89,6 +97,11 @@ const People = () => {
     setBoundingBox(undefined);
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
+
+  const onClick = (info) => {
+    const { id } = info?.object?.properties ?? {};
+    setPeopleId(peopleId === id ? undefined : id)
+  }
 
   return (
     <div className='mx-2'>
@@ -108,6 +121,7 @@ const People = () => {
             setStatus={setStatus}
             setActivity={setActivity}
             setSortOrder={setSortOrder}
+            activitiesOptions={activitiesOptions}
           />
           <Row>
             <Col xl={12} className='px-3'>
@@ -124,11 +138,12 @@ const People = () => {
           <MapSection
             viewState={viewState}
             iconLayer={iconLayer}
-            setViewState={setViewState}
             getPeopleByArea={getPeopleByArea}
+            setViewState={setViewState}
             handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
+            onClick={onClick}
           />
         </Col>
       </Row>

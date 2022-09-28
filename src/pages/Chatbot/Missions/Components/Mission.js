@@ -55,17 +55,18 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
             <Row className='mt-2'>
               <Col>
                 <p className="text-muted no-wrap mb-0">
-                  {t('Start date', { ns: 'common' })}: {formatDate(card.start_date, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.end_date, 'YYYY-MM-DD')}
+                  {t('Start date', { ns: 'common' })}: {formatDate(card.start, 'YYYY-MM-DD')} | {t('End date', { ns: 'common' })}: {formatDate(card.end, 'YYYY-MM-DD')}
                 </p>
                 <p className="text-muted no-wrap">
-                  {t('Assigned to', { ns: 'chatBot' })}: {card.assigned_to}
+                  {t('Assigned to', { ns: 'chatBot' })}: {card.organization}
                 </p>
               </Col>
             </Row>
             <Row className='mt-0'>
               <Col md={10}>
                 <p className="text-muted no-wrap mb-0">
-                  {t('Associated files', { ns: 'common' })}: <Button color='link' onClick={() => { navigate(`/reports-dashboard/${card.report_id}`); }} className='align-self-baseline pe-0'>{t(card.report_title, { ns: 'common' })}</Button>
+                  {t('Associated reports', { ns: 'common' })}: 
+                  {card?.reports.map((report) => <Button key={report.id} color='link' className='align-self-baseline pe-0' onClick={() => { navigate(`/reports-dashboard/${report.id}`)}}>{report.name}</Button>)}
                 </p>
               </Col>
             </Row>
@@ -73,6 +74,13 @@ const Mission = ({ card, missionId, setSelectedMission/*, setFavorite*/ }) => {
               <Col>
                 <CardText>
                   {t('Description', { ns: 'common' })}: {getMsg(card.description)}
+                </CardText>
+              </Col>
+              <Col md={2}>
+                <CardText>
+                  <span className='float-end alert-source-text me-2'>
+                    {t('id', { ns: 'common' }).toUpperCase()}: {card.id}
+                  </span>
                 </CardText>
               </Col>
             </Row>

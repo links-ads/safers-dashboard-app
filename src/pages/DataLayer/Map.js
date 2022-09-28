@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card } from 'reactstrap';
-import PolygonMap from './PolygonMap';
+import PolygonMap from '../../components/BaseMap/PolygonMap';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import PropTypes from 'prop-types';
 import SearchButton from '../../components/SearchButton';
@@ -15,6 +15,7 @@ const MapSection = ({
   setCoordinates,
   coordinates,
   togglePolygonMap = false,
+  handleAreaValidation
 }) => {
 
   const getSearchButton = (index) => (
@@ -56,6 +57,8 @@ const MapSection = ({
           setCoordinates={setCoordinates}
           coordinates={coordinates}
           key='comm-polygon-map'
+          handleAreaValidation={handleAreaValidation}
+          singlePolygonOnly={true}
         />
       ) : null}
     </Card>
@@ -72,6 +75,7 @@ MapSection.propTypes = {
   setCoordinates: PropTypes.func,
   togglePolygonMap: PropTypes.any,
   coordinates: PropTypes.string,
+  handleAreaValidation: PropTypes.function
 }
 
 export default MapSection;

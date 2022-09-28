@@ -8,6 +8,7 @@ import SearchButton from '../../../../components/SearchButton';
 const MapSection = ({
   viewState,
   iconLayer,
+  setViewState,
   getReportsByArea,
   handleViewStateChange,
   setNewWidth,
@@ -15,6 +16,7 @@ const MapSection = ({
   setCoordinates,
   coordinates,
   togglePolygonMap = false,
+  onClick,
 }) => {
 
   const getSearchButton = (index) => {
@@ -31,6 +33,7 @@ const MapSection = ({
       {!togglePolygonMap && <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
+        setViewState={setViewState}
         widgets={[getSearchButton]}
         onViewStateChange={handleViewStateChange}
         setWidth={setNewWidth}
@@ -38,11 +41,13 @@ const MapSection = ({
         screenControlPosition='top-right'
         navControlPosition='bottom-right'
         key='comm-base-map'
+        onClick={onClick}
       />}
 
       {togglePolygonMap && <PolygonMap
         layers={[iconLayer]}
         initialViewState={viewState}
+        setViewState={setViewState}
         widgets={[getSearchButton]}
         onViewStateChange={handleViewStateChange}
         setWidth={setNewWidth}
@@ -52,6 +57,7 @@ const MapSection = ({
         setCoordinates={setCoordinates}
         coordinates={coordinates}
         key='comm-polygon-map'
+        onClick={onClick}
       />}
     </Card>
   )
@@ -60,6 +66,7 @@ const MapSection = ({
 MapSection.propTypes = {
   coordinates: PropTypes.any,
   viewState: PropTypes.any,
+  setViewState: PropTypes.func,
   iconLayer: PropTypes.any,
   getReportsByArea: PropTypes.func,
   handleViewStateChange: PropTypes.func,
@@ -67,6 +74,7 @@ MapSection.propTypes = {
   setNewHeight: PropTypes.func,
   setCoordinates: PropTypes.func,
   togglePolygonMap: PropTypes.any,
+  onClick: PropTypes.func,
 }
 
 export default MapSection;

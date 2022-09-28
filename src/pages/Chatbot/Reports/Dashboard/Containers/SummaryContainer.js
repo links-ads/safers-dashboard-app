@@ -12,18 +12,18 @@ import { MAP_TYPES } from '../../../../../constants/common';
 //i18n
 import { withTranslation } from 'react-i18next'
 
-const SummaryContainer = ({reportDetail, t}) => {
+const SummaryContainer = ({ reportDetail, t }) => {
 
   const defaultAoi = useSelector(state => state.user.defaultAoi);
 
 
   const navigate = useNavigate();
 
-  if(!reportDetail) 
+  if (!reportDetail)
     return null;
 
   const iconLayer = getIconLayer([reportDetail], MAP_TYPES.REPORTS, 'report');
-  const viewState= getViewState(reportDetail.location, defaultAoi.features[0].properties.zoomLevel);
+  const viewState = getViewState(reportDetail.location, defaultAoi.features[0].properties.zoomLevel);
 
 
 
@@ -35,9 +35,9 @@ const SummaryContainer = ({reportDetail, t}) => {
           <Button onClick={() => navigate('/chatbot?tab=4')} className='back-arrow px-0 py-0'>
             <i className='bx bx-arrow-back fa-2x'></i>
           </Button>
-        </Col> 
+        </Col>
       </Row>
-      
+
       <Col md={12} className='mb-3'>
         <span className='event-alert-title opacity-75'> {t('Results')} &gt;</span> <span className='event-alert-title'>{reportDetail.name}</span>
       </Col>
@@ -47,17 +47,26 @@ const SummaryContainer = ({reportDetail, t}) => {
           <Row className='mb-3'>
             <span className='text-title'>{reportDetail.name}</span>
           </Row>
-          <Row className='my-3'>
+          <Row className='my-2'>
             <span>{t('Hazard Type')}: {reportDetail.hazard}</span>
           </Row>
-          <Row className='my-3'>
+          <Row className='my-2'>
             <span>{t('Status')}: {reportDetail.status}</span>
           </Row>
-          <Row className='my-3'>
-            <span>{t('Category')}: {reportDetail.categories.join(' ,')}</span>
+          <Row className='my-2'>
+            <span>{t('Category')}: {reportDetail.categories.join(', ')}</span>
           </Row>
-          <Row className='mt-5 mb-2'>
-            <span>{t('Description')}</span>
+          <Row className='my-2'>
+            <Col lg={2} id="cat-info">
+              <span>{t('Details')}: </span>
+            </Col>
+            <Col lg={1}>&nbsp;</Col>
+            <Col lg={9} className="mt-lg-0 ms-lg-0 mt-sm-2 ms-sm-2" aria-labelledby="cat-info">
+              {reportDetail.categories_info.map((info, index) => <div key={index}>{info}</div>)}
+            </Col>
+          </Row>
+          <Row className='mt-3 mb-2'>
+            <span>{t('Description')}:</span>
           </Row>
           <Row>
             <span>{reportDetail.description}</span>
@@ -72,13 +81,13 @@ const SummaryContainer = ({reportDetail, t}) => {
                 <span className='font-size-18'>{t('Username')}</span> : {reportDetail.reporter?.name}</Col>
             </Row>
             <Row>
-              <Col><span className='font-size-18'>{t('Organization', {ns: 'common'})}</span> : {reportDetail.reporter?.organization}</Col>
+              <Col><span className='font-size-18'>{t('Organization', { ns: 'common' })}</span> : {reportDetail.reporter?.organization}</Col>
             </Row>
           </Col>
           <hr></hr>
           <Col className='ps-3 mb-0'>
             <Row className='mb-1'>
-              <Col className='font-size-18'>{t('Location', {ns: 'common'})}: </Col>
+              <Col className='font-size-18'>{t('Location', { ns: 'common' })}: </Col>
             </Row>
             <Row className='mt-2'>
               <Col md={1} className='d-flex'>
@@ -112,21 +121,28 @@ const SummaryContainer = ({reportDetail, t}) => {
             <Row>
               <Col>
                 <CardText>
-                  {t('Source', {ns: 'common'})}: {reportDetail.source}
+                  {t('Source', { ns: 'common' })}: {reportDetail.source}
                 </CardText>
               </Col>
             </Row>
             <Row>
               <Col>
                 <CardText >
-                  {t('Report Privacy')}: {reportDetail.reportPrivacy}
+                  {t('Report Privacy')}: {reportDetail.visibility}
                 </CardText>
               </Col>
             </Row>
             <Row>
               <Col>
                 <CardText >
-                  {t('Mission ID')}: {reportDetail.missionId}
+                  {t('Report ID')}: {reportDetail.report_id}
+                </CardText>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <CardText >
+                  {t('Mission ID')}: {reportDetail.mission_id}
                 </CardText>
               </Col>
             </Row>
@@ -139,7 +155,7 @@ const SummaryContainer = ({reportDetail, t}) => {
           iconLayer={iconLayer}
         />
       </Col>
-    </>     
+    </>
   );
 }
 

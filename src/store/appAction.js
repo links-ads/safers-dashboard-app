@@ -16,7 +16,8 @@ export {
   uploadProfImg,
   deleteAccount,
   resetProfilePsw,
-  setUserInfo
+  setUserInfo,
+  resetStatus
 } from './user/action'
 export {
   getOrgList,

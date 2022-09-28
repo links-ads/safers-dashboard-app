@@ -25,7 +25,7 @@ import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
 //i18n
 import { useTranslation } from 'react-i18next'
 import { MAP_TYPES } from '../../constants/common';
-import { getIconColorFromContext } from '../../helpers/mapHelper';
+import { getAlertIconColorFromContext } from '../../helpers/mapHelper';
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -40,7 +40,7 @@ const InSituAlerts = () => {
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
-  const [hoverInfo, setHoverInfo] = useState({});
+  const [hoverInfo, setHoverInfo] = useState(undefined);
   const [checkedStatus, setCheckedStatus] = useState([])
   const [isViewStateChanged, setIsViewStateChanged] = useState(false);
   const [newWidth, setNewWidth] = useState(600);
@@ -55,7 +55,7 @@ const InSituAlerts = () => {
       dispatch,
       setViewState,
       getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getIconColorFromContext(MAP_TYPES.IN_SITU,feature),
+      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.IN_SITU,feature),
       icon: 'camera',
       iconColor: '#ffffff',
       clusterIconSize: 35,
@@ -132,10 +132,10 @@ const InSituAlerts = () => {
   }, []);
 
   const showTooltip = info => {
-    if (info.picked && info.object) {
+    if (info) {
       setHoverInfo(info);
     } else {
-      setHoverInfo({});
+      setHoverInfo(undefined);
     }
   };
 
@@ -145,7 +145,7 @@ const InSituAlerts = () => {
       setCurrentZoomLevel(e.viewState.zoom);
     }
     setIsViewStateChanged(viewStateCHanged);
-    setHoverInfo({});
+    setHoverInfo(undefined);
   };
 
   const getCamByArea = () => {

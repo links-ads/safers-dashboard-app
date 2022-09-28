@@ -9,7 +9,16 @@ import { setFilters } from '../../../../store/people/action';
 import { getFilteredRec } from '../../filter';
 
 
-const SortSection = ({ t, status, activity, sortOrder, setStatus, setActivity, setSortOrder }) => {
+const SortSection = ({ 
+  t, 
+  status, 
+  activity, 
+  sortOrder, 
+  setStatus, 
+  setActivity, 
+  setSortOrder,
+  activitiesOptions
+}) => {
   const { allPeople } = useSelector(state => state.people);
   const dispatch = useDispatch();
 
@@ -77,9 +86,9 @@ const SortSection = ({ t, status, activity, sortOrder, setStatus, setActivity, s
             data-testid='activity'
           >
             <option value={''} >--Activity--</option>
-            {'<!-- To be decided when Activity API has a data structure -->'}
-            <option value="Surveillance" >{t('Surveillance').toUpperCase()}</option>
-            <option value="Search and rescue" >{t('Search and rescue').toUpperCase()}</option>
+            {activitiesOptions.map(option => (
+              <option key={option} value={t(`${option}`)}>{option}</option>
+            ))}
           </Input>
         </Col>
       </Row>
@@ -94,6 +103,7 @@ SortSection.propTypes = {
   setStatus: PropTypes.func,
   setActivity: PropTypes.func,
   setSortOrder: PropTypes.func,
+  activitiesOptions: PropTypes.array,
   t: PropTypes.func
 }
 

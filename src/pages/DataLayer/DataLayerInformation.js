@@ -39,8 +39,13 @@ const DataLayerInformationComponent = ({
   const [selectedDomain, setSelectedDomain] = useState(null);
   const chartContainerRef = useRef(null);
 
-  useEffect(()=> {
-    if(timeSeriesData) {
+  let title = currentLayer?.title
+  if (currentLayer?.units) {
+    title = `${title} ${currentLayer.units}`
+  }
+
+  useEffect(() => {
+    if (timeSeriesData) {
       const array = timeSeriesData.split('\n');
       array.splice(0,3);
       if(!array[array.length -1]) {
@@ -103,6 +108,7 @@ const DataLayerInformationComponent = ({
         <h4 className='ps-3 pt-3 mb-2'><i className='meta-close' onClick={clearInfo}>x</i></h4>
         <div ref={chartContainerRef} className='d-flex'>
           <div style={{width: '60%'}}>
+            <div className='text-center fs-5 fw-bold mb-1'>{title}</div>
             <VictoryChart padding={{ top: 5, left: 50, right: 50, bottom: 50 }} scale={{ x: 'time' }} containerComponent={<VictoryZoomContainer
               zoomDimension="x"
               zoomDomain={zoomDomain}
@@ -258,12 +264,15 @@ const DataLayerInformationComponent = ({
   }
 
   const getPixelValue = () => {
-    var valueString = '';
+    let valueString = '';
     if(featureInfoData?.features?.length > 0 && featureInfoData?.features[0]?.properties) {
       for (const key in featureInfoData.features[0].properties) {
         if (Object.hasOwnProperty.call(featureInfoData.features[0].properties, key)) {
           valueString = valueString+`Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
         }
+      }
+      if (currentLayer?.units) {
+        valueString = `${valueString} ${currentLayer?.units}`
       }
     }
     return valueString;

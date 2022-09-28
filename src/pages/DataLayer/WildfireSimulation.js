@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
+import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
-import { 
-  area as getFeatureArea, 
-  featureCollection 
+import {
+  area as getFeatureArea
 } from '@turf/turf';
 import wkt from 'wkt';
 import { FieldArray, Formik } from 'formik';
@@ -17,7 +17,7 @@ import {
   getAllMapRequests
 } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css'
-import moment from  'moment';
+import moment from 'moment';
 
 // 40,000 km2 = 40 million m2
 const MAX_GEOMETRY_AREA = {
@@ -34,10 +34,12 @@ const TABLE_HEADERS = [
   'fuelMoistureContent'
 ];
 
+const PROBABILITY_INFO = 'PROPAGATOR output for each time step is a probability (from 0 to 1) field that expresses for each pixel the probability of the fire to reach that specific point in the given time step. In order to derive a contour, we can select to show the contour related to the 0.5, 0.75 and 0.9 of the probability.  For example, the 50% - 0.5 probability contour encapsulates all the pixels who have more than 50% of probability to be reached by fire at the given simulation time.'
+
 const PROBABILITY_RANGES = [
-  {label: '50%', value: 0.5}, 
-  {label: '75%', value: 0.75}, 
-  {label: '90%', value: 0.9}
+  { label: '50%', value: 0.5 },
+  { label: '75%', value: 0.75 },
+  { label: '90%', value: 0.9 }
 ];
 
 Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
@@ -45,9 +47,9 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
     'uniqueTimeOffset',
     message,
     (timeOffset, { from }) => {
-      // 'from' is an array of parent objects moving from closest 
-      // to furthest relatives. [0] is the immediate parent object, 
-      // while [1] is the higher parent array of all of those objects.  
+      // 'from' is an array of parent objects moving from closest
+      // to furthest relatives. [0] is the immediate parent object,
+      // while [1] is the higher parent array of all of those objects.
       const allTimeOffsets = from[1].value.boundaryConditions.map(d => +d.timeOffset);
 
       const matchCount = allTimeOffsets.filter(d => d === timeOffset).length;
@@ -59,6 +61,8 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
 const WildfireSimulationSchema = Yup.object().shape({
   simulationTitle: Yup.string()
     .required('This field cannot be empty'),
+  simulationDescription: Yup.string()
+    .required('This field cannot be empty'),
   simulationTimeLimit: Yup.number()
     .typeError('This field must be a number')
     .min(1, `Simulation time limit must be between 1 and ${TIME_LIMIT} hours`)
@@ -67,10 +71,10 @@ const WildfireSimulationSchema = Yup.object().shape({
   probabilityRange: Yup.string()
     .required('This field cannot be empty'),
   mapSelection: Yup.string()
-    .required('This field cannot be empty'),
-  mapSelectionArea: Yup.number()
     .typeError('Area must be valid Well-Known Text')
-    .max(MAX_GEOMETRY_AREA.value, `Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
+    .required('This field cannot be empty'),
+  mapSelectionArea: Yup.boolean()
+    .oneOf([true], `Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
   ignitionDateTime: Yup.date()
     .typeError('This field must be a valid date selection')
     .required('This field cannot be empty'),
@@ -122,7 +126,7 @@ const WildfireSimulation = ({
   // to manage number of dynamic (vertical) table rows in `Boundary Conditions`
   const [tableEntries, setTableEntries] = useState([0]);
 
-  // The other two forms allow user to select these from a dropdown. 
+  // The other two forms allow user to select these from a dropdown.
   // For this form we hard-code the list and pass along to the API
   // when we reshape the form data for submission
   const layerTypes = [
@@ -151,6 +155,7 @@ const WildfireSimulation = ({
       geometry: transformedGeometry,
       title: formData.simulationTitle,
       parameters: {
+        description: formData.simulationDescription,
         start: startDateTime,
         end: endDateTime,
         time_limit: +formData.simulationTimeLimit,
@@ -184,9 +189,10 @@ const WildfireSimulation = ({
           <Formik
             initialValues={{
               simulationTitle: '',
+              simulationDescription: '',
               probabilityRange: 0.75,
               mapSelection: '',
-              mapSelectionArea: null,
+              mapSelectionArea: true,
               simulationTimeLimit: 1,
               ignitionDateTime: null,
               simulationFireSpotting: false,
@@ -255,12 +261,41 @@ const WildfireSimulation = ({
                           {getError('simulationTitle', errors, touched, false)}
                         </FormGroup>
                       </Row>
+
+                      <Row>
+                        <FormGroup className="form-group">
+                          <Label for="simulationDescription">
+                            {t('Simulation Description')}
+                          </Label>
+                          <Input
+                            id="simulationDescription"
+                            name="simulationDescription"
+                            type="textarea"
+                            rows="2"
+                            className={
+                              errors.simulationDescription ? 'is-invalid' : null
+                            }
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            value={values.simulationDescription}
+                            placeholder="Simulation description"
+                          />
+                          {getError('simulationDescription', errors, touched, false)}
+                        </FormGroup>
+                      </Row>
                     </div>
 
                     <Row>
                       <FormGroup className='d-flex-column'>
                         <Row>
                           <Label for="probabilityRange" className='d-flex align-items-center'>
+                            <ReactTooltip
+                              aria-haspopup="true"
+                              place='right'
+                              class="alert-tooltip data-layers-alert-tooltip"
+                            >
+                              {PROBABILITY_INFO}
+                            </ReactTooltip>
                             <i
                               data-tip
                               className='bx bx-info-circle font-size-8 p-0 me-1'
@@ -270,7 +305,7 @@ const WildfireSimulation = ({
                           </Label>
                         </Row>
                         <Row className='d-flex justify-content-start flex-nowrap gap-2'>
-                          {PROBABILITY_RANGES.map(({label, value}) => (
+                          {PROBABILITY_RANGES.map(({ label, value }) => (
                             <Label
                               key={label}
                               id={label}
@@ -328,13 +363,16 @@ const WildfireSimulation = ({
                           onChange={({ target: { value } }) => {
                             setFieldValue('mapSelection', value);
 
-                            const { features } = featureCollection(
-                              wkt.parse(value)
-                            );
+                            if (!value) {
+                              setFieldValue('mapSelectionArea', true);
+                            } else {
+                              const features = wkt.parse(value);
 
-                            if (features) {
-                              const area = getFeatureArea(features);
-                              setFieldValue('mapSelectionArea', Math.ceil(area));
+                              if (features) {
+                                const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
+
+                                setFieldValue('mapSelectionArea', areaIsValid);
+                              }
                             }
                           }}
                           onBlur={handleBlur}
@@ -342,7 +380,7 @@ const WildfireSimulation = ({
                           placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {getError('mapSelection', errors, touched, false)}
-                        {getError('mapSelectionArea', errors, touched, false)}
+                        {getError('mapSelectionArea', errors, touched, false, true)}
                       </FormGroup>
                     </Row>
 
@@ -410,16 +448,16 @@ const WildfireSimulation = ({
                   <Col xl={7} className='mx-auto'>
                     <Card className='map-card mb-0' style={{ height: 670 }}>
                       <MapSection
-                        setCoordinates={(wktConversion, originalGeojson) => {
+                        setCoordinates={(wktConversion, areaIsValid) => {
                           setFieldValue('mapSelection', wktConversion);
-
-                          const area = getFeatureArea(originalGeojson);
-                          if (area) {
-                            setFieldValue('mapSelectionArea', Math.ceil(area));
-                          }
+                          setFieldValue('mapSelectionArea', areaIsValid);
                         }}
                         coordinates={values.mapSelection}
                         togglePolygonMap={true}
+                        handleAreaValidation={feature => {
+                          const area = Math.ceil(getFeatureArea(feature));
+                          return area <= MAX_GEOMETRY_AREA.value;
+                        }}
                       />
                     </Card>
                   </Col>
