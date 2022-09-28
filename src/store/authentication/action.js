@@ -3,7 +3,7 @@ import { CM_WIP } from '../common/types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 import { setSession, deleteSession, getSession } from '../../helpers/authHelper';
-import { AUTH_BASE_URL, AUTH_CLIENT_ID, AUTH_TENANT_ID, CLIENT_BASE_URL, REDIRECT_URL  } from '../../config'
+import { AUTH_BASE_URL, AUTH_CLIENT_ID, AUTH_TENANT_ID, CLIENT_BASE_URL, REDIRECT_URL } from '../../config'
 import _ from 'lodash';
 
 
@@ -24,8 +24,8 @@ export const setAoiBySignInSuccess = (aoi) => {
 
 const setSessionData = (token, refreshToken, user, dispatch, rememberMe=false, isSSOsession=false) => {
   const sessionData = {
-    access_token: token, 
-    refresh_token: refreshToken, 
+    access_token: token,
+    refresh_token: refreshToken,
     userId: user.id,
     isSSOsession
   };
@@ -35,23 +35,23 @@ const setSessionData = (token, refreshToken, user, dispatch, rememberMe=false, i
 
 /* Sign In */
 
-export const signInOauth2 = ({authCode}) => async (dispatch) => {
+export const signInOauth2 = ({ authCode }) => async (dispatch) => {
   const response = await api.post(endpoints.authentication.oAuth2SignIn, {
     code: authCode,
   });
   const content = response.data;
   dispatch(InProgress(false));
   if (response.status === 200) {
-    return setSessionData(content.access_token, null, content.user, dispatch, false , true)
+    return setSessionData(content.access_token, null, content.user, dispatch, false, true)
   }
   return dispatch(signInFail(content.detail));
 }
 
-export const signIn = ({email, password, rememberMe}) => async (dispatch) => {
+export const signIn = ({ email, password, rememberMe }) => async (dispatch) => {
   dispatch(InProgress(true, 'Please wait..'));
   const response = await api.post(endpoints.authentication.signIn, { email, password });
   if (response.status === 200) {
-    const {access_token, refresh_token, user} = response.data;
+    const { access_token, refresh_token, user } = response.data;
     return setSessionData(access_token, refresh_token, user, dispatch, rememberMe)
   }
   dispatch(InProgress(false));
@@ -60,12 +60,12 @@ export const signIn = ({email, password, rememberMe}) => async (dispatch) => {
 
 export const isRemembered = () => async (dispatch) => {
   const session = getSession();
-  if(session && !_.isEmpty(session)) {
+  if (session && !_.isEmpty(session)) {
     const response = await api.post(endpoints.authentication.refreshToken, {
       'refresh': session.refresh_token
     });
     if (response.status === 200) {
-      const newSession = {...session, access_token: response.data.access}
+      const newSession = { ...session, access_token: response.data.access }
       setSession(newSession, true);
       return dispatch(signInSuccess(newSession.user));
     }
@@ -112,10 +112,10 @@ const signUpOauth2Fail = (error) => {
 export const signUp = (userInfo) => async (dispatch) => {
   const response = await api.post(endpoints.authentication.signUp, { ...userInfo });
   if (api.isSuccessResp(response.status)) {
-    const {access_token, user} = response.data;
+    const { access_token, user } = response.data;
     return setSessionData(access_token, null, user, dispatch);
   }
-  
+
   return dispatch(signUpFail(response.data));
 };
 const signUpFail = (error) => {
@@ -150,7 +150,7 @@ export const resetPsw = (data) => async (dispatch) => {
   const response = await api.post(endpoints.authentication.resetPsw, { ...data });
   if (response.status === 200)
     return dispatch(resetPswSuccess(response.data));
-  
+
   return dispatch(resetPswFail(response.data));
 };
 const resetPswSuccess = (res) => {
@@ -170,7 +170,7 @@ const OAuth2Signout = () => {
   const params = {
     client_id: AUTH_CLIENT_ID,
     tenant_id: AUTH_TENANT_ID,
-    post_logout_redirect: `${CLIENT_BASE_URL}/${REDIRECT_URL}`,
+    post_logout_redirect_uri: `${CLIENT_BASE_URL}/${REDIRECT_URL}`,
   };
   const urlParams = new URLSearchParams(params).toString();
   window.location = `${AUTH_BASE_URL}/oauth2/logout?${urlParams}`;
@@ -181,8 +181,8 @@ export const signOut = (dispatch) => async () => {
   const response = await api.post(endpoints.authentication.signOut);
   if (response.status === 200) {
     deleteSession();
-    if(session.isSSOsession){
-      OAuth2Signout();// A redirection happens here
+    if (session.isSSOsession) {
+      OAuth2Signout();  // A redirection happens here
     }
     return dispatch(signOutSuccess());
   }
