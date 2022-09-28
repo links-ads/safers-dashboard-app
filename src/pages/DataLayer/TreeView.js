@@ -11,7 +11,6 @@ import { getMetaData, resetMetaData } from '../../store/appAction';
 const TreeView = ({ data, setCurrentLayer, resetMap }) => {
   const [itemState, setItemState] = useState({});
   const [selectedLayer, setSelectedLayer] = useState({});// Only parent node is set here - used by callback fn
-  const [, setPreviousLayer] = useState({});
   
   const [selectedNode, setSelNode] = useState(null);
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
@@ -48,7 +47,6 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
         return;
       }
       setSelectedLayer(node);
-      setPreviousLayer(node);
     }
     setSelNode(node);
   }
