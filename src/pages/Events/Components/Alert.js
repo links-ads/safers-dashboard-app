@@ -7,10 +7,10 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
 
   const getBadge = () => {
     let iconColor = card.status == 'ONGOING' ? 'text-danger' : '';
-    
+
     return (
       <Badge className='me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0'>
-        <i className={`bx bxs-hot ${iconColor} fa-lg me-1' color='danger'`}></i> 
+        <i className={`bx bxs-hot ${iconColor} fa-lg me-1' color='danger'`}></i>
         <span>{card.status}</span>
       </Badge>
     )
@@ -73,7 +73,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
               </Col>
               <Col md={2}>
                 <CardText>
-                  <span className='float-end alert-source-text me-2'>{card.alerts.map((alert) => alert.title).join(',')}</span>
+                  <span className='float-end alert-source-text me-2'>{card.alerts.map((alert) => alert.title).join(',  ')}</span>
                 </CardText>
               </Col>
             </Row>
