@@ -206,6 +206,8 @@ const WildfireSimulation = ({
             validationSchema={WildfireSimulationSchema}
             onSubmit={onSubmit}
             id="wildfireSimulationForm"
+            validateOnChange={false}
+            validateOnBlur={true}
           >
             {({
               values,
@@ -258,7 +260,7 @@ const WildfireSimulation = ({
                             value={values.simulationTitle}
                             placeholder="[Type Simulation Title]"
                           />
-                          {getError('simulationTitle', errors, touched, false)}
+                          {touched.simulationTitle && getError('simulationTitle', errors, touched, false)}
                         </FormGroup>
                       </Row>
 
@@ -280,7 +282,7 @@ const WildfireSimulation = ({
                             value={values.simulationDescription}
                             placeholder="Simulation description"
                           />
-                          {getError('simulationDescription', errors, touched, false)}
+                          {touched.simulationDescription && getError('simulationDescription', errors, touched, false)}
                         </FormGroup>
                       </Row>
                     </div>
@@ -345,7 +347,7 @@ const WildfireSimulation = ({
                           value={values.simulationTimeLimit}
                           placeholder="Type Limit [hours]"
                         />
-                        {getError('simulationTimeLimit', errors, touched, false)}
+                        {touched.simulationTimeLimit && getError('simulationTimeLimit', errors, touched, false)}
                       </FormGroup>
                     </Row>
 
@@ -379,8 +381,8 @@ const WildfireSimulation = ({
                           value={values.mapSelection}
                           placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
-                        {getError('mapSelection', errors, touched, false)}
-                        {getError('mapSelectionArea', errors, touched, false, true)}
+                        {touched.mapSelection && getError('mapSelection', errors, touched, false)}
+                        {touched.mapSelection && getError('mapSelectionArea', errors, touched, false, true)}
                       </FormGroup>
                     </Row>
 
@@ -418,7 +420,7 @@ const WildfireSimulation = ({
                               }
                             />
                           </Col>
-                          {getError('ignitionDateTime', errors, touched, false)}
+                          {touched.ignitionDateTime && getError('ignitionDateTime', errors, touched, false)}
                         </Row>
                       </FormGroup>
                     </Row>
@@ -440,7 +442,7 @@ const WildfireSimulation = ({
                           className='m-0'
                           style={{ cursor: 'pointer' }}
                         />
-                        {getError('simulationFireSpotting', errors, touched, false)}
+                        {touched.simulationFireSpotting && getError('simulationFireSpotting', errors, touched, false)}
                       </FormGroup>
                     </Row>
                   </Col>
@@ -513,7 +515,7 @@ const WildfireSimulation = ({
                                       onChange={handleChange}
                                       onBlur={handleBlur}
                                     />
-                                    {renderDynamicError(errors.boundaryConditions?.[position]?.timeOffset)}
+                                    {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.timeOffset)}
                                   </td>
                                   <td>
                                     <Input
@@ -523,7 +525,7 @@ const WildfireSimulation = ({
                                       onChange={handleChange}
                                       onBlur={handleBlur}
                                     />
-                                    {renderDynamicError(errors.boundaryConditions?.[position]?.windDirection)}
+                                    {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.windDirection)}
                                   </td>
                                   <td>
                                     <Input
@@ -533,7 +535,7 @@ const WildfireSimulation = ({
                                       onChange={handleChange}
                                       onBlur={handleBlur}
                                     />
-                                    {renderDynamicError(errors.boundaryConditions?.[position]?.windSpeed)}
+                                    {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.windSpeed)}
                                   </td>
                                   <td>
                                     <Input
@@ -543,7 +545,7 @@ const WildfireSimulation = ({
                                       onChange={handleChange}
                                       onBlur={handleBlur}
                                     />
-                                    {renderDynamicError(errors.boundaryConditions?.[position]?.fuelMoistureContent)}
+                                    {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.fuelMoistureContent)}
                                   </td>
                                 </tr>
                               ))}
