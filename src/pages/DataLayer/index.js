@@ -131,7 +131,7 @@ const DataLayerDashboard = () => {
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
   useEffect(() => {
-    if (currentLayer?.id === previousLayer?.id) {
+    if (currentLayer && previousLayer && currentLayer?.id === previousLayer?.id) {
       resetMap();
       return;
     }
@@ -144,8 +144,8 @@ const DataLayerDashboard = () => {
       const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
+      setPreviousLayer(currentLayer);
     }
-    setPreviousLayer(currentLayer);
   }, [currentLayer]);
 
   useEffect(() => {
