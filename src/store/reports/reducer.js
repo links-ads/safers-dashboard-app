@@ -3,12 +3,14 @@ import { updateObject } from '../utility';
 
 const initialState = {
   allReports: [],
-  sortByDate: 'desc',
   alertSource: 'all',
   error: false,
   success: null,
   filteredReports: null,
-  reportDetail: null
+  reportDetail: null,
+  category : '',
+  sortOrder: 'desc',
+  missionId: ''
 };
 
 const reportReducer = (state = initialState, action) => {
@@ -50,8 +52,12 @@ const getReportsSuccess = (state, action) => {
 }
 
 const setFilters = (state, action) => {
+  const { category, sortOrder, missionId  } = action.filterParams;
   const updatedState = {
     filteredReports: action.payload,
+    category,
+    sortOrder,
+    missionId,
     error: false,
   }
   return updateObject(state, updatedState);
