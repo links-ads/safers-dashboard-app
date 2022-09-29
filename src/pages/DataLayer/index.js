@@ -133,18 +133,18 @@ const DataLayerDashboard = () => {
   useEffect(() => {
     if (currentLayer && previousLayer && currentLayer?.id === previousLayer?.id) {
       resetMap();
-      return;
-    }
-    setSliderValue(0);
-    setIsPlaying(false);
-    if (currentLayer && currentLayer.urls) {
-      const urls = getUrls();
-      const timestamps = getTimestamps();
-      setTimestamp(timestamps[sliderValue])
-      const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
-      setBitmapLayer(getBitmapLayer(imageUrl));
-      setSliderRangeLimit(urls.length - 1);
-      setPreviousLayer(currentLayer);
+    } else {
+      setSliderValue(0);
+      setIsPlaying(false);
+      if (currentLayer && currentLayer.urls) {
+        const urls = getUrls();
+        const timestamps = getTimestamps();
+        setTimestamp(timestamps[sliderValue])
+        const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
+        setBitmapLayer(getBitmapLayer(imageUrl));
+        setSliderRangeLimit(urls.length - 1);
+        setPreviousLayer(currentLayer);
+      }
     }
   }, [currentLayer]);
 
