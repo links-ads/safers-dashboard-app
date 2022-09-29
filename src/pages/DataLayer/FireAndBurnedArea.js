@@ -45,7 +45,7 @@ Yup.addMethod(Yup.date, 'max30Days', function (message) {
 const fireAndBurnedAreaSchema = Yup.object().shape({
   dataLayerType: Yup.array()
     .required('This field cannot be empty'),
-  requestTitle: Yup.string().optional(),
+  requestTitle: Yup.string().required('This field cannot be empty'),
   mapSelection: Yup.string()
     .required('This field cannot be empty'),
   startDate: Yup.date()
@@ -191,7 +191,7 @@ const FireAndBurnedArea = ({
                                 <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
                               ))}
                             </Input>
-                            {getError('dataLayerType', errors, touched)}
+                            {touched.dataLayerType && getError('dataLayerType', errors, touched)}
                           </FormGroup>
                         </Row> 
                         <Row>
@@ -210,7 +210,7 @@ const FireAndBurnedArea = ({
                               value={values.requestTitle}
                               placeholder="[Type Request Title]"
                             />
-                            {getError('requestTitle', errors, touched, false)}
+                            {touched.requestTitle && getError('requestTitle', errors, touched, false)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -240,8 +240,8 @@ const FireAndBurnedArea = ({
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
-                            {getError('mapSelection', errors, touched, false)}
-                            {getError('isAreaValid', errors, touched, false, true)}
+                            {touched.mapSelection && getError('mapSelection', errors, touched, false)}
+                            {touched.mapSelection && getError('isAreaValid', errors, touched, false, true)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -279,7 +279,7 @@ const FireAndBurnedArea = ({
                                   onBlur={handleBlur}
                                   value={values.endDate}
                                 />
-                                {getError('endDate', errors, touched, false)}
+                                {touched.endDate && getError('endDate', errors, touched, false)}
                               </Col>
                             </Row>
                           </FormGroup>
@@ -305,7 +305,7 @@ const FireAndBurnedArea = ({
                                   placeholder='[type here]'
                                   value={values.frequency}
                                 />
-                                {getError('frequency', errors, touched, false)}
+                                {touched.frequency && getError('frequency', errors, touched, false)}
                               </Col>
                               <Col xl={5} />
                             </Row>
@@ -340,7 +340,7 @@ const FireAndBurnedArea = ({
                                   onBlur={handleBlur}
                                   value={values.resolution}
                                 />
-                                {getError('resolution', errors, touched, false)}
+                                {touched.resolution && getError('resolution', errors, touched, false)}
                               </Col>
                               <Col xl={5} />
                             </Row>
