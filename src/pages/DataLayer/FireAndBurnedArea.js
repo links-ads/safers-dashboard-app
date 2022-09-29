@@ -65,7 +65,7 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
     .min(10, 'Should be at least 10')
     .max(60, 'Should be at most 60')
     .optional('Should be between 10 and 60'), 
-  isAreaValid: Yup.boolean().oneOf([false], 'Sorry, this would give too large an output. Reduce the spatial resolution or try a smaller area.')
+  isAreaValid: Yup.boolean().oneOf([true], 'Sorry, this would give too large an output. Reduce the spatial resolution or try a smaller area.')
 });
 
 const FireAndBurnedArea = ({ 
