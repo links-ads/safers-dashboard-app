@@ -9,8 +9,7 @@ import { setCurrentPage, setInSituFavoriteAlert, setPaginatedAlerts, getCamera }
 import { PAGE_SIZE, SET_FAV_INSITU_ALERT_SUCCESS } from '../../../store/insitu/types';
 import Alert from './Alert';
 import { MAP_TYPES } from '../../../constants/common';
-import { getAlertIconColorFromContext } from '../../../helpers/mapHelper';
-import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
+import { getIconLayer } from '../../../helpers/mapHelper';
 
 const AlertList = ({
   alertId,
@@ -29,30 +28,11 @@ const AlertList = ({
 
   const dispatch = useDispatch();
 
-  const getIconLayer = (alerts) => {
-    return new GeoJsonPinLayer({
-      data: alerts,
-      dispatch,
-      setViewState,
-      getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.IN_SITU,feature),
-      icon: 'camera',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18,-18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
-
   useEffect(() => {
     if (selCam) {
       !_.isEqual(viewState.midPoint, cameraInfo?.geometry?.coordinates) || isViewStateChanged ?
         setViewState(getViewState(cameraInfo?.geometry?.coordinates, currentZoomLevel, cameraInfo, setHoverInfo, setIsViewStateChanged))
         : setHoverInfo({ object: { properties: cameraInfo, geometry: cameraInfo?.geometry}, picked: true });
-      setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
     }
   }, [cameraInfo]);
 
@@ -80,7 +60,9 @@ const AlertList = ({
       dispatch(getCamera(selectedAlert.camera_id));
     } else {
       setAlertId(undefined);
-      setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
+      if (cameraList.features) {
+        setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
+      }
     }
   }
 
@@ -94,14 +76,23 @@ const AlertList = ({
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
   };
 
+  const handleSelectAlert = (id) => {
+    if (id === alertId) {
+      setSelectedAlert(undefined);
+      setHoverInfo(undefined);
+    } else {
+      setSelectedAlert(id);
+    }
+  }
+
   return (
     <>
       <Row>
         {
-          paginatedAlerts.map((alert, index) => <Alert
-            key={index}
+          paginatedAlerts.map((alert) => <Alert
+            key={alert.id}
             card={alert}
-            setSelectedAlert={setSelectedAlert}
+            setSelectedAlert={handleSelectAlert}
             setFavorite={setFavorite}
             alertId={alertId} />)
         }
