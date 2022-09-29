@@ -9,7 +9,6 @@ import { setCurrentPage, setInSituFavoriteAlert, setPaginatedAlerts, getCamera }
 import { PAGE_SIZE, SET_FAV_INSITU_ALERT_SUCCESS } from '../../../store/insitu/types';
 import Alert from './Alert';
 import { MAP_TYPES } from '../../../constants/common';
-import { getIconLayer } from '../../../helpers/mapHelper';
 
 const AlertList = ({
   alertId,
@@ -21,7 +20,8 @@ const AlertList = ({
   setIconLayer,
   setHoverInfo,
   setIsViewStateChanged,
-  hideTooltip
+  hideTooltip,
+  getIconLayer
 }) => {
   const { paginatedAlerts, currentPage, filteredAlerts, cameraList, cameraInfo } = useSelector(state => state.inSituAlerts);
   const [selCam, setsSelCam] = useState(undefined);
@@ -119,5 +119,6 @@ AlertList.propTypes = {
   setHoverInfo: PropTypes.func,
   hideTooltip: PropTypes.func,
   setIsViewStateChanged: PropTypes.func,
+  getIconLayer: PropTypes.func
 }
 export default AlertList;

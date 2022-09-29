@@ -20,11 +20,12 @@ import {
 } from '../../store/appAction';
 import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
+import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
+import { getAlertIconColorFromContext } from '../../helpers/mapHelper';
 
 //i18n
 import { useTranslation } from 'react-i18next'
 import { MAP_TYPES } from '../../constants/common';
-import { getIconLayer } from '../../helpers/mapHelper';
 
 const InSituAlerts = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -47,6 +48,12 @@ const InSituAlerts = () => {
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
+
+  const selectedAlert = alerts.find(alert => alert.id === alertId);
+
+  const pinInfo = selectedAlert
+    ? { center: selectedAlert.geometry.coordinates, id: alertId }
+    : {};
 
   useEffect(() => {
     dispatch(getCameraSources());
@@ -89,13 +96,7 @@ const InSituAlerts = () => {
 
   useEffect(() => {
     if (cameraList.features) {
-      const selectedAlert = alerts.find(alert => alert.id === alertId);
-
-      const pinInfo = selectedAlert
-        ? { center: selectedAlert.geometry.coordinates, id: alertId }
-        : {};
-
-      setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU, 'camera', dispatch, setViewState, pinInfo));
+      setIconLayer(getIconLayer(cameraList.features));
     }
   }, [cameraList, alertId]);
 
@@ -114,6 +115,24 @@ const InSituAlerts = () => {
     hideTooltip();
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
   }, [filteredAlerts]);
+
+  const getIconLayer = (data) => {
+    return new GeoJsonPinLayer({
+      data,
+      dispatch,
+      setViewState,
+      getPosition: (feature) => feature.geometry.coordinates,
+      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature, pinInfo),
+      icon: 'camera',
+      iconColor: '#ffffff',
+      clusterIconSize: 35,
+      getPinSize: () => 35,
+      pixelOffset: [-18,-18],
+      pinSize: 25,
+      onGroupClick: true,
+      onPointClick: true,
+    });
+  };
 
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
@@ -174,6 +193,7 @@ const InSituAlerts = () => {
                   hideTooltip={hideTooltip}
                   setViewState={setViewState}
                   setIsViewStateChanged={setIsViewStateChanged}
+                  getIconLayer={getIconLayer}
 
                 />
               </Col>
