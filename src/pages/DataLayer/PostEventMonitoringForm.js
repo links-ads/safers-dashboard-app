@@ -205,7 +205,7 @@ const PostEventMonitoring = ({
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                            {touched.mapSelection && getError('mapSelectionArea', errors, touched, false, true)}
+                            {touched.mapSelection && values.mapSelection!=='' && getError('mapSelectionArea', errors, touched, false, true)}
                           </FormGroup>
                         </Row>
                         <Row>
