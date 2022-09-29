@@ -33,7 +33,7 @@ const MIN_END_DATE = '2018-05-02';
 const postEventMonitoringSchema = Yup.object().shape({
   dataLayerType: Yup.array()
     .required('This field cannot be empty'),
-  requestTitle: Yup.string().optional(),
+  requestTitle: Yup.string().required('This field cannot be empty'),
   mapSelection: Yup.string()
     .typeError('Selected area must be valid Well-Known Text')
     .required('This field cannot be empty'),
@@ -157,7 +157,7 @@ const PostEventMonitoring = ({
                                 <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
                               ))}
                             </Input>
-                            {getError('dataLayerType', errors, touched, false)}
+                            {touched.dataLayerType && getError('dataLayerType', errors, touched, false)}
                           </FormGroup>
                         </Row> 
                         <Row>
@@ -173,7 +173,7 @@ const PostEventMonitoring = ({
                               value={values.requestTitle}
                               placeholder="[type request title]"
                             />
-                            {getError('requestTitle', errors, touched, false)}
+                            {touched.requestTitle && getError('requestTitle', errors, touched, false)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -204,8 +204,8 @@ const PostEventMonitoring = ({
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
-                            {getError('mapSelection', errors, touched, false)}
-                            {getError('mapSelectionArea', errors, touched, false, true)}
+                            {touched.mapSelection && getError('mapSelection', errors, touched, false)}
+                            {touched.mapSelection && getError('mapSelectionArea', errors, touched, false, true)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -226,7 +226,7 @@ const PostEventMonitoring = ({
                                   onBlur={handleBlur} 
                                   value={values.startDate}
                                 />
-                                {getError('startDate', errors, touched, false)}
+                                {touched.startDate && getError('startDate', errors, touched, false)}
                               </Col>
                               <Col>
                                 <Label for="endDate">
@@ -243,7 +243,7 @@ const PostEventMonitoring = ({
                                   onBlur={handleBlur}
                                   value={values.endDate}
                                 />
-                                {getError('endDate', errors, touched, false)}
+                                {touched.endDate && getError('endDate', errors, touched, false)}
                               </Col>
                             </Row>
                           </FormGroup>
