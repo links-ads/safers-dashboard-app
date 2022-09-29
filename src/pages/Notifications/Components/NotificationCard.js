@@ -2,13 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Badge, Card, CardBody, CardText, Col, Row } from 'reactstrap';
 import { formatDate } from '../../../store/utility';
+import { useTranslation } from 'react-i18next';
 
 const BADGETYPES = {
-  STATUS : 'status',
-  TYPE : 'type'
+  STATUS: 'status',
+  TYPE: 'type'
 }
 
 const NotificatonCard = ({ card }) => {
+
+  const { t } = useTranslation();
 
   const getBadge = (badgeType) => {
     return (
@@ -17,7 +20,7 @@ const NotificatonCard = ({ card }) => {
       </Badge>
     )
   }
-  
+
 
   return (
     <Card
@@ -28,8 +31,8 @@ const NotificatonCard = ({ card }) => {
             <Row>
               <Col>
                 <CardText className='mb-2'>
-                  { card?.type ? getBadge(BADGETYPES.TYPE) : null }
-                  { card?.status ? getBadge(BADGETYPES.STATUS) : null }
+                  {card?.type ? getBadge(BADGETYPES.TYPE) : null}
+                  {card?.status ? getBadge(BADGETYPES.STATUS) : null}
                 </CardText>
               </Col>
             </Row>
@@ -37,7 +40,12 @@ const NotificatonCard = ({ card }) => {
               <Col>
                 <Row>
                   <CardText className='card-desc'>
-                    {card.description}
+                    {card?.description}
+                  </CardText>
+                </Row>
+                <Row>
+                  <CardText className='card-desc text-capitalize'>
+                    {t('location')}: {card?.country}
                   </CardText>
                 </Row>
                 <Row className='mt-2'>
@@ -48,7 +56,7 @@ const NotificatonCard = ({ card }) => {
                   </Col>
                   <Col>
                     <CardText className='bg-danger'>
-                      <span className='float-end alert-source-text me-2 text-uppercase'>{card.source}</span>
+                      <span className='float-end alert-source-text me-2 text-uppercase'>{card?.source}</span>
                     </CardText>
                   </Col>
                 </Row>
