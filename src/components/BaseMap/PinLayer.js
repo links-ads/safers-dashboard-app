@@ -111,18 +111,11 @@ export class PinLayer extends CompositeLayer {
   }
 
   _getPinColor(feature) {
-    if (feature.properties.cluster) {
-      const expansionZoom = this._getExpansionZoom(feature);
-      
-      const isCluster = expansionZoom <= this.props.maxZoom;
-      const isGroup = expansionZoom > this.props.maxZoom;
-
-      if (isGroup) {
-        return this.props.getPinColor(feature)
-      } else if (isCluster) {
-        return [246, 190, 0, 255];
-      }
-    }
+    if (
+      feature.properties.cluster &&
+      this._getExpansionZoom(feature) <= this.props.maxZoom
+    )
+      return [246, 190, 0, 255];
     if (typeof this.props.getPinColor === 'function')
       return this.props.getPinColor(feature);
     if (isArray(this.props.pinColor)) return this.props.pinColor;
