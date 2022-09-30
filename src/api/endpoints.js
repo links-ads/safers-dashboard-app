@@ -21,8 +21,8 @@ export const endpoints = {
   },
   dataLayers: {
     getAll: '/data/layers',
-    metadata:'/data/layers/metadata/',
-    mapRequests:'/data/maprequests/',
+    metadata: '/data/layers/metadata/',
+    mapRequests: '/data/maprequests/',
   },
   eventAlerts: {
     getAll: '/events/',
@@ -54,6 +54,7 @@ export const endpoints = {
   notifications: {
     getAll: '/notifications/',
     sources: '/notifications/sources',
+    scopesRestrictions: '/notifications/scopes-restrictions'
   },
   insitu: {
     cameraList: '/cameras/',

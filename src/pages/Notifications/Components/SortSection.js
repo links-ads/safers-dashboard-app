@@ -1,13 +1,15 @@
 import React from 'react';
-import { Row, Col, Input} from 'reactstrap';
+import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
 //i18n
 import { withTranslation } from 'react-i18next'
 import { useSelector } from 'react-redux';
 
-const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, sortOrder, setSortOrder, t}) => {
+const SortSection = ({ filteredNotifications, notificationSource, setNotificationSource, notificationScopeRestriction, setNotificationScopeRestriction, sortOrder, setSortOrder, t }) => {
   const notificationSources = useSelector(state => state.notifications.sources);
-  return(
+  const notificationScopesRestrictions = useSelector(state => state.notifications.scopesRestrictions)
+
+  return (
     <>
       <hr />
       <Row className='my-2'>
@@ -24,19 +26,33 @@ const SortSection = ({ filteredNotifications, notificationSource, setNotificatio
             <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
             <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
           </Input>
-       
+
           <Input
-            id="alertSource"
+            id="notificationSource"
             className="btn-sm sort-select-input ms-3"
-            name="alertSource"
+            name="notificationSource"
             placeholder="Source"
             type="select"
             onChange={(e) => setNotificationSource(e.target.value)}
             value={notificationSource}
           >
             <option value={'all'} > {t('Source')} : {t('All')}</option>
-            {notificationSources.map((notificationSource, idx) => 
+            {notificationSources.map((notificationSource, idx) =>
               <option value={notificationSource} key={idx}>{t('Source')} : {notificationSource}</option>
+            )}
+          </Input>
+          <Input
+            id="notificationtScopeRestriction"
+            className="btn-sm sort-select-input ms-3"
+            name="notificationtScopeRestriction"
+            placeholder="Scope"
+            type="select"
+            onChange={(e) => setNotificationScopeRestriction(e.target.value)}
+            value={notificationScopeRestriction}
+          >
+            <option value={'all'} > {t('Scope')} : {t('All')}</option>
+            {notificationScopesRestrictions.map((notificationScopeRestriction, idx) =>
+              <option value={notificationScopeRestriction} key={idx}>{t('Scope')} : {notificationScopeRestriction}</option>
             )}
           </Input>
         </Col>
@@ -46,7 +62,7 @@ const SortSection = ({ filteredNotifications, notificationSource, setNotificatio
           <span className='my-auto alert-report-text'>{t('Results')} {filteredNotifications.length}</span>
         </Col>
       </Row>
-      
+
     </>
   )
 }
@@ -58,6 +74,8 @@ SortSection.propTypes = {
   setFilterdNotifications: PropTypes.func,
   notificationSource: PropTypes.string,
   setNotificationSource: PropTypes.func,
+  notificationScopeRestriction: PropTypes.string,
+  setNotificationScopeRestriction: PropTypes.func,
   sortOrder: PropTypes.string,
   setSortOrder: PropTypes.func,
   t: PropTypes.func
