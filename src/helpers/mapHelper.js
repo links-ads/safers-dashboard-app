@@ -1,7 +1,6 @@
 import { FlyToInterpolator } from 'deck.gl';
 import { PolygonLayer } from '@deck.gl/layers';
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
-import { bboxPolygon, center } from '@turf/turf';
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
@@ -15,8 +14,6 @@ const ALERT_TYPES = {
   red: ['Created', 'Doing Activity', 'Ongoing', 'Available', 'Moving', 'Taken in Charge'],
   gray: ['Notified', 'Closed', 'Expired', 'Completed', 'Off']
 };
-
-export const getCenterOfBbox = (bbox) => center(bboxPolygon(bbox));
 
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
   return {

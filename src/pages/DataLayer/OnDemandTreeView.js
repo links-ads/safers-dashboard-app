@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 import { useDispatch } from 'react-redux';
+
+import { fitBounds } from '@math.gl/web-mercator';
+
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { deleteMapRequest, getAllMapRequests } from '../../store/datalayer/action';
 import JsonFormatter from '../../components/JsonFormatter'
+import { useMap } from '../../components/BaseMap/MapContext';
 
-
-import { getCenterOfBbox } from '../../helpers/mapHelper';
 import { PolygonLayer } from 'deck.gl';
 
 const PropsPanel = (node) => {
@@ -24,6 +26,7 @@ const PropsPanel = (node) => {
 
 const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setLayers }) => {
   const dispatch = useDispatch();
+  const { deckRef } = useMap();
 
   const [itemState, setItemState] = useState({});
   const [itemPropsState, setItemPropsState] = useState({});
@@ -130,14 +133,25 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
                     })
                     setLayers(oldLayers => [...oldLayers, layer])
 
-                    const center = getCenterOfBbox(node.bbox);
-                    const newViewState = {
-                      ...viewState,
-                      longitude: center.geometry.coordinates[0],
-                      latitude: center.geometry.coordinates[1]
-                    }
+                    const viewport = deckRef.current.deck;
+                    const { width, height } = viewport;
+                    const padding = 150;
 
-                    setViewState(newViewState)
+                    const [minX, minY, maxX, maxY] = node.bbox;
+
+                    const bounds = [
+                      [minX, minY],
+                      [maxX, maxY],
+                    ];
+
+                    const newViewState = fitBounds({
+                      bounds,
+                      width,
+                      height,
+                      padding,
+                    });
+
+                    setViewState({ ...viewState, ...newViewState })
                   }} className="bx bx-map font-size-16" />
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
