@@ -1,6 +1,7 @@
 import { FlyToInterpolator } from 'deck.gl';
 import { PolygonLayer } from '@deck.gl/layers';
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
+import { fitBounds } from '@math.gl/web-mercator';
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
@@ -13,6 +14,31 @@ const DARK_GRAY = [57, 58, 58];
 const ALERT_TYPES = {
   red: ['Created', 'Doing Activity', 'Ongoing', 'Available', 'Moving', 'Taken in Charge'],
   gray: ['Notified', 'Closed', 'Expired', 'Completed', 'Off']
+};
+
+/**
+ * For the current viewport and bbox, figour out the new lat/lon/zoom
+ * to apply to the map.
+ */
+export const getBoundedViewState = (deckRef, bbox) => {
+  const viewport = deckRef.current.deck;
+  const { width, height } = viewport;
+  const padding = 150;
+
+  const [minX, minY, maxX, maxY] = bbox;
+
+  const bounds = [
+    [minX, minY],
+    [maxX, maxY],
+  ];
+
+  return fitBounds({
+    bounds,
+    width,
+    height,
+    padding,
+  });
+
 };
 
 export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInfoRef = () => { }, setViewStateChangeRef = () => { }) => {
