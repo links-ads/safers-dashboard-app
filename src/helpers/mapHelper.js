@@ -94,19 +94,18 @@ export const getAlertIconColorFromContext = (mapType, feature, selectedItem = {}
 }
 
 
-export const getAsGeoJSON = (data) => {
-  return data.map((datum) => {
-    const {
-      geometry,
-      ...properties
-    } = datum;
-    return {
-      type: 'Feature',
-      properties,
-      geometry,
-    };
-  });
-}
+export const getAsGeoJSON = (data) => data.map((datum) => {
+  if (datum.type === 'Feature') return datum;
+  const {
+    geometry,
+    ...properties
+  } = datum;
+  return {
+    type: 'Feature',
+    properties,
+    geometry,
+  };
+})
 
 export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setViewState, selectedItem = {}) => {
   const data = getAsGeoJSON(alerts);

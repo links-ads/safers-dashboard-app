@@ -268,9 +268,15 @@ const FireAlerts = ({ t }) => {
       // Prevents clicks on grouped icons
       return;
     } else if (info.picked && info.object) {
-      setSelectedAlert(info.object.id);
-      setHoverInfo(info);
+      if (info.object.properties.id !== alertId) {
+        setSelectedAlert(info.object.properties.id);
+        setHoverInfo(info);
+      } else {
+        setSelectedAlert(undefined);
+        setHoverInfo(undefined);
+      }
     } else {
+      setSelectedAlert(undefined);
       setHoverInfo(undefined);
     }
   };

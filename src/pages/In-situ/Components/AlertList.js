@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import { Row } from 'reactstrap';
-import { getViewState } from '../../../helpers/mapHelper';
+import { getViewState, getIconLayer } from '../../../helpers/mapHelper';
 import { setCurrentPage, setInSituFavoriteAlert, setPaginatedAlerts, getCamera } from '../../../store/appAction';
 import { PAGE_SIZE, SET_FAV_INSITU_ALERT_SUCCESS } from '../../../store/insitu/types';
 import Alert from './Alert';
@@ -14,6 +14,7 @@ const AlertList = ({
   alertId,
   viewState,
   setAlertId,
+  setCameraId,
   currentZoomLevel,
   isViewStateChanged,
   setViewState,
@@ -21,7 +22,6 @@ const AlertList = ({
   setHoverInfo,
   setIsViewStateChanged,
   hideTooltip,
-  getIconLayer
 }) => {
   const { paginatedAlerts, currentPage, filteredAlerts, cameraList, cameraInfo } = useSelector(state => state.inSituAlerts);
   const [selCam, setsSelCam] = useState(undefined);
@@ -60,9 +60,7 @@ const AlertList = ({
       dispatch(getCamera(selectedAlert.camera_id));
     } else {
       setAlertId(undefined);
-      if (cameraList.features) {
-        setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
-      }
+      setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
     }
   }
 
@@ -76,12 +74,14 @@ const AlertList = ({
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))));
   };
 
-  const handleSelectAlert = (id) => {
+  const handleSelectAlert = (id, cameraId) => {
     if (id === alertId) {
       setSelectedAlert(undefined);
       setHoverInfo(undefined);
+      setCameraId(undefined);
     } else {
       setSelectedAlert(id);
+      setCameraId(cameraId)
     }
   }
 
@@ -114,11 +114,11 @@ AlertList.propTypes = {
   currentZoomLevel: PropTypes.any,
   isViewStateChanged: PropTypes.any,
   setViewState: PropTypes.func,
+  setCameraId: PropTypes.func,
   setAlertId: PropTypes.func,
   setIconLayer: PropTypes.func,
   setHoverInfo: PropTypes.func,
   hideTooltip: PropTypes.func,
   setIsViewStateChanged: PropTypes.func,
-  getIconLayer: PropTypes.func
 }
 export default AlertList;

@@ -18,10 +18,9 @@ import {
   getCameraList,
   getCameraSources
 } from '../../store/appAction';
-import { getBoundingBox, getViewState } from '../../helpers/mapHelper';
+import { getBoundingBox, getViewState, getIconLayer } from '../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../store/events/types';
-import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import { getAlertIconColorFromContext } from '../../helpers/mapHelper';
+
 
 //i18n
 import { useTranslation } from 'react-i18next'
@@ -40,6 +39,7 @@ const InSituAlerts = () => {
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
+  const [cameraId, setCameraId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState(undefined);
   const [checkedStatus, setCheckedStatus] = useState([])
   const [isViewStateChanged, setIsViewStateChanged] = useState(false);
@@ -48,12 +48,6 @@ const InSituAlerts = () => {
 
   const { t } = useTranslation();
   const dispatch = useDispatch();
-
-  const selectedAlert = alerts.find(alert => alert.id === alertId);
-
-  const pinInfo = selectedAlert
-    ? { center: selectedAlert.geometry.coordinates, id: alertId }
-    : {};
 
   useEffect(() => {
     dispatch(getCameraSources());
@@ -96,9 +90,15 @@ const InSituAlerts = () => {
 
   useEffect(() => {
     if (cameraList.features) {
-      setIconLayer(getIconLayer(cameraList.features));
+      const selectedAlert = alerts.find(alert => alert.camera_id === cameraId);
+
+      const pinInfo = selectedAlert
+        ? { center: selectedAlert.geometry.coordinates, id: cameraId }
+        : {};
+    
+      setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU, 'camera', dispatch, setViewState, pinInfo));
     }
-  }, [cameraList, alertId]);
+  }, [cameraList, cameraId]);
 
   useEffect(() => {
     if (!viewState) {
@@ -116,33 +116,34 @@ const InSituAlerts = () => {
     dispatch(setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))))
   }, [filteredAlerts]);
 
-  const getIconLayer = (data) => {
-    return new GeoJsonPinLayer({
-      data,
-      dispatch,
-      setViewState,
-      getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature, pinInfo),
-      icon: 'camera',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18,-18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
-
   const handleResetAOI = useCallback(() => {
     setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
   }, []);
 
+  const setMapData = (info = undefined, id = undefined) => {
+    setHoverInfo(info);
+    setCameraId(id);
+  }
+
   const showTooltip = info => {
-    if (info) {
-      setHoverInfo(info);
+    if (info.object) {
+      if (info.objects) {
+        const ids = info.objects.map(f => f.properties.id);
+        if (ids.includes(cameraId)) {
+          setMapData();
+        } else {
+          setMapData(info, ids[0]);
+        }
+      } else {
+        const id = info.object.properties.id;
+        if (cameraId === id) {
+          setMapData();
+        } else {
+          setMapData(info, id);
+        }
+      }
     } else {
-      setHoverInfo(undefined);
+      setMapData();
     }
   };
 
@@ -188,13 +189,12 @@ const InSituAlerts = () => {
                   isViewStateChanged={isViewStateChanged}
                   alertId={alertId}
                   setAlertId={setAlertId}
+                  setCameraId={setCameraId}
                   setIconLayer={setIconLayer}
                   setHoverInfo={setHoverInfo}
                   hideTooltip={hideTooltip}
                   setViewState={setViewState}
                   setIsViewStateChanged={setIsViewStateChanged}
-                  getIconLayer={getIconLayer}
-
                 />
               </Col>
             </Row>
