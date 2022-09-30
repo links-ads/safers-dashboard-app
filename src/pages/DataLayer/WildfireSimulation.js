@@ -18,6 +18,8 @@ import {
 } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css'
 import moment from 'moment';
+import { checkWKTFormate } from '../../store/utility';
+
 
 // 40,000 km2 = 40 million m2
 const MAX_GEOMETRY_AREA = {
@@ -75,6 +77,8 @@ const WildfireSimulationSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   mapSelectionArea: Yup.boolean()
     .oneOf([true], `Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
+  mapSelectionValidFormat: Yup.boolean()
+    .oneOf([true], 'Geometry needs to be valid WKT'),
   ignitionDateTime: Yup.date()
     .typeError('This field must be a valid date selection')
     .required('This field cannot be empty'),
@@ -192,7 +196,8 @@ const WildfireSimulation = ({
               simulationDescription: '',
               probabilityRange: 0.75,
               mapSelection: '',
-              mapSelectionArea: true,
+              mapSelectionArea: undefined,
+              mapSelectionValidFormat: undefined,
               simulationTimeLimit: 1,
               ignitionDateTime: null,
               simulationFireSpotting: false,
@@ -364,12 +369,12 @@ const WildfireSimulation = ({
                           className={errors.mapSelection ? 'is-invalid' : ''}
                           onChange={({ target: { value } }) => {
                             setFieldValue('mapSelection', value);
-
                             if (!value) {
                               setFieldValue('mapSelectionArea', true);
                             } else {
+                              const geometryIsValid = checkWKTFormate(value);
+                              setFieldValue('mapSelectionValidFormat', geometryIsValid);
                               const features = wkt.parse(value);
-
                               if (features) {
                                 const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
                                 setFieldValue('mapSelectionArea', areaIsValid);
@@ -381,7 +386,8 @@ const WildfireSimulation = ({
                           placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                        {values.mapSelectionArea===false ? getError('mapSelectionArea', errors, touched, false, true) : null}
+                        {values.mapSelectionArea===false && values.mapSelectionValidFormat===true ? getError('mapSelectionArea', errors, touched, false, true) : null}
+                        {values.mapSelectionValidFormat===false && values.mapSelection!=='' ? getError('mapSelectionValidFormat', errors, touched, false, true) : null}
                       </FormGroup>
                     </Row>
 
