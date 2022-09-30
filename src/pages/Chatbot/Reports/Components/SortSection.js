@@ -11,17 +11,18 @@ import { withTranslation } from 'react-i18next';
 
 const SortSection = ({ 
   t, 
+  boundingBox,
+  mapFilter
 }) => {
   const { allReports: OrgReportList, sortOrder, category, missionId } = useSelector(state => state.reports);
   const [selectOptions, setSelectOptions] = useState([]);
   const dispatch = useDispatch();
 
-
   useEffect(() => {
     if(OrgReportList.length){
       applyFilter(sortOrder, category, missionId);
     }
-  }, [OrgReportList])
+  }, [OrgReportList, boundingBox])
 
   const applyFilter = (sortOrder, category, missionId) => {
     const filters = { 
@@ -31,7 +32,7 @@ const SortSection = ({
   
     const sort = { fieldName: 'timestamp', order: sortOrder };
     const actFiltered = getFilteredRec(OrgReportList, filters, sort);
-    dispatch(setFilterdReports(actFiltered, {missionId, category, sortOrder}));
+    dispatch(setFilterdReports({data:actFiltered, filterParams:{missionId, category, sortOrder, boundingBox, mapFilter}}));
   }
 
   //fetch data to populate 'Categories' select
@@ -91,13 +92,14 @@ const SortSection = ({
             name="category"
             type="select"
             onChange={({ target: { value } }) => 
-              applyFilter(sortOrder, value.toLowerCase(), missionId)
+              applyFilter(sortOrder, value, missionId)
             }
             data-testid='reportAlertCategory'
+            value={category}
           >
             <option value={''}>{t('Category')}: All</option>
             {selectOptions.map((option) => (
-              <option key={option} value={option}>{t('Category')}: {option}</option>
+              <option key={option.toLowerCase()} value={option}>{t('Category')}: {option}</option>
             ))}
           </Input>
         </Col>
@@ -112,7 +114,9 @@ SortSection.propTypes = {
   setCategory: PropTypes.func,
   t: PropTypes.func,
   missionId: PropTypes.string,
-  setMissionId: PropTypes.func
+  setMissionId: PropTypes.func,
+  boundingBox: PropTypes.string,
+  mapFilter: PropTypes.object
 }
 
 export default withTranslation(['common'])(SortSection);

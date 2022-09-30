@@ -10,7 +10,8 @@ const initialState = {
   reportDetail: null,
   category : '',
   sortOrder: 'desc',
-  missionId: ''
+  missionId: '',
+  mapFilter: {midPoint: [], currentZoomLevel: null}
 };
 
 const reportReducer = (state = initialState, action) => {
@@ -52,12 +53,9 @@ const getReportsSuccess = (state, action) => {
 }
 
 const setFilters = (state, action) => {
-  const { category, sortOrder, missionId  } = action.filterParams;
   const updatedState = {
-    filteredReports: action.payload,
-    category,
-    sortOrder,
-    missionId,
+    filteredReports: action.payload.data,
+    ...action.payload.filterParams,
     error: false,
   }
   return updateObject(state, updatedState);
