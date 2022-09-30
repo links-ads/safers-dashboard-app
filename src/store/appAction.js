@@ -79,6 +79,7 @@ export {
 export {
   getAllNotifications,
   getAllNotificationSources,
+  getAllNotificationScopesRestrictions,
   setNotificationParams,
   resetNotificationApiParams,
   setNewNotificationState
