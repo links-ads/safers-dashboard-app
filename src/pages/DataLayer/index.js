@@ -238,7 +238,8 @@ const DataLayerDashboard = () => {
           position: 'absolute',
           zIndex: 1,
           bottom: '0px',
-          width: '100%',
+          width: '70%',
+          margin: '0 15%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
