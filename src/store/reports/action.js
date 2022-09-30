@@ -23,14 +23,15 @@ const getReportsFail = (error) => {
   };
 };
 
-export const setFilterdReports = (payload) => async (dispatch) => {
-  return dispatch(setFilters(payload));
+export const setFilterdReports = (payload, filterParams) => async (dispatch) => {
+  return dispatch(setFilters(payload, filterParams));
 };
 
-const setFilters = (payload) => {
+const setFilters = (payload, filterParams) => {
   return {
     type: actionTypes.SET_REPORT_FILTERS,
-    payload: payload
+    payload,
+    filterParams
   };
 }
 

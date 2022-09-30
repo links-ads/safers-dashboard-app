@@ -1,12 +1,12 @@
 import _ from 'lodash';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
 import PaginationWrapper from '../../../../components/Pagination';
-import { setFavorite, setFilterdReports } from '../../../../store/reports/action';
-import { getFilteredRec } from '../../filter';
+import { setFavorite } from '../../../../store/reports/action';
+
 import Report from './Report';
 
 import { MAP_TYPES } from '../../../../constants/common';
@@ -17,27 +17,13 @@ const ReportList = ({
   setViewState, 
   setReportId, 
   setIconLayer,
-  missionId,
-  category,
-  sortOrder
 }) => {
-  const { allReports: OrgReportList, filteredReports } = useSelector(state => state.reports);
+  const { filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
 
   const dispatch = useDispatch();
 
   const allReports = filteredReports ?? [];
-
-  useEffect(() => {
-    const filters = { 
-      categories: category,
-      mission_id:  missionId
-    };
-  
-    const sort = { fieldName: 'timestamp', order: sortOrder };
-    const actFiltered = getFilteredRec(OrgReportList, filters, sort);
-    dispatch(setFilterdReports(actFiltered));
-  }, [category, missionId, sortOrder, OrgReportList])
 
   const setFavoriteFlag = (id) => {
     let selectedReport = _.find(pageData, { id });
