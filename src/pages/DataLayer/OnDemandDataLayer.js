@@ -28,6 +28,7 @@ const OnDemandDataLayer = ({
   getLegend,
   bitmapLayer,
   searchDataTree,
+  setViewState,
   viewState,
   currentLayer,
   showLegend,
@@ -35,7 +36,8 @@ const OnDemandDataLayer = ({
   dispatch
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [searchedMapRequests, setSearchedMapRequests] = useState(null);  
+  const [searchedMapRequests, setSearchedMapRequests] = useState(null);
+  const [layers, setLayers] = useState([new BitmapLayer(bitmapLayer)])
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
@@ -204,6 +206,9 @@ const OnDemandDataLayer = ({
                   data={searchedMapRequests}
                   setCurrentLayer={setCurrentLayer}
                   t={t}
+                  setViewState={setViewState}
+                  viewState={viewState}
+                  setLayers={setLayers}
                 />
               </SimpleBar>
             </Col>
@@ -228,7 +233,7 @@ const OnDemandDataLayer = ({
               featureOnly={true}
             >
               <BaseMap
-                layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
+                layers={[...layers, tempLayerData]}
                 initialViewState={viewState}
                 widgets={[]}
                 screenControlPosition='top-right'
@@ -261,6 +266,7 @@ OnDemandDataLayer.propTypes = {
   getSlider: PropTypes.any,
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
+  setViewState: PropTypes.func,
   viewState: PropTypes.any,
   searchDataTree: PropTypes.func,
   handleResetAOI: PropTypes.any,

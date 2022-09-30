@@ -7,6 +7,10 @@ import { fetchEndpoint } from '../../helpers/apiHelper';
 import { deleteMapRequest, getAllMapRequests } from '../../store/datalayer/action';
 import JsonFormatter from '../../components/JsonFormatter'
 
+
+import { getCenterOfBbox } from '../../helpers/mapHelper';
+import { PolygonLayer } from 'deck.gl';
+
 const PropsPanel = (node) => {
   const node2=node.node;
   if (!node2.parameters) return null;
@@ -18,7 +22,7 @@ const PropsPanel = (node) => {
   );
 };
 
-const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
+const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setLayers }) => {
   const dispatch = useDispatch();
 
   const [itemState, setItemState] = useState({});
@@ -107,10 +111,33 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
                   &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
-                    console.log('WOO HOO HERE: ', node);
-                    // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
-                    // setMapRequestToDelete(node)
-                    // setIsDeleteMapRequestDialogOpen(!isDeleteMapRequestDialogOpen)
+
+                    const { geometry, ...rest } = node;
+                    const feature = {
+                      type: 'Feature',
+                      geometry,
+                      properties: {
+                        ...rest,
+                      }
+                    };
+
+                    const layer = new PolygonLayer({
+                      id: 'request-bbox',
+                      data: [feature],
+                      getPolygon: d => d.geometry.coordinates,
+                      getLineColor: [60, 140, 0],
+                      getFillColor: [80, 80, 80],
+                    })
+                    setLayers(oldLayers => [...oldLayers, layer])
+
+                    const center = getCenterOfBbox(node.bbox);
+                    const newViewState = {
+                      ...viewState,
+                      longitude: center.geometry.coordinates[0],
+                      latitude: center.geometry.coordinates[1]
+                    }
+
+                    setViewState(newViewState)
                   }} className="bx bx-map font-size-16" />
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
@@ -209,6 +236,9 @@ OnDemandTreeView.propTypes = {
   setCurrentLayer: PropTypes.func,
   node: PropTypes.any,
   t: PropTypes.func,
+  setViewState: PropTypes.func,
+  viewState: PropTypes.any,
+  setLayers: PropTypes.func,
 }
 
 
