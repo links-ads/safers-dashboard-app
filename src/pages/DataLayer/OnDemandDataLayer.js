@@ -37,7 +37,7 @@ const OnDemandDataLayer = ({
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [searchedMapRequests, setSearchedMapRequests] = useState(null);
-  const [layers, setLayers] = useState([new BitmapLayer(bitmapLayer)])
+  const [bboxLayer, setBboxLayer] = useState([])
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
@@ -208,7 +208,7 @@ const OnDemandDataLayer = ({
                   t={t}
                   setViewState={setViewState}
                   viewState={viewState}
-                  setLayers={setLayers}
+                  setBboxLayer={setBboxLayer}
                 />
               </SimpleBar>
             </Col>
@@ -233,7 +233,7 @@ const OnDemandDataLayer = ({
               featureOnly={true}
             >
               <BaseMap
-                layers={[...layers, tempLayerData]}
+                layers={[new BitmapLayer(bitmapLayer), bboxLayer, tempLayerData]}
                 initialViewState={viewState}
                 widgets={[]}
                 screenControlPosition='top-right'

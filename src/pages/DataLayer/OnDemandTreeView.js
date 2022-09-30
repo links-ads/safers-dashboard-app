@@ -3,8 +3,7 @@ import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 import { useDispatch } from 'react-redux';
-
-import { fitBounds } from '@math.gl/web-mercator';
+import _ from 'lodash';
 
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { deleteMapRequest, getAllMapRequests } from '../../store/datalayer/action';
@@ -12,6 +11,7 @@ import JsonFormatter from '../../components/JsonFormatter'
 import { useMap } from '../../components/BaseMap/MapContext';
 
 import { PolygonLayer } from 'deck.gl';
+import { getBoundedViewState } from '../../helpers/mapHelper';
 
 const PropsPanel = (node) => {
   const node2=node.node;
@@ -24,19 +24,32 @@ const PropsPanel = (node) => {
   );
 };
 
-const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setLayers }) => {
+const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setBboxLayer }) => {
   const dispatch = useDispatch();
   const { deckRef } = useMap();
 
   const [itemState, setItemState] = useState({});
   const [itemPropsState, setItemPropsState] = useState({});
-  const [selectedLayer, setSelectedLayer] = useState({});
+  const [selectedLayer, setSelectedLayer] = useState(null);
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
   const [isDeleteMapRequestDialogOpen, setIsDeleteMapRequestDialogOpen] = useState(false);
   const [mapRequestToDelete, setMapRequestToDelete] = useState(null);
   
   useEffect(() => {
-    setCurrentLayer(selectedLayer);
+    setCurrentLayer(() => {
+      // Strip off anything after the final period. e.g. 2.2.1 -> 2.2
+      const key = selectedLayer?.key.replace(/([.])(?!.*[.]).*$/, '');
+      // Flatten all the child nodes and find the one matching the key.
+      const node = _(data).map('children').flatten().find({ key })
+      // If a node was found, get it's bbox and pan/zoom the map to that
+      // location.
+      if (node) {
+        const newViewState = getBoundedViewState(deckRef, node?.bbox);
+        setViewState({ ...viewState, ...newViewState });
+      }
+
+      return selectedLayer;
+    });
   }, [selectedLayer]);
 
   const toggleExpandCollapse = id => {
@@ -71,7 +84,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
         <>
           <ListGroupItem
             key={index + id}
-            className={`dl-item ${node.children && itemState[id] || selectedLayer.title == node.title ? 'selected' : ''} mb-2`}
+            className={`dl-item ${node.children && itemState[id] || selectedLayer?.title == node.title ? 'selected' : ''} mb-2`}
             onClick={() => {
               return node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
             }}
@@ -130,26 +143,21 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
                       getPolygon: d => d.geometry.coordinates,
                       getLineColor: [60, 140, 0],
                       getFillColor: [80, 80, 80],
-                    })
-                    setLayers(oldLayers => [...oldLayers, layer])
-
-                    const viewport = deckRef.current.deck;
-                    const { width, height } = viewport;
-                    const padding = 150;
-
-                    const [minX, minY, maxX, maxY] = node.bbox;
-
-                    const bounds = [
-                      [minX, minY],
-                      [maxX, maxY],
-                    ];
-
-                    const newViewState = fitBounds({
-                      bounds,
-                      width,
-                      height,
-                      padding,
                     });
+
+                    setBboxLayer(oldLayers => {
+                      if (oldLayers) {
+                        const isExistingLayer = oldLayers.find(layer => layer.id === layer.id);
+
+                        if (!isExistingLayer) {
+                          return [...oldLayers, layer];
+                        }
+                      } else {
+                        return [layer]
+                      }
+                    });
+
+                    const newViewState = getBoundedViewState(deckRef, node.bbox);
 
                     setViewState({ ...viewState, ...newViewState })
                   }} className="bx bx-map font-size-16" />
@@ -252,7 +260,7 @@ OnDemandTreeView.propTypes = {
   t: PropTypes.func,
   setViewState: PropTypes.func,
   viewState: PropTypes.any,
-  setLayers: PropTypes.func,
+  setBboxLayer: PropTypes.func,
 }
 
 
