@@ -128,19 +128,13 @@ const InSituAlerts = () => {
   const showTooltip = info => {
     if (info.object) {
       if (info.objects) {
+        // if group icon
         const ids = info.objects.map(f => f.properties.id);
-        if (ids.includes(cameraId)) {
-          setMapData();
-        } else {
-          setMapData(info, ids[0]);
-        }
+        ids.includes(cameraId) ? setMapData() : setMapData(info, ids[0])
       } else {
+        // if single icon
         const id = info.object.properties.id;
-        if (cameraId === id) {
-          setMapData();
-        } else {
-          setMapData(info, id);
-        }
+        cameraId === id ? setMapData() : setMapData(info, id) 
       }
     } else {
       setMapData();
