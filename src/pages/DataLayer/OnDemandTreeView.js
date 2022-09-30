@@ -107,6 +107,13 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
                   &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
+                    console.log('WOO HOO HERE: ', node);
+                    // setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+                    // setMapRequestToDelete(node)
+                    // setIsDeleteMapRequestDialogOpen(!isDeleteMapRequestDialogOpen)
+                  }} className="bx bx-map font-size-16" />
+                  &nbsp;<i onClick={async (event)=> {
+                    event.stopPropagation();
                     setMapRequestToDelete(node)
                     setIsDeleteMapRequestDialogOpen(!isDeleteMapRequestDialogOpen)
                   }} className="bx bx-trash font-size-16" />
