@@ -372,7 +372,6 @@ const WildfireSimulation = ({
 
                               if (features) {
                                 const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-
                                 setFieldValue('mapSelectionArea', areaIsValid);
                               }
                             }
@@ -382,7 +381,7 @@ const WildfireSimulation = ({
                           placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                        {touched.mapSelection && getError('mapSelectionArea', errors, touched, false, true)}
+                        {values.mapSelectionArea===false ? getError('mapSelectionArea', errors, touched, false, true) : null}
                       </FormGroup>
                     </Row>
 

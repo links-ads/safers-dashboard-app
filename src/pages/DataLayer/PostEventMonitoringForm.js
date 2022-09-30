@@ -194,9 +194,7 @@ const PostEventMonitoring = ({
                                   setFieldValue('mapSelectionArea', true);
                                 } else {
                                   const features = wkt.parse(value);
-  
                                   const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-  
                                   setFieldValue('mapSelectionArea', areaIsValid);
                                 }
                               }}
@@ -205,7 +203,7 @@ const PostEventMonitoring = ({
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                            {touched.mapSelection && values.mapSelection!=='' && getError('mapSelectionArea', errors, touched, false, true)}
+                            {values.mapSelectionArea===false && values.mapSelection!=='' ? getError('mapSelectionArea', errors, touched, false, true) : null}
                           </FormGroup>
                         </Row>
                         <Row>
