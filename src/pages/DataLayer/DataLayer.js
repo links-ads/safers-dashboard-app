@@ -46,6 +46,7 @@ const DataLayer = ({
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
+  const [currentViewState, setCurrentViewState] = useState(viewState)
 
 
   // places global data layers into local state, 
@@ -95,6 +96,7 @@ const DataLayer = ({
           setInformation={setInformation}
           dispatch={dispatch}
           menuId={'DataLayerMapMenu'}
+          currentViewState={currentViewState}
         >
           <BaseMap
             layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
@@ -102,6 +104,7 @@ const DataLayer = ({
             widgets={[]}
             screenControlPosition='top-right'
             navControlPosition='bottom-right'
+            onViewStateChange={(data)=>{setCurrentViewState(data)}}
           />
         </DataLayerInformation>        
         {getSlider()}
