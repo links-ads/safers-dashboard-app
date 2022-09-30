@@ -56,16 +56,20 @@ const EventAlerts = ({ t }) => {
   const getIconLayer = (alerts, selectedAlert={}) => {
     const data = alerts.map((alert) => {
       const {
-        geometry: { features },
+        center,
+        id, 
         ...properties
       } = alert;
       return {
         type: 'Feature',
         properties: {
+          id,
           ...properties,
-          ...features[0].properties,
         },
-        geometry: features[0].geometry,
+        geometry: {
+          type: 'Point',
+          coordinates: center
+        },
       };
     });
 
