@@ -371,8 +371,8 @@ const WildfireSimulation = ({
                             if (!value) {
                               setFieldValue('isMapAreaValid', true);
                             } else {
-                              const geometryIsValid = isWKTValid(value);
-                              setFieldValue('isMapAreaValidWKT', geometryIsValid);
+                              const isGeometryValid = isWKTValid(value);
+                              setFieldValue('isMapAreaValidWKT', isGeometryValid);
                               const features = wkt.parse(value);
                               if (features) {
                                 const isAreaValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;

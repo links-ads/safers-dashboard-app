@@ -107,15 +107,14 @@ const FireAndBurnedArea = ({
     {id: 36001, name:'Burned area delineation map'}
   ];
 
-  const checkRasterSizeWithinLimits = (features, spatial_resolution) => {
+  const isRasterSizeWithinLimits = (features, spatial_resolution) => {
     // check to make sure that raster is never more than MAX_RASTER_SIZE by MAX_RASTER_SIZE
     const MAX_RASTER_SIZE = 15000;
     if (features) {
       // we get different shapes if we draw on map or change resolution
       const polygon = features?.geometry ? features.geometry : features;
-      // get Bounding box as that's what affects raster size, not the polygon area
-      const bboxExtents = bbox(polygon);
-      const bboxArea = getFeatureArea(bboxPolygon(bboxExtents));
+      // use Bounding box as that's what affects raster size, not the polygon area
+      const bboxArea = getFeatureArea(bboxPolygon(bbox(polygon)));
       const maxValidArea = Math.pow(spatial_resolution * MAX_RASTER_SIZE,2.0);
       // Keeping these commented out as they're really useful for troubleshooting
       //console.log(`max valid area at ${spatial_resolution} is ${maxValidArea/1000000.0}km^2, selection is ${bboxArea/1000000}km^2`)
@@ -239,11 +238,11 @@ const FireAndBurnedArea = ({
                                 if (!value) {
                                   setFieldValue('isMapAreaValid', true);
                                 } else {
-                                  const geometryIsValid = isWKTValid(value);
-                                  setFieldValue('isMapAreaValidWKT', geometryIsValid);
+                                  const isGeometryValid = isWKTValid(value);
+                                  setFieldValue('isMapAreaValidWKT', isGeometryValid);
                                   const features = wkt.parse(value);
                                   if (features) {
-                                    const isAreaValid = checkRasterSizeWithinLimits(features, values.resolution);
+                                    const isAreaValid = isRasterSizeWithinLimits(features, values.resolution);
                                     setFieldValue('isMapAreaValid', isAreaValid);
                                     setFieldValue('isMapAreaValidWKT', true);
                                   }
@@ -347,7 +346,7 @@ const FireAndBurnedArea = ({
                                     const parsedValue = parseInt(value); 
                                     setFieldValue('resolution', parsedValue);
                                     const features = wkt.parse(values.mapSelection);
-                                    const isAreaValid = checkRasterSizeWithinLimits(features, parsedValue,true);
+                                    const isAreaValid = isRasterSizeWithinLimits(features, parsedValue,true);
                                     setFieldValue('isMapAreaValid', isAreaValid);
                                     setFieldValue('isMapAreaValidWKT', true);
                                   }}
@@ -396,7 +395,7 @@ const FireAndBurnedArea = ({
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}
                           handleAreaValidation={feature => {
-                            const isAreaValid = checkRasterSizeWithinLimits(feature, values.resolution);
+                            const isAreaValid = isRasterSizeWithinLimits(feature, values.resolution);
                             return isAreaValid;
                           }}
                         />

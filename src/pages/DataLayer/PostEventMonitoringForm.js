@@ -198,8 +198,8 @@ const PostEventMonitoring = ({
                                   setFieldValue('isMapAreaValid', true);
                                 } else {
                                   const features = wkt.parse(value);
-                                  const geometryIsValid = isWKTValid(value);
-                                  setFieldValue('isMapAreaValidWKT', geometryIsValid);
+                                  const isGeometryValid = isWKTValid(value);
+                                  setFieldValue('isMapAreaValidWKT', isGeometryValid);
                                   const isAreaValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
                                   setFieldValue('isMapAreaValid', isAreaValid);
                                 }
