@@ -10,7 +10,7 @@ const initialState = {
   resetPswRes: null,
   resetPswError: null,
   errorSignIn: false,
-  tokenExpiredIn: null,
+  tokenExpiresIn: null,
   tokenUpdatedLast: null
   //loading: false
 };
@@ -37,7 +37,7 @@ const ingredientsReducer = (state = initialState, action) => {
 
 const refresTokenSuccess = (state, action) => {
   const updatedState = {
-    tokenExpiredIn: action.payload.expires_in,
+    tokenExpiresIn: action.payload.expires_in,
     tokenUpdatedLast: Date.now(),
     error: false,
   }
@@ -51,6 +51,7 @@ const refresTokenFail = (state, action) => {
 const signInSuccess = (state, action) => {
   const updatedState = {
     user: action.payload,
+    tokenExpiresIn: action.payload.oauth2 ? action.payload.oauth2.expires_in : null,
     isLoggedIn: true,
     error: false,
   }

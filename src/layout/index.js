@@ -12,10 +12,10 @@ const Layout = ({leftSideBarType, changeSidebarType, children}) => {
   const MILLISECONDS = 1000;
   const dispatch = useDispatch();
   const [isMobile] = useState(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
-  const { tokenExpiredIn, tokenUpdatedLast, user } = useSelector(state => state.auth);
+  const { tokenExpiresIn, tokenUpdatedLast } = useSelector(state => state.auth);
 
   useEffect(() => {
-    const interval_val = tokenExpiredIn || user.oauth2.expires_in ;
+    const interval_val = tokenExpiresIn;
     if(interval_val) {
       const interval = interval_val - 3; //reduce 3 seconds so the request is made before expiry 
       const timer = setTimeout(() => {
@@ -23,7 +23,7 @@ const Layout = ({leftSideBarType, changeSidebarType, children}) => {
       }, interval * MILLISECONDS);
       return () => clearTimeout(timer);
     }
-  }, [tokenExpiredIn, tokenUpdatedLast]);
+  }, [tokenExpiresIn, tokenUpdatedLast]);
 
   const toggleMenuCallback = () => {
     if (leftSideBarType === 'default') {

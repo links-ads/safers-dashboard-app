@@ -207,7 +207,6 @@ export const refreshOAuthToken = () => async (dispatch) => {
 };
 
 export const refreshTokenSuccess = (res) => {
-  console.log('ref res', res)
   return {
     type: actionTypes.SIGN_UP_OAUTH2_REFRESH_SUCCESS,
     payload: res
