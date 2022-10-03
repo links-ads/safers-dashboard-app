@@ -211,8 +211,6 @@ const WildfireSimulation = ({
             validationSchema={WildfireSimulationSchema}
             onSubmit={onSubmit}
             id="wildfireSimulationForm"
-            validateOnChange={false}
-            validateOnBlur={true}
           >
             {({
               values,
@@ -378,6 +376,7 @@ const WildfireSimulation = ({
                               if (features) {
                                 const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
                                 setFieldValue('mapSelectionArea', areaIsValid);
+                                setFieldValue('mapSelectionValidFormat', true);
                               }
                             }
                           }}
@@ -386,7 +385,7 @@ const WildfireSimulation = ({
                           placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                        {values.mapSelectionArea===false && values.mapSelectionValidFormat===true ? getError('mapSelectionArea', errors, touched, false, true) : null}
+                        {values.mapSelectionArea===false ? getError('mapSelectionArea', errors, touched, false, true) : null}
                         {values.mapSelectionValidFormat===false && values.mapSelection!=='' ? getError('mapSelectionValidFormat', errors, touched, false, true) : null}
                       </FormGroup>
                     </Row>

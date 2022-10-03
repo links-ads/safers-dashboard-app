@@ -192,7 +192,6 @@ const PostEventMonitoring = ({
                               className={errors.mapSelection ? 'is-invalid' : ''}
                               onChange={({ target: { value } }) => {
                                 setFieldValue('mapSelection', value);
-
                                 if (!value) {
                                   setFieldValue('mapSelectionArea', true);
                                 } else {
