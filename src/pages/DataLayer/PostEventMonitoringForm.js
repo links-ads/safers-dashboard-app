@@ -17,6 +17,7 @@ import {
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
+import { checkWKTFormate } from '../../store/utility';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {
@@ -39,6 +40,8 @@ const postEventMonitoringSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   mapSelectionArea: Yup.boolean()
     .oneOf([true], `Selected Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
+  mapSelectionValidFormat: Yup.boolean()
+    .oneOf([true], 'Geometry needs to be valid WKT'),
   startDate: Yup.date()
     .typeError('Must be valid date selection')
     .required('This field cannot be empty')
@@ -194,6 +197,8 @@ const PostEventMonitoring = ({
                                   setFieldValue('mapSelectionArea', true);
                                 } else {
                                   const features = wkt.parse(value);
+                                  const geometryIsValid = checkWKTFormate(value);
+                                  setFieldValue('mapSelectionValidFormat', geometryIsValid);
                                   const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
                                   setFieldValue('mapSelectionArea', areaIsValid);
                                 }
@@ -202,8 +207,11 @@ const PostEventMonitoring = ({
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
+                            {/* {touched.mapSelection && getError('mapSelection', errors, touched, false)}
+                            {values.mapSelectionArea===false && values.mapSelection!=='' ? getError('mapSelectionArea', errors, touched, false, true) : null} */}
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                            {values.mapSelectionArea===false && values.mapSelection!=='' ? getError('mapSelectionArea', errors, touched, false, true) : null}
+                            {values.mapSelectionArea===false ? getError('mapSelectionArea', errors, touched, false, true) : null}
+                            {values.mapSelectionValidFormat===false && values.mapSelection!=='' ? getError('mapSelectionValidFormat', errors, touched, false, true) : null}
                           </FormGroup>
                         </Row>
                         <Row>
