@@ -10,6 +10,8 @@ const initialState = {
   resetPswRes: null,
   resetPswError: null,
   errorSignIn: false,
+  tokenExpiredIn: null,
+  tokenUpdatedLast: null
   //loading: false
 };
 
@@ -21,6 +23,8 @@ const ingredientsReducer = (state = initialState, action) => {
   case actionTypes.SIGN_UP_FAIL: return signUpFail(state, action);
   case actionTypes.SIGN_UP_OAUTH2_SUCCESS: return signUpOauth2Success(state, action);  
   case actionTypes.SIGN_UP_OAUTH2_FAIL: return signUpOauth2Fail(state, action);
+  case actionTypes.SIGN_UP_OAUTH2_REFRESH_SUCCESS: return refresTokenSuccess(state, action);  
+  case actionTypes.SIGN_UP_OAUTH2_REFRESH_FAIL: return refresTokenFail(state, action);
   case actionTypes.FORGOT_PASSWORD_SUCCESS: return reqResetPswSuccess(state, action);
   case actionTypes.FORGOT_PASSWORD_FAIL: return reqResetPswFail(state, action);
   case actionTypes.RESET_PASSWORD_SUCCESS: return resetPswSuccess(state, action);
@@ -30,6 +34,19 @@ const ingredientsReducer = (state = initialState, action) => {
     return state;
   }
 };
+
+const refresTokenSuccess = (state, action) => {
+  const updatedState = {
+    tokenExpiredIn: action.payload.expires_in,
+    tokenUpdatedLast: Date.now(),
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
+const refresTokenFail = (state, action) => {
+  return updateObject(state, { refreshTokenErr: action.payload });
+}
 
 const signInSuccess = (state, action) => {
   const updatedState = {

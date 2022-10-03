@@ -6,7 +6,8 @@ export {
   resetPsw,
   isRemembered,
   signInOauth2,
-  signUpOauth2
+  signUpOauth2,
+  refreshOAuthToken
 } from './authentication/action';
 export {
   setDefaultAoi,
