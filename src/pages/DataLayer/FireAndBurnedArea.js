@@ -343,6 +343,7 @@ const FireAndBurnedArea = ({
                                     errors.resolution ? 'is-invalid' : ''
                                   }
                                   onChange={({ target: { value } }) => {
+                                    // NB not called if map is used, only if paste/type into field
                                     const parsedValue = parseInt(value); 
                                     setFieldValue('resolution', parsedValue);
                                     const features = wkt.parse(values.mapSelection);
@@ -386,8 +387,11 @@ const FireAndBurnedArea = ({
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection 
                           setCoordinates={(wktConversion, areaIsValid) => {
+                            // called if map is used to draw polygon
+                            // we asssume it's valid WKT
                             setFieldValue('mapSelection', wktConversion);
                             setFieldValue('mapSelectionArea', areaIsValid);
+                            setFieldValue('mapSelectionValidFormat', true);
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}

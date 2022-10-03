@@ -191,6 +191,7 @@ const PostEventMonitoring = ({
                               rows="5"
                               className={errors.mapSelection ? 'is-invalid' : ''}
                               onChange={({ target: { value } }) => {
+                                // NB not called if map is used, only if paste/type into field
                                 setFieldValue('mapSelection', value);
                                 if (!value) {
                                   setFieldValue('mapSelectionArea', true);
@@ -278,8 +279,11 @@ const PostEventMonitoring = ({
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection
                           setCoordinates={(wktConversion, areaIsValid) => {
+                            // called if map is used to draw polygon
+                            // we asssume it's valid WKT
                             setFieldValue('mapSelection', wktConversion);
                             setFieldValue('mapSelectionArea', areaIsValid);
+                            setFieldValue('mapSelectionValidFormat', true);
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}
