@@ -128,21 +128,18 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
 
-                    const { geometry, ...rest } = node;
-                    const feature = {
-                      type: 'Feature',
-                      geometry,
-                      properties: {
-                        ...rest,
-                      }
-                    };
+                    // It's possible that there can be multiple AOI polygons,
+                    // so I have re-coded this to extract the feature collection
+                    // and for each feature, create a polygon to display on the
+                    // map
+                    const featureCollection = node.geometry_features;
 
-                    const layer = new PolygonLayer({
+                    const aoisLayer = new PolygonLayer({
                       id: 'request-bbox',
-                      data: [feature],
+                      data: featureCollection.features,
                       getPolygon: d => d.geometry.coordinates,
                       getLineColor: [60, 140, 0],
-                      getFillColor: [80, 80, 80],
+                      getFillColor: [80, 80, 80, 70],
                     });
 
                     setBboxLayer(oldLayers => {
@@ -150,10 +147,10 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
                         const isExistingLayer = oldLayers.find(layer => layer.id === layer.id);
 
                         if (!isExistingLayer) {
-                          return [...oldLayers, layer];
+                          return [...oldLayers, aoisLayer];
                         }
                       } else {
-                        return [layer]
+                        return [aoisLayer]
                       }
                     });
 
