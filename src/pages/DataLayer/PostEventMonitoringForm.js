@@ -207,8 +207,6 @@ const PostEventMonitoring = ({
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
-                            {/* {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                            {values.mapSelectionArea===false && values.mapSelection!=='' ? getError('mapSelectionArea', errors, touched, false, true) : null} */}
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
                             {values.mapSelectionArea===false ? getError('mapSelectionArea', errors, touched, false, true) : null}
                             {values.mapSelectionValidFormat===false && values.mapSelection!=='' ? getError('mapSelectionValidFormat', errors, touched, false, true) : null}
