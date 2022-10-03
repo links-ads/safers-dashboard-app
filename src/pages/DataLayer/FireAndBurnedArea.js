@@ -111,10 +111,9 @@ const FireAndBurnedArea = ({
     // check to make sure that raster is never more than MAX_RASTER_SIZE by MAX_RASTER_SIZE
     const MAX_RASTER_SIZE = 15000;
     if (features) {
-      // we get different shapes if we
-      const polygon = features?.geometry ? features.geometry : features.coordinates;
+      // we get different shapes if we draw on map or change resolution
+      const polygon = features?.geometry ? features.geometry : features;
       // get Bounding box as that's what affects raster size, not the polygon area
-      // console.log('checking size of ', polygon);
       const bboxExtents = bbox(polygon);
       const bboxArea = getFeatureArea(bboxPolygon(bboxExtents));
       const maxValidArea = Math.pow(spatial_resolution * MAX_RASTER_SIZE,2.0);
@@ -255,8 +254,8 @@ const FireAndBurnedArea = ({
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                            {values.mapSelectionArea===false ? getError('mapSelectionArea', errors, touched, false, true) : null}
-                            {values.mapSelectionValidFormat===false ? getError('mapSelectionValidFormat', errors, touched, false, true) : null}
+                            {values.mapSelectionArea===false && values.mapSelection!=='' ? getError('mapSelectionArea', errors, touched, false, true) : null}
+                            {values.mapSelectionValidFormat===false && values.mapSelection!=='' ? getError('mapSelectionValidFormat', errors, touched, false, true) : null}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -344,11 +343,12 @@ const FireAndBurnedArea = ({
                                     errors.resolution ? 'is-invalid' : ''
                                   }
                                   onChange={({ target: { value } }) => {
-                                    const parsedValue = parseInt(value);
+                                    const parsedValue = parseInt(value); 
                                     setFieldValue('resolution', parsedValue);
                                     const features = wkt.parse(values.mapSelection);
                                     const areaIsValid = checkRasterSizeWithinLimits(features, parsedValue,true);
                                     setFieldValue('mapSelectionArea', areaIsValid);
+                                    setFieldValue('mapSelectionValidFormat', true);
                                   }}
                                   onBlur={handleBlur}
                                   value={values.resolution}
