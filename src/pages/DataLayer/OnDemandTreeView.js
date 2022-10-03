@@ -47,6 +47,8 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
   }
 
 
+  const handleClick = (node, id) => node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
+
   const mapper = (nodes, parentId, lvl) => {
     return nodes?.map((node, index) => {
 
@@ -65,9 +67,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
           <ListGroupItem
             key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer.title == node.title ? 'selected' : ''} mb-2`}
-            onClick={() => {
-              return node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
-            }}
+            onClick={() => handleClick(node,id)}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
               if (node.info_url) {
