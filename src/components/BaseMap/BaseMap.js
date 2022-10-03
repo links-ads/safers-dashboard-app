@@ -72,10 +72,10 @@ const BaseMap = ({
   }
 
   const getMapSize = () => {
-    const newWidth = mapRef?.current?.deck?.width;
+    const newWidth = deckRef?.current?.deck?.width;
     newWidth && setWidth(newWidth);
 
-    const newHeight = mapRef?.current?.deck.height;
+    const newHeight = deckRef?.current?.deck.height;
     newHeight && setHeight(newHeight);
   };
 
