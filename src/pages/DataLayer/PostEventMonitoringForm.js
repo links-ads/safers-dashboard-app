@@ -17,7 +17,7 @@ import {
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
-import { checkWKTFormate } from '../../store/utility';
+import { isWKTValid } from '../../store/utility';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {
@@ -38,9 +38,9 @@ const postEventMonitoringSchema = Yup.object().shape({
   mapSelection: Yup.string()
     .typeError('Selected area must be valid Well-Known Text')
     .required('This field cannot be empty'),
-  mapSelectionArea: Yup.boolean()
+  isMapAreaValid: Yup.boolean()
     .oneOf([true], `Selected Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
-  mapSelectionValidFormat: Yup.boolean()
+  isMapAreaValidWKT: Yup.boolean()
     .oneOf([true], 'Geometry needs to be valid WKT'),
   startDate: Yup.date()
     .typeError('Must be valid date selection')
@@ -96,7 +96,8 @@ const PostEventMonitoring = ({
               dataLayerType: '', 
               requestTitle: '', 
               mapSelection: '', 
-              mapSelectionArea: true,
+              isMapAreaValid: true,
+              isMapAreaValidWKT: undefined,
               startDate: null, 
               endDate: null, 
             }}
@@ -194,13 +195,13 @@ const PostEventMonitoring = ({
                                 // NB not called if map is used, only if paste/type into field
                                 setFieldValue('mapSelection', value);
                                 if (!value) {
-                                  setFieldValue('mapSelectionArea', true);
+                                  setFieldValue('isMapAreaValid', true);
                                 } else {
                                   const features = wkt.parse(value);
-                                  const geometryIsValid = checkWKTFormate(value);
-                                  setFieldValue('mapSelectionValidFormat', geometryIsValid);
-                                  const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-                                  setFieldValue('mapSelectionArea', areaIsValid);
+                                  const geometryIsValid = isWKTValid(value);
+                                  setFieldValue('isMapAreaValidWKT', geometryIsValid);
+                                  const isAreaValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
+                                  setFieldValue('isMapAreaValid', isAreaValid);
                                 }
                               }}
                               onBlur={handleBlur}
@@ -208,8 +209,8 @@ const PostEventMonitoring = ({
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                            {values.mapSelectionArea===false ? getError('mapSelectionArea', errors, touched, false, true) : null}
-                            {values.mapSelectionValidFormat===false && values.mapSelection!=='' ? getError('mapSelectionValidFormat', errors, touched, false, true) : null}
+                            {values.isMapAreaValid===false ? getError('isMapAreaValid', errors, touched, false, true) : null}
+                            {values.isMapAreaValidWKT===false && values.mapSelection!=='' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -278,12 +279,12 @@ const PostEventMonitoring = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection
-                          setCoordinates={(wktConversion, areaIsValid) => {
+                          setCoordinates={(wktConversion, isAreaValid) => {
                             // called if map is used to draw polygon
                             // we asssume it's valid WKT
                             setFieldValue('mapSelection', wktConversion);
-                            setFieldValue('mapSelectionArea', areaIsValid);
-                            setFieldValue('mapSelectionValidFormat', true);
+                            setFieldValue('isMapAreaValid', isAreaValid);
+                            setFieldValue('isMapAreaValidWKT', true);
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}

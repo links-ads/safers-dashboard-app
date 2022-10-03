@@ -18,7 +18,7 @@ import {
 } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css'
 import moment from 'moment';
-import { checkWKTFormate } from '../../store/utility';
+import { isWKTValid } from '../../store/utility';
 
 
 // 40,000 km2 = 40 million m2
@@ -75,9 +75,9 @@ const WildfireSimulationSchema = Yup.object().shape({
   mapSelection: Yup.string()
     .typeError('Area must be valid Well-Known Text')
     .required('This field cannot be empty'),
-  mapSelectionArea: Yup.boolean()
+  isMapAreaValid: Yup.boolean()
     .oneOf([true], `Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
-  mapSelectionValidFormat: Yup.boolean()
+  isMapAreaValidWKT: Yup.boolean()
     .oneOf([true], 'Geometry needs to be valid WKT'),
   ignitionDateTime: Yup.date()
     .typeError('This field must be a valid date selection')
@@ -196,8 +196,8 @@ const WildfireSimulation = ({
               simulationDescription: '',
               probabilityRange: 0.75,
               mapSelection: '',
-              mapSelectionArea: undefined,
-              mapSelectionValidFormat: undefined,
+              isMapAreaValid: undefined,
+              isMapAreaValidWKT: undefined,
               simulationTimeLimit: 1,
               ignitionDateTime: null,
               simulationFireSpotting: false,
@@ -369,15 +369,15 @@ const WildfireSimulation = ({
                             // NB not called if map is used, only if paste/typed into field
                             setFieldValue('mapSelection', value);
                             if (!value) {
-                              setFieldValue('mapSelectionArea', true);
+                              setFieldValue('isMapAreaValid', true);
                             } else {
-                              const geometryIsValid = checkWKTFormate(value);
-                              setFieldValue('mapSelectionValidFormat', geometryIsValid);
+                              const geometryIsValid = isWKTValid(value);
+                              setFieldValue('isMapAreaValidWKT', geometryIsValid);
                               const features = wkt.parse(value);
                               if (features) {
-                                const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-                                setFieldValue('mapSelectionArea', areaIsValid);
-                                setFieldValue('mapSelectionValidFormat', true);
+                                const isAreaValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
+                                setFieldValue('isMapAreaValid', isAreaValid);
+                                setFieldValue('isMapAreaValidWKT', true);
                               }
                             }
                           }}
@@ -386,8 +386,8 @@ const WildfireSimulation = ({
                           placeholder='Enter Well Known Text or draw a polygon on the map'
                         />
                         {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                        {values.mapSelectionArea===false ? getError('mapSelectionArea', errors, touched, false, true) : null}
-                        {values.mapSelectionValidFormat===false && values.mapSelection!=='' ? getError('mapSelectionValidFormat', errors, touched, false, true) : null}
+                        {values.isMapAreaValid===false ? getError('isMapAreaValid', errors, touched, false, true) : null}
+                        {values.isMapAreaValidWKT===false && values.mapSelection!=='' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
                       </FormGroup>
                     </Row>
 
@@ -455,12 +455,12 @@ const WildfireSimulation = ({
                   <Col xl={7} className='mx-auto'>
                     <Card className='map-card mb-0' style={{ height: 670 }}>
                       <MapSection
-                        setCoordinates={(wktConversion, areaIsValid) => {
+                        setCoordinates={(wktConversion, isAreaValid) => {
                           // called if map is used to draw polygon
                           // we asssume it's valid WKT
                           setFieldValue('mapSelection', wktConversion);
-                          setFieldValue('mapSelectionArea', areaIsValid);
-                          setFieldValue('mapSelectionValidFormat', true);
+                          setFieldValue('isMapAreaValid', isAreaValid);
+                          setFieldValue('isMapAreaValidWKT', true);
                         }}
                         coordinates={values.mapSelection}
                         togglePolygonMap={true}
