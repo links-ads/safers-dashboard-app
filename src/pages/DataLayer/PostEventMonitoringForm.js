@@ -96,8 +96,8 @@ const PostEventMonitoring = ({
               dataLayerType: '', 
               requestTitle: '', 
               mapSelection: '', 
-              isMapAreaValid: true,
-              isMapAreaValidWKT: undefined,
+              isMapAreaValid: null,
+              isMapAreaValidWKT: null,
               startDate: null, 
               endDate: null, 
             }}
