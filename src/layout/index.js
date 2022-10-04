@@ -1,40 +1,34 @@
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Header from './Header'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
 import PollingHelper from '../helpers/pollingHelper';
-class Layout extends Component {
+import useTimeout from '../customHooks/useTimeout';
+import { GENERAL } from '../constants/common';
+import { refreshOAuthToken } from '../store/appAction';
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      isMobile: /iPhone|iPad|iPod|Android/i.test(navigator.userAgent),
-    }
-    this.toggleMenuCallback = this.toggleMenuCallback.bind(this)
-  }
+const Layout = ({children}) => {
+  const dispatch = useDispatch();
+  const { tokenLastUpdated, tokenExpiresIn } = useSelector(state => state.auth);
 
-  toggleMenuCallback = () => {
-    if (this.props.leftSideBarType === 'default') {
-      this.props.changeSidebarType('condensed', this.state.isMobile)
-    } else if (this.props.leftSideBarType === 'condensed') {
-      this.props.changeSidebarType('default', this.state.isMobile)
-    }
-  }
-  render() {
-    return (
-      <>
-        <div id='layout-wrapper'>
-          <Header toggleMenuCallback={this.toggleMenuCallback} />
-          <Sidebar />
-          <PollingHelper>
-            <div className='main-content'>{this.props.children}</div>
-          </PollingHelper>
-          <Footer />
-        </div>
-      </>
-    )
-  }
+  const interval = (tokenExpiresIn - GENERAL.API_GAP) * GENERAL.MILLISEC_TO_SECOND;
+  useTimeout(() => {
+    dispatch(refreshOAuthToken());
+  }, interval, [tokenLastUpdated])
+
+  return (
+    <div id='layout-wrapper'>
+      <Header />
+      <Sidebar />
+      <PollingHelper>
+        <div className='main-content'>{children}</div>
+      </PollingHelper>
+      <Footer />
+    </div>
+  )
+
 }
 
 Layout.propTypes = {
@@ -42,7 +36,5 @@ Layout.propTypes = {
   children: PropTypes.object,
   leftSideBarType: PropTypes.any,
 }
-
-
 
 export default Layout;

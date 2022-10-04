@@ -7,7 +7,8 @@ export const endpoints = {
     resetPsw: '/auth/password/reset/confirm/',
     refreshToken: '/auth/token/refresh/',
     oAuth2SignIn: '/oauth2/login',
-    oAuth2SignUp: '/oauth2/register'
+    oAuth2SignUp: '/oauth2/register',
+    oAuth2RefreshToken: '/oauth2/refresh',
   },
   aoi: {
     getAll: '/aois/',
