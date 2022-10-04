@@ -203,7 +203,7 @@ export const refreshOAuthToken = () => async (dispatch) => {
   if (api.isSuccessResp(response.status)) {
     return dispatch(refreshTokenSuccess(response.data));
   }
-  return dispatch(refresTokenFail(response.data));
+  return dispatch(refreshTokenFail(response.data));
 };
 
 export const refreshTokenSuccess = (res) => {
@@ -213,7 +213,7 @@ export const refreshTokenSuccess = (res) => {
   };
 };
 
-export const refresTokenFail = (res) => {
+export const refreshTokenFail = (res) => {
   return {
     type: actionTypes.SIGN_UP_OAUTH2_REFRESH_FAIL,
     payload: res
