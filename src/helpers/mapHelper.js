@@ -23,7 +23,7 @@ const ALERT_TYPES = {
 export const getBoundedViewState = (deckRef, bbox) => {
   const viewport = deckRef.current.deck;
   const { width, height } = viewport;
-  const padding = 150;
+  const padding = 250;
 
   const [minX, minY, maxX, maxY] = bbox;
 
