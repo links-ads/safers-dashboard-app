@@ -42,7 +42,12 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
       setMetaActive('');
       dispatch(resetMetaData());
     } else {
-      selectedLayer?.id === id ? resetMap() : setSelectedLayer(node);
+      if (selectedLayer?.id === id) {
+        resetMap();
+        setSelectedLayer({});
+      } else {
+        setSelectedLayer(node);
+      }
     }
     setSelNode(node);
   }
