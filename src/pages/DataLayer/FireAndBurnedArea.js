@@ -253,8 +253,8 @@ const FireAndBurnedArea = ({
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                            {values.isMapAreaValid===false && values.mapSelection!=='' ? getError('isMapAreaValid', errors, touched, false, true) : null}
-                            {values.isMapAreaValidWKT===false && values.mapSelection!=='' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
+                            {values.isMapAreaValid === false && values.mapSelection !== '' ? getError('isMapAreaValid', errors, touched, false, true) : null}
+                            {values.isMapAreaValidWKT === false && values.mapSelection !== '' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
                           </FormGroup>
                         </Row>
                         <Row>
