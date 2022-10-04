@@ -42,6 +42,26 @@ const getNotificationSourcesFail = (error) => {
     payload: error
   };
 };
+export const getAllNotificationScopesRestrictions = (options) => async (dispatch) => {
+  const response = await api.get(endpoints.notifications.scopesRestrictions, options);
+  if (response.status === 200) {
+    return dispatch(getNotificationScopesRestrictionsSuccess(response.data));
+  }
+  else
+    return dispatch(getNotificationScopesRestrictionsFail(response.error));
+};
+const getNotificationScopesRestrictionsSuccess = (sources) => {
+  return {
+    type: actionTypes.GET_NOTIFICATION_SCOPES_RESTRICTIONS_SUCCESS,
+    payload: sources
+  };
+};
+const getNotificationScopesRestrictionsFail = (error) => {
+  return {
+    type: actionTypes.GET_NOTIFICATION_SCOPES_RESTRICTIONS_FAIL,
+    payload: error
+  };
+};
 export const setNotificationParams = (payload) => {
   return {
     type: actionTypes.SET_NOTIFICATION_PARAMS,

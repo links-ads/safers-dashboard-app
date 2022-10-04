@@ -66,7 +66,7 @@ export const filterNodesByProperty = (layers, params = {}) => {
   )
 }
 
-export const checkWKTFormate = (str) => {
+export const isWKTValid = (str) => {
   const check = wkt.parse(str);
   return !!check;
 }

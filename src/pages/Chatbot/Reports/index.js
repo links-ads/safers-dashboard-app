@@ -16,22 +16,23 @@ import { MAP_TYPES } from '../../../constants/common';
 
 const Reports = () => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allReports: OrgReportList, success, filteredReports } = useSelector(state => state.reports);
+  const { allReports: OrgReportList, success, filteredReports, boundingBox:gBbox, mapFilter } = useSelector(state => state.reports);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const { t } = useTranslation();
 
+  const currentViewState = gBbox ? 
+    getViewState(mapFilter.midPoint, mapFilter.currentZoomLevel) : 
+    getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel);
+
   const [reportId, setReportId] = useState(undefined);
-  const [viewState, setViewState] = useState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+  const [viewState, setViewState] = useState(currentViewState);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [sortOrder, setSortOrder] = useState('desc');
-  const [category, setCategory] = useState('');
+  const [boundingBox, setBoundingBox] = useState(gBbox);
   const [midPoint, setMidPoint] = useState([]);
-  const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [missionId, setMissionId] = useState('');
 
   const dispatch = useDispatch();
 
@@ -44,14 +45,13 @@ const Reports = () => {
 
     setReportId(undefined);
     const reportParams = {
-      category: category ? category : undefined,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
     dispatch(getAllReports(reportParams));
-  }, [dateRange, boundingBox, category])
+  }, [dateRange, boundingBox])
 
   useEffect(() => {
     if (success?.detail) {
@@ -106,11 +106,8 @@ const Reports = () => {
         <Col xl={5}>
           <SortSection
             t={t}
-            sortOrder={sortOrder}
-            setSortOrder={setSortOrder}
-            setCategory={setCategory}
-            missionId={missionId}
-            setMissionId={setMissionId}
+            boundingBox={boundingBox}
+            mapFilter={{midPoint, currentZoomLevel}}
           />
           <Row>
             <Col xl={12} className='px-3'>
@@ -120,9 +117,6 @@ const Reports = () => {
                 setViewState={setViewState}
                 setReportId={setReportId}
                 setIconLayer={setIconLayer}
-                missionId={missionId}
-                category={category}
-                sortOrder={sortOrder}
               />
             </Col>
           </Row>
