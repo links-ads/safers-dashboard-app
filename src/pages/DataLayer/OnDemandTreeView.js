@@ -86,6 +86,21 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
             key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer?.title == node.title ? 'selected' : ''} mb-2`}
             onClick={() => {
+              setCurrentLayer(() => {
+                // Strip off anything after the final period. e.g. 2.2.1 -> 2.2
+                const key = selectedLayer?.key.replace(/([.])(?!.*[.]).*$/, '');
+                // Flatten all the child nodes and find the one matching the key.
+                const node = _(data).map('children').flatten().find({ key })
+                // If a node was found, get it's bbox and pan/zoom the map to that
+                // location.
+                if (node) {
+                  const newViewState = getBoundedViewState(deckRef, node?.bbox);
+                  setViewState({ ...viewState, ...newViewState });
+                }
+
+                return selectedLayer;
+              });
+
               return node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
             }}
             onMouseEnter={async () => {
