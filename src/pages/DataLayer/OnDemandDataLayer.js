@@ -69,6 +69,8 @@ const OnDemandDataLayer = ({
     [setViewState],
   );
 
+  const layers = bitmapLayer ? [new BitmapLayer(bitmapLayer), ...bboxLayer, tempLayerData] : [];
+
   return (
     <>
       <Modal
@@ -241,7 +243,7 @@ const OnDemandDataLayer = ({
               featureOnly={true}
             >
               <BaseMap
-                layers={[new BitmapLayer(bitmapLayer), bboxLayer, tempLayerData]}
+                layers={layers}
                 initialViewState={viewState}
                 onViewStateChange={handleViewStateChange}
                 widgets={[]}
