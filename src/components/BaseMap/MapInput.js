@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import PropTypes from 'prop-types'
-import { checkWKTFormate } from '../../store/utility';
+import { isWKTValid } from '../../store/utility';
 
 const MapInput = (props) => {
 
@@ -11,7 +11,7 @@ const MapInput = (props) => {
   const toggle = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    setShowError(!checkWKTFormate(props.coordinates));
+    setShowError(!isWKTValid(props.coordinates));
   }, [props.coordinates])
 
   useEffect(() => {
