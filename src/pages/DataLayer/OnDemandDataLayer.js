@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText, Modal } from 'reactstrap';
 import { BitmapLayer } from 'deck.gl';
@@ -60,6 +60,14 @@ const OnDemandDataLayer = ({
     setActiveTab(+value);
     toggleModal();
   } 
+
+  const handleViewStateChange = useCallback(
+    // eslint-disable-next-line no-unused-vars
+    ({ viewState: { width, height, ...rest } }) => {
+      setViewState(rest);
+    },
+    [setViewState],
+  );
 
   return (
     <>
@@ -235,6 +243,7 @@ const OnDemandDataLayer = ({
               <BaseMap
                 layers={[new BitmapLayer(bitmapLayer), bboxLayer, tempLayerData]}
                 initialViewState={viewState}
+                onViewStateChange={handleViewStateChange}
                 widgets={[]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
