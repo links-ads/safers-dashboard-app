@@ -1,60 +1,40 @@
 import PropTypes from 'prop-types'
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import Header from './Header'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
 import PollingHelper from '../helpers/pollingHelper';
+import useTimeout from '../customHooks/useTimeout';
+import { GENERAL } from '../constants/common';
 import { refreshOAuthToken } from '../store/appAction';
 
-const Layout = ({leftSideBarType, changeSidebarType, children}) => {
-
-  const MILLISECONDS = 1000;
+const Layout = ({children}) => {
   const dispatch = useDispatch();
-  const [isMobile] = useState(/iPhone|iPad|iPod|Android/i.test(navigator.userAgent));
-  const { tokenExpiresIn, tokenUpdatedLast } = useSelector(state => state.auth);
+  const { tokenLastUpdated, tokenExpiresIn } = useSelector(state => state.auth);
 
-  useEffect(() => {
-    const interval_val = tokenExpiresIn;
-    if(interval_val) {
-      const interval = interval_val - 3; //reduce 3 seconds so the request is made before expiry 
-      const timer = setTimeout(() => {
-        dispatch(refreshOAuthToken());
-      }, interval * MILLISECONDS);
-      return () => clearTimeout(timer);
-    }
-  }, [tokenExpiresIn, tokenUpdatedLast]);
-
-  const toggleMenuCallback = () => {
-    if (leftSideBarType === 'default') {
-      changeSidebarType('condensed', isMobile)
-    } else if (leftSideBarType === 'condensed') {
-      changeSidebarType('default', isMobile)
-    }
-  }
+  const interval = (tokenExpiresIn - GENERAL.API_GAP) * GENERAL.MILLISEC_TO_SECOND;
+  useTimeout(() => {
+    dispatch(refreshOAuthToken());
+  }, interval, [tokenLastUpdated])
 
   return (
-    <>
-      <div id='layout-wrapper'>
-        <Header toggleMenuCallback={toggleMenuCallback} />
-        <Sidebar />
-        <PollingHelper>
-          <div className='main-content'>{children}</div>
-        </PollingHelper>
-        <Footer />
-      </div>
-    </>
+    <div id='layout-wrapper'>
+      <Header />
+      <Sidebar />
+      <PollingHelper>
+        <div className='main-content'>{children}</div>
+      </PollingHelper>
+      <Footer />
+    </div>
   )
 
 }
-
 
 Layout.propTypes = {
   changeSidebarType: PropTypes.func,
   children: PropTypes.object,
   leftSideBarType: PropTypes.any,
 }
-
-
 
 export default Layout;

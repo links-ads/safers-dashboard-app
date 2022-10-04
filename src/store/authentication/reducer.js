@@ -11,7 +11,7 @@ const initialState = {
   resetPswError: null,
   errorSignIn: false,
   tokenExpiresIn: null,
-  tokenUpdatedLast: null
+  tokenLastUpdated: null
   //loading: false
 };
 
@@ -38,7 +38,7 @@ const ingredientsReducer = (state = initialState, action) => {
 const refresTokenSuccess = (state, action) => {
   const updatedState = {
     tokenExpiresIn: action.payload.expires_in,
-    tokenUpdatedLast: Date.now(),
+    tokenLastUpdated: Date.now(),
     error: false,
   }
   return updateObject(state, updatedState);

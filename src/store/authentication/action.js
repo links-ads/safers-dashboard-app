@@ -200,7 +200,7 @@ export const signOutSuccess = () => {
 
 export const refreshOAuthToken = () => async (dispatch) => {
   const response = await api.post(endpoints.authentication.oAuth2RefreshToken);
-  if (response.status === 200) {
+  if (api.isSuccessResp(response.status)) {
     return dispatch(refreshTokenSuccess(response.data));
   }
   return dispatch(refresTokenFail(response.data));
