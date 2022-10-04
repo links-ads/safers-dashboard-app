@@ -49,6 +49,7 @@ const refresTokenFail = (state, action) => {
 }
 
 const signInSuccess = (state, action) => {
+  /* The user information has oath.expires_in however we only rely on tokenExpiresIn flag from this store for all our refresh token ops */
   const updatedState = {
     user: action.payload,
     tokenExpiresIn: action.payload.oauth2 ? action.payload.oauth2.expires_in : null,
