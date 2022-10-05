@@ -24,11 +24,7 @@ const MapInput = (props) => {
   const onChange = (val) => {
     const isValid = isWKTValid(val);
     setWktStr(val);
-    if(isValid){
-      setCoordinates(val);
-    } else {
-      setCoordinates(null);
-    }
+    isValid ? setCoordinates(val) : setCoordinates(null);
     setShowError(!isValid);
     isValidFormat(isValid);
   }
@@ -37,8 +33,7 @@ const MapInput = (props) => {
     <div className='polygon-edit-input'>
       <Input
         {...props}
-        onChange={(e) => { onChange(e.target.value); }
-        }
+        onChange={(e) => onChange(e.target.value)}
         value={wktStr}
       />
       <i onClick={() => setIsOpen(true)} className={`fa fa-question-circle fa-2x ${showError ? 'text-danger' : ''}`}></i>
