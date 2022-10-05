@@ -27,7 +27,7 @@ const MapInput = (props) => {
     if(isValid){
       setCoordinates(val);
     } else {
-      props.setCoordinates(null);
+      setCoordinates(null);
     }
     setShowError(!isValid);
     isValidFormat(isValid);
