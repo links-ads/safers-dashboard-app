@@ -6,32 +6,42 @@ import { isWKTValid } from '../../store/utility';
 const MapInput = (props) => {
 
   const [showError, setShowError] = useState(false);
+  const [wktStr, setWktStr] = useState('');
   const [isOpen, setIsOpen] = useState(false);
+  const { isValidFormat, setCoordinates, coordinates} = props;
 
   const toggle = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    setShowError(!isWKTValid(props.coordinates));
-  }, [props.coordinates])
-
-  useEffect(() => {
-    if(props.isValidFormat){
-      props.isValidFormat(!showError);
+    if(coordinates !== null){
+      setWktStr(coordinates);
+      isValidFormat(true);
+      setShowError(false);
     }
-  }, [showError])
+  }, [coordinates])
+
+  const onChange = (val) => {
+    const isValid = isWKTValid(val);
+    setWktStr(val);
+    if(isValid){
+      setCoordinates(val);
+    } else {
+      props.setCoordinates(null);
+    }
+    setShowError(!isValid);
+    isValidFormat(isValid);
+  }
+
   return (<>
     <div className='polygon-edit-input'>
       <Input
         {...props}
-        onChange={
-          (e) => {
-            props.setCoordinates(e.target.value);
-          }
+        onChange={(e) => { onChange(e.target.value); }
         }
-        value={props.coordinates}
+        value={wktStr}
       />
-      <i onClick={() => setIsOpen(true)} className={`fa fa-question-circle fa-2x ${showError && props.coordinates != '' ? 'text-danger' : ''}`}></i>
-      <div className='error-message'>{showError && props.coordinates != '' && 'Incorrect Format'}</div>
+      <i onClick={() => setIsOpen(true)} className={`fa fa-question-circle fa-2x ${showError ? 'text-danger' : ''}`}></i>
+      {showError && <div className='error-message'>Incorrect Format</div>}
     </div>
     <Modal
       centered
