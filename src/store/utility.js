@@ -74,12 +74,11 @@ export const isWKTValid = (str) => {
     wktStr.coordinates.every(coordSet => {
       coordSet.every(coord => {
         hasValidCoord = isValidCoordinates(coord[0], coord[1]);
-        if(!hasValidCoord) {
-          return false;
-        }
+        return hasValidCoord;// Loop continues if a valid coord else break
       })
+      return hasValidCoord; // Loop continues if a valid coord else break
     })
-    return hasValidCoord;
+    return hasValidCoord; // fn return 
   }
   return !!wktStr;
 }
