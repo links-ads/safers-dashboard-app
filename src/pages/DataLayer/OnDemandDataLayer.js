@@ -37,7 +37,7 @@ const OnDemandDataLayer = ({
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [searchedMapRequests, setSearchedMapRequests] = useState(null);
-  const [bboxLayer, setBboxLayer] = useState([])
+  const [bboxLayers, setBboxLayers] = useState([])
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
@@ -69,7 +69,11 @@ const OnDemandDataLayer = ({
     [setViewState],
   );
 
-  const layers = bitmapLayer ? [new BitmapLayer(bitmapLayer), ...bboxLayer, tempLayerData] : [];
+  let layers = [...bboxLayers];
+  if (bitmapLayer) {
+    layers.push(new BitmapLayer(bitmapLayer))
+    layers.push(tempLayerData)
+  }
 
   return (
     <>
@@ -218,7 +222,7 @@ const OnDemandDataLayer = ({
                   t={t}
                   setViewState={setViewState}
                   viewState={viewState}
-                  setBboxLayer={setBboxLayer}
+                  setBboxLayers={setBboxLayers}
                 />
               </SimpleBar>
             </Col>

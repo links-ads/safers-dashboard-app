@@ -24,7 +24,7 @@ const PropsPanel = (node) => {
   );
 };
 
-const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setBboxLayer }) => {
+const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setBboxLayers }) => {
   const dispatch = useDispatch();
   const { deckRef } = useMap();
 
@@ -157,16 +157,15 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
                       getFillColor: [80, 80, 80, 70],
                     });
 
-                    setBboxLayer(oldLayers => {
-                      if (oldLayers) {
-                        const isExistingLayer = oldLayers.find(layer => layer.id === layer.id);
+                    setBboxLayers(oldLayers => {
+                      const isExistingLayer = oldLayers.find(layer => layer.id === layer.id);
 
-                        if (!isExistingLayer) {
-                          return [...oldLayers, aoisLayer];
-                        }
-                      } else {
-                        return [aoisLayer]
+                      if (!isExistingLayer) {
+                        const layers = [aoisLayer];
+                        return layers;
                       }
+
+                      return []
                     });
 
                     const newViewState = getBoundedViewState(deckRef, node.bbox);
@@ -272,7 +271,7 @@ OnDemandTreeView.propTypes = {
   t: PropTypes.func,
   setViewState: PropTypes.func,
   viewState: PropTypes.any,
-  setBboxLayer: PropTypes.func,
+  setBboxLayers: PropTypes.func,
 }
 
 
