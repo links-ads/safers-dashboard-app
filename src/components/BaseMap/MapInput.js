@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { Input, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import PropTypes from 'prop-types'
 import { isWKTValid } from '../../store/utility';
+import { withTranslation } from 'react-i18next'
 
 const MapInput = (props) => {
 
   const [showError, setShowError] = useState(false);
   const [wktStr, setWktStr] = useState('');
   const [isOpen, setIsOpen] = useState(false);
-  const { isValidFormat, setCoordinates, coordinates} = props;
+  const { isValidFormat, setCoordinates, coordinates, t } = props;
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -41,7 +42,7 @@ const MapInput = (props) => {
         value={wktStr}
       />
       <i onClick={() => setIsOpen(true)} className={`fa fa-question-circle fa-2x ${showError ? 'text-danger' : ''}`}></i>
-      {showError && <div className='error-message'>Incorrect Format</div>}
+      {showError && <div className='error-message'>{t('coordinate-error')}</div>}
     </div>
     <Modal
       centered
@@ -50,10 +51,10 @@ const MapInput = (props) => {
       size="lg"
       id="staticBackdrop"
     >
-      <ModalHeader style={{borderColor: 'gray'}} toggle={toggle}>WKT Guidance</ModalHeader>
+      <ModalHeader style={{borderColor: 'gray'}} toggle={toggle}>{t('wkt-info-topic')}</ModalHeader>
       <ModalBody>
         <div className='px-3 mb-3'>
-          Sample of supporting format of WKT
+          {t('wkt-info-desc1')}
           <div className='my-3 fw-bold'>
             POINT (30 10)<br/>
             LINESTRING (30 10, 10 30, 40 40)<br/>
@@ -66,7 +67,7 @@ const MapInput = (props) => {
             MULTIPOLYGON (((40 40, 20 45, 45 30, 40 40)), ((20 35, 10 30, 10 10, 30 5, 45 20, 20 35), (30 20, 20 15, 20 25, 30 20)))<br/>
             GEOMETRYCOLLECTION (POINT (40 10), LINESTRING (10 10, 20 20, 10 40), POLYGON ((40 40, 20 45, 45 30, 40 40)))
           </div>
-          For more info , please refer wiki link (<a href='https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry' target='_blank' rel="noreferrer" >https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry</a>)
+          {t('wkt-info-desc2')} (<a href='https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry' target='_blank' rel="noreferrer" >https://en.wikipedia.org/wiki/Well-known_text_representation_of_geometry</a>)
         </div>
       </ModalBody>
     </Modal>
@@ -76,7 +77,8 @@ const MapInput = (props) => {
 MapInput.propTypes = {
   coordinates: PropTypes.any,
   setCoordinates: PropTypes.func,
-  isValidFormat: PropTypes.func
+  isValidFormat: PropTypes.func,
+  t: PropTypes.any
 }
 
-export default MapInput;
+export default withTranslation(['common'])(MapInput);
