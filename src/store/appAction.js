@@ -6,7 +6,8 @@ export {
   resetPsw,
   isRemembered,
   signInOauth2,
-  signUpOauth2
+  signUpOauth2,
+  refreshOAuthToken
 } from './authentication/action';
 export {
   setDefaultAoi,
@@ -79,6 +80,7 @@ export {
 export {
   getAllNotifications,
   getAllNotificationSources,
+  getAllNotificationScopesRestrictions,
   setNotificationParams,
   resetNotificationApiParams,
   setNewNotificationState

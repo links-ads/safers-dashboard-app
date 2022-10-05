@@ -24,6 +24,7 @@ const DataLayerInformationComponent = ({
   setTempLayerData,
   setInformation,
   featureOnly = false,
+  currentViewState,
   dispatch
 }) => {
   const {
@@ -37,6 +38,7 @@ const DataLayerInformationComponent = ({
   const [chartValues, setChartValues] = useState([]);
   const [zoomDomain, setZoomDomain] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null);
+  const [contextMenuKey, setContextMenuKey] = useState(0);
   const chartContainerRef = useRef(null);
 
   let title = currentLayer?.title
@@ -73,7 +75,11 @@ const DataLayerInformationComponent = ({
     }
   }, [timeSeriesData])
 
-  useEffect(() => {
+  useEffect(()=>{
+    setContextMenuKey((prev)=> prev+1);
+  }, [currentViewState])
+
+  useEffect(()=> {
     getPixelValue();
   }, [featureInfoData])
 
@@ -307,6 +313,8 @@ const DataLayerInformationComponent = ({
       );
       setTempLayerData(layer);
       setTempSelectedPixel(data.coordinate);
+    } else if(!event.rightButton) {
+      setContextMenuKey((prev)=> prev+1);
     }
   }
 
@@ -314,7 +322,7 @@ const DataLayerInformationComponent = ({
     <ContextMenuTrigger id={menuId}>
       {React.cloneElement(children, { onClick: generateGeoJson })}
     </ContextMenuTrigger>
-    <ContextMenu id={menuId} className="geo-menu">
+    <ContextMenu key={contextMenuKey} id={menuId} className="geo-menu">
       {currentLayer?.id && <><MenuItem className="geo-menuItem" onClick={toggleDisplayLayerInfo}>
         Get Feature Info
       </MenuItem>
@@ -333,6 +341,7 @@ DataLayerInformationComponent.propTypes = {
   setTempLayerData: PropTypes.any,
   setInformation: PropTypes.any,
   featureOnly: PropTypes.bool,
+  currentViewState: PropTypes.any,
   dispatch: PropTypes.any,
 }
 

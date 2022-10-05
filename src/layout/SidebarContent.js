@@ -122,14 +122,14 @@ const SidebarContent = (props) => {
             </li> */}
             <li>
               <Link to='/fire-alerts' className=''>
-                <i className='bx bxs-hot'></i>
+                <i className='bx bx-error-circle'></i>
                 <span>{props.t('Fire Alerts')}</span>
                 {isNewAlert && <span className='new-info-indicator float-end'>{newAlertsCount}</span>}
               </Link>
             </li>
             <li>
               <Link to='/event-alerts' className=''>
-                <i className='bx bx-calendar-event'></i>
+                <i className='bx bxs-hot'></i>
                 <span>{props.t('Events')}</span>
                 {isNewEvent && <span className='new-info-indicator float-end'>{newEventsCount}</span>}
               </Link>
@@ -161,7 +161,7 @@ const SidebarContent = (props) => {
             </li>
             <li>
               <Link to='/chatbot'>
-                <i className='bx bx-clipboard'></i>
+                <i className='bx bx-bot'></i>
                 <span>{props.t('Chatbot Module')}</span>
               </Link>
             </li>

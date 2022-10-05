@@ -166,6 +166,8 @@ const resetPswFail = (error) => {
   };
 };
 
+/* Sign out */
+
 const OAuth2Signout = () => {
   const params = {
     client_id: AUTH_CLIENT_ID,
@@ -194,3 +196,26 @@ export const signOutSuccess = () => {
   };
 };
 
+/* Refresh Token */
+
+export const refreshOAuthToken = () => async (dispatch) => {
+  const response = await api.post(endpoints.authentication.oAuth2RefreshToken);
+  if (api.isSuccessResp(response.status)) {
+    return dispatch(refreshTokenSuccess(response.data));
+  }
+  return dispatch(refreshTokenFail(response.data));
+};
+
+export const refreshTokenSuccess = (res) => {
+  return {
+    type: actionTypes.SIGN_UP_OAUTH2_REFRESH_SUCCESS,
+    payload: res
+  };
+};
+
+export const refreshTokenFail = (res) => {
+  return {
+    type: actionTypes.SIGN_UP_OAUTH2_REFRESH_FAIL,
+    payload: res
+  };
+};

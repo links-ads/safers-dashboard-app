@@ -75,7 +75,7 @@ MapSection.propTypes = {
   setCoordinates: PropTypes.func,
   togglePolygonMap: PropTypes.any,
   coordinates: PropTypes.string,
-  handleAreaValidation: PropTypes.function
+  handleAreaValidation: PropTypes.func
 }
 
 export default MapSection;

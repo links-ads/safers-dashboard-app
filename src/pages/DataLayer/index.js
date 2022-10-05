@@ -41,6 +41,7 @@ const DataLayerDashboard = () => {
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
+  const [previousLayer, setPreviousLayer] = useState(undefined);
   const [selectOptions, setSelectOptions] = useState({})
   const [dataDomain, setDataDomain] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
@@ -55,6 +56,11 @@ const DataLayerDashboard = () => {
   const [timestamp, setTimestamp] = useState('')
 
   const { operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions } = selectOptions;
+
+  const resetMap = () => {
+    setCurrentLayer(undefined);
+    setBitmapLayer(undefined);
+  };
 
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
@@ -86,6 +92,7 @@ const DataLayerDashboard = () => {
     setBitmapLayer(undefined);
     setSliderRangeLimit(0);
     setCurrentLayer(undefined);
+    setPreviousLayer(undefined);
   }, [activeTab])
 
   useEffect(() => {
@@ -124,15 +131,20 @@ const DataLayerDashboard = () => {
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
   useEffect(() => {
-    setSliderValue(0);
-    setIsPlaying(false);
-    if (currentLayer && currentLayer.urls) {
-      const urls = getUrls();
-      const timestamps = getTimestamps();
-      setTimestamp(timestamps[sliderValue])
-      const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
-      setBitmapLayer(getBitmapLayer(imageUrl));
-      setSliderRangeLimit(urls.length - 1);
+    if (currentLayer && previousLayer && currentLayer?.id === previousLayer?.id) {
+      resetMap();
+    } else {
+      setSliderValue(0);
+      setIsPlaying(false);
+      if (currentLayer && currentLayer.urls) {
+        const urls = getUrls();
+        const timestamps = getTimestamps();
+        setTimestamp(timestamps[sliderValue])
+        const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
+        setBitmapLayer(getBitmapLayer(imageUrl));
+        setSliderRangeLimit(urls.length - 1);
+        setPreviousLayer(currentLayer);
+      }
     }
   }, [currentLayer]);
 
@@ -238,7 +250,8 @@ const DataLayerDashboard = () => {
           position: 'absolute',
           zIndex: 1,
           bottom: '0px',
-          width: '100%',
+          width: '70%',
+          margin: '0 15%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
@@ -340,7 +353,8 @@ const DataLayerDashboard = () => {
     timestamp,
     showLegend,
     legendUrl: currentLayer?.legend_url,
-    sliderChangeComplete
+    sliderChangeComplete,
+    resetMap
   };
 
   return (
