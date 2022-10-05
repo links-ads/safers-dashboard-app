@@ -33,7 +33,8 @@ const OnDemandDataLayer = ({
   currentLayer,
   showLegend,
   legendUrl,
-  dispatch
+  dispatch,
+  resetMap,
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
   const [searchedMapRequests, setSearchedMapRequests] = useState(null);
@@ -215,6 +216,7 @@ const OnDemandDataLayer = ({
                   setViewState={setViewState}
                   viewState={viewState}
                   setBboxLayers={setBboxLayers}
+                  resetMap={resetMap}
                 />
               </SimpleBar>
             </Col>
@@ -280,7 +282,8 @@ OnDemandDataLayer.propTypes = {
   currentLayer: PropTypes.any,
   showLegend: PropTypes.bool,
   legendUrl: PropTypes.string,
-  dispatch: PropTypes.any
+  dispatch: PropTypes.any,
+  resetMap: PropTypes.func,
 }
 
 export default withTranslation(['common'])(OnDemandDataLayer);

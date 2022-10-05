@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
@@ -24,7 +25,7 @@ const PropsPanel = (node) => {
   );
 };
 
-const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setBboxLayers }) => {
+const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setBboxLayers, resetMap }) => {
   const dispatch = useDispatch();
   const { deckRef } = useMap();
 
@@ -86,7 +87,10 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
             key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer?.title == node.title ? 'selected' : ''} mb-2`}
             onClick={() => {
-              setCurrentLayer(() => {
+              setCurrentLayer(oldLayer => {
+                if (oldLayer) {
+                  resetMap();
+                } else {
                 // Strip off anything after the final period. e.g. 2.2.1 -> 2.2
                 const key = selectedLayer?.key.replace(/([.])(?!.*[.]).*$/, '');
                 // Flatten all the child nodes and find the one matching the key.
@@ -99,6 +103,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
                 }
 
                 return selectedLayer;
+              }
               });
 
               return node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
@@ -272,6 +277,7 @@ OnDemandTreeView.propTypes = {
   setViewState: PropTypes.func,
   viewState: PropTypes.any,
   setBboxLayers: PropTypes.func,
+  resetMap: PropTypes.func,
 }
 
 
