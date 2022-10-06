@@ -41,7 +41,6 @@ const DataLayerDashboard = () => {
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
-  const [previousLayer, setPreviousLayer] = useState(undefined);
   const [selectOptions, setSelectOptions] = useState({})
   const [dataDomain, setDataDomain] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
@@ -92,7 +91,6 @@ const DataLayerDashboard = () => {
     setBitmapLayer(undefined);
     setSliderRangeLimit(0);
     setCurrentLayer(undefined);
-    setPreviousLayer(undefined);
   }, [activeTab])
 
   useEffect(() => {
@@ -131,20 +129,15 @@ const DataLayerDashboard = () => {
   }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
 
   useEffect(() => {
-    if (currentLayer && previousLayer && currentLayer?.id === previousLayer?.id) {
-      resetMap();
-    } else {
-      setSliderValue(0);
-      setIsPlaying(false);
-      if (currentLayer && currentLayer.urls) {
-        const urls = getUrls();
-        const timestamps = getTimestamps();
-        setTimestamp(timestamps[sliderValue])
-        const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
-        setBitmapLayer(getBitmapLayer(imageUrl));
-        setSliderRangeLimit(urls.length - 1);
-        setPreviousLayer(currentLayer);
-      }
+    setSliderValue(0);
+    setIsPlaying(false);
+    if (currentLayer && currentLayer.urls) {
+      const urls = getUrls();
+      const timestamps = getTimestamps();
+      setTimestamp(timestamps[sliderValue])
+      const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
+      setBitmapLayer(getBitmapLayer(imageUrl));
+      setSliderRangeLimit(urls.length - 1);
     }
   }, [currentLayer]);
 
@@ -345,6 +338,7 @@ const DataLayerDashboard = () => {
     getSlider,
     getLegend,
     bitmapLayer,
+    setViewState,
     viewState,
     handleResetAOI,
     timeSeriesData,

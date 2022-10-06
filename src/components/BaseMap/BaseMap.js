@@ -1,12 +1,14 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { FullscreenControl, NavigationControl, MapContext, StaticMap } from 'react-map-gl';
 import { MapView } from '@deck.gl/core';
 import DeckGL from 'deck.gl';
 import { MAPBOX_TOKEN } from '../../config';
 import { FlyToInterpolator } from '@deck.gl/core';
 
-const INITIAL_VIEW_STATE = {
+import { useMap } from './MapContext';
+
+export const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
   latitude: 43.02777403,
   zoom: 4,
@@ -41,8 +43,7 @@ const BaseMap = ({
   navControlPosition = 'bottom-left',
   mapStyle = 'mb_streets'
 }) => {
-
-  const mapRef = useRef();
+  const { mapRef, deckRef } = useMap();
   const finalLayerSet = [
     ...layers ? layers : null
   ];
@@ -50,10 +51,6 @@ const BaseMap = ({
   useEffect(() => {
     window.addEventListener('resize', getMapSize);
   }, []);
-
-  useEffect(() => {
-    getMapSize();
-  }, [layers]);
 
   const handleClick = (info, event) => {
     if (info?.object?.properties?.cluster) {
@@ -75,10 +72,10 @@ const BaseMap = ({
   }
 
   const getMapSize = () => {
-    const newWidth = mapRef?.current?.deck?.width;
+    const newWidth = deckRef?.current?.deck?.width;
     newWidth && setWidth(newWidth);
 
-    const newHeight = mapRef?.current?.deck.height;
+    const newHeight = deckRef?.current?.deck.height;
     newHeight && setHeight(newHeight);
   };
 
@@ -93,7 +90,7 @@ const BaseMap = ({
   return (
     <>
       <DeckGL
-        ref={mapRef}
+        ref={deckRef}
         views={new MapView({ repeat: true })}
         onClick={handleClick}
         onViewStateChange={onViewStateChange}
@@ -107,6 +104,7 @@ const BaseMap = ({
           mapboxApiAccessToken={MAPBOX_TOKEN}
           initialViewState={initialViewState}
           mapStyle={MAP_STYLE[mapStyle]}
+          ref={mapRef}
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />

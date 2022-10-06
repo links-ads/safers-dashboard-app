@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, Button, Input, Card, InputGroup, InputGroupText, Modal } from 'reactstrap';
 import { BitmapLayer } from 'deck.gl';
@@ -28,14 +28,17 @@ const OnDemandDataLayer = ({
   getLegend,
   bitmapLayer,
   searchDataTree,
+  setViewState,
   viewState,
   currentLayer,
   showLegend,
   legendUrl,
-  dispatch
+  dispatch,
+  resetMap,
 }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false)
-  const [searchedMapRequests, setSearchedMapRequests] = useState(null);  
+  const [searchedMapRequests, setSearchedMapRequests] = useState(null);
+  const [bboxLayers, setBboxLayers] = useState([])
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
@@ -58,6 +61,20 @@ const OnDemandDataLayer = ({
     setActiveTab(+value);
     toggleModal();
   } 
+
+  const handleViewStateChange = useCallback(
+    // eslint-disable-next-line no-unused-vars
+    ({ viewState: { width, height, ...rest } }) => {
+      setViewState(rest);
+    },
+    [setViewState],
+  );
+    
+  let layers = [...bboxLayers];
+  if (bitmapLayer) {
+    layers.push(new BitmapLayer(bitmapLayer))
+    layers.push(tempLayerData)
+  }
 
   return (
     <>
@@ -204,6 +221,10 @@ const OnDemandDataLayer = ({
                   data={searchedMapRequests}
                   setCurrentLayer={setCurrentLayer}
                   t={t}
+                  setViewState={setViewState}
+                  viewState={viewState}
+                  setBboxLayers={setBboxLayers}
+                  resetMap={resetMap}
                 />
               </SimpleBar>
             </Col>
@@ -228,10 +249,9 @@ const OnDemandDataLayer = ({
               featureOnly={true}
             >
               <BaseMap
-                layers={
-                  bitmapLayer ? [new BitmapLayer(bitmapLayer), tempLayerData] : []
-                }
+                layers={layers}
                 initialViewState={viewState}
+                onViewStateChange={handleViewStateChange}
                 widgets={[]}
                 screenControlPosition='top-right'
                 navControlPosition='bottom-right'
@@ -263,6 +283,7 @@ OnDemandDataLayer.propTypes = {
   getSlider: PropTypes.any,
   getLegend: PropTypes.any,
   bitmapLayer: PropTypes.any,
+  setViewState: PropTypes.func,
   viewState: PropTypes.any,
   searchDataTree: PropTypes.func,
   handleResetAOI: PropTypes.any,
@@ -270,7 +291,8 @@ OnDemandDataLayer.propTypes = {
   currentLayer: PropTypes.any,
   showLegend: PropTypes.bool,
   legendUrl: PropTypes.string,
-  dispatch: PropTypes.any
+  dispatch: PropTypes.any,
+  resetMap: PropTypes.func,
 }
 
 export default withTranslation(['common'])(OnDemandDataLayer);
