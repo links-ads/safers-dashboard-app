@@ -1,6 +1,5 @@
 import moment from 'moment';
 import wkt from 'wkt';
-import isValidCoordinates  from 'is-valid-coordinates';
 
 export const updateObject = (oldObject, updatedProperties) => {
   return {
@@ -65,22 +64,6 @@ export const filterNodesByProperty = (layers, params = {}) => {
       return targetPropertyValue === matchValue;
     })
   )
-}
-
-export const isWKTValid = (str) => {
-  const wktStr = wkt.parse(str);
-  let hasValidCoord = true;
-  if(wktStr){
-    wktStr.coordinates.every(coordSet => {
-      coordSet.every(coord => {
-        hasValidCoord = isValidCoordinates(coord[0], coord[1]);
-        return hasValidCoord;// Loop continues if a valid coord else break
-      })
-      return hasValidCoord; // Loop continues if a valid coord else break
-    })
-    return hasValidCoord; // fn return 
-  }
-  return !!wktStr;
 }
 
 export const getWKTfromFeature = (feature) => {

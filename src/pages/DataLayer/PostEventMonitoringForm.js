@@ -17,7 +17,7 @@ import {
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
-import { isWKTValid } from '../../store/utility';
+import { isWKTValid } from '../../helpers/mapHelper';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {
