@@ -40,13 +40,14 @@ const DataLayer = ({
   legendUrl,
   searchDataTree,
   dispatch,
-  sliderChangeComplete
+  sliderChangeComplete,
+  resetMap
 }) => {
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
-
+  const [currentViewState, setCurrentViewState] = useState(viewState)
 
   // places global data layers into local state, 
   // so that search filtering can then be applied
@@ -79,6 +80,9 @@ const DataLayer = ({
         </Card>
       );
     }
+
+    const layers = bitmapLayer ? [new BitmapLayer(bitmapLayer), tempLayerData] : [];
+
     return(
       <Card className='map-card mb-0' style={{ height: 670 }}>
         {showLegend && !!legendUrl ? (
@@ -95,13 +99,15 @@ const DataLayer = ({
           setInformation={setInformation}
           dispatch={dispatch}
           menuId={'DataLayerMapMenu'}
+          currentViewState={currentViewState}
         >
           <BaseMap
-            layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
+            layers={layers}
             initialViewState={viewState}
             widgets={[]}
             screenControlPosition='top-right'
             navControlPosition='bottom-right'
+            onViewStateChange={(data)=>{setCurrentViewState(data)}}
           />
         </DataLayerInformation>        
         {getSlider()}
@@ -203,6 +209,7 @@ const DataLayer = ({
               <TreeView
                 data={searchedDataLayers}
                 setCurrentLayer={setCurrentLayer}
+                resetMap={resetMap}
               />
             </SimpleBar>
           </Col>
@@ -241,7 +248,8 @@ DataLayer.propTypes = {
   legendUrl: PropTypes.string,
   searchDataTree: PropTypes.func,
   dispatch: PropTypes.func,
-  sliderChangeComplete: PropTypes.bool
+  sliderChangeComplete: PropTypes.bool,
+  resetMap: PropTypes.func,
 }
 
 export default withTranslation(['common'])(DataLayer);

@@ -53,5 +53,9 @@
   "All": "All",
   "Mission Title": "Mission Title",
   "Mission Description": "Mission Description",
-  "updated-info": "Updated your infomation"
+  "updated-info": "Updated your infomation",
+  "coordinate-error": "Incorrect format / coordinates",
+  "wkt-info-topic": "WKT Guidance",
+  "wkt-info-desc1": "Sample of supporting format of WKT",
+  "wkt-info-desc2": "For more info , please refer wiki link"
 }

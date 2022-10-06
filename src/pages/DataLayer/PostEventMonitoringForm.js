@@ -17,6 +17,7 @@ import {
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
+import { isWKTValid } from '../../store/utility';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {
@@ -33,12 +34,14 @@ const MIN_END_DATE = '2018-05-02';
 const postEventMonitoringSchema = Yup.object().shape({
   dataLayerType: Yup.array()
     .required('This field cannot be empty'),
-  requestTitle: Yup.string().optional(),
+  requestTitle: Yup.string().required('This field cannot be empty'),
   mapSelection: Yup.string()
     .typeError('Selected area must be valid Well-Known Text')
     .required('This field cannot be empty'),
-  mapSelectionArea: Yup.boolean()
+  isMapAreaValid: Yup.boolean()
     .oneOf([true], `Selected Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
+  isMapAreaValidWKT: Yup.boolean()
+    .oneOf([true], 'Geometry needs to be valid WKT'),
   startDate: Yup.date()
     .typeError('Must be valid date selection')
     .required('This field cannot be empty')
@@ -93,7 +96,8 @@ const PostEventMonitoring = ({
               dataLayerType: '', 
               requestTitle: '', 
               mapSelection: '', 
-              mapSelectionArea: true,
+              isMapAreaValid: null,
+              isMapAreaValidWKT: null,
               startDate: null, 
               endDate: null, 
             }}
@@ -157,7 +161,7 @@ const PostEventMonitoring = ({
                                 <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
                               ))}
                             </Input>
-                            {getError('dataLayerType', errors, touched, false)}
+                            {touched.dataLayerType && getError('dataLayerType', errors, touched, false)}
                           </FormGroup>
                         </Row> 
                         <Row>
@@ -173,7 +177,7 @@ const PostEventMonitoring = ({
                               value={values.requestTitle}
                               placeholder="[type request title]"
                             />
-                            {getError('requestTitle', errors, touched, false)}
+                            {touched.requestTitle && getError('requestTitle', errors, touched, false)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -188,24 +192,25 @@ const PostEventMonitoring = ({
                               rows="5"
                               className={errors.mapSelection ? 'is-invalid' : ''}
                               onChange={({ target: { value } }) => {
+                                // NB not called if map is used, only if paste/type into field
                                 setFieldValue('mapSelection', value);
-
                                 if (!value) {
-                                  setFieldValue('mapSelectionArea', true);
+                                  setFieldValue('isMapAreaValid', true);
                                 } else {
                                   const features = wkt.parse(value);
-  
-                                  const areaIsValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-  
-                                  setFieldValue('mapSelectionArea', areaIsValid);
+                                  const isGeometryValid = isWKTValid(value);
+                                  setFieldValue('isMapAreaValidWKT', isGeometryValid);
+                                  const isAreaValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
+                                  setFieldValue('isMapAreaValid', isAreaValid);
                                 }
                               }}
                               onBlur={handleBlur}
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
-                            {getError('mapSelection', errors, touched, false)}
-                            {getError('mapSelectionArea', errors, touched, false, true)}
+                            {touched.mapSelection && getError('mapSelection', errors, touched, false)}
+                            {values.isMapAreaValid === false ? getError('isMapAreaValid', errors, touched, false, true) : null}
+                            {values.isMapAreaValidWKT === false && values.mapSelection !== '' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -226,7 +231,7 @@ const PostEventMonitoring = ({
                                   onBlur={handleBlur} 
                                   value={values.startDate}
                                 />
-                                {getError('startDate', errors, touched, false)}
+                                {touched.startDate && getError('startDate', errors, touched, false)}
                               </Col>
                               <Col>
                                 <Label for="endDate">
@@ -243,7 +248,7 @@ const PostEventMonitoring = ({
                                   onBlur={handleBlur}
                                   value={values.endDate}
                                 />
-                                {getError('endDate', errors, touched, false)}
+                                {touched.endDate && getError('endDate', errors, touched, false)}
                               </Col>
                             </Row>
                           </FormGroup>
@@ -274,9 +279,12 @@ const PostEventMonitoring = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection
-                          setCoordinates={(wktConversion, areaIsValid) => {
+                          setCoordinates={(wktConversion, isAreaValid) => {
+                            // called if map is used to draw polygon
+                            // we asssume it's valid WKT
                             setFieldValue('mapSelection', wktConversion);
-                            setFieldValue('mapSelectionArea', areaIsValid);
+                            setFieldValue('isMapAreaValid', isAreaValid);
+                            setFieldValue('isMapAreaValidWKT', true);
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}

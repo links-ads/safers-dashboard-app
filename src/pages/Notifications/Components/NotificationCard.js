@@ -2,22 +2,27 @@ import React from 'react';
 import PropTypes from 'prop-types'
 import { Badge, Card, CardBody, CardText, Col, Row } from 'reactstrap';
 import { formatDate } from '../../../store/utility';
+import { useTranslation } from 'react-i18next';
 
 const BADGETYPES = {
-  STATUS : 'status',
-  TYPE : 'type'
+  STATUS: { 'attr': 'status', 'style': 'notification-status-badge' },
+  TYPE: { 'attr': 'type', 'style': 'notification-type-badge' },
+  SCOPE_RESTRICTION: { 'attr': 'scopeRestriction', 'style': 'notification-scope-restriction-badge' }
 }
 
 const NotificatonCard = ({ card }) => {
 
+  const { t } = useTranslation();
+
   const getBadge = (badgeType) => {
+
     return (
-      <Badge className={`me-1 rounded-pill alert-badge ${badgeType == BADGETYPES.TYPE ? 'notification-badge' : 'to-verify'}  py-0 px-2 pb-0 mb-0`}>
-        <span>{badgeType == BADGETYPES.TYPE ? card.type : card.status}</span>
+      <Badge className={`me-1 rounded-pill notification-badge ${badgeType.style}  py-0 px-2 pb-0 mb-0`}>
+        <span>{card[badgeType.attr]}</span>
       </Badge>
     )
   }
-  
+
 
   return (
     <Card
@@ -28,8 +33,9 @@ const NotificatonCard = ({ card }) => {
             <Row>
               <Col>
                 <CardText className='mb-2'>
-                  { card?.type ? getBadge(BADGETYPES.TYPE) : null }
-                  { card?.status ? getBadge(BADGETYPES.STATUS) : null }
+                  {card?.type ? getBadge(BADGETYPES.TYPE) : null}
+                  {card?.status ? getBadge(BADGETYPES.STATUS) : null}
+                  {card?.scopeRestriction ? getBadge(BADGETYPES.SCOPE_RESTRICTION) : null}
                 </CardText>
               </Col>
             </Row>
@@ -37,7 +43,12 @@ const NotificatonCard = ({ card }) => {
               <Col>
                 <Row>
                   <CardText className='card-desc'>
-                    {card.description}
+                    {card?.description}
+                  </CardText>
+                </Row>
+                <Row>
+                  <CardText className='card-desc text-capitalize'>
+                    {t('location')}: {card?.country}
                   </CardText>
                 </Row>
                 <Row className='mt-2'>
@@ -48,7 +59,7 @@ const NotificatonCard = ({ card }) => {
                   </Col>
                   <Col>
                     <CardText className='bg-danger'>
-                      <span className='float-end alert-source-text me-2 text-uppercase'>{card.source}</span>
+                      <span className='float-end notification-source-text me-2 text-uppercase'>{card.source}</span>
                     </CardText>
                   </Col>
                 </Row>

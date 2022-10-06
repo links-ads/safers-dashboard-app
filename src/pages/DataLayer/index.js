@@ -56,6 +56,11 @@ const DataLayerDashboard = () => {
 
   const { operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions } = selectOptions;
 
+  const resetMap = () => {
+    setCurrentLayer(undefined);
+    setBitmapLayer(undefined);
+  };
+
   //fetch data to populate 'Source' and 'Domain' selects
   useEffect(() => {
     (async () => {
@@ -101,8 +106,8 @@ const DataLayerDashboard = () => {
 
   useEffect(() => {
     // Remove comments if it's required to send date-time range and bbox value for filter
-    // const dateRangeParams = dateRange 
-    //   ? { start: dateRange[0], end: dateRange[1] } 
+    // const dateRangeParams = dateRange
+    //   ? { start: dateRange[0], end: dateRange[1] }
     //   : {};
 
     const options = {
@@ -177,8 +182,8 @@ const DataLayerDashboard = () => {
     }
   }, [activeTab, currentLayer, metaData]);
 
-  // This takes an array of objects and recursively filters out sibling 
-  // objects that do not match the search term. It retains the original data 
+  // This takes an array of objects and recursively filters out sibling
+  // objects that do not match the search term. It retains the original data
   // shape and all children of matching objects.
   const searchDataTree = (data, str) => {
     const searchTerm = str.toLowerCase();
@@ -212,9 +217,17 @@ const DataLayerDashboard = () => {
   }
 
   const getBitmapLayer = (url) => {
+    /*
+     extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
+     if this is an on-demand layer, it will have been hard-coded by the backend
+    */
+    const urlSearchParams = new URLSearchParams(url);
+    const urlParams = Object.fromEntries(urlSearchParams.entries());
+    const bounds = urlParams?.bbox ? urlParams.bbox.split(',').map(Number) : dataLayerBoundingBox
+
     return {
       id: 'bitmap-layer',
-      bounds: dataLayerBoundingBox,
+      bounds: bounds,
       image: url,
       _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
       opacity: 0.5
@@ -230,7 +243,8 @@ const DataLayerDashboard = () => {
           position: 'absolute',
           zIndex: 1,
           bottom: '0px',
-          width: '100%',
+          width: '70%',
+          margin: '0 15%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center'
@@ -324,6 +338,7 @@ const DataLayerDashboard = () => {
     getSlider,
     getLegend,
     bitmapLayer,
+    setViewState,
     viewState,
     handleResetAOI,
     timeSeriesData,
@@ -332,7 +347,8 @@ const DataLayerDashboard = () => {
     timestamp,
     showLegend,
     legendUrl: currentLayer?.legend_url,
-    sliderChangeComplete
+    sliderChangeComplete,
+    resetMap
   };
 
   return (

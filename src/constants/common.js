@@ -7,3 +7,8 @@ export const MAP_TYPES = {
   PEOPLE: 'people',
   MISSIONS: 'missions'
 }
+
+export const GENERAL = {
+  MILLISEC_TO_SECOND: 1000, 
+  API_GAP: 60 // API is called before this many seconds, given any latency i.e. /oauth2/refresh to receive token before its expiry
+}

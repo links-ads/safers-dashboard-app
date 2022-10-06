@@ -1,22 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Input } from 'reactstrap';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { fetchEndpoint } from '../../../../helpers/apiHelper'
+import { getFilteredRec } from '../../filter';
+import { setFilterdReports } from '../../../../store/reports/action';
 
 //i18N
 import { withTranslation } from 'react-i18next';
 
 const SortSection = ({ 
   t, 
-  sortOrder, 
-  setSortOrder,
-  setCategory,
-  missionId,
-  setMissionId
+  boundingBox,
+  mapFilter
 }) => {
-  const { allReports } = useSelector(state => state.reports);
+  const { allReports: OrgReportList, sortOrder, category, missionId } = useSelector(state => state.reports);
   const [selectOptions, setSelectOptions] = useState([]);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if(OrgReportList.length){
+      applyFilter(sortOrder, category, missionId);
+    }
+  }, [OrgReportList, boundingBox])
+
+  const applyFilter = (sortOrder, category, missionId) => {
+    const filters = { 
+      categories: category,
+      mission_id:  missionId
+    };
+  
+    const sort = { fieldName: 'timestamp', order: sortOrder };
+    const actFiltered = getFilteredRec(OrgReportList, filters, sort);
+    dispatch(setFilterdReports({data:actFiltered, filterParams:{missionId, category, sortOrder, boundingBox, mapFilter}}));
+  }
 
   //fetch data to populate 'Categories' select
   useEffect(() => {
@@ -39,7 +56,7 @@ const SortSection = ({
               let filterValue = value;
               if (value === 'true') filterValue = true;
               if (value === 'false') filterValue = false;
-              setMissionId(filterValue);
+              applyFilter(sortOrder, category, filterValue)
             }}
           >
             <option value=''>{t('All')}</option>
@@ -49,7 +66,7 @@ const SortSection = ({
         </Col>
         <Col xl={5} />
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {allReports.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {OrgReportList.length}</span>
         </Col>
       </Row>
       <hr />
@@ -61,7 +78,7 @@ const SortSection = ({
             name="sortByDate"
             placeholder="Sort By : Date"
             type="select"
-            onChange={(e) => setSortOrder(e.target.value)}
+            onChange={(e) => applyFilter(e.target.value, category, missionId)}
             value={sortOrder}
           >
             <option value={'desc'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
@@ -75,13 +92,14 @@ const SortSection = ({
             name="category"
             type="select"
             onChange={({ target: { value } }) => 
-              setCategory(value.toLowerCase())
+              applyFilter(sortOrder, value, missionId)
             }
             data-testid='reportAlertCategory'
+            value={category}
           >
             <option value={''}>{t('Category')}: All</option>
             {selectOptions.map((option) => (
-              <option key={option} value={option}>{t('Category')}: {option}</option>
+              <option key={option.toLowerCase()} value={option}>{t('Category')}: {option}</option>
             ))}
           </Input>
         </Col>
@@ -96,7 +114,9 @@ SortSection.propTypes = {
   setCategory: PropTypes.func,
   t: PropTypes.func,
   missionId: PropTypes.string,
-  setMissionId: PropTypes.func
+  setMissionId: PropTypes.func,
+  boundingBox: PropTypes.string,
+  mapFilter: PropTypes.object
 }
 
 export default withTranslation(['common'])(SortSection);

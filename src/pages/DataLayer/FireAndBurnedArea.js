@@ -19,6 +19,7 @@ import {
   bboxPolygon
 } from '@turf/turf';
 import wkt from 'wkt';
+import { isWKTValid } from '../../store/utility';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
   return this.test(
@@ -45,9 +46,13 @@ Yup.addMethod(Yup.date, 'max30Days', function (message) {
 const fireAndBurnedAreaSchema = Yup.object().shape({
   dataLayerType: Yup.array()
     .required('This field cannot be empty'),
-  requestTitle: Yup.string().optional(),
+  requestTitle: Yup.string().required('This field cannot be empty'),
   mapSelection: Yup.string()
     .required('This field cannot be empty'),
+  isMapAreaValid: Yup.boolean()
+    .oneOf([true], 'Sorry, this would give too large an output. Reduce the spatial resolution or try a smaller area.'),
+  isMapAreaValidWKT: Yup.boolean()
+    .oneOf([true], 'Geometry needs to be valid WKT'),
   startDate: Yup.date()
     .typeError('Must be valid date selection')
     .required('This field cannot be empty'),
@@ -65,7 +70,6 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
     .min(10, 'Should be at least 10')
     .max(60, 'Should be at most 60')
     .optional('Should be between 10 and 60'), 
-  isAreaValid: Yup.boolean().oneOf([true], 'Sorry, this would give too large an output. Reduce the spatial resolution or try a smaller area.')
 });
 
 const FireAndBurnedArea = ({ 
@@ -103,14 +107,18 @@ const FireAndBurnedArea = ({
     {id: 36001, name:'Burned area delineation map'}
   ];
 
-  const checkRasterSizeWithinLimits = (features, spatial_resolution) => {
+  const isRasterSizeWithinLimits = (features, spatial_resolution) => {
+    // check to make sure that raster is never more than MAX_RASTER_SIZE by MAX_RASTER_SIZE
     const MAX_RASTER_SIZE = 15000;
-
     if (features) {
-      // get Bounding box as that's what affects raster size
-      const bboxExtents = bbox(features);
-      const bboxArea = getFeatureArea(bboxPolygon(bboxExtents));
+      // we get different shapes if we draw on map or change resolution
+      const polygon = features?.geometry ? features.geometry : features;
+      // use Bounding box as that's what affects raster size, not the polygon area
+      const bboxArea = getFeatureArea(bboxPolygon(bbox(polygon)));
       const maxValidArea = Math.pow(spatial_resolution * MAX_RASTER_SIZE,2.0);
+      // Keeping these commented out as they're really useful for troubleshooting
+      //console.log(`max valid area at ${spatial_resolution} is ${maxValidArea/1000000.0}km^2, selection is ${bboxArea/1000000}km^2`)
+      //console.log(`is valid is ${bboxArea < maxValidArea}`)
       return bboxArea < maxValidArea;
     }
     return false;
@@ -124,8 +132,9 @@ const FireAndBurnedArea = ({
             initialValues={{ 
               dataLayerType: '', 
               requestTitle: '', 
-              mapSelection: '', 
-              isAreaValid: false,
+              mapSelection: '',
+              isMapAreaValid: null,
+              isMapAreaValidWKT: null,
               startDate: null, 
               endDate: null, 
               frequency: '',
@@ -191,7 +200,7 @@ const FireAndBurnedArea = ({
                                 <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
                               ))}
                             </Input>
-                            {getError('dataLayerType', errors, touched)}
+                            {touched.dataLayerType && getError('dataLayerType', errors, touched)}
                           </FormGroup>
                         </Row> 
                         <Row>
@@ -210,7 +219,7 @@ const FireAndBurnedArea = ({
                               value={values.requestTitle}
                               placeholder="[Type Request Title]"
                             />
-                            {getError('requestTitle', errors, touched, false)}
+                            {touched.requestTitle && getError('requestTitle', errors, touched, false)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -226,22 +235,26 @@ const FireAndBurnedArea = ({
                               className={errors.mapSelection ? 'is-invalid' : ''}
                               onChange={({ target: { value } }) => {
                                 setFieldValue('mapSelection', value);
-
                                 if (!value) {
-                                  setFieldValue('isAreaValid', true);
+                                  setFieldValue('isMapAreaValid', true);
                                 } else {
+                                  const isGeometryValid = isWKTValid(value);
+                                  setFieldValue('isMapAreaValidWKT', isGeometryValid);
                                   const features = wkt.parse(value);
-                                  const areaIsValid = checkRasterSizeWithinLimits(features, values.resolution);
-  
-                                  setFieldValue('isAreaValid', areaIsValid);
+                                  if (features) {
+                                    const isAreaValid = isRasterSizeWithinLimits(features, values.resolution);
+                                    setFieldValue('isMapAreaValid', isAreaValid);
+                                    setFieldValue('isMapAreaValidWKT', true);
+                                  }
                                 }
                               }}
                               onBlur={handleBlur}
                               value={values.mapSelection}
                               placeholder='Enter Well Known Text or draw a polygon on the map'
                             />
-                            {getError('mapSelection', errors, touched, false)}
-                            {getError('isAreaValid', errors, touched, false, true)}
+                            {touched.mapSelection && getError('mapSelection', errors, touched, false)}
+                            {values.isMapAreaValid === false && values.mapSelection !== '' ? getError('isMapAreaValid', errors, touched, false, true) : null}
+                            {values.isMapAreaValidWKT === false && values.mapSelection !== '' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -279,7 +292,7 @@ const FireAndBurnedArea = ({
                                   onBlur={handleBlur}
                                   value={values.endDate}
                                 />
-                                {getError('endDate', errors, touched, false)}
+                                {touched.endDate && getError('endDate', errors, touched, false)}
                               </Col>
                             </Row>
                           </FormGroup>
@@ -305,7 +318,7 @@ const FireAndBurnedArea = ({
                                   placeholder='[type here]'
                                   value={values.frequency}
                                 />
-                                {getError('frequency', errors, touched, false)}
+                                {touched.frequency && getError('frequency', errors, touched, false)}
                               </Col>
                               <Col xl={5} />
                             </Row>
@@ -329,18 +342,18 @@ const FireAndBurnedArea = ({
                                     errors.resolution ? 'is-invalid' : ''
                                   }
                                   onChange={({ target: { value } }) => {
-                                    const parsedValue = parseInt(value);
-
+                                    // NB not called if map is used, only if paste/type into field
+                                    const parsedValue = parseInt(value); 
                                     setFieldValue('resolution', parsedValue);
-
-                                    const areaIsValid = checkRasterSizeWithinLimits(values.mapSelection, parsedValue);
-
-                                    setFieldValue('isAreaValid', areaIsValid);
+                                    const features = wkt.parse(values.mapSelection);
+                                    const isAreaValid = isRasterSizeWithinLimits(features, parsedValue,true);
+                                    setFieldValue('isMapAreaValid', isAreaValid);
+                                    setFieldValue('isMapAreaValidWKT', true);
                                   }}
                                   onBlur={handleBlur}
                                   value={values.resolution}
                                 />
-                                {getError('resolution', errors, touched, false)}
+                                {touched.resolution && getError('resolution', errors, touched, false)}
                               </Col>
                               <Col xl={5} />
                             </Row>
@@ -372,16 +385,18 @@ const FireAndBurnedArea = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection 
-                          setCoordinates={(wktConversion, areaIsValid) => {
+                          setCoordinates={(wktConversion, isAreaValid) => {
+                            // called if map is used to draw polygon
+                            // we asssume it's valid WKT
                             setFieldValue('mapSelection', wktConversion);
-                            setFieldValue('isAreaValid', areaIsValid);
+                            setFieldValue('isMapAreaValid', isAreaValid);
+                            setFieldValue('isMapAreaValidWKT', true);
                           }}
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}
                           handleAreaValidation={feature => {
-                            const areaIsValid = checkRasterSizeWithinLimits(feature, values.resolution);
-
-                            return areaIsValid;
+                            const isAreaValid = isRasterSizeWithinLimits(feature, values.resolution);
+                            return isAreaValid;
                           }}
                         />
                       </Card>
