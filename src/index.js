@@ -7,12 +7,15 @@ import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import store, { persistor } from './store';
+import { MapProvider } from './components/BaseMap/MapContext';
 
 ReactDOM.render(
   <Provider store={store}>
     <PersistGate persistor={persistor}>
       <BrowserRouter>
-        <App />
+        <MapProvider>
+          <App />
+        </MapProvider>
       </BrowserRouter>
     </PersistGate>
   </Provider>,

@@ -80,6 +80,9 @@ const DataLayer = ({
         </Card>
       );
     }
+
+    const layers = bitmapLayer ? [new BitmapLayer(bitmapLayer), tempLayerData] : [];
+
     return(
       <Card className='map-card mb-0' style={{ height: 670 }}>
         {showLegend && !!legendUrl ? (
@@ -99,7 +102,7 @@ const DataLayer = ({
           currentViewState={currentViewState}
         >
           <BaseMap
-            layers={[new BitmapLayer(bitmapLayer), tempLayerData]}
+            layers={layers}
             initialViewState={viewState}
             widgets={[]}
             screenControlPosition='top-right'

@@ -1,11 +1,18 @@
+/* eslint-disable indent */
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 import { useDispatch } from 'react-redux';
+import _ from 'lodash';
+
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { deleteMapRequest, getAllMapRequests } from '../../store/datalayer/action';
 import JsonFormatter from '../../components/JsonFormatter'
+import { useMap } from '../../components/BaseMap/MapContext';
+
+import { PolygonLayer } from 'deck.gl';
+import { getBoundedViewState } from '../../helpers/mapHelper';
 
 const PropsPanel = (node) => {
   const node2=node.node;
@@ -18,18 +25,32 @@ const PropsPanel = (node) => {
   );
 };
 
-const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
+const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, setBboxLayers, resetMap }) => {
   const dispatch = useDispatch();
+  const { deckRef } = useMap();
 
   const [itemState, setItemState] = useState({});
   const [itemPropsState, setItemPropsState] = useState({});
-  const [selectedLayer, setSelectedLayer] = useState({});
+  const [selectedLayer, setSelectedLayer] = useState(null);
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
   const [isDeleteMapRequestDialogOpen, setIsDeleteMapRequestDialogOpen] = useState(false);
   const [mapRequestToDelete, setMapRequestToDelete] = useState(null);
   
   useEffect(() => {
-    setCurrentLayer(selectedLayer);
+    setCurrentLayer(() => {
+      // Strip off anything after the final period. e.g. 2.2.1 -> 2.2
+      const key = selectedLayer?.key.replace(/([.])(?!.*[.]).*$/, '');
+      // Flatten all the child nodes and find the one matching the key.
+      const node = _(data).map('children').flatten().find({ key })
+      // If a node was found, get it's bbox and pan/zoom the map to that
+      // location.
+      if (node) {
+        const newViewState = getBoundedViewState(deckRef, node?.bbox);
+        setViewState({ ...viewState, ...newViewState });
+      }
+
+      return selectedLayer;
+    });
   }, [selectedLayer]);
 
   const toggleExpandCollapse = id => {
@@ -46,8 +67,6 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
     }));
   }
 
-
-  const handleClick = (node, id) => node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
 
   const mapper = (nodes, parentId, lvl) => {
     return nodes?.map((node, index) => {
@@ -66,8 +85,29 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
         <>
           <ListGroupItem
             key={index + id}
-            className={`dl-item ${node.children && itemState[id] || selectedLayer.title == node.title ? 'selected' : ''} mb-2`}
-            onClick={() => handleClick(node,id)}
+            className={`dl-item ${node.children && itemState[id] || selectedLayer?.title == node.title ? 'selected' : ''} mb-2`}
+            onClick={() => {
+              setCurrentLayer(oldLayer => {
+                if (oldLayer) {
+                  resetMap();
+                } else {
+                // Strip off anything after the final period. e.g. 2.2.1 -> 2.2
+                const key = selectedLayer?.key.replace(/([.])(?!.*[.]).*$/, '');
+                // Flatten all the child nodes and find the one matching the key.
+                const node = _(data).map('children').flatten().find({ key })
+                // If a node was found, get it's bbox and pan/zoom the map to that
+                // location.
+                if (node) {
+                  const newViewState = getBoundedViewState(deckRef, node?.bbox);
+                  setViewState({ ...viewState, ...newViewState });
+                }
+
+                return selectedLayer;
+              }
+              });
+
+              return node.children ? toggleExpandCollapse(id) : setSelectedLayer(node)
+            }}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
               if (node.info_url) {
@@ -105,6 +145,38 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t }) => {
               { node?.parameters ? 
                 <>
                   &nbsp;<i onClick={(event)=>{event.stopPropagation(); toggleExpandCollapseProps(id)} } className={'bx bx-cog font-size-16'} />
+                  &nbsp;<i onClick={async (event)=> {
+                    event.stopPropagation();
+
+                    // It's possible that there can be multiple AOI polygons,
+                    // so I have re-coded this to extract the feature collection
+                    // and for each feature, create a polygon to display on the
+                    // map
+                    const featureCollection = node.geometry_features;
+
+                    const aoisLayer = new PolygonLayer({
+                      id: 'request-bbox',
+                      data: featureCollection.features,
+                      getPolygon: d => d.geometry.coordinates,
+                      getLineColor: [60, 140, 0],
+                      getFillColor: [80, 80, 80, 70],
+                    });
+
+                    setBboxLayers(oldLayers => {
+                      const isExistingLayer = oldLayers.find(layer => layer.id === layer.id);
+
+                      if (!isExistingLayer) {
+                        const layers = [aoisLayer];
+                        return layers;
+                      }
+
+                      return []
+                    });
+
+                    const newViewState = getBoundedViewState(deckRef, node.bbox);
+
+                    setViewState({ ...viewState, ...newViewState })
+                  }} className="bx bx-map font-size-16" />
                   &nbsp;<i onClick={async (event)=> {
                     event.stopPropagation();
                     setMapRequestToDelete(node)
@@ -202,6 +274,10 @@ OnDemandTreeView.propTypes = {
   setCurrentLayer: PropTypes.func,
   node: PropTypes.any,
   t: PropTypes.func,
+  setViewState: PropTypes.func,
+  viewState: PropTypes.any,
+  setBboxLayers: PropTypes.func,
+  resetMap: PropTypes.func,
 }
 
 
