@@ -172,17 +172,9 @@ const areCoordsValid = ([long, lat], epsgCode=EPSG_3857) => {
 
 export const isWKTValid = (str) => {
   const geoObj = wkt.parse(str);
-  let hasValidCoord = true;
   if(geoObj){
     const geometryArr = geoObj.geometries ? geoObj.geometries : [geoObj]; // Supports for both collections and single geometry
-    geometryArr.every(geometry => {
-      geometry.coordinates[0].every(coord => {
-        hasValidCoord = areCoordsValid(coord);
-        return hasValidCoord;// Loop continues if a valid coord else break
-      })
-      return hasValidCoord; // Loop continues if a valid coord else break
-    })
-    return hasValidCoord; // fn return 
+    return geometryArr.every(geometry => (geometry.coordinates[0].every(coord => areCoordsValid(coord))))
   }
   return !!geoObj;
 }
