@@ -185,10 +185,10 @@ const VALIDATORS = {
 
 const areCoordsValid = ([long, lat], epsgCode=EPSG_3857) => {
   let isValid = false;
-  const selValidator = VALIDATORS[epsgCode];
+  const currentValidator = VALIDATORS[epsgCode];
 
-  if (typeof long === 'number' && long >= selValidator.longitude[0] && long <= selValidator.longitude[1]) {
-    if (typeof lat === 'number' && lat >= selValidator.latitude[0] && lat <= selValidator.latitude[1]) {
+  if (typeof long === 'number' && long >= currentValidator.longitude[0] && long <= currentValidator.longitude[1]) {
+    if (typeof lat === 'number' && lat >= currentValidator.latitude[0] && lat <= currentValidator.latitude[1]) {
       isValid = true;
     }
   }
