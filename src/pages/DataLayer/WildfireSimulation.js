@@ -18,7 +18,7 @@ import {
 } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css'
 import moment from 'moment';
-import { isWKTValid } from '../../store/utility';
+import { isWKTValid } from '../../helpers/mapHelper';
 
 
 // 40,000 km2 = 40 million m2

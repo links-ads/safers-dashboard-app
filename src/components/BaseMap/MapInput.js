@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Input, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import PropTypes from 'prop-types'
-import { isWKTValid } from '../../store/utility';
+import { isWKTValid } from '../../helpers/mapHelper';
 import { withTranslation } from 'react-i18next'
 
 const MapInput = (props) => {

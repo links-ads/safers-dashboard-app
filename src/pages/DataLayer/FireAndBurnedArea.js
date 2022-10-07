@@ -19,7 +19,7 @@ import {
   bboxPolygon
 } from '@turf/turf';
 import wkt from 'wkt';
-import { isWKTValid } from '../../store/utility';
+import { isWKTValid } from '../../helpers/mapHelper';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
   return this.test(
