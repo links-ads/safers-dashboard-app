@@ -62,23 +62,20 @@ export const getPolygonLayer = (aoi) => {
   }))
 }
 
-const selectedItemIsInGroup = (feature, selectedItem) => {
-  const clusterCoords = feature.geometry.coordinates;
-  const selectedItemCoords = selectedItem.center.map(coord => coord.toFixed(2));
-
-  return clusterCoords.every(
-    coord => selectedItemCoords.includes(coord.toFixed(2))
-  );
+const selectedItemIsInGroup = (selectedItem, clusterLeaves) => {
+  const clusterLeafIds = clusterLeaves.map(feature => feature.properties.id);
+  return clusterLeafIds.includes(selectedItem.id);
 }
 
-export const getAlertIconColorFromContext = (mapType, feature, selectedItem = {}) => {
+export const getAlertIconColorFromContext = (mapType, feature, selectedItem = {}, clusterLeaves) => {
+
   let color = DARK_GRAY;
   if (!feature.properties.id && !selectedItem.id) {
     return color;
   }
 
   if (feature.properties.cluster) {
-    if (selectedItemIsInGroup(feature, selectedItem)) {
+    if (selectedItemIsInGroup(selectedItem, clusterLeaves)) {
       return ORANGE;
     }
   }
@@ -114,7 +111,7 @@ export const getIconLayer = (alerts, mapType, markerName='alert', dispatch, setV
     dispatch,
     setViewState,
     getPosition: (feature) => feature.geometry.coordinates,
-    getPinColor: (feature) => getAlertIconColorFromContext(mapType, feature, selectedItem),
+    getPinColor: (feature, clusterLeaves) => getAlertIconColorFromContext(mapType, feature, selectedItem, clusterLeaves),
     icon: markerName,
     iconColor: '#ffffff',
     clusterIconSize: 35,
