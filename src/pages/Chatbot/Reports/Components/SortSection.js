@@ -66,7 +66,7 @@ const SortSection = ({
         </Col>
         <Col xl={5} />
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {filteredReports.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {filteredReports ? filteredReports.length : 0}</span>
         </Col>
       </Row>
       <hr />
