@@ -114,7 +114,7 @@ export class PinLayer extends CompositeLayer {
       feature.properties.cluster &&
       this._getExpansionZoom(feature) <= this.props.maxZoom
     )
-      return [246, 190, 0, 255];
+      return COLOR_PRIMARY;
     if (typeof this.props.getPinColor === 'function') {
       const { index } = this.state;
       const leaves = index.getLeaves(feature.properties.cluster_id)
