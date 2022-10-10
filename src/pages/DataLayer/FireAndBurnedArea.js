@@ -20,6 +20,7 @@ import {
 } from '@turf/turf';
 import wkt from 'wkt';
 import { isWKTValid } from '../../helpers/mapHelper';
+import MapInput from '../../components/BaseMap/MapInput';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
   return this.test(
@@ -48,7 +49,7 @@ const fireAndBurnedAreaSchema = Yup.object().shape({
     .required('This field cannot be empty'),
   requestTitle: Yup.string().required('This field cannot be empty'),
   mapSelection: Yup.string()
-    .required('This field cannot be empty'),
+    .required('Should contain a valid Well-Known Text'),
   isMapAreaValid: Yup.boolean()
     .oneOf([true], 'Sorry, this would give too large an output. Reduce the spatial resolution or try a smaller area.'),
   isMapAreaValidWKT: Yup.boolean()
@@ -122,6 +123,22 @@ const FireAndBurnedArea = ({
       return bboxArea < maxValidArea;
     }
     return false;
+  }
+
+  const onChange  = (value, values, setFieldValue) => {
+    setFieldValue('mapSelection', value);
+    if (!value) {
+      setFieldValue('isMapAreaValid', true);
+    } else {
+      const isGeometryValid = isWKTValid(value);
+      setFieldValue('isMapAreaValidWKT', isGeometryValid);
+      const features = wkt.parse(value);
+      if (features) {
+        const isAreaValid = isRasterSizeWithinLimits(features, values.resolution);
+        setFieldValue('isMapAreaValid', isAreaValid);
+        setFieldValue('isMapAreaValidWKT', true);
+      }
+    }
   }
 
   return (
@@ -227,30 +244,16 @@ const FireAndBurnedArea = ({
                             <Label for="mapSelection">
                               {t('mapSelection')}
                             </Label>
-                            <Input
+                            <MapInput
+                              className={errors.mapSelection ? 'is-invalid' : ''}
                               id="mapSelection"
                               name="mapSelection"
                               type="textarea"
                               rows="5"
-                              className={errors.mapSelection ? 'is-invalid' : ''}
-                              onChange={({ target: { value } }) => {
-                                setFieldValue('mapSelection', value);
-                                if (!value) {
-                                  setFieldValue('isMapAreaValid', true);
-                                } else {
-                                  const isGeometryValid = isWKTValid(value);
-                                  setFieldValue('isMapAreaValidWKT', isGeometryValid);
-                                  const features = wkt.parse(value);
-                                  if (features) {
-                                    const isAreaValid = isRasterSizeWithinLimits(features, values.resolution);
-                                    setFieldValue('isMapAreaValid', isAreaValid);
-                                    setFieldValue('isMapAreaValidWKT', true);
-                                  }
-                                }
-                              }}
+                              setCoordinates={(value) => {  onChange(value, values, setFieldValue);  }}
                               onBlur={handleBlur}
-                              value={values.mapSelection}
-                              placeholder='Enter Well Known Text or draw a polygon on the map'
+                              coordinates={values.mapSelection}
+                              placeholder={t('mapSelectionTxtGuide')}
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
                             {values.isMapAreaValid === false && values.mapSelection !== '' ? getError('isMapAreaValid', errors, touched, false, true) : null}

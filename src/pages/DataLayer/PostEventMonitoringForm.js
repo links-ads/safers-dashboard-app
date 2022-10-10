@@ -18,6 +18,7 @@ import {
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import { isWKTValid } from '../../helpers/mapHelper';
+import MapInput from '../../components/BaseMap/MapInput';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {
@@ -37,7 +38,7 @@ const postEventMonitoringSchema = Yup.object().shape({
   requestTitle: Yup.string().required('This field cannot be empty'),
   mapSelection: Yup.string()
     .typeError('Selected area must be valid Well-Known Text')
-    .required('This field cannot be empty'),
+    .required('Should contain a valid Well-Known Text'),
   isMapAreaValid: Yup.boolean()
     .oneOf([true], `Selected Area must be no greater than ${MAX_GEOMETRY_AREA.label}`),
   isMapAreaValidWKT: Yup.boolean()
@@ -86,6 +87,20 @@ const PostEventMonitoring = ({
     {id: '37003', name: 'Generate soil recovery map (Vegetation Index)'},
     {id: '37002', name: 'Generate burn severity map (dNBR)'},
   ];
+
+  const onChange  = (value, setFieldValue) => {
+    // NB not called if map is used, only if paste/type into field
+    setFieldValue('mapSelection', value);
+    if (!value) {
+      setFieldValue('isMapAreaValid', true);
+    } else {
+      const features = wkt.parse(value);
+      const isGeometryValid = isWKTValid(value);
+      setFieldValue('isMapAreaValidWKT', isGeometryValid);
+      const isAreaValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
+      setFieldValue('isMapAreaValid', isAreaValid);
+    }
+  }
 
   return (
     <Row>
@@ -185,28 +200,16 @@ const PostEventMonitoring = ({
                             <Label for="mapSelection">
                               {t('mapSelection')}
                             </Label>
-                            <Input
+                            <MapInput
+                              className={errors.mapSelection ? 'is-invalid' : ''}
                               id="mapSelection"
                               name="mapSelection"
                               type="textarea"
                               rows="5"
-                              className={errors.mapSelection ? 'is-invalid' : ''}
-                              onChange={({ target: { value } }) => {
-                                // NB not called if map is used, only if paste/type into field
-                                setFieldValue('mapSelection', value);
-                                if (!value) {
-                                  setFieldValue('isMapAreaValid', true);
-                                } else {
-                                  const features = wkt.parse(value);
-                                  const isGeometryValid = isWKTValid(value);
-                                  setFieldValue('isMapAreaValidWKT', isGeometryValid);
-                                  const isAreaValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-                                  setFieldValue('isMapAreaValid', isAreaValid);
-                                }
-                              }}
+                              setCoordinates={(value) => {  onChange(value, setFieldValue);  }}
                               onBlur={handleBlur}
-                              value={values.mapSelection}
-                              placeholder='Enter Well Known Text or draw a polygon on the map'
+                              coordinates={values.mapSelection}
+                              placeholder={t('mapSelectionTxtGuide')}
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
                             {values.isMapAreaValid === false ? getError('isMapAreaValid', errors, touched, false, true) : null}
