@@ -17,7 +17,7 @@ const MapInput = ({isValidFormat=()=>{}, setCoordinates, coordinates, t, ...rest
       isValidFormat(true);
       setShowError(false);
     }
-  }, [coordinates, showError])
+  }, [coordinates, showError, setWktStr, isValidFormat, setShowError])
 
   const onChange = (val) => {
     const isValid = isWKTValid(val);
