@@ -5,7 +5,6 @@ import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstra
 import { 
   area as getFeatureArea 
 } from '@turf/turf';
-import wkt from 'wkt';
 import { Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
@@ -17,7 +16,6 @@ import {
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
-import { isWKTValid } from '../../helpers/mapHelper';
 import MapInput from '../../components/BaseMap/MapInput';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
@@ -62,6 +60,7 @@ const PostEventMonitoring = ({
   t,
   handleResetAOI,
   backToOnDemandPanel,
+  mapInputOnChange
 }) => {
   const dispatch = useDispatch();
   const error = useSelector(state => state.auth.error);
@@ -87,20 +86,6 @@ const PostEventMonitoring = ({
     {id: '37003', name: 'Generate soil recovery map (Vegetation Index)'},
     {id: '37002', name: 'Generate burn severity map (dNBR)'},
   ];
-
-  const onChange  = (value, setFieldValue) => {
-    // NB not called if map is used, only if paste/type into field
-    setFieldValue('mapSelection', value);
-    if (!value) {
-      setFieldValue('isMapAreaValid', true);
-    } else {
-      const features = wkt.parse(value);
-      const isGeometryValid = isWKTValid(value);
-      setFieldValue('isMapAreaValidWKT', isGeometryValid);
-      const isAreaValid = Math.ceil(getFeatureArea(features)) <= MAX_GEOMETRY_AREA.value;
-      setFieldValue('isMapAreaValid', isAreaValid);
-    }
-  }
 
   return (
     <Row>
@@ -206,7 +191,7 @@ const PostEventMonitoring = ({
                               name="mapSelection"
                               type="textarea"
                               rows="5"
-                              setCoordinates={(value) => {  onChange(value, setFieldValue);  }}
+                              setCoordinates={(value) => {  mapInputOnChange(value, setFieldValue);  }}
                               onBlur={handleBlur}
                               coordinates={values.mapSelection}
                               placeholder={t('mapSelectionTxtGuide')}
@@ -313,6 +298,7 @@ PostEventMonitoring.propTypes = {
   t: PropTypes.any,
   handleResetAOI: PropTypes.func,
   backToOnDemandPanel: PropTypes.func,
+  mapInputOnChange: PropTypes.func,
 
 }
 
