@@ -18,6 +18,11 @@ import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { setFilteredAlerts } from '../../store/alerts/action';
+import { MAP } from '../../constants/common';
+
+import wkt from 'wkt';
+import { isWKTValid } from '../../helpers/mapHelper';
+import { area as getFeatureArea,  bbox, bboxPolygon } from '@turf/turf';
 
 const DataLayerDashboard = () => {
   const { t } = useTranslation();
@@ -351,6 +356,41 @@ const DataLayerDashboard = () => {
     resetMap
   };
 
+  const isRasterSizeWithinLimits = (features, spatial_resolution) => {
+    // check to make sure that raster is never more than MAX_RASTER_SIZE by MAX_RASTER_SIZE
+    const MAX_RASTER_SIZE = 15000;
+    if (features) {
+      // we get different shapes if we draw on map or change resolution
+      const polygon = features?.geometry ? features.geometry : features;
+      // use Bounding box as that's what affects raster size, not the polygon area
+      const bboxArea = getFeatureArea(bboxPolygon(bbox(polygon)));
+      const maxValidArea = Math.pow(spatial_resolution * MAX_RASTER_SIZE,2.0);
+      // Keeping these commented out as they're really useful for troubleshooting
+      //console.log(`max valid area at ${spatial_resolution} is ${maxValidArea/1000000.0}km^2, selection is ${bboxArea/1000000}km^2`)
+      //console.log(`is valid is ${bboxArea < maxValidArea}`)
+      return bboxArea < maxValidArea;
+    }
+    return false;
+  }
+
+  const mapInputOnChange  = (value, setFieldValue, checkRasterSize=false, resolution=null) => {
+    // NB not called if map is used, only if paste/typed into field
+    setFieldValue('mapSelection', value);
+    if (!value) {
+      setFieldValue('isMapAreaValid', true);
+    } else {
+      const isGeometryValid = isWKTValid(value);
+      setFieldValue('isMapAreaValidWKT', isGeometryValid);
+      const features = wkt.parse(value);
+      if (features) {
+        const isAreaValid = checkRasterSize ? isRasterSizeWithinLimits(features, resolution) : Math.ceil(getFeatureArea(features)) <= MAP.MAX_GEOMETRY_AREA.value;
+        setFieldValue('isMapAreaValid', isAreaValid);
+        setFieldValue('isMapAreaValidWKT', true);
+      }
+    }
+  }
+
+
   return (
     <div className='page-content'>
       <div className='mx-2 sign-up-aoi-map-bg'>
@@ -437,6 +477,8 @@ const DataLayerDashboard = () => {
                 t={t}
                 handleResetAOI={handleResetAOI}
                 backToOnDemandPanel={backToOnDemandPanel}
+                mapInputOnChange={mapInputOnChange}
+                isRasterSizeWithinLimits={isRasterSizeWithinLimits}
               />
             ) : null}
           </TabPane>
@@ -447,6 +489,7 @@ const DataLayerDashboard = () => {
                 t={t}
                 handleResetAOI={handleResetAOI}
                 backToOnDemandPanel={backToOnDemandPanel}
+                mapInputOnChange={mapInputOnChange}
               />
             ) : null}
           </TabPane>
@@ -457,6 +500,7 @@ const DataLayerDashboard = () => {
                 t={t}
                 handleResetAOI={handleResetAOI}
                 backToOnDemandPanel={backToOnDemandPanel}
+                mapInputOnChange={mapInputOnChange}
               />
             ) : null}
           </TabPane>
