@@ -19,7 +19,7 @@ const SortSection = ({
   setSortOrder,
   activitiesOptions
 }) => {
-  const { allPeople } = useSelector(state => state.people);
+  const { allPeople, filteredPeople } = useSelector(state => state.people);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -37,7 +37,7 @@ const SortSection = ({
       <Row className=''>
         <Col></Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {allPeople.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} { filteredPeople ? filteredPeople.length : 0 }</span>
         </Col>
       </Row>
       <hr />

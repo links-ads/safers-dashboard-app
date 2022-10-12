@@ -10,7 +10,7 @@ import { setFilterdMissions } from '../../../../store/missions/action';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrder, setTogglePolygonMap }) => {
-  const { allMissions } = useSelector(state => state.missions);
+  const { allMissions, filteredMissions } = useSelector(state => state.missions);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrd
           </Button>
         </Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {allMissions.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} { filteredMissions ? filteredMissions.length : 0 }</span>
         </Col>
       </Row>
       <hr />
