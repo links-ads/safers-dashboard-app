@@ -27,6 +27,9 @@ const MAX_GEOMETRY_AREA = {
   value: 40000000000
 };
 
+// increase the bbox used to view Wildfire layers by 20 kms
+const DEFAULT_WILDFIRE_GEOMETRY_BUFFER = 20
+
 const TIME_LIMIT = 72;
 
 const TABLE_HEADERS = [
@@ -157,6 +160,7 @@ const WildfireSimulation = ({
     const payload = {
       data_types: layerTypes.map(item => item.id),
       geometry: transformedGeometry,
+      geometry_buffer_size: DEFAULT_WILDFIRE_GEOMETRY_BUFFER,
       title: formData.simulationTitle,
       parameters: {
         description: formData.simulationDescription,
