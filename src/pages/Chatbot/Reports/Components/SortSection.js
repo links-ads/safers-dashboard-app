@@ -14,7 +14,7 @@ const SortSection = ({
   boundingBox,
   mapFilter
 }) => {
-  const { allReports: OrgReportList, sortOrder, category, missionId } = useSelector(state => state.reports);
+  const { allReports: OrgReportList, filteredReports=[], sortOrder, category, missionId } = useSelector(state => state.reports);
   const [selectOptions, setSelectOptions] = useState([]);
   const dispatch = useDispatch();
 
@@ -66,7 +66,7 @@ const SortSection = ({
         </Col>
         <Col xl={5} />
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {OrgReportList.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} {filteredReports.length}</span>
         </Col>
       </Row>
       <hr />

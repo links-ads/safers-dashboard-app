@@ -18,7 +18,7 @@ import {
 } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css'
 import moment from 'moment';
-import { isWKTValid } from '../../store/utility';
+import { isWKTValid } from '../../helpers/mapHelper';
 
 
 // 40,000 km2 = 40 million m2
@@ -26,6 +26,9 @@ const MAX_GEOMETRY_AREA = {
   label: '40,000 square kilometres',
   value: 40000000000
 };
+
+// increase the bbox used to view Wildfire layers by 20 kms
+const DEFAULT_WILDFIRE_GEOMETRY_BUFFER = 20
 
 const TIME_LIMIT = 72;
 
@@ -157,6 +160,7 @@ const WildfireSimulation = ({
     const payload = {
       data_types: layerTypes.map(item => item.id),
       geometry: transformedGeometry,
+      geometry_buffer_size: DEFAULT_WILDFIRE_GEOMETRY_BUFFER,
       title: formData.simulationTitle,
       parameters: {
         description: formData.simulationDescription,

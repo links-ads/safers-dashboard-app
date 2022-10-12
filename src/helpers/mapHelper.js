@@ -2,6 +2,7 @@ import { FlyToInterpolator } from 'deck.gl';
 import { PolygonLayer } from '@deck.gl/layers';
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
 import { fitBounds } from '@math.gl/web-mercator';
+import wkt from 'wkt';
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
@@ -162,4 +163,44 @@ const getShiftedLongitude = (lng, zoomLevel, width = 150) => {
   const shiftDegreesEW = shiftMetersEW * DEGREES_PER_METER;
   return (lng + shiftDegreesEW);
 
+}
+
+export const EPSG_4326 = 'EPSG4326';
+export const EPSG_3857 = 'EPSG3857';
+
+/* EPSG support ranges - validator obj  */
+
+const VALIDATORS = {
+  [EPSG_4326]: {
+    longitude: [-180, 180],
+    latitude: [-90, 90]
+  },
+  [EPSG_3857]: {
+    longitude: [-180, 180],
+    latitude: [-85.06, 85.06]
+  },
+};
+
+/* Validate WKT and coordinates */
+
+const areCoordsValid = ([long, lat], epsgCode=EPSG_3857) => {
+  let isValid = false;
+  const currentValidator = VALIDATORS[epsgCode];
+
+  if (typeof long === 'number' && long >= currentValidator.longitude[0] && long <= currentValidator.longitude[1]) {
+    if (typeof lat === 'number' && lat >= currentValidator.latitude[0] && lat <= currentValidator.latitude[1]) {
+      isValid = true;
+    }
+  }
+
+  return isValid;
+}
+
+export const isWKTValid = (str) => {
+  const geoObj = wkt.parse(str);
+  if(geoObj){
+    const geometryArr = geoObj.geometries ? geoObj.geometries : [geoObj]; // Supports for both collections and single geometry
+    return geometryArr.every(geometry => (geometry.coordinates[0].every(coord => areCoordsValid(coord))))
+  }
+  return !!geoObj;
 }
