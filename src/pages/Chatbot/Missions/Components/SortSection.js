@@ -14,9 +14,9 @@ const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrd
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(allMissions.length > 0) {
+    if (allMissions.length > 0) {
       const filters = { status: missionStatus };
-      const sort = {fieldName: 'start', order: sortOrder};
+      const sort = { fieldName: 'start', order: sortOrder };
       const actFiltered = getFilteredRec(allMissions, filters, sort);
       dispatch(setFilterdMissions(actFiltered));
     }
@@ -65,7 +65,7 @@ const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrd
           >
             <option value={''} >--Status--</option>
             <option value="Created" >{t('created').toUpperCase()}</option>
-            <option value="TakenInCharge" >{t('taken in charge').toUpperCase()}</option>
+            <option value="Taken In Charge" >{t('taken in charge').toUpperCase()}</option>
             <option value="Completed" >{t('completed').toUpperCase()}</option>
           </Input>
         </Col>
