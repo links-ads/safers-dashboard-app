@@ -10,13 +10,13 @@ import { setFilterdMissions } from '../../../../store/missions/action';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrder, setTogglePolygonMap }) => {
-  const { allMissions } = useSelector(state => state.missions);
+  const { allMissions, filteredMissions } = useSelector(state => state.missions);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if(allMissions.length > 0) {
+    if (allMissions.length > 0) {
       const filters = { status: missionStatus };
-      const sort = {fieldName: 'start', order: sortOrder};
+      const sort = { fieldName: 'start', order: sortOrder };
       const actFiltered = getFilteredRec(allMissions, filters, sort);
       dispatch(setFilterdMissions(actFiltered));
     }
@@ -33,7 +33,7 @@ const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrd
           </Button>
         </Col>
         <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {allMissions.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} { filteredMissions ? filteredMissions.length : 0 }</span>
         </Col>
       </Row>
       <hr />
@@ -65,7 +65,7 @@ const SortSection = ({ t, missionStatus, sortOrder, setMissionStatus, setSortOrd
           >
             <option value={''} >--Status--</option>
             <option value="Created" >{t('created').toUpperCase()}</option>
-            <option value="TakenInCharge" >{t('taken in charge').toUpperCase()}</option>
+            <option value="Taken In Charge" >{t('taken in charge').toUpperCase()}</option>
             <option value="Completed" >{t('completed').toUpperCase()}</option>
           </Input>
         </Col>

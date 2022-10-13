@@ -9,7 +9,7 @@ import { setFilterdComms } from '../../../../store/comms/action';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({ t, commStatus, sortOrder, setcommStatus, setSortOrder, target, setTarget, setTogglePolygonMap }) => {
-  const { allComms } = useSelector(state => state.comms);
+  const { allComms, filteredComms } = useSelector(state => state.comms);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const SortSection = ({ t, commStatus, sortOrder, setcommStatus, setSortOrder, ta
           </Button>
         </Col>
         <Col className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} {allComms.length}</span>
+          <span className='my-auto alert-report-text'>{t('Results')} { filteredComms ? filteredComms.length : 0 }</span>
         </Col>
       </Row>
       <hr />
