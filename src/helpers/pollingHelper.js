@@ -12,7 +12,8 @@ import {
   getAllNotifications,
   setNewNotificationState,
   getAllMapRequests,
-  setNewMapRequestState
+  setNewMapRequestState,
+  getAllPeople,
 } from '../store/appAction';
 import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 
@@ -73,6 +74,7 @@ const pollingHelper = (props) => {
     dispatch(getAllEventAlerts({...eventParams, ...dateRangeParams}));
     dispatch(getAllNotifications({...notificationParams, ...dateRangeParams}));
     dispatch(getAllMapRequests({...mapRequestParams, ...dateRangeParams}));
+    dispatch(getAllPeople(dateRangeParams));
   };
 
   useEffect(() => {
@@ -91,12 +93,16 @@ const pollingHelper = (props) => {
 
 
   useSetNewAlerts((noOfMessages) => {
-    dispatch(setNewAlertState(true, false, noOfMessages));
-  }, allAlerts, filteredAlerts, isAlertPageActive, [allAlerts])
+    if(!isAlertPageActive){
+      dispatch(setNewAlertState(true, false, noOfMessages));
+    }
+  }, allAlerts, filteredAlerts, [allAlerts])
 
   useSetNewAlerts((noOfMessages) => {
-    dispatch(setNewEventState(true, false, noOfMessages));
-  }, allEvents, filteredEvents, isEventPageActive, [allEvents])
+    if(!isEventPageActive){
+      dispatch(setNewEventState(true, false, noOfMessages));
+    }
+  }, allEvents, filteredEvents, [allEvents])
 
   useEffect(() => {
     const newNotificationsCount = allNotifications.length

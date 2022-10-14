@@ -2,7 +2,7 @@ import * as actionTypes from './types';
 import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
 
-export const getAllPeople = (options, feFilters) => async (dispatch) => {
+export const getAllPeople = (options, feFilters=null) => async (dispatch) => {
   const response = await api.get(endpoints.chatbot.people.getAll, options);
   if (response.status === 200) {
     return dispatch(getPeopleSuccess(response.data, feFilters));
