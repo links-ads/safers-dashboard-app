@@ -92,7 +92,7 @@ const pollingHelper = (props) => {
     /*
       filteredAlerts - one user viewed
       allAlerts - one fetched by polling - latest data set
-      Compare two array with 'id' of each object and see if any difference which becomes new alerts
+      Compare two array with each object and see if any difference which becomes new alerts
     */
     const comparedArr = allAlerts.filter(obj => !filteredAlerts.includes(obj));
     if (comparedArr.length) {
