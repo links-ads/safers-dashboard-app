@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import _ from 'lodash';
+
 import {
   useDispatch,
   useSelector
@@ -29,6 +31,7 @@ const pollingHelper = (props) => {
   // Alerts
   const {
     allAlerts,
+    filteredAlerts,
     params: alertParams,
     isPageActive: isAlertPageActive,
   } = useSelector(state => state.alerts);
@@ -50,7 +53,6 @@ const pollingHelper = (props) => {
   const {config, dateRange} = useSelector(state => state.common);
   const pollingFrequency = config ? config.polling_frequency : undefined;
 
-  const [currentAlertCount, setCurrentAlertCount] = useState(undefined);
   const [currentEventCount, setCurrentEventCount] = useState(undefined);
   const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
   const [currentMapRequestCount, setCurrentMapRequestCount] = useState(undefined);
@@ -88,13 +90,17 @@ const pollingHelper = (props) => {
   }, [alertParams, eventParams, notificationParams]);
 
   useEffect(() => {
-    const newAlertsCount = allAlerts.length
-    if (currentAlertCount && newAlertsCount > currentAlertCount) {
-      let difference = newAlertsCount - currentAlertCount;
-      if (!isAlertPageActive)
-        dispatch(setNewAlertState(true, false, difference));
+    /*
+      filteredAlerts - one user viewed
+      allAlerts - one fetched by polling - latest data set
+      Compare two array with 'id' of each object and see if any difference which becomes new alerts
+    */
+    const comparedArr = _.differenceBy(allAlerts, filteredAlerts, 'id');
+    if (comparedArr.length > 0 ) {
+      if (!isAlertPageActive){
+        dispatch(setNewAlertState(true, false, comparedArr.length));
+      }
     }
-    setCurrentAlertCount(newAlertsCount);
   }, [allAlerts]);
   
   useEffect(() => {
