@@ -14,6 +14,7 @@ import {
   getAllMapRequests,
   setNewMapRequestState
 } from '../store/appAction';
+import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 
 const MILLISECONDS = 1000;
 const pollingHelper = (props) => {
@@ -38,6 +39,7 @@ const pollingHelper = (props) => {
   // Events
   const { 
     allAlerts: allEvents, 
+    filteredAlerts: filteredEvents,
     params: eventParams, 
     isPageActive: isEventPageActive 
   } = useSelector(state => state.eventAlerts);
@@ -52,7 +54,6 @@ const pollingHelper = (props) => {
   const {config, dateRange} = useSelector(state => state.common);
   const pollingFrequency = config ? config.polling_frequency : undefined;
 
-  const [currentEventCount, setCurrentEventCount] = useState(undefined);
   const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
   const [currentMapRequestCount, setCurrentMapRequestCount] = useState(undefined);
 
@@ -88,29 +89,14 @@ const pollingHelper = (props) => {
     }
   }, [alertParams, eventParams, notificationParams]);
 
-  useEffect(() => {
-    /*
-      filteredAlerts - one user viewed
-      allAlerts - one fetched by polling - latest data set
-      Compare two arrays with each object and see if any difference which becomes new alerts
-    */
-    const comparedArr = allAlerts.filter(obj => !filteredAlerts.includes(obj));
-    if (comparedArr.length) {
-      if (!isAlertPageActive){
-        dispatch(setNewAlertState(true, false, comparedArr.length));
-      }
-    }
-  }, [allAlerts]);
-  
-  useEffect(() => {
-    const newEventsCount = allEvents.length
-    if (currentEventCount && newEventsCount > currentEventCount) {
-      let difference = newEventsCount - currentEventCount;
-      if (!isEventPageActive)
-        dispatch(setNewEventState(true, false, difference));
-    }
-    setCurrentEventCount(newEventsCount);
-  }, [allEvents]);
+
+  useSetNewAlerts((noOfMessages) => {
+    dispatch(setNewAlertState(true, false, noOfMessages));
+  }, allAlerts, filteredAlerts, isAlertPageActive, [allAlerts])
+
+  useSetNewAlerts((noOfMessages) => {
+    dispatch(setNewEventState(true, false, noOfMessages));
+  }, allEvents, filteredEvents, isEventPageActive, [allEvents])
 
   useEffect(() => {
     const newNotificationsCount = allNotifications.length
