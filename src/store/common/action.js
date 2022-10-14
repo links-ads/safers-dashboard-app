@@ -40,15 +40,14 @@ export const getRoleList = () => async (dispatch) => {
     return dispatch(getRoleListFail(response.data));
 };
 
-
 export const getTeamList = () => async (dispatch) => {
   const response = await api.get(endpoints.common.teams);
-  if (response.status === 200) {
+  if (api.isSuccessResp(response.status)) {
     return dispatch(getTeamListSuccess(response.data));
   }
-  else
-    return dispatch(getTeamListFail(response.data));
+  return dispatch(getTeamListFail(response.data));
 };
+
 const getConfigSuccess = (config) => {
   return {
     type: actionTypes.GET_CONFIG_SUCCESS,

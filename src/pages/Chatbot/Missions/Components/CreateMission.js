@@ -119,8 +119,8 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       const payload = {
         title,
         description: desc,
-        start: dateRange[0] ? dateRange[0] : null,
-        end: dateRange[1] ? dateRange[1] : null,
+        start: dateRange[0] ?? null,
+        end: dateRange[1] ?? null,
         source: 'Chatbot',
         geometry: coordinates ? coordinates : null,
         coordinatorTeamId: teamId ? parseInt(teamId) : null,
