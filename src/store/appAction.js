@@ -23,6 +23,7 @@ export {
 export {
   getOrgList,
   getRoleList,
+  getTeamList,
   getAllAreas,
   generalInProgress,
   getConfig,
