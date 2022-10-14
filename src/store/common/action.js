@@ -40,6 +40,15 @@ export const getRoleList = () => async (dispatch) => {
     return dispatch(getRoleListFail(response.data));
 };
 
+
+export const getTeamList = () => async (dispatch) => {
+  const response = await api.get(endpoints.common.teams);
+  if (response.status === 200) {
+    return dispatch(getTeamListSuccess(response.data));
+  }
+  else
+    return dispatch(getTeamListFail(response.data));
+};
 const getConfigSuccess = (config) => {
   return {
     type: actionTypes.GET_CONFIG_SUCCESS,
@@ -49,6 +58,18 @@ const getConfigSuccess = (config) => {
 const getConfigFail = (error) => {
   return {
     type: actionTypes.GET_CONFIG_FAIL,
+    payload: error
+  };
+};
+const getTeamListSuccess = (roles) => {
+  return {
+    type: actionTypes.CM_GET_TEAMLIST_SUCCESS,
+    payload: roles
+  };
+};
+const getTeamListFail = (error) => {
+  return {
+    type: actionTypes.CM_GET_TEAMLIST_FAIL,
     payload: error
   };
 };
