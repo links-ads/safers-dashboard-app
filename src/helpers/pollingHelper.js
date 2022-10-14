@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import _ from 'lodash';
 
 import {
   useDispatch,
@@ -95,8 +94,8 @@ const pollingHelper = (props) => {
       allAlerts - one fetched by polling - latest data set
       Compare two array with 'id' of each object and see if any difference which becomes new alerts
     */
-    const comparedArr = _.differenceBy(allAlerts, filteredAlerts, 'id');
-    if (comparedArr.length > 0 ) {
+    const comparedArr = allAlerts.filter(obj => !filteredAlerts.includes(obj));
+    if (comparedArr.length) {
       if (!isAlertPageActive){
         dispatch(setNewAlertState(true, false, comparedArr.length));
       }
