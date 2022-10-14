@@ -21,7 +21,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   const dispatch = useDispatch();
 
   const { orgList = [] } = useSelector(state => state.common);
-  const { info: user } = useSelector(state => state.user);
+  const { info:user } = useSelector(state => state.user);
   const { missionCreated } = useSelector(state => state.missions);
   const { teamList } = useSelector(state => state.common);
 
@@ -54,7 +54,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   }, [missionCreated]);
 
   useEffect(() => {
-    if (coordinates) {
+    if(coordinates){
       validateCoord();
     }
   }, [coordinates, validCoords]);
@@ -67,27 +67,27 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   }, []);
 
   const handleDateRangePicker = (dates) => {
-    setDateRange(dates.map(date =>
+    setDateRange(dates.map(date => 
       moment(date).format('YYYY-MM-DD'))
     );
   }
 
-  const validateField = (attrib, val, returnErr = false) => {
-    const tempError = { ...errors };
-    if (!val || val == '') {
+  const validateField = (attrib, val, returnErr=false) => {
+    const tempError = {...errors};
+    if(!val || val == ''){
       tempError[attrib] = t('This field is required');
     }
     else {
       delete tempError[attrib];
     }
-    if (returnErr) {
+    if(returnErr){
       return tempError
     }
     setErrors(tempError);
   }
 
-  const validateCoord = (returnErr = false) => {
-    const tempError = { ...errors };
+  const validateCoord = (returnErr=false) => {
+    const tempError = {...errors};
     if (!coordinates || coordinates === '') {
       tempError['coordinates'] = t('Select Area', { ns: 'chatBot' });
     }
@@ -98,7 +98,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       delete tempError['coordinates'];
     }
 
-    if (returnErr) {
+    if(returnErr){
       return tempError
     }
     setErrors(tempError);
@@ -115,7 +115,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   const submitMsg = () => {
     validate();
-    if (Object.keys(errors).length === 0) {
+    if(Object.keys(errors).length === 0){
       const payload = {
         title,
         description: desc,
@@ -138,8 +138,8 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         name="title"
         placeholder={t('Mission Title', { ns: 'chatBot' })}
         type="text"
-        onChange={(e) => { setTitle(e.target.value); }}
-        onBlur={(e) => { validateField('title', e.target.value) }}
+        onChange={(e) => {setTitle(e.target.value);}}
+        onBlur={(e) => {validateField('title', e.target.value)}}
         value={title}
       />
       {getError('title', errors, errors, false)}
@@ -154,7 +154,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         defaultDateRange={dateRange}
         isTooltipInput={true}
         showIcons={true}
-        onChange={(dates) => { validateField('dateRange', dates) }}
+        onChange={(dates) => {validateField('dateRange', dates)}}
       />
       {getError('dateRange', errors, errors, false)}
     </FormGroup>
@@ -231,8 +231,8 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         type='textarea'
         name="mission-description"
         placeholder={t('Mission Description', { ns: 'chatBot' })}
-        onChange={(e) => { setDesc(e.target.value) }}
-        onBlur={(e) => { validateField('desc', e.target.value) }}
+        onChange={(e) => {setDesc(e.target.value)}}
+        onBlur={(e)=>{validateField('desc', e.target.value)}}
         value={desc}
         rows="10"
       />
