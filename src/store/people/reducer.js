@@ -8,8 +8,8 @@ const initialState = {
   alertSource: 'all',
   error: false,
   success: null,
-  filteredPeople: null,
-  peopleDetail: null
+  peopleDetail: null,
+  isPageActive: false,
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -24,15 +24,21 @@ const peopleReducer = (state = initialState, action) => {
 };
 
 const getPeopleSuccess = (state, action) => {
-  const {activity, status, sortOrder} = action.feFilters;
-  const filters = {activity, status};
-  const sort = {fieldName: 'timestamp', order: sortOrder};
-  const filteredPeople = getFilteredRec(action.payload, filters, sort);
-  const updatedState = {
-    filteredPeople,
+
+  let updatedState = {
     allPeople: action.payload,
+    filteredPeople: !state.filteredPeople ?  action.payload : state.filteredPeople, //For initialization / the component load  , make filteredPeople equal to filteredPeople
     error: false,
   }
+
+  if(action.feFilters){
+    const {activity, status, sortOrder} = action.feFilters;
+    const filters = {activity, status};
+    const sort = {fieldName: 'timestamp', order: sortOrder};
+    const filteredPeople = getFilteredRec(action.payload, filters, sort);
+    updatedState = {...updatedState , filteredPeople};
+  }
+
   return updateObject(state, updatedState);
 }
 
