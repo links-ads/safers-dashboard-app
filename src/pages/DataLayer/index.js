@@ -1,6 +1,7 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
+//import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
+import { FlyToInterpolator } from 'deck.gl';
 import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
 import { useTranslation } from 'react-i18next';
 
@@ -234,7 +235,7 @@ const DataLayerDashboard = () => {
       id: 'bitmap-layer',
       bounds: bounds,
       image: url,
-      _imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
+      //_imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
       opacity: 0.5
     }
   }
