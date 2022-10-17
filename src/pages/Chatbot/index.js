@@ -15,7 +15,7 @@ const Chatbot = () => {
 
   const [customActiveTab, setCustomActiveTab] = useState();
   const { config } = useSelector(state => state.common);
-  const pollingFrequency = config ? config.polling_frequency * GENERAL.MILLISEC_TO_SECOND : 0;
+  const pollingFrequency = config?.polling_frequency * GENERAL.MILLISEC_TO_SECOND ?? 0;
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
