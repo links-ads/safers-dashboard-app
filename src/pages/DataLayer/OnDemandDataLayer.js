@@ -246,7 +246,6 @@ const OnDemandDataLayer = ({
               setInformation={setInformation}
               dispatch={dispatch}
               menuId={'OnDemandDataLayerMapMenu'}
-              featureOnly={true}
             >
               <BaseMap
                 layers={layers}
