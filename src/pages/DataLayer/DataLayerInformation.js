@@ -288,7 +288,7 @@ const DataLayerInformationComponent = ({
   }
 
   const generateGeoJson = (data, event) => {
-    if (event.rightButton && currentLayer?.id) {
+    if (event.rightButton && currentLayer) {
       const layer = getIconLayer(
         [{ geometry: { coordinates: data.coordinate } }],
         null,
@@ -323,7 +323,7 @@ const DataLayerInformationComponent = ({
       {React.cloneElement(children, { onClick: generateGeoJson })}
     </ContextMenuTrigger>
     <ContextMenu key={contextMenuKey} id={menuId} className="geo-menu">
-      {currentLayer?.id && <><MenuItem className="geo-menuItem" onClick={toggleDisplayLayerInfo}>
+      {currentLayer && <><MenuItem className="geo-menuItem" onClick={toggleDisplayLayerInfo}>
         Get Feature Info
       </MenuItem>
       {!featureOnly && <MenuItem className="geo-menuItem" onClick={toggleTimeSeriesChart}>
