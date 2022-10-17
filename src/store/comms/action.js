@@ -27,11 +27,7 @@ const createMsgFail = (error) => {
 export const getAllComms = (options, feFilters=null, calledFromPage=false) => async (dispatch) => {
   const response = await api.get(endpoints.chatbot.comms.getAll, options);
   if (response.status === 200) {
-    let data = response.data;
-    if(!calledFromPage){
-      data = [{'id':'68','name':'Communication 68','status':'Expired','target':'Professional','start':'2022-09-26T00:00:00Z','end':'2022-09-27T00:00:00Z','source':'Chatbot','message':'Test 26/09/22','source_organization':'Test Organization','target_organizations':[],'geometry':{'type':'Point','coordinates':[9.167399877601,41.856605070376]},'location':[9.167399877601236,41.85660507037579]},{'id':'36','name':'Communication 36','status':'Expired','target':'Public','start':'2022-08-28T00:00:00Z','end':'2022-08-31T00:00:00Z','source':'Chatbot','message':'This is a public communication. Read me via the Chatbot!','source_organization':'Test Organization','target_organizations':[],'geometry':{'type':'Point','coordinates':[9.025506,42.358615]},'location':[9.025506,42.358615]},{'id':'99','name':'Communication 68','status':'Expired','target':'Professional','start':'2022-09-26T00:00:00Z','end':'2022-09-27T00:00:00Z','source':'Chatbot','message':'Test 26/09/22','source_organization':'Test Organization','target_organizations':[],'geometry':{'type':'Point','coordinates':[9.167399877601,41.856605070376]},'location':[9.167399877601236,41.85660507037579]}];
-    }
-    return dispatch(getCommsSuccess(data, feFilters, calledFromPage));
+    return dispatch(getCommsSuccess(response.data, feFilters, calledFromPage));
   }
   else
     return dispatch(getCommsFail(response.error));
