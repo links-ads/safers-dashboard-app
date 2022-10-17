@@ -53,7 +53,7 @@ const Comms = () => {
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
-    dispatch(getAllComms(reportParams, {sortOrder, status:commStatus, target}));
+    dispatch(getAllComms(reportParams, {sortOrder, status:commStatus, target}, true));
   }
 
   useEffect(() => {

@@ -4,12 +4,12 @@ import { getFilteredRec } from '../../pages/Chatbot/filter';
 
 const initialState = {
   allPeople: [],
+  pollingData: [],
   sortByDate: 'desc',
   alertSource: 'all',
   error: false,
   success: null,
-  peopleDetail: null,
-  isPageActive: false,
+  peopleDetail: null
 };
 
 const peopleReducer = (state = initialState, action) => {
@@ -18,6 +18,7 @@ const peopleReducer = (state = initialState, action) => {
   case actionTypes.GET_PEOPLE_FAIL: return getPeopleFail(state, action);
   case actionTypes.RESET_PEOPLE_STATE: return resetPeopleResponseState(state, action);
   case actionTypes.SET_PEOPLE_FILTERS: return setFilters(state, action);
+  case actionTypes.REFRESH_PEOPLE: return refreshData(state, action);
   default:
     return state;
   }
@@ -25,22 +26,34 @@ const peopleReducer = (state = initialState, action) => {
 
 const getPeopleSuccess = (state, action) => {
 
-  let updatedState = {
-    allPeople: action.payload,
-    filteredPeople: !state.filteredPeople ?  action.payload : state.filteredPeople, //For initialization / the component load  , make filteredPeople equal to filteredPeople
-    error: false,
-  }
+  let updatedState = {};
 
-  if(action.feFilters){
-    const {activity, status, sortOrder} = action.feFilters;
+  if(action.payload.calledFromPage){
+    const {activity, status, sortOrder} = action.payload.feFilters;
     const filters = {activity, status};
     const sort = {fieldName: 'timestamp', order: sortOrder};
-    const filteredPeople = getFilteredRec(action.payload, filters, sort);
-    updatedState = {...updatedState , filteredPeople};
+    const filteredPeople = getFilteredRec(action.payload.alerts, filters, sort);
+    updatedState = {...updatedState , filteredPeople, allPeople: action.payload.alerts};
+  }
+  else {
+    updatedState = {
+      pollingData: action.payload.alerts,
+      error: false,
+    }
   }
 
   return updateObject(state, updatedState);
 }
+
+const refreshData = (state, action) => {
+  const updatedState = {
+    allPeople: action.payload,
+    filteredPeople: null,
+    error: false,
+  }
+  return updateObject(state, updatedState);
+}
+
 
 const setFilters = (state, action) => {
   const updatedState = {

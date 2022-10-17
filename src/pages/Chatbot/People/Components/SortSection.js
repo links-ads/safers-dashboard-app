@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 //i18N
 import { withTranslation } from 'react-i18next';
 
-import { setFilters } from '../../../../store/people/action';
+import { setFilters, refreshPeople } from '../../../../store/people/action';
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
 import { getFilteredRec }  from '../../filter';
 import toastr from 'toastr';
@@ -21,7 +21,7 @@ const SortSection = ({
   setSortOrder,
   activitiesOptions
 }) => {
-  const { allPeople, filteredPeople=[] } = useSelector(state => state.people);
+  const { allPeople, filteredPeople, pollingData } = useSelector(state => state.people);
   const dispatch = useDispatch();
   const [numberOfUpdates, setNumberOfUpdates] = useState(undefined);
 
@@ -37,25 +37,30 @@ const SortSection = ({
   useSetNewAlerts((numberOfUpdates) => {
     setNumberOfUpdates(numberOfUpdates);
     if(numberOfUpdates > 0)
-      toastr.success('People list updated. Please refresh the list.', '', { preventDuplicates: true, });
-  }, allPeople, filteredPeople, [allPeople, filteredPeople])
+      toastr.success(t('update-notification', { ns: 'chatBot' }));
+  }, pollingData, allPeople, [pollingData, allPeople])
+
+  const refreshPollingData = (data) => {
+    setSortOrder('desc');
+    setStatus('');
+    setActivity('');
+    dispatch(refreshPeople(data));
+  }
 
   return (
     <>
 
       <Row className=''>
-        <Col>              
-          <Button className={`btn mt-1 py-0 px-1 ${numberOfUpdates > 0 ? 'bg-danger': ''}`}
-            onClick={() => {
-              dispatch(setFilters(allPeople));
-            }}
+        <Col></Col>
+        <Col className="d-flex justify-content-end">
+          {numberOfUpdates > 0 && 
+          <Button className="btn mt-1 py-0 px-1 me-2 bg-danger"
+            onClick={() => refreshPollingData(pollingData)}
             aria-label="refresh-results"
           >
-            <i className="mdi mdi-sync"></i>{numberOfUpdates > 0 && <span>{numberOfUpdates} new update(s)</span>}
-          </Button>
-        </Col>
-        <Col xl={3} className="d-flex justify-content-end">
-          <span className='my-auto alert-report-text'>{t('Results')} { filteredPeople ? filteredPeople.length : 0 }</span>
+            <i className="mdi mdi-sync"></i><span>{numberOfUpdates} {t('new-updates')}</span>
+          </Button>}
+          <span className='my-auto alert-report-text'>{t('Results')} { filteredPeople ? filteredPeople.length : allPeople.length }</span>
         </Col>
       </Row>
       <hr />

@@ -65,7 +65,7 @@ const People = () => {
       status,
       sortOrder
     }
-    dispatch(getAllPeople(peopleParams, feFilters));
+    dispatch(getAllPeople(peopleParams, feFilters, true));
   }, [dateRange, boundingBox])
 
   useEffect(() => {
