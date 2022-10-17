@@ -23,7 +23,6 @@ const DataLayerInformationComponent = ({
   tempLayerData,
   setTempLayerData,
   setInformation,
-  featureOnly = false,
   currentViewState,
   dispatch
 }) => {
@@ -40,6 +39,7 @@ const DataLayerInformationComponent = ({
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [contextMenuKey, setContextMenuKey] = useState(0);
   const chartContainerRef = useRef(null);
+  const timeseriesExists = !!currentLayer?.timeseries_url;
 
   let title = currentLayer?.title
   if (currentLayer?.units) {
@@ -110,7 +110,7 @@ const DataLayerInformationComponent = ({
         </div>
       </Card>}
 
-      {layerData && !featureOnly &&
+      {layerData && timeseriesExists &&
         <div ref={chartContainerRef}>
           {chartValues?.length > 0 && <Card color="dark default-panel mt-3">
             <h4 className='ps-3 pt-3 mb-2'><i className='meta-close' onClick={clearInfo}>x</i></h4>
@@ -326,7 +326,7 @@ const DataLayerInformationComponent = ({
       {currentLayer && <><MenuItem className="geo-menuItem" onClick={toggleDisplayLayerInfo}>
         Get Feature Info
       </MenuItem>
-      {!featureOnly && <MenuItem className="geo-menuItem" onClick={toggleTimeSeriesChart}>
+      {timeseriesExists && <MenuItem className="geo-menuItem" onClick={toggleTimeSeriesChart}>
           Time Series Chart
       </MenuItem>}</>}
     </ContextMenu>
@@ -340,7 +340,6 @@ DataLayerInformationComponent.propTypes = {
   tempLayerData: PropTypes.any,
   setTempLayerData: PropTypes.any,
   setInformation: PropTypes.any,
-  featureOnly: PropTypes.bool,
   currentViewState: PropTypes.any,
   dispatch: PropTypes.any,
 }
