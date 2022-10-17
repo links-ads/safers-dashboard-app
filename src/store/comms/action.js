@@ -24,21 +24,21 @@ const createMsgFail = (error) => {
     payload: error
   };
 };
-export const getAllComms = (options, feFilters=null, calledFromPage=false) => async (dispatch) => {
+export const getAllComms = (options, feFilters=null, isPolling=false) => async (dispatch) => {
   const response = await api.get(endpoints.chatbot.comms.getAll, options);
   if (response.status === 200) {
-    return dispatch(getCommsSuccess(response.data, feFilters, calledFromPage));
+    return dispatch(getCommsSuccess(response.data, feFilters, isPolling));
   }
   else
     return dispatch(getCommsFail(response.error));
 };
-const getCommsSuccess = (alerts, feFilters, calledFromPage) => {
+const getCommsSuccess = (alerts, feFilters, isPolling) => {
   return {
     type: actionTypes.GET_COMMS_SUCCESS,
     payload: { 
       alerts,
       feFilters,
-      calledFromPage
+      isPolling
     }
   };
 };

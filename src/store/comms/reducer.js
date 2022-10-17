@@ -46,7 +46,12 @@ const getCommsSuccess = (state, action) => {
 
   let updatedState = {};
 
-  if(action.payload.calledFromPage){ 
+  if(action.payload.isPolling){ 
+    updatedState = {
+      pollingData: action.payload.alerts,
+      error: false,
+    }
+  } else {
     const {target, status, sortOrder} = action.payload.feFilters;
     const filters = {target, status};
     const sort = {fieldName: 'start', order: sortOrder};
@@ -56,13 +61,6 @@ const getCommsSuccess = (state, action) => {
       allComms: action.payload.alerts,
       error: false,
     }
-  }
-  else {
-    updatedState = {
-      pollingData: action.payload.alerts,
-      error: false,
-    }
-    
   }
 
   return updateObject(state, updatedState);

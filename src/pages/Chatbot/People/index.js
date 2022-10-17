@@ -68,7 +68,7 @@ const People = ({ pollingFrequency }) => {
       status,
       sortOrder
     }
-    dispatch(getAllPeople(peopleParams, feFilters, true));
+    dispatch(getAllPeople(peopleParams, feFilters));
   }, [dateRange, boundingBox])
 
   useEffect(() => {
@@ -87,7 +87,7 @@ const People = ({ pollingFrequency }) => {
 
   useInterval(() => {
     const dateRangeParams = dateRange ? { start: dateRange[0], end: dateRange[1] } : {};
-    dispatch(getAllPeople(dateRangeParams));
+    dispatch(getAllPeople(dateRangeParams, null, true));
   }, pollingFrequency)
 
   const getPeopleByArea = () => {

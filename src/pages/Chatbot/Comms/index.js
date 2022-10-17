@@ -55,13 +55,13 @@ const Comms = ({ pollingFrequency }) => {
       default_bbox: !boundingBox,
       ...dateRangeParams
     };
-    dispatch(getAllComms(reportParams, {sortOrder, status:commStatus, target}, true));
+    dispatch(getAllComms(reportParams, {sortOrder, status:commStatus, target}));
   }
 
 
   useInterval(() => {
     const dateRangeParams = dateRange ? { start: dateRange[0], end: dateRange[1] } : {};
-    dispatch(getAllComms(dateRangeParams));
+    dispatch(getAllComms(dateRangeParams, null, true));
   }, pollingFrequency)
 
   useEffect(() => {

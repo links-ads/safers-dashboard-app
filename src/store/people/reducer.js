@@ -28,18 +28,17 @@ const getPeopleSuccess = (state, action) => {
 
   let updatedState = {};
 
-  if(action.payload.calledFromPage){
+  if(action.payload.isPolling){
+    updatedState = {
+      pollingData: action.payload.alerts,
+      error: false,
+    }
+  } else {
     const {activity, status, sortOrder} = action.payload.feFilters;
     const filters = {activity, status};
     const sort = {fieldName: 'timestamp', order: sortOrder};
     const filteredPeople = getFilteredRec(action.payload.alerts, filters, sort);
     updatedState = {...updatedState , filteredPeople, allPeople: action.payload.alerts};
-  }
-  else {
-    updatedState = {
-      pollingData: action.payload.alerts,
-      error: false,
-    }
   }
 
   return updateObject(state, updatedState);
