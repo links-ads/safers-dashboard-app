@@ -12,8 +12,7 @@ import {
   getAllNotifications,
   setNewNotificationState,
   getAllMapRequests,
-  setNewMapRequestState,
-  getAllPeople,
+  setNewMapRequestState
 } from '../store/appAction';
 import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 
@@ -74,7 +73,6 @@ const pollingHelper = (props) => {
     dispatch(getAllEventAlerts({...eventParams, ...dateRangeParams}));
     dispatch(getAllNotifications({...notificationParams, ...dateRangeParams}));
     dispatch(getAllMapRequests({...mapRequestParams, ...dateRangeParams}));
-    dispatch(getAllPeople(dateRangeParams));
   };
 
   useEffect(() => {

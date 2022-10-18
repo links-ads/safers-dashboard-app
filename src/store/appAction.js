@@ -90,4 +90,11 @@ export {
   getAllPeople,
   setFilters,
   resetPeopleResponseState,
+  refreshPeople
 } from './people/action'
+export {
+  getAllComms,
+  setFilterdComms,
+  resetCommsResponseState,
+  refreshData
+} from './comms/action'
