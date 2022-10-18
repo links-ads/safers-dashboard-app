@@ -18,7 +18,8 @@ const whitelistedUrls = [
   endpoints.dataLayers.metadata,
   endpoints.dataLayers.mapRequests,
   endpoints.chatbot.people.getAll,
-  endpoints.chatbot.comms.getAll
+  endpoints.chatbot.comms.getAll,
+  endpoints.chatbot.missions.getMissions
 ]
 
 axiosApi.interceptors.request.use(async(config) => {

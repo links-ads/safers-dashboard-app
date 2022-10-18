@@ -38,7 +38,7 @@ const getPeopleSuccess = (state, action) => {
     const filters = {activity, status};
     const sort = {fieldName: 'timestamp', order: sortOrder};
     const filteredPeople = getFilteredRec(action.payload.alerts, filters, sort);
-    updatedState = {...updatedState , filteredPeople, allPeople: action.payload.alerts};
+    updatedState = { filteredPeople, allPeople: action.payload.alerts };
   }
 
   return updateObject(state, updatedState);
