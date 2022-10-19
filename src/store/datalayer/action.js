@@ -64,12 +64,20 @@ const getMetaDataFail = (error) => {
 export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) => {
   // const response = await api.get('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
   let error = '';
-  if (type == 'GetTimeSeries') {
+  if (type === 'GetTimeSeries') {
+    const ARRAY_FIRST_ELEMENT_INDEX = 0
     let timeSeriesStr = '';
     for (const [index, url] of options.entries()) {
       const response = await fetch(url);
-      if (api.isSuccessResp(response.status)) {
-        if(index>0){// Remove longitude / latitude and time entries in followup responses 
+      if (api.isSuccessResp(response.status)) {// Remove longitude / latitude and time entries in followup responses 
+        if(index > ARRAY_FIRST_ELEMENT_INDEX){
+          /* 
+            Each response contain following 3 lines in CSV format
+            # longitude
+            # latitude
+            # time 
+            So make sure only first response (from geoserver) has the 3 lines and follow up does not contain as we merge the responses and keep timeseries data together
+          */
           const txt = await response.text();
           const tempArr = txt.split('\n');
           tempArr.splice(0,3);
@@ -87,7 +95,7 @@ export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) =>
     }
   } 
   
-  if (type == 'GetFeatureInfo') {
+  if (type === 'GetFeatureInfo') {
     const response = await fetch(options);
     if(api.isSuccessResp(response.status)) {
       return dispatch(getFeatureInfoSuccess(await response.json()));
