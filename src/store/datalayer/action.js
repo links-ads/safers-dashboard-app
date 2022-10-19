@@ -65,12 +65,12 @@ export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) =>
   // const response = await api.get('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
   let error = '';
   if (type === 'GetTimeSeries') {
-    const ARRAY_FIRST_ELEMENT_INDEX = 0
+    const FIRST_REQUEST = 0 // Index
     let timeSeriesStr = '';
-    for (const [index, url] of options.entries()) {
+    for (const [request_index, url] of options.entries()) {
       const response = await fetch(url);
       if (api.isSuccessResp(response.status)) {// Remove longitude / latitude and time entries in followup responses 
-        if(index > ARRAY_FIRST_ELEMENT_INDEX){
+        if(request_index > FIRST_REQUEST){
           /* 
             Each response contain following 3 lines in CSV format
             # longitude
