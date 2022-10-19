@@ -63,14 +63,40 @@ const getMetaDataFail = (error) => {
 
 export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) => {
   // const response = await api.get('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
-  const response = await fetch(options);
-  if (response.status === 200 && type == 'GetTimeSeries') {
-    return dispatch(getTimeSeriesDataSuccess(await response.text()));
-  } else if (response.status === 200 && type == 'GetFeatureInfo') {
-    return dispatch(getFeatureInfoSuccess(await response.json()));
+  let error = '';
+  if (type == 'GetTimeSeries') {
+    let timeSeriesStr = '';
+    for (const [index, url] of options.entries()) {
+      const response = await fetch(url);
+      if (api.isSuccessResp(response.status)) {
+        if(index>0){// Remove longitude / latitude and time entries in followup responses 
+          const txt = await response.text();
+          const tempArr = txt.split('\n');
+          tempArr.splice(0,3);
+          timeSeriesStr += tempArr.join('\n');
+        } else {
+          timeSeriesStr = await response.text()
+        }
+      } else {
+        error = response?.error;
+        break;
+      }
+    }   
+    if(!error.length) {
+      return dispatch(getTimeSeriesDataSuccess(timeSeriesStr));
+    }
+  } 
+  
+  if (type == 'GetFeatureInfo') {
+    const response = await fetch(options);
+    if(api.isSuccessResp(response.status)) {
+      return dispatch(getFeatureInfoSuccess(await response.json()));
+    } else {
+      error = response?.error;
+    }
   }
-  else
-    return dispatch(getTimeSeriesDataFail(response.error));
+  return dispatch(getTimeSeriesDataFail(error));
+  
 };
 const getTimeSeriesDataSuccess = (TimeSeries) => {
   return {
