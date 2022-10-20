@@ -39,7 +39,7 @@ const DataLayerInformationComponent = ({
   const [selectedDomain, setSelectedDomain] = useState(null);
   const [contextMenuKey, setContextMenuKey] = useState(0);
   const chartContainerRef = useRef(null);
-  const timeseriesExists = !!currentLayer?.timeseries_url;
+  const timeseriesExists = !!currentLayer?.timeseries_urls;
 
   let title = currentLayer?.title
   if (currentLayer?.units) {
