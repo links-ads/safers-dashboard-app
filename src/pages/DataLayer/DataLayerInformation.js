@@ -243,7 +243,7 @@ const DataLayerInformationComponent = ({
   const apiFetch = (requestType) => {
     var tempUrl = ''
     if (requestType == 'GetTimeSeries') {
-      tempUrl = currentLayer.timeseries_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0] + 0.0001},${tempSelectedPixel[1] + 0.0001}`);
+      tempUrl = currentLayer.timeseries_urls.map(tsURL => tsURL.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0] + 0.0001},${tempSelectedPixel[1] + 0.0001}`));
     } else if (requestType == 'GetFeatureInfo') {
       tempUrl = currentLayer.pixel_url.replace('{bbox}', `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${tempSelectedPixel[0] + 0.0001},${tempSelectedPixel[1] + 0.0001}`);
     }
