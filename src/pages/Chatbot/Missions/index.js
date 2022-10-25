@@ -39,30 +39,28 @@ const Missions = ({ pollingFrequency }) => {
   const [coordinates, setCoordinates] = useState('');
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMission, setToggleCreateNewMission] = useState(false);
+  const [missionParams, setMissionParams] = useState(dateRange ? { start: dateRange[0], end: dateRange[1] } : {});
 
   const dispatch = useDispatch();
 
   const allMissions = filteredMissions || OrgMissionList;
 
   const loadAllMissions = () => {
-    const dateRangeParams = dateRange
-      ? { start: dateRange[0], end: dateRange[1] }
-      : {};
-
     setMissionId(undefined);
-    const missionParams = {
+    const tempParams = {
+      ...missionParams,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
-      ...dateRangeParams
     };
+    setMissionParams(tempParams);
 
     const feFilters = {
       order: sortOrder,
       status: missionStatus
     };
 
-    dispatch(getAllMissions(missionParams, feFilters));
+    dispatch(getAllMissions(tempParams, feFilters));
   }
 
   const onCancel = () => {
@@ -91,9 +89,11 @@ const Missions = ({ pollingFrequency }) => {
   }, [allMissions, missionId]);
 
   useInterval(() => {
-    const dateRangeParams = dateRange ? { start: dateRange[0], end: dateRange[1] } : {};
-    dispatch(getAllMissions(dateRangeParams, null, true));
-  }, pollingFrequency)
+    dispatch(getAllMissions(missionParams, {
+      order: sortOrder,
+      status: missionStatus
+    }, true));
+  }, pollingFrequency, [missionParams])
 
 
   const getMissionsByArea = () => {

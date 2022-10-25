@@ -38,31 +38,28 @@ const Comms = ({ pollingFrequency }) => {
   const [coordinates, setCoordinates] = useState('');
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
+  const [commsParams, setCommsParams] = useState(dateRange ? { start: dateRange[0], end: dateRange[1] } : {});
 
   const dispatch = useDispatch();
 
   const allReports = filteredComms || allComms;
  
   const loadComms = () => {
-    const dateRangeParams = dateRange
-      ? { start: dateRange[0], end: dateRange[1] }
-      : {};
-
     setCommID(undefined);
-    const reportParams = {
+    const tempParams = {
+      ...commsParams, 
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
-      ...dateRangeParams
     };
-    dispatch(getAllComms(reportParams, {sortOrder, status:commStatus, target}));
+    setCommsParams(tempParams);
+    dispatch(getAllComms(tempParams, {sortOrder, status:commStatus, target}));
   }
 
 
   useInterval(() => {
-    const dateRangeParams = dateRange ? { start: dateRange[0], end: dateRange[1] } : {};
-    dispatch(getAllComms(dateRangeParams, null, true));
-  }, pollingFrequency)
+    dispatch(getAllComms(commsParams, {sortOrder, status:commStatus, target}, true));
+  }, pollingFrequency, [commsParams])
 
   useEffect(() => {
     loadComms();
