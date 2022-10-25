@@ -54,7 +54,7 @@ const People = ({ pollingFrequency }) => {
 
   useEffect(() => {
     setPeopleId(undefined);
-    const tempParams = {
+    const params = {
       ...peopleParams,
       bbox: boundingBox?.toString(),
       default_date: false,
@@ -65,8 +65,8 @@ const People = ({ pollingFrequency }) => {
       status,
       sortOrder
     }
-    setPeopleParams(tempParams);
-    dispatch(getAllPeople(tempParams, feFilters));
+    setPeopleParams(params);
+    dispatch(getAllPeople(params, feFilters));
   }, [dateRange, boundingBox])
 
   useEffect(() => {
@@ -84,7 +84,6 @@ const People = ({ pollingFrequency }) => {
   }, [allPeople, peopleId]);
 
   useInterval(() => {
-    console.log('peopleParams..', peopleParams);
     dispatch(getAllPeople(peopleParams, {      
       activity,
       status,

@@ -44,14 +44,14 @@ const Reports = ({ pollingFrequency }) => {
   useEffect(() => {
 
     setReportId(undefined);
-    const tempParams = {
+    const params = {
       ...reportParams,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
     };
-    setReportParams(tempParams);
-    dispatch(getAllReports(tempParams));
+    setReportParams(params);
+    dispatch(getAllReports(params));
   }, [dateRange, boundingBox])
 
   useInterval(() => {

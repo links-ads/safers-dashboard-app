@@ -47,20 +47,20 @@ const Missions = ({ pollingFrequency }) => {
 
   const loadAllMissions = () => {
     setMissionId(undefined);
-    const tempParams = {
+    const params = {
       ...missionParams,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
     };
-    setMissionParams(tempParams);
+    setMissionParams(params);
 
     const feFilters = {
       order: sortOrder,
       status: missionStatus
     };
 
-    dispatch(getAllMissions(tempParams, feFilters));
+    dispatch(getAllMissions(params, feFilters));
   }
 
   const onCancel = () => {

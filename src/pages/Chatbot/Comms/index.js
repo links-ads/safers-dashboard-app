@@ -46,14 +46,14 @@ const Comms = ({ pollingFrequency }) => {
  
   const loadComms = () => {
     setCommID(undefined);
-    const tempParams = {
+    const params = {
       ...commsParams, 
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
     };
-    setCommsParams(tempParams);
-    dispatch(getAllComms(tempParams, {sortOrder, status:commStatus, target}));
+    setCommsParams(params);
+    dispatch(getAllComms(params, {sortOrder, status:commStatus, target}));
   }
 
 
