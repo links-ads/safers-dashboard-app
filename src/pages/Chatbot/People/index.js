@@ -39,6 +39,7 @@ const People = ({ pollingFrequency }) => {
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [activitiesOptions, setActivitiesOptions] = useState([]);
+  const [peopleParams, setPeopleParams] = useState(dateRange ? { start: dateRange[0], end: dateRange[1] } : {});
 
   const dispatch = useDispatch();
 
@@ -52,23 +53,20 @@ const People = ({ pollingFrequency }) => {
   }, [])
 
   useEffect(() => {
-    const dateRangeParams = dateRange
-      ? { start: dateRange[0], end: dateRange[1] }
-      : {};
-
     setPeopleId(undefined);
-    const peopleParams = {
+    const params = {
+      ...peopleParams,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
-      ...dateRangeParams
     };
     const feFilters = {      
       activity,
       status,
       sortOrder
     }
-    dispatch(getAllPeople(peopleParams, feFilters));
+    setPeopleParams(params);
+    dispatch(getAllPeople(params, feFilters));
   }, [dateRange, boundingBox])
 
   useEffect(() => {
@@ -86,9 +84,12 @@ const People = ({ pollingFrequency }) => {
   }, [allPeople, peopleId]);
 
   useInterval(() => {
-    const dateRangeParams = dateRange ? { start: dateRange[0], end: dateRange[1] } : {};
-    dispatch(getAllPeople(dateRangeParams, null, true));
-  }, pollingFrequency)
+    dispatch(getAllPeople(peopleParams, {      
+      activity,
+      status,
+      sortOrder
+    }, true));
+  }, pollingFrequency, [peopleParams])
 
   const getPeopleByArea = () => {
     setBoundingBox(getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight));

@@ -35,30 +35,28 @@ const Reports = ({ pollingFrequency }) => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
+  const [reportParams, setReportParams] = useState(dateRange ? { start: dateRange[0], end: dateRange[1] } : {});
 
   const dispatch = useDispatch();
 
   const allReports = filteredReports || OrgReportList;
 
   useEffect(() => {
-    const dateRangeParams = dateRange
-      ? { start: dateRange[0], end: dateRange[1] }
-      : {};
 
     setReportId(undefined);
-    const reportParams = {
+    const params = {
+      ...reportParams,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
-      ...dateRangeParams
     };
-    dispatch(getAllReports(reportParams));
+    setReportParams(params);
+    dispatch(getAllReports(params));
   }, [dateRange, boundingBox])
 
   useInterval(() => {
-    const dateRangeParams = dateRange ? { start: dateRange[0], end: dateRange[1] } : {};
-    dispatch(getAllReports(dateRangeParams, true));
-  }, pollingFrequency)
+    dispatch(getAllReports(reportParams, true));
+  }, pollingFrequency, [reportParams])
 
   useEffect(() => {
     if (success?.detail) {
