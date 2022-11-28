@@ -105,35 +105,35 @@ const OnDemandDataLayer = ({
         style={{ maxWidth: '50rem' }}
       >
         <div className='d-flex flex-column align-items-center p-5'>
-          <h2>{t('Select Data Type')}</h2>
+          <h2>{t('select-data-type', {ns: 'dataLayers'})}</h2>
           <div className='d-flex flex-nowrap gap-5 my-5'>
             <button
               value={DATA_LAYERS_PANELS.fireAndBurnedAreas} 
               onClick={handleDialogButtonClick}
               className='data-layers-dialog-btn'
             >
-              {t('Fire and Burned Area')}
+              {t('fireAndBurnedAreas' , {ns: 'dataLayers'})}
             </button>
             <button 
               value={DATA_LAYERS_PANELS.postEventMonitoring} 
               onClick={handleDialogButtonClick}
               className='data-layers-dialog-btn'
             >
-              {t('Post Event Monitoring')}
+              {t('post-event-monitoring', {ns: 'dataLayers'})}
             </button>
             <button
               value={DATA_LAYERS_PANELS.wildfireSimulation} 
               onClick={handleDialogButtonClick}
               className='data-layers-dialog-btn'
             >
-              {t('Wildfire Simulation')}
+              {t('wildfireSimulation', {ns: 'dataLayers'})}
             </button>
           </div>
           <button 
             onClick={toggleModal}
             className='data-layers-dialog-cancel'
           >
-            {t('Cancel')}
+            {t('cancel')}
           </button>
         </div>
       </Modal>
@@ -145,7 +145,7 @@ const OnDemandDataLayer = ({
                 <Button 
                   className="request-map btn-orange mb-3" 
                   onClick={toggleModal}>
-                  {t('Request a map')}
+                  {t('requestMap', {ns : 'dataLayers'})}
                 </Button>
               </div>
             </Col>
@@ -177,10 +177,10 @@ const OnDemandDataLayer = ({
                     onChange={(e) => setLayerSource(e.target.value)}
                     value={layerSource}
                   >
-                    <option value={''} >Source: All</option>
+                    <option value={''} >{t('source')}: {t('all')}</option>
                     {onDemandSourceOptions?.map((option) => (
                       <option key={option} value={option}>
-                          Source: {option}
+                        {t('source')}: {option}
                       </option>
                     )) ?? []}
                   </Input>
@@ -195,10 +195,10 @@ const OnDemandDataLayer = ({
                     onChange={(e) => setDataDomain(e.target.value)}
                     value={dataDomain}
                   >
-                    <option value={''} >Domain : All</option>
+                    <option value={''} >{t('domain')}: {t('domain-all')}</option>
                     {onDemandDomainOptions?.map((option) => (
                       <option key={option} value={option}>
-                          Domain: {option}
+                        {t('domain')}: {option}
                       </option>
                     )) ?? []}
                   </Input>
@@ -222,7 +222,7 @@ const OnDemandDataLayer = ({
                 <Input
                   id="searchEvent"
                   name="searchEvent"
-                  placeholder="Search by keyword"
+                  placeholder={t('search-by-keyword')}
                   autoComplete="on"
                   onChange={handleSearch}
                 />

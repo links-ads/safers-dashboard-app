@@ -1,14 +1,17 @@
 {
   "Assigned to": "Assigned to",
-  "Message Description": "Message Description",
-  "Mission Description": "Mission Description",
+  "msg-desc": "Message Description",
+  "mission-desc": "Mission Description",
   "Team": "Team",
-  "Map Selection": "Map Selection, please edit and draw on the map",
-  "Correct Coordinates": "Please correct your coordinates",
-  "Message Title": "Message Title",
-  "Mission Title": "Mission Title",
-  "Select Area": "Please select your area on the map",
+  "Map Selection": "Please edit and draw on the map",
+  "field-err-correct-coord": "Please correct your coordinates",
+  "mission-title": "Mission Title",
+  "field-err-select-area": "Please select your area on the map",
   "Select Date": "Please select start/end date",
-  "update-notification": "New updates available. Please refresh the list."
-
+  "update-notification": "New updates available. Please refresh the list.",
+  "create-new-msg": "create New Message",
+  "create-new-mission": "Create New Mission",
+  "associated-reports": "Associated reports",
+  "filter-assigned-to": "Assigned to Mission",
+  "filter-unassigned-to": "Unassigned to Mission"
 }
