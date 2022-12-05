@@ -14,12 +14,9 @@ import DataLayerInformation from './DataLayerInformation';
 const OnDemandDataLayer = ({ 
   t,
   mapRequests,
-  onDemandSourceOptions,
   onDemandDomainOptions,
   setActiveTab,
   setCurrentLayer,
-  layerSource,
-  setLayerSource,
   dataDomain,
   setDataDomain,
   sortByDate,
@@ -169,24 +166,6 @@ const OnDemandDataLayer = ({
                 </Col>
                 <Col xl={4}>
                   <Input
-                    id="layerSource"
-                    className="btn-sm sort-select-input"
-                    name="layerSource"
-                    placeholder="layerSource"
-                    type="select"
-                    onChange={(e) => setLayerSource(e.target.value)}
-                    value={layerSource}
-                  >
-                    <option value={''} >{t('source')}: {t('all')}</option>
-                    {onDemandSourceOptions?.map((option) => (
-                      <option key={option} value={option}>
-                        {t('source')}: {option}
-                      </option>
-                    )) ?? []}
-                  </Input>
-                </Col>
-                <Col xl={4}>
-                  <Input
                     id="dataDomain"
                     className="btn-sm sort-select-input"
                     name="dataDomain"
@@ -289,12 +268,9 @@ const OnDemandDataLayer = ({
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
   mapRequests: PropTypes.any,
-  onDemandSourceOptions: PropTypes.array,
   onDemandDomainOptions: PropTypes.array,
   setActiveTab: PropTypes.func,
   setCurrentLayer: PropTypes.any,
-  layerSource: PropTypes.any,
-  setLayerSource: PropTypes.any,
   dataDomain: PropTypes.any,
   setDataDomain: PropTypes.any,
   sortByDate: PropTypes.any,

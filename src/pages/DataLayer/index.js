@@ -50,7 +50,6 @@ const DataLayerDashboard = ({ t }) => {
   const [selectOptions, setSelectOptions] = useState({})
   const [dataDomain, setDataDomain] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
-  const [layerSource, setLayerSource] = useState(undefined);
   const [sliderValue, setSliderValue] = useState(0);
   const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
@@ -60,23 +59,21 @@ const DataLayerDashboard = ({ t }) => {
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
   const [timestamp, setTimestamp] = useState('')
 
-  const { operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions } = selectOptions;
+  const { operationalDomainOptions, onDemandDomainOptions } = selectOptions;
 
   const resetMap = () => {
     setCurrentLayer(undefined);
     setBitmapLayer(undefined);
   };
 
-  //fetch data to populate 'Source' and 'Domain' selects
+  //fetch data to populate and 'Domain' selects
   useEffect(() => {
     (async () => {
-      const [operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions] = await Promise.all([
-        fetchEndpoint('/data/layers/sources'),
-        fetchEndpoint('/data/maprequests/sources'),
+      const [operationalDomainOptions, onDemandDomainOptions] = await Promise.all([
         fetchEndpoint('/data/layers/domains'),
         fetchEndpoint('/data/maprequests/domains')
       ])
-      setSelectOptions({ operationalSourceOptions, onDemandSourceOptions, operationalDomainOptions, onDemandDomainOptions });
+      setSelectOptions({ operationalDomainOptions, onDemandDomainOptions });
     })()
   }, [])
 
@@ -118,7 +115,6 @@ const DataLayerDashboard = ({ t }) => {
 
     const options = {
       order: sortByDate,
-      source: layerSource ? layerSource : undefined,
       domain: dataDomain ? dataDomain : undefined,
 
       // Remove comments if it's required to send date-time range and bbox value for filter
@@ -132,7 +128,7 @@ const DataLayerDashboard = ({ t }) => {
 
     dispatch(getAllDataLayers(options));
     dispatch(getAllMapRequests(options, true))
-  }, [layerSource, dataDomain, sortByDate, dateRange, boundingBox]);
+  }, [dataDomain, sortByDate, dateRange, boundingBox]);
 
   useEffect(() => {
     setSliderValue(0);
@@ -333,8 +329,6 @@ const DataLayerDashboard = ({ t }) => {
 
   const sharedMapLayersProps = {
     t,
-    layerSource,
-    setLayerSource,
     currentLayer,
     setCurrentLayer,
     dataDomain,
@@ -447,10 +441,8 @@ const DataLayerDashboard = ({ t }) => {
           <TabPane tabId={DATA_LAYERS_PANELS.mapLayers}>
             {activeTab === DATA_LAYERS_PANELS.mapLayers && <DataLayer
               operationalMapLayers={filterNodesByProperty(dataLayers, {
-                source: layerSource,
                 domain: dataDomain
               })}
-              operationalSourceOptions={operationalSourceOptions}
               operationalDomainOptions={operationalDomainOptions}
               dispatch={dispatch}
               metaData={metaData}
@@ -461,10 +453,8 @@ const DataLayerDashboard = ({ t }) => {
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
             {activeTab === DATA_LAYERS_PANELS.onDemandMapLayers && <OnDemandDataLayer
               mapRequests={filterNodesByProperty(allMapRequests, {
-                source: layerSource,
                 domain: dataDomain
               })}
-              onDemandSourceOptions={onDemandSourceOptions}
               onDemandDomainOptions={onDemandDomainOptions}
               dispatch={dispatch}
               setActiveTab={setActiveTab}
