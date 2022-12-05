@@ -17,12 +17,9 @@ import DataLayerInformation from './DataLayerInformation';
 
 const DataLayer = ({ 
   t,
-  setLayerSource,
   metaData,
   isMetaDataLoading,
-  operationalSourceOptions,
   operationalDomainOptions,
-  layerSource,
   operationalMapLayers,
   dataDomain,
   setDataDomain,
@@ -139,24 +136,6 @@ const DataLayer = ({
               </Col>
               <Col xl={4}>
                 <Input
-                  id="layerSource"
-                  className="btn-sm sort-select-input"
-                  name="layerSource"
-                  placeholder="layerSource"
-                  type="select"
-                  onChange={(e) => setLayerSource(e.target.value)}
-                  value={layerSource}
-                >
-                  <option value={''} >{t('source')}: {t('all')}</option>
-                  {operationalSourceOptions?.map((option) => (
-                    <option key={option} value={option}>
-                      {t('source')}: {option}
-                    </option>
-                  )) ?? []}
-                </Input>
-              </Col>
-              <Col xl={4}>
-                <Input
                   id="dataDomain"
                   className="btn-sm sort-select-input"
                   name="dataDomain"
@@ -225,12 +204,9 @@ const DataLayer = ({
 
 DataLayer.propTypes = {
   t: PropTypes.any,
-  setLayerSource: PropTypes.any,
   metaData: PropTypes.object,
   isMetaDataLoading: PropTypes.bool,
-  operationalSourceOptions: PropTypes.array,
   operationalDomainOptions: PropTypes.array,
-  layerSource: PropTypes.any,
   operationalMapLayers: PropTypes.any,
   dataDomain: PropTypes.any,
   setDataDomain: PropTypes.any,
