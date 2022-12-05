@@ -1,0 +1,17 @@
+{
+  "Assigned to": "Asignado a",
+  "msg-desc": "Descripción del mensaje",
+  "mission-desc": "Descripción de la misión",
+  "Team": "Equipo",
+  "Map Selection": "Edite y dibuje en el mapa",
+  "field-err-correct-coord": "Corrija las coordenadas",
+  "mission-title": "Título de la misión",
+  "field-err-select-area": "Seleccione su área en el mapa",
+  "Select Date": "Seleccione la fecha de inicio/finalización",
+  "update-notification": "Nuevas actualizaciones disponibles. Actualice la lista.",
+  "create-new-msg": "Crear un nuevo mensaje",
+  "create-new-mission": "Crear una nueva misión",
+  "associated-reports": "Informes asociados",
+  "filter-assigned-to": "Asignado a una misión",
+  "filter-unassigned-to": "No asignado a una misión"
+}
