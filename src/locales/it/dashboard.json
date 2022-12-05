@@ -1,14 +1,14 @@
 {
-  "social engagement": "Impegno sociale",
+  "social engagement": "Coinvolgimento sociale",
   "events": "Eventi",
   "tot tweets": "Numero totale di tweet",
   "alerts": "Avvisi",
-  "reports": "Rapporti",
+  "reports": "Segnalazioni",
   "weather forecast": "Previsioni del tempo",
   "temperature": "Temperatura",
-  "atm.pressure": "Atm.Pressione",
+  "atm.pressure": "Pressione atmosferica",
   "precipitation": "Precipitazione",
   "weather var per hr": "Variabili meteorologiche su base oraria",
-  "Wind": "Il vento",
+  "Wind": "Vento",
   "Relative Humidity": "Umidità relativa"
 }
