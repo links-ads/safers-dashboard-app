@@ -2,10 +2,16 @@
   "In Situ Cameras": "Cámaras In Situ",
   "Photos": "Fotos",
   "Videos": "Vídeos",
-  "Smoke Column Class": "Clase de columna de humo",
+  "Smoke Column Class": "Tipo de columna de humo",
   "Geographical Direction": "Dirección Geográfica",
-  "cl1-txt": "incendios que involucran madera/plantas",
-  "cl2-txt": "incendios que involucran materiales/líquidos inflamables",
-  "cl3-txt": "incendios que involucran gases",
-  "geo-direction-txt": "Dirección geográfica del fuego respecto a la posición de la cámara"
+  "cl1-txt": "incendios quemando material leñoso/plantas",
+  "cl2-txt": "incendios quemando materiales/líquidos inflamables",
+  "cl3-txt": "incendios quemando gases",
+  "geo-direction-txt": "Dirección geográfica del fuego respecto a la posición de la cámara",
+  "cam-data": "datos",
+  "cam-number": "Número de cámara",
+  "cam-location": "Localización de la cámara",
+  "cam-direction": "Dirección de la cámara",
+  "cam-last-feed": "Última actualización",
+  "cam-info": "Última actualización"
 }

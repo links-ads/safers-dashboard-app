@@ -1,13 +1,13 @@
 {
-  "Events": "Eventos",
+  "Events": "Incidentes",
   "Ongoing": "En curso",
   "Closed": "Cerrada",
   "Important Info": "Informacion IMPORTANTE",
   "Location": "Localización",
-  "Date of Event": "Fecha del evento",
+  "Date of Event": "Fecha del incidente",
   "Damages": "Daños y perjuicios",
   "People Affected": "Personas Afectadas",
-  "Casualties": "Damnificadas",
-  "estimated-damage": "Daños estimados"
+  "Casualties": "Víctimas",
+  "estimated-damage": "Daños estimados",
+  "search-input-txt": "Buscar un incidente"
 }
-

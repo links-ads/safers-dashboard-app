@@ -1,6 +1,6 @@
 {
   "social engagement": "Compromiso social",
-  "events": "Eventos",
+  "events": "Incidentes",
   "tot tweets": "Número total de tuits",
   "alerts": "Alertas",
   "reports": "Informes",
@@ -10,5 +10,5 @@
   "precipitation": "Precipitación",
   "weather var per hr": "Variables meteorológicas por hora",
   "Wind": "Viento",
-  "Relative Humidity": "Humedad relativa"
+  "Relative Humidity": "Humedad Relativa"
 }

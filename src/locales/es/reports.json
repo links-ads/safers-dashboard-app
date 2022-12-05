@@ -5,9 +5,9 @@
   "Status": "Estado",
   "Description": "Descripción",
   "Username": "Nombre de usuario",
-  "Date of Report": "Fecha de reporte",
-  "Report Privacy": "Informar Privacidad",
-  "Passport ID": "Passport ID",
-  "Mission ID": "identificación de la misión",
+  "Date of Report": "Fecha del informe",
+  "Report Privacy": "Informe de Privacidad",
+  "Passport ID": "Número de pasaporte",
+  "Mission ID": "Identificación de la misión",
   "Media Files Attached": "Archivos multimedia adjuntos"
 }
