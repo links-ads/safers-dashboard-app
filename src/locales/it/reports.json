@@ -1,12 +1,12 @@
 {
-  "Reports List": "Elenco rapporti",
-  "Reports": "Rapporti",
+  "Reports List": "Elenco segnalazioni",
+  "Reports": "Segnalazioni",
   "Hazard Type": "Tipo di pericolo",
   "Status": "Stato",
   "Description": "Descrizione",
-  "Username": "Nome utente",
-  "Date of Report": "Data del rapporto",
-  "Report Privacy": "Segnala Privacy",
+  "Username": "Username",
+  "Date of Report": "Data della segnalazione",
+  "Report Privacy": "Report sulla Privacy",
   "Passport ID": "ID passaporto",
   "Mission ID": "ID missione",
   "Media Files Attached": "File multimediali allegati"

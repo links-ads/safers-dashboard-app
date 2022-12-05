@@ -1,11 +1,11 @@
 {
   "My Profile": "Il mio profilo",
   "Change Password": "Cambia la password",
-  "Selected Area of Interest": "Area di interesse selezionata",
+  "select-aoi": "Seleziona area di interesse",
   "Edit Image": "Modifica immagine",
   "Email": "E-mail",
   "Personal Details": "Dati personali",
-  "First Name": "Nome di battesimo",
+  "First Name": "Nome",
   "Last Name": "Cognome",
   "Country": "Paese",
   "Select your country": "Seleziona il tuo paese",
@@ -19,6 +19,6 @@
   "current-password": "PASSWORD ATTUALE",
   "new-password": "NUOVA PASSWORD",
   "confirm-password": "CONFERMA PASSWORD",
-  "change-password": "CAMBIA LA PASSWORD"
-
+  "change-password": "CAMBIA LA PASSWORD",
+  "Selected Area of Interest": "Area di interesse selezionata"
 }

@@ -17,7 +17,7 @@ LOCALES = OrderedDict([
 ])
 
 
-def import_translations(filename):
+def export_translations(filename):
     
     translations_data = defaultdict(dict)
     for locale in LOCALES:
@@ -43,7 +43,7 @@ def import_translations(filename):
 @click.option("--input-filename", required=True, type=str)
 @click.option("--output-filename", required=True, type=click.Path())
 def main(input_filename, output_filename):
-    translations_data = import_translations(input_filename)
+    translations_data = export_translations(input_filename)
     df = pd.json_normalize(translations_data)
     df.to_csv(output_filename, sep=";")
     
