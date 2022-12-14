@@ -8,7 +8,8 @@ import { resetMetaData } from '../../store/appAction';
 
 import TreeView from './TreeView';
 import { formatDate } from '../../store/utility';
-import { BitmapLayer } from 'deck.gl';
+// import { BitmapLayer } from 'deck.gl';
+import { TileLayer } from 'deck.gl';
 
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
@@ -30,7 +31,8 @@ const DataLayer = ({
   setCurrentLayer,
   getSlider,
   getLegend,
-  bitmapLayer,
+  // bitmapLayer,
+  tileLayers,
   viewState,
   timestamp,
   showLegend,
@@ -78,7 +80,8 @@ const DataLayer = ({
       );
     }
 
-    const layers = bitmapLayer ? [new BitmapLayer(bitmapLayer), tempLayerData] : [];
+    // const layers = bitmapLayer ? [new BitmapLayer(bitmapLayer), tempLayerData] : [];
+    const layers = tileLayers ? tileLayers.map((tileLayer) => new TileLayer(tileLayer)) : [];
 
     return(
       <Card className='map-card mb-0' style={{ height: 670 }}>
@@ -217,7 +220,8 @@ DataLayer.propTypes = {
   setCurrentLayer: PropTypes.any,
   getSlider: PropTypes.any,
   getLegend: PropTypes.any,
-  bitmapLayer: PropTypes.any,
+  // bitmapLayer: PropTypes.any,
+  tileLayers: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
   showLegend: PropTypes.bool,
