@@ -133,6 +133,13 @@ const SidebarContent = (props) => {
               </Link>
             </li>
             <li>
+              <Link to='/new-dashboard' className=''>
+                <i className='bx bxs-home'></i>
+                <span className='text-capitalize'>{props.t('Dashboard')}</span>
+                {newEventsCount > 0 && <span className='new-info-indicator float-end'>{newEventsCount}</span>}
+              </Link>
+            </li>
+            <li>
               <Link to='/data-layer' className=''>
                 <i className='bx bx-copy'></i>
                 <span className='text-capitalize'>{props.t('Data Layers')}</span>

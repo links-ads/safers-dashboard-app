@@ -15,6 +15,7 @@ import Chatbot from '../pages/Chatbot';
 import ReportsDashboard from '../pages/Chatbot/Reports/Dashboard';
 import Pages404 from '../Utility/pages-404';
 import Pages500 from '../Utility/pages-500';
+import NewDashboard from '../pages/NewDashboard';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },
@@ -31,6 +32,7 @@ const privateRoutes = [
   { path: '/data-layer', component: DataLayerDashboard },
   { path: '/event-alerts', component: EventAlerts },
   { path: '/event-dashboard/:id', component: EventDashboard },
+  { path: '/new-dashboard', component: NewDashboard },
   { path: '/social-monitoring', component: SocialMonitoring },
   { path: '/notifications', component: Notifications },
   { path: '/insitu-alerts', component: InSituAlerts },
