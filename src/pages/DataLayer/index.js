@@ -1,13 +1,11 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-//import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
 import { COORDINATE_SYSTEM } from '@deck.gl/core';
 import { FlyToInterpolator } from 'deck.gl';
 import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
-import { BitmapLayer, TileLayer } from 'deck.gl';
-import { load } from '@loaders.gl/core';
+import { BitmapLayer } from 'deck.gl';
 
 
 import moment from 'moment';
@@ -20,7 +18,6 @@ import PostEventMonitoringForm from './PostEventMonitoringForm'
 import WildfireSimulation from './WildfireSimulation'
 import { getAllDataLayers, setNewMapRequestState, setAlertApiParams, setDateRangeDisabled } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
-// import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
 import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants'
 import { filterNodesByProperty } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
@@ -35,9 +32,7 @@ const DataLayerDashboard = ({ t }) => {
   const dispatch = useDispatch();
   const timer = useRef(null);
 
-  // const config = useSelector(state => state.common.config);
   const defaultAoi = useSelector(state => state.user?.defaultAoi);
-  // const dataLayerBoundingBox = config?.restrict_data_to_aoi ? defaultAoi.features[0].bbox : EUROPEAN_BBOX
 
   const {
     dataLayers,
@@ -59,7 +54,6 @@ const DataLayerDashboard = ({ t }) => {
   const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  // const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [tileLayers, setTileLayers] = useState(undefined);
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
@@ -69,7 +63,6 @@ const DataLayerDashboard = ({ t }) => {
 
   const resetMap = () => {
     setCurrentLayer(undefined);
-    // setBitmapLayer(undefined);
     setTileLayers(undefined);
   };
 
@@ -98,7 +91,6 @@ const DataLayerDashboard = ({ t }) => {
     setSliderValue(0);
     setIsPlaying(false);
     setTimestamp('');
-    // setBitmapLayer(undefined);
     setTileLayers(undefined);
     setSliderRangeLimit(0);
     setCurrentLayer(undefined);
@@ -142,11 +134,8 @@ const DataLayerDashboard = ({ t }) => {
     setSliderValue(0);
     setIsPlaying(false);
     if (currentLayer && currentLayer.urls) {
-      // const urls = getUrls();
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue])
-      // const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
-      // setBitmapLayer(getBitmapLayer(imageUrl));
 
       const newTileLayers = Object.entries(currentLayer.urls).map(([timestamp, url]) => getTileLayer(url, timestamp));
       setTileLayers(newTileLayers);
@@ -237,37 +226,8 @@ const DataLayerDashboard = ({ t }) => {
     return Object.keys(currentLayer?.urls)
   }
 
-  // const getBitmapLayer = (url) => {
-  //   /*
-  //    extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
-  //    if this is an on-demand layer, it will have been hard-coded by the backend
-  //   */
-  //   const urlSearchParams = new URLSearchParams(url);
-  //   const urlParams = Object.fromEntries(urlSearchParams.entries());
-  //   const bounds = urlParams?.bbox ? urlParams.bbox.split(',').map(Number) : dataLayerBoundingBox
-
-  //   return {
-  //     id: 'bitmap-layer',
-  //     bounds: bounds,
-  //     image: url,
-  //     //_imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-  //     opacity: 0.5
-  //   }
-  // }
-
-  const isActiveTimestamp = (id) => {
-    // console.log('\n')
-    // console.log('id=',id)
-    // console.log('timestamp=',timestamp)
-    // console.log('\n')
-    // TODO: WHY IS timestamp EMPTY
-    return id === timestamp
-  }
-
   const getTileLayer = (url, timestamp) => {
-
     return {
-      // id: 'bitmap-layer', 
       id: timestamp,
       data: url,
       visible: false,
