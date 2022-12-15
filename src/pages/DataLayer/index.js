@@ -148,32 +148,35 @@ const DataLayerDashboard = ({ t }) => {
       // const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
       // setBitmapLayer(getBitmapLayer(imageUrl));
 
-      setTileLayers(Object.entries(currentLayer.urls).map(([timestamp, url]) => {
-        return getTileLayer(url, timestamp)
-      }));
+      const newTileLayers = Object.entries(currentLayer.urls).map(([timestamp, url]) => getTileLayer(url, timestamp));
+      setTileLayers(newTileLayers);
 
-
-      setSliderRangeLimit(currentLayer.urls.length - 1);
+      setSliderRangeLimit(newTileLayers.length - 1);
     }
   }, [currentLayer]);
 
   useEffect(() => {
     if (currentLayer?.urls) {
-      if (sliderChangeComplete) {
-        const urls = getUrls();
-        if (urls[sliderValue]) {
-          // const imageUrl = urls[sliderValue].replace('{bbox}', dataLayerBoundingBox);
-          // setBitmapLayer(getBitmapLayer(imageUrl));
-          // I AM HERE          
-          
-        }
-      }
       const timestamps = getTimestamps();
       if (timestamps[sliderValue]) {
         setTimestamp(timestamps[sliderValue]);
       }
     }
   }, [sliderValue, sliderChangeComplete]);
+
+  useEffect(() => {
+    if (tileLayers) {
+      const newTileLayers = tileLayers.map(layer => {
+        (layer.id === timestamp)
+          ? layer.visible = true
+          : layer.visible = false;
+
+        return layer;
+      });
+
+      setTileLayers(newTileLayers);
+    }
+  }, [timestamp]);
 
 
   useEffect(() => {
@@ -267,20 +270,20 @@ const DataLayerDashboard = ({ t }) => {
       // id: 'bitmap-layer', 
       id: timestamp,
       data: url,
-      visible: isActiveTimestamp(timestamp),
+      visible: false,
       minZoom: 0,
       maxZoom: 20,
       tileSize: 256,
       opacity: 0.5,
       coordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-      renderSubLayers: props => {
+      renderSubLayers: (prop) => {
         const {
           bbox: { west, south, east, north }
-        } = props.tile;
+        } = prop.tile;
 
-        return new BitmapLayer(props, {
+        return new BitmapLayer(prop, {
           data: null,
-          image: props.data,
+          image: prop.data,
           bounds: [west, south, east, north],
         });
       },
