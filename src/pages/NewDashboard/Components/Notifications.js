@@ -15,13 +15,38 @@ const NotificationsBar = () => {
   return (
     <div className="">
       <Container fluid className="">
-        <p className="align-self-baseline alert-title">Hello this is the Notifications Bars</p>
+        <p className="align-self-baseline alert-title">Dashboard</p>
         <Row className="gx-1 row-cols-5">
-          <NotificationCard cardName="Fire Alerts" iconClass="bx bx-error-circle" content={ lorem }/>
-          <NotificationCard cardName="People" iconClass="fas fa-user-alt" content={ lorem }/>
-          <NotificationCard cardName="Reports" iconClass="fas fa-file-image" content={ lorem }/>
-          <NotificationCard cardName="Mission" iconClass="fas fa-flag-checkered" content={ lorem }/>
-          <NotificationCard cardName="Communications" iconClass="fas fa-envelope" content={ lorem }/>
+          <NotificationCard 
+            cardName="Fire Alerts" 
+            iconClass="bx bx-error-circle" 
+            content={ lorem }
+            linkURL="/"
+          />
+          <NotificationCard 
+            cardName="People" 
+            iconClass="fas fa-user-alt" 
+            content={ lorem }
+            linkURL="/chatbot?tab=1"
+          />
+          <NotificationCard 
+            cardName="Reports" 
+            iconClass="fas fa-file-image" 
+            content={ lorem }
+            linkURL="/chatbot?tab=4"
+          />
+          <NotificationCard 
+            cardName="Mission" 
+            iconClass="fas fa-flag-checkered" 
+            content={ lorem }
+            linkURL="/chatbot?tab=3"
+          />
+          <NotificationCard 
+            cardName="Communications" 
+            iconClass="fas fa-envelope" 
+            content={ lorem }
+            linkURL="/chatbot?tab=2"
+          />
         </Row>
       </Container>
     </div>

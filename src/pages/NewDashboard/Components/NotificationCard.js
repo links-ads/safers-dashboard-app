@@ -3,8 +3,9 @@ import { Container, Row, Card } from 'reactstrap';
 import { useDispatch } from 'react-redux';
 import { getAllEventAlerts } from '../../../store/events/action';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
-const NotificationCard = ({cardName, iconClass, content}) => {
+const NotificationCard = ({cardName, iconClass, content, linkURL='/'}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -15,13 +16,15 @@ const NotificationCard = ({cardName, iconClass, content}) => {
     <div className="">
       <Card>
         <Container fluid className="">
-          <Row className="gx-1">
-            <Card className="col-8 card p-1">
+          <Row className="gx-1 p-2">
+            <Card className="col-9 card p-1">
               <div className="col card-body">{ cardName }</div>
             </Card>
-            <Card className="col-4 card p-1">
+            <Card className="col-3 card p-1">
               <div className="card-body">
-                <span className='d-none d-sm-block'><i className={iconClass}></i></span>
+                <Link to ={ linkURL }>
+                  <span className='d-none d-sm-block'><i className={iconClass}></i></span>
+                </Link>
               </div>
             </Card>
           </Row>
@@ -38,6 +41,7 @@ NotificationCard.propTypes = {
   cardName: PropTypes.string.isRequired,
   iconClass: PropTypes.string.isRequired,
   content: PropTypes.string.isRequired,
+  linkURL: PropTypes.string,
 }
 
 export default NotificationCard;
