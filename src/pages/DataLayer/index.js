@@ -137,10 +137,53 @@ const DataLayerDashboard = ({ t }) => {
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue])
 
-      const newTileLayers = Object.entries(currentLayer.urls).map(([timestamp, url]) => getTileLayer(url, timestamp));
-      setTileLayers(newTileLayers);
+      const urls = Object.entries(currentLayer.urls);
+      const itemsPerArray = Math.ceil(urls.length / 10);
+      const groupedLayers = new Array(10).fill('').map((_, i) => urls.slice(i * itemsPerArray, (i + 1) * itemsPerArray));
+      console.log('GROUPED LAYERS: ', groupedLayers);
+      let layersCount = 1;
 
-      setSliderRangeLimit(newTileLayers.length - 1);
+      groupedLayers[0].forEach(([timestamp, url]) => {
+        const lyr = getTileLayer(url, timestamp);
+        console.log('LYR: ', lyr);
+        setTileLayers(previous => previous ? [...previous] : [lyr]);
+      });
+
+      const getLayers = () => {
+        // console.log('GETTING LAYERS: ', groupedLayers);
+        if (layersCount <= groupedLayers.length) {
+          const layerBatch = groupedLayers[layersCount];
+          if (layerBatch) {
+            // console.log('LAYER BATCH: ', layerBatch);
+            layerBatch.forEach(layer => {
+              const [timestamp, url] = layer;
+              console.log('TIMESTAMP: ', timestamp, ', URL: ', url);
+
+              setTileLayers(previous => {
+                if (previous) {
+                  return [...previous, getTileLayer(url, timestamp)];
+                } else {
+                  return [getTileLayer(url, timestamp)];
+                }
+              });
+            });
+          }
+
+          layersCount += 1;
+        }
+      };
+
+      const layers = setInterval(getLayers, 500);
+
+      if (layersCount > groupedLayers.length) {
+        clearInterval(layers);
+      }
+
+      // const newTileLayers = Object.entries(currentLayer.urls).map(([timestamp, url]) => getTileLayer(url, timestamp));
+      // setTileLayers(newTileLayers);
+
+      // setSliderRangeLimit(newTileLayers.length - 1);
+      setSliderRangeLimit(urls.length - 1);
     }
   }, [currentLayer]);
 
@@ -247,7 +290,7 @@ const DataLayerDashboard = ({ t }) => {
           bounds: [west, south, east, north],
         });
       },
-      onViewportLoad: () => console.log('layer loaded')
+      // onViewportLoad: () => console.log('layer loaded')
     }
   }
 
