@@ -4,6 +4,9 @@ import { useDispatch } from 'react-redux';
 import { getAllEventAlerts } from '../../store/events/action';
 import NotificationsBar from './Components/Notifications';
 import AOIBar from './Components/AOIBar';
+import PhotoBar from './Components/PhotoBar';
+import ReportBar from './Components/ReportBar';
+import TweetBar from './Components/TweetBar';
 
 const NewDashboard = () => {
   const dispatch = useDispatch();
@@ -15,9 +18,11 @@ const NewDashboard = () => {
   return (
     <div className="page-content">
       <Container fluid className="sign-up-aoi-map-bg">
-        <p className="alert-title">General Dashboard</p>
         <NotificationsBar />
         <AOIBar />
+        <PhotoBar />
+        <ReportBar />
+        <TweetBar />
       </Container>
     </div>
   );
