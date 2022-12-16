@@ -68,6 +68,14 @@ const SidebarContent = (props) => {
     add ? instance.classList.add(clsName) : instance.classList.remove(clsName);
   }
 
+
+  function getDashboardNotificationCount() {
+    const newEvents = newEventsCount || 0;
+    const newAlerts = newAlertsCount || 0;
+    const newMapRequests = newMapRequestCount || 0;
+    return (newEvents+newAlerts+newMapRequests);
+  }
+
   function ctrlParentDropdown(activate = true, item) {
     classCtrl(activate, item, 'active');
     const parent = item.parentElement
@@ -136,7 +144,7 @@ const SidebarContent = (props) => {
               <Link to='/new-dashboard' className=''>
                 <i className='bx bxs-home'></i>
                 <span className='text-capitalize'>{props.t('Dashboard')}</span>
-                {newEventsCount > 0 && <span className='new-info-indicator float-end'>{newEventsCount + newAlertsCount + newMapRequestCount}</span>}
+                {getDashboardNotificationCount() > 0 && <span className='new-info-indicator float-end'>{getDashboardNotificationCount()}</span>}
               </Link>
             </li>
             <li>
