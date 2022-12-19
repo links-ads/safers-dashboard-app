@@ -15,6 +15,7 @@ import {
   postMapRequest,
   getAllMapRequests
 } from '../../store/appAction';
+import { setFireBreak } from '../../store/datalayer/action';
 import 'react-rangeslider/lib/index.css'
 import moment from 'moment';
 import MapInput from '../../components/BaseMap/MapInput';
@@ -29,7 +30,8 @@ const TABLE_HEADERS = [
   'timeHours',
   'windDirection',
   'windSpeed',
-  'fuelMoistureContent'
+  'fuelMoistureContent',
+  'fireBreak',
 ];
 
 const PROBABILITY_INFO = 'PROPAGATOR output for each time step is a probability (from 0 to 1) field that expresses for each pixel the probability of the fire to reach that specific point in the given time step. In order to derive a contour, we can select to show the contour related to the 0.5, 0.75 and 0.9 of the probability.  For example, the 50% - 0.5 probability contour encapsulates all the pixels who have more than 50% of probability to be reached by fire at the given simulation time.'
@@ -75,6 +77,7 @@ const WildfireSimulation = ({
   const dispatch = useDispatch();
 
   const error = useSelector(state => state.auth.error);
+  const fireBreak = useSelector(state => state.dataLayer.fireBreak)
 
   // to manage number of dynamic (vertical) table rows in `Boundary Conditions`
   const [tableEntries, setTableEntries] = useState([0]);
@@ -125,7 +128,9 @@ const WildfireSimulation = ({
             .typeError(t('field-err-number'))
             .min(0, t('field-err-fuel-moisture', {ns: 'dataLayers' }))
             .max(100,  t('field-err-fuel-moisture', {ns: 'dataLayers' }))
-            .required(t('field-empty-err', { ns: 'common' }))
+            .required(t('field-empty-err', { ns: 'common' })),
+          fireBreak: Yup.string()
+            .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
         }))
   });
 
@@ -148,7 +153,8 @@ const WildfireSimulation = ({
         time: +obj.timeOffset,
         w_dir: +obj.windDirection,
         w_speed: +obj.windSpeed,
-        moisture: +obj.fuelMoistureContent
+        moisture: +obj.fuelMoistureContent,
+        fireBreak: obj.fireBreak
       }), []);
 
     const transformedGeometry = formData.mapSelection.startsWith('GEOMETRYCOLLECTION') ? formData.mapSelection : `GEOMETRYCOLLECTION(${formData.mapSelection})`
@@ -187,6 +193,10 @@ const WildfireSimulation = ({
     return endTime;
   }
 
+  const handleFireBreakClick = (position) => {
+    dispatch(setFireBreak(fireBreak === position ? null : position))
+  }
+
   return (
     <Row>
       <Col>
@@ -206,7 +216,8 @@ const WildfireSimulation = ({
                 timeOffset: 0,
                 windDirection: '',
                 windSpeed: '',
-                fuelMoistureContent: ''
+                fuelMoistureContent: '',
+                fireBreak: ''
               }],
             }}
             validationSchema={WildfireSimulationSchema}
@@ -439,16 +450,50 @@ const WildfireSimulation = ({
                   </Col>
 
                   <Col xl={7} className='mx-auto'>
-                    <Card className='map-card mb-0' style={{ height: 670 }}>
+                    <Card className='map-card mb-0 position-relative' style={{ height: 670 }}>
+                      {<div style={{
+                        position: 'absolute',
+                        top: '0.5rem',
+                        left: '0.5rem',
+                        zIndex: 1000,
+                      }}>
+                        {tableEntries.map(position => {
+                          const isSelected = position === fireBreak,
+                            id = values.boundaryConditions?.[position]?.timeOffset ?? position
+                          return (
+                            <button
+                              key={position}
+                              onClick={() => handleFireBreakClick(position)}
+                              style={{
+                                width: 'fit-content',
+                                padding: '0.25rem',
+                                marginRight: '0.5rem',
+                                backgroundColor: isSelected ? '#e27b1d' : '#2c2d34',
+                                color: isSelected ? '#000' : '#fff',
+                                borderRadius: '3px'
+                              }}
+                            >
+                              FireBreak {id}hrs
+                            </button>
+                          )
+                        })}
+                      </div>}
                       <MapSection
                         setCoordinates={(wktConversion, isAreaValid) => {
                           // called if map is used to draw polygon
-                          // we asssume it's valid WKT
-                          setFieldValue('mapSelection', wktConversion);
-                          setFieldValue('isMapAreaValid', isAreaValid);
-                          setFieldValue('isMapAreaValidWKT', true);
+                          // we assume it's valid WKT
+
+                          if (fireBreak !== null) {
+                            setFieldValue(`boundaryConditions.${fireBreak}.fireBreak`, wktConversion);
+                          } else {
+                            setFieldValue('mapSelection', wktConversion);
+                            setFieldValue('isMapAreaValid', isAreaValid);
+                            setFieldValue('isMapAreaValidWKT', true);
+                          }
                         }}
-                        coordinates={values.mapSelection}
+                        coordinates={fireBreak !== null
+                          ? values.boundaryConditions?.[fireBreak]?.fireBreak
+                          : values.mapSelection}
                         togglePolygonMap={true}
                         handleAreaValidation={feature => {
                           const area = Math.ceil(getFeatureArea(feature));
@@ -540,6 +585,17 @@ const WildfireSimulation = ({
                                       onBlur={handleBlur}
                                     />
                                     {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.fuelMoistureContent)}
+                                  </td>
+                                  <td>
+                                    <Input
+                                      name={`boundaryConditions.${position}.fireBreak`}
+                                      id={`boundaryConditions.${position}.fireBreak`}
+                                      readOnly
+                                      type="textarea"
+                                      value={values.boundaryConditions?.[position]?.fireBreak}
+                                      onBlur={handleBlur}
+                                    />
+                                    {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.fireBreak)}
                                   </td>
                                 </tr>
                               ))}

@@ -111,3 +111,6 @@ dist
 # TernJS port file
 .tern-port
 package-lock.json
+
+# Node version file
+.node-version

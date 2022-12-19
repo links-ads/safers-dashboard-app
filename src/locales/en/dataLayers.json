@@ -25,6 +25,7 @@
   "windDirection": "Wind Direction [°]",
   "windSpeed": "Wind Speed [km/h]",
   "fuelMoistureContent": "Fuel Moisture Content [%]",
+  "fireBreak": "Fire Break",
   "selectLayerTypes": "Select Data Layer Type(s)",
   "Confirm Delete Layer": "Are you sure you want to delete this request?",
   "mapSelectionTxtGuide": "Enter Well Known Text or draw a polygon on the map",
