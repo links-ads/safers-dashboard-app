@@ -5,7 +5,11 @@ import { getAllEventAlerts } from '../../../store/events/action';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const NotificationCard = ({cardName, iconClass, content, linkURL='/'}) => {
+// Does one of the cards in the Notifications bar
+// completely generic, content is worked out in the NotificationsBar
+// and passed in as a function prop
+
+const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -29,7 +33,7 @@ const NotificationCard = ({cardName, iconClass, content, linkURL='/'}) => {
             </Card>
           </Row>
           <Row className="gx-1">
-            <Card className="col-12 p-1"><div className="card-body">{ content }</div></Card>
+            <Card className="col-12 p-1"><div className="card-body">{ contentRenderer() }</div></Card>
           </Row>
         </Container>
       </Card>
@@ -40,7 +44,7 @@ const NotificationCard = ({cardName, iconClass, content, linkURL='/'}) => {
 NotificationCard.propTypes = {
   cardName: PropTypes.string.isRequired,
   iconClass: PropTypes.string.isRequired,
-  content: PropTypes.string.isRequired,
+  contentRenderer: PropTypes.func.isRequired,
   linkURL: PropTypes.string,
 }
 
