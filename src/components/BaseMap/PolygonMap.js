@@ -2,11 +2,13 @@
 import React, { useEffect, useRef, useState } from 'react';
 import MapGL, { FullscreenControl, NavigationControl, MapContext } from 'react-map-gl';
 import { MapView } from '@deck.gl/core';
+import { useSelector } from 'react-redux';
 import { MAPBOX_TOKEN } from '../../config';
 import { getGeoFeatures, getWKTfromFeature } from '../../store/utility';
 import {
   Editor,
   DrawPolygonMode,
+  DrawLineStringMode,
   EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
@@ -51,6 +53,7 @@ const PolygonMap = ({
   handleAreaValidation,
   singlePolygonOnly = false
 }) => {
+  const fireBreak = useSelector(state => state.dataLayer.fireBreak)
 
   const mapRef = useRef();
   const finalLayerSet = [
@@ -60,6 +63,7 @@ const PolygonMap = ({
   const MODES = [
     { id: 'editing', text: 'Edit Feature', handler: EditingMode },
     { id: 'drawPolygon', text: 'Draw Polygon', handler: DrawPolygonMode },
+    { id: 'drawLineString', text: 'Draw Line String', handler: DrawLineStringMode },
   ];
 
   const [viewport, setViewport] = useState(initialViewState);
@@ -96,7 +100,7 @@ const PolygonMap = ({
 
   const toggleMode = (evt) => {
     if(evt !== modeId) {
-      const tempModeId = evt? evt : null;
+      const tempModeId = evt ? evt : null;
       const mode = MODES.find((m) => m.id === tempModeId);
       const modeHandler = mode ? new mode.handler() : null;
       setModeId(tempModeId);
@@ -109,17 +113,21 @@ const PolygonMap = ({
     setViewport(tempViewport);
   };
 
-  const editToggle = () => {
-    if (singlePolygonOnly) {
-      setAreaIsValid(true);
-      setFeatures([]);
+  const editToggle = (mode) => {
+    if (mode === 'drawLineString') {
+      toggleMode(modeId == 'drawLineString' ? 'editing' : 'drawLineString')
+    } else if (mode === 'drawPolygon') {
+      if (singlePolygonOnly) {
+        setAreaIsValid(true);
+        setFeatures([]);
+      }
+      toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon');
     }
-    toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon');
   }
 
   const clearMap = () => {
     setAreaIsValid(true);
-    if(selectedFeatureData.selectedFeature) {
+    if(selectedFeatureData?.selectedFeature) {
       const tempFeatures = [...features];
       tempFeatures.splice(selectedFeatureData.selectedFeatureIndex, 1);
       setFeatures(tempFeatures);
@@ -142,13 +150,23 @@ const PolygonMap = ({
 
   const renderToolbar = () => (
     <>
-      <MapControlButton 
-        top='50px' 
-        style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}}
-        onClick={editToggle}
-      >
-        <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
-      </MapControlButton>
+      {fireBreak !== null ? (
+        <MapControlButton
+          top='50px'
+          style={modeId == 'drawLineString' ? { backgroundColor: 'lightgray' } : {}}
+          onClick={() => editToggle('drawLineString')}
+        >
+          <i className="bx bx-minus" style={{ fontSize: '20px' }}></i>
+        </MapControlButton>
+      ) : (
+        <MapControlButton
+          top='50px'
+          style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}}
+          onClick={() => editToggle('drawPolygon')}
+        >
+          <i className="bx bx-shape-triangle" style={{ fontSize: '20px' }}></i>
+        </MapControlButton>
+      )}
       <MapControlButton onClick={clearMap}>
         <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
       </MapControlButton>
@@ -167,7 +185,7 @@ const PolygonMap = ({
     } else if (val.editType === 'movePosition') {
       setFeatures(val.data);
       setCoordinates(getWKTfromFeature(val.data), areaValidation);
-    } 
+    }
   };
 
   useEffect(() => {
