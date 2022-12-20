@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllEventAlerts } from '../../../store/events/action';
 import NotificationCard from './NotificationCard';
 import { getAllPeople } from '../../../store/people/action';
-//import { set } from 'lodash';
+import { getAllReports } from '../../../store/reports/action';
 
 const NotificationsBar = () => {
   const dispatch = useDispatch();
@@ -12,14 +12,17 @@ const NotificationsBar = () => {
 
   let [activityStatusCounts, setActivityStatusCounts] = useState( {undefined: 0} );
   let [peopleStatusCounts, setPeopleStatusCounts] = useState( {undefined: 0} );
+  let [reportStatusCounts, setReportStatusCounts] = useState( {undefined: 0});
 
   const defaultAOI = useSelector(state => state?.user?.defaultAoi);
+  const { allReports: OrgReportList } = useSelector(state => state?.reports);
   const { allAlerts: alerts, filteredAlerts } = useSelector(state => state?.alerts);
   const { allPeople: orgPplList, filteredPeople } = useSelector(state => state.people);
 
   console.log('Alerts!', alerts);
   console.log('orgPplList', orgPplList);
   console.log('filteredPeople', filteredPeople);
+  console.log('OrgReportList', OrgReportList);
 
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
 
@@ -50,6 +53,21 @@ const NotificationsBar = () => {
     })
     console.log('statusCounts', statusCounts);
     return statusCounts;
+  }
+
+  const getReportByAssignment = (reports) => {
+    let statusCounts = {};
+    // TODO: currently, don't have assignments in the data so catgeorise by hazard type instead for now
+    reports.forEach( report=> {
+      if (report?.hazard in statusCounts) {
+        statusCounts[report.hazard] += 1;
+      } else {
+        statusCounts[report.hazard] = 1;
+      }
+    })
+    console.log('statusCounts', statusCounts);
+    return statusCounts;
+
   }
 
   // renderer functions. These are passed to the individual NotificationCards
@@ -92,7 +110,25 @@ const NotificationsBar = () => {
         }
       </>
     );
+  };
+
+  const renderReports = () => {
+    if (!reportStatusCounts || Object.keys(reportStatusCounts).length===0 ) {
+      return <h3>No new Reports</h3>;
+    }
+    return (
+      <>
+        {
+          Object.keys(reportStatusCounts).map(key => 
+            <h3 key={`item_${key}`}>
+              {`${key} : ${reportStatusCounts[key]}`}
+            </h3>
+          )
+        }
+      </>
+    );
   }
+
 
   // useEffects
 
@@ -105,6 +141,7 @@ const NotificationsBar = () => {
     };
     const feFilters = {};
     dispatch(getAllPeople(params, feFilters));
+    dispatch(getAllReports());
   }, []);
 
   useEffect(() => {
@@ -118,6 +155,12 @@ const NotificationsBar = () => {
     const statusCounts = getPersonCountByStatus(orgPplList);
     setPeopleStatusCounts(statusCounts);
   }, [orgPplList, filteredPeople])
+
+  useEffect(()=> {
+    console.log('received new reports');
+    const statusCounts = getReportByAssignment(OrgReportList);
+    setReportStatusCounts(statusCounts);
+  }, [OrgReportList])
 
   return (
     <div className="">
@@ -139,7 +182,7 @@ const NotificationsBar = () => {
           <NotificationCard 
             cardName="Reports" 
             iconClass="fas fa-file-image" 
-            contentRenderer={ renderLorem }
+            contentRenderer={ renderReports }
             linkURL="/chatbot?tab=4"
           />
           <NotificationCard 
