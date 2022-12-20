@@ -68,7 +68,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   const handleDateRangePicker = (dates) => {
     setDateRange(dates.map(date => 
-      moment(date).format('YYYY-MM-DD'))
+      moment(date).toISOString())
     );
   }
 
@@ -154,6 +154,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         defaultDateRange={dateRange}
         isTooltipInput={true}
         showIcons={true}
+        isTimeEnabled={true}
         onChange={(dates) => {validateField('dateRange', dates)}}
       />
       {getError('dateRange', errors, errors, false)}

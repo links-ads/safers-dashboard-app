@@ -23,6 +23,7 @@ const DateComponent = ({
   defaultDateRange,
   placeholder=null,
   isDateRangeDisabled=false,
+  isTimeEnabled=false,
   onChange= () => {},
   i18n
 }) => {
@@ -69,6 +70,7 @@ const DateComponent = ({
         </div>
 
         <Flatpickr
+          data-enable-time={isTimeEnabled}
           className="form-control d-block"
           placeholder={placeholder ? placeholder : 'dd/mm/yy'}
           ref={fp}
@@ -80,7 +82,7 @@ const DateComponent = ({
           disabled={isDateRangeDisabled}
           options={{
             mode: 'range',
-            dateFormat: 'd/m/y',
+            dateFormat: isTimeEnabled ? 'd/m/y h:i K': 'd/m/y',
             defaultDate,
             locale: trsnalation
           }}
@@ -105,6 +107,7 @@ DateComponent.propTypes = {
   defaultDateRange: PropTypes.array,
   placeholder: PropTypes.string,
   isDateRangeDisabled: PropTypes.bool,
+  isTimeEnabled: PropTypes.bool,
   i18n: PropTypes.object
 }
 
