@@ -1,7 +1,5 @@
-import React, { useEffect }  from 'react';
+import React from 'react';
 import { Container, CardBody, Card, Row, CardGroup, CardTitle } from 'reactstrap';
-import { useDispatch } from 'react-redux';
-import { getAllEventAlerts } from '../../../store/events/action';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
@@ -10,18 +8,13 @@ import { Link } from 'react-router-dom';
 // and passed in as a function prop
 
 const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(getAllEventAlerts());
-  }, []);
 
   return (
     <div className="card noborder">
       <Card className="justify-items-stretch noborder">
         <Container fluid>
           <CardGroup className="gx-1 p-2 ">
-            <Card className="noborder">
+            <Card className="noborder m-1">
               <CardTitle className="col-12 card p-1 ">
                 <Row>
                   <div className="col-9">{ cardName }</div>
