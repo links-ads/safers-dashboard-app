@@ -109,19 +109,99 @@ const NotificationsBar = () => {
   // These should return some JSX which will be rendered as the contents
   // of the panel. (The panel - NotificationCard - is completely generic)
 
-  const renderActivities = () => {
-    if (!activityStatusCounts) {
+  // const renderActivities = () => {
+  //   if (!activityStatusCounts) {
+  //     return <h3>Loading...</h3>
+  //   } 
+  //   if (Object.keys(activityStatusCounts).length===0 ) {
+  //     return <h3>No new Event activity</h3>;
+  //   }
+  //   return (
+  //     <>
+  //       {
+  //         Object.keys(activityStatusCounts).map(key => 
+  //           <h3 key={`item_${key}`}>
+  //             {`${key} : ${activityStatusCounts[key]}`}
+  //           </h3>
+  //         )
+  //       }
+  //     </>
+  //   );
+  // }
+
+  // const renderPeople = () => {
+  //   if (!peopleStatusCounts) {
+  //     return <h3>Loading...</h3>
+  //   } 
+  //   if (Object.keys(peopleStatusCounts).length===0 ) {
+  //     return <h3>No new People activity</h3>;
+  //   }
+  //   return (
+  //     <>
+  //       {
+  //         Object.keys(peopleStatusCounts).map(key => 
+  //           <h3 key={`item_${key}`}>
+  //             {`${key} : ${peopleStatusCounts[key]}`}
+  //           </h3>
+  //         )
+  //       }
+  //     </>
+  //   );
+  // };
+
+  // const renderReports = () => {
+  //   if (!reportStatusCounts) {
+  //     return <h3>Loading...</h3>
+  //   } 
+  //   if (Object.keys(reportStatusCounts).length===0 ) {
+  //     return <h3>No new Report activity</h3>;
+  //   }
+  //   return (
+  //     <>
+  //       {
+  //         Object.keys(reportStatusCounts).map(key => 
+  //           <h3 key={`item_${key}`}>
+  //             {`${key} : ${reportStatusCounts[key]}`}
+  //           </h3>
+  //         )
+  //       }
+  //     </>
+  //   );
+  // }
+
+  // const renderMissions = () => {
+  //   if (!missionStatusCounts) {
+  //     return <h3>Loading...</h3>
+  //   } 
+  //   if (Object.keys(missionStatusCounts).length===0 ) {
+  //     return <h3>No new Mission activity</h3>;
+  //   }
+  //   return (
+  //     <>
+  //       {
+  //         Object.keys(missionStatusCounts).map(key => 
+  //           <h3 key={`item_${key}`}>
+  //             {`${key} : ${missionStatusCounts[key]}`}
+  //           </h3>
+  //         )
+  //       }
+  //     </>
+  //   );
+  // }
+
+  const renderer = (noDataMessage, itemsCounts) => {
+    if (!itemsCounts) {
       return <h3>Loading...</h3>
     } 
-    if (Object.keys(activityStatusCounts).length===0 ) {
-      return <h3>No new Event activity</h3>;
+    if (Object.keys(itemsCounts).length===0 ) {
+      return <h3>{noDataMessage}</h3>;
     }
     return (
       <>
         {
-          Object.keys(activityStatusCounts).map(key => 
+          Object.keys(itemsCounts).map(key => 
             <h3 key={`item_${key}`}>
-              {`${key} : ${activityStatusCounts[key]}`}
+              {`${key} : ${itemsCounts[key]}`}
             </h3>
           )
         }
@@ -129,85 +209,15 @@ const NotificationsBar = () => {
     );
   }
 
-  const renderPeople = () => {
-    if (!peopleStatusCounts) {
-      return <h3>Loading...</h3>
-    } 
-    if (Object.keys(peopleStatusCounts).length===0 ) {
-      return <h3>No new People activity</h3>;
-    }
-    return (
-      <>
-        {
-          Object.keys(peopleStatusCounts).map(key => 
-            <h3 key={`item_${key}`}>
-              {`${key} : ${peopleStatusCounts[key]}`}
-            </h3>
-          )
-        }
-      </>
-    );
-  };
+  const renderCommunications = () => renderer('No new communications', communicationStatusCounts);
+  
+  const renderActivities = () => renderer('No new activities', activityStatusCounts);
 
-  const renderReports = () => {
-    if (!reportStatusCounts) {
-      return <h3>Loading...</h3>
-    } 
-    if (Object.keys(reportStatusCounts).length===0 ) {
-      return <h3>No new Report activity</h3>;
-    }
-    return (
-      <>
-        {
-          Object.keys(reportStatusCounts).map(key => 
-            <h3 key={`item_${key}`}>
-              {`${key} : ${reportStatusCounts[key]}`}
-            </h3>
-          )
-        }
-      </>
-    );
-  }
+  const renderPeople = () => renderer('No new people activity', peopleStatusCounts);
 
-  const renderMissions = () => {
-    if (!missionStatusCounts) {
-      return <h3>Loading...</h3>
-    } 
-    if (Object.keys(missionStatusCounts).length===0 ) {
-      return <h3>No new Mission activity</h3>;
-    }
-    return (
-      <>
-        {
-          Object.keys(missionStatusCounts).map(key => 
-            <h3 key={`item_${key}`}>
-              {`${key} : ${missionStatusCounts[key]}`}
-            </h3>
-          )
-        }
-      </>
-    );
-  }
+  const renderReports = () => renderer('No new reports', reportStatusCounts);
 
-  const renderCommunications = () => {
-    if (!communicationStatusCounts) {
-      return <h3>Loading...</h3>
-    } 
-    if (Object.keys(communicationStatusCounts).length===0 ) {
-      return <h3>No new communications</h3>;
-    }
-    return (
-      <>
-        {
-          Object.keys(communicationStatusCounts).map(key => 
-            <h3 key={`item_${key}`}>
-              {`${key} : ${communicationStatusCounts[key]}`}
-            </h3>
-          )
-        }
-      </>
-    );
-  }
+  const renderMissions = () => renderer('No new missions', missionStatusCounts);
 
   // useEffects
 
