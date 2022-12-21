@@ -17,11 +17,11 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
   }, []);
 
   return (
-    <div className="">
-      <Card>
-        <Container fluid className="">
-          <Row className="gx-1 p-2">
-            <Card className="col-9 card p-1">
+    <div className="card">
+      <Card className="justify-items-stretch">
+        <Container fluid>
+          <Row className="gx-1 p-2 place-content-stretch">
+            <Card className="col-9 card p-1 place-content-stretch">
               <div className="col card-body">{ cardName }</div>
             </Card>
             <Card className="col-3 card p-1">

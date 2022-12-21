@@ -258,7 +258,7 @@ const NotificationsBar = () => {
     <div className="">
       <Container fluid className="">
         <p className="align-self-baseline alert-title">Area of interest: { nameOfAOI }</p>
-        <Row className="gx-1 row-cols-5">
+        <Row style={{alignItems: 'stretch', display: 'flex', flexDirection:'row', justifyContent: 'stretch'}} className="grid gx-1 row-cols-5">
           <NotificationCard 
             cardName="Fire Alerts" 
             iconClass="bx bx-error-circle" 
