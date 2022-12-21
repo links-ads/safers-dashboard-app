@@ -24,85 +24,20 @@ const NotificationsBar = () => {
   const allMissions  =  MOCK_MISSIONS;
   const allCommunications = MOCK_COMMUNICATIONS;
 
-  console.log('Alerts!', alerts);
-  console.log('orgPplList', orgPplList);
-  console.log('filteredPeople', filteredPeople);
-  console.log('OrgReportList', OrgReportList);
-  console.log('allMissions', allMissions);
-  console.log('allCommunications', allCommunications);
-
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
 
-  const getMissionCountByStatus = (missions) => {
+  const getStatusCountsForItems = (items) => {
     // build an object whose keys are mission types and values are
     // counts of missions matching that status
     let statusCounts = {};
-    missions.forEach( mission => {
-      if (mission?.status in statusCounts) {
-        statusCounts[mission.status] += 1;
+    items.forEach( item => {
+      if (item?.status in statusCounts) {
+        statusCounts[item.status] += 1;
       } else {
-        statusCounts[mission.status] = 1;
+        statusCounts[item.status] = 1;
       }
     })
-    console.log('missionStatusCounts', statusCounts);
     return statusCounts;
-  }
-
-  const getCommunicationCountByStatus = (communications) => {
-    // build an object whose keys are mission types and values are
-    // counts of missions matching that status
-    let statusCounts = {};
-    communications.forEach( communication => {
-      if (communication?.status in statusCounts) {
-        statusCounts[communication.status] += 1;
-      } else {
-        statusCounts[communication.status] = 1;
-      }
-    })
-    console.log('communicationStatusCounts', statusCounts);
-    return statusCounts;
-  }
-
-  const getAlertCountByStatus = (alerts) => {
-    let statusCounts = {};
-    alerts.forEach( alert=> {
-      if (alert?.status in statusCounts) {
-        statusCounts[alert.status] += 1;
-      } else {
-        statusCounts[alert.status] = 1;
-      }
-    })
-    console.log('statusCounts', statusCounts);
-    return statusCounts;
-  };
-
-
-  const getPersonCountByStatus = (people) => {
-    let statusCounts = {};
-    people.forEach( person=> {
-      if (person?.status in statusCounts) {
-        statusCounts[person.status] += 1;
-      } else {
-        statusCounts[person.status] = 1;
-      }
-    })
-    console.log('statusCounts', statusCounts);
-    return statusCounts;
-  }
-
-  const getReportByAssignment = (reports) => {
-    let statusCounts = {};
-    // TODO: currently, don't have assignments in the data so catgeorise by hazard type instead for now
-    reports.forEach( report=> {
-      if (report?.hazard in statusCounts) {
-        statusCounts[report.hazard] += 1;
-      } else {
-        statusCounts[report.hazard] = 1;
-      }
-    })
-    console.log('statusCounts', statusCounts);
-    return statusCounts;
-
   }
 
   // renderer functions. These are passed to the individual NotificationCards
@@ -142,7 +77,6 @@ const NotificationsBar = () => {
   // useEffects
 
   useEffect(() => {
-    console.log('initial render');
     dispatch(getAllEventAlerts());
     const params = {
       bbox: undefined,
@@ -155,32 +89,27 @@ const NotificationsBar = () => {
   }, []);
 
   useEffect(() => {
-    console.log('received new alerts');
-    const statusCounts = getAlertCountByStatus(alerts);
+    const statusCounts = getStatusCountsForItems(alerts);
     setActivityStatusCounts(statusCounts);
   }, [filteredAlerts, alerts]);
 
   useEffect(()=> {
-    console.log('received new people');
-    const statusCounts = getPersonCountByStatus(orgPplList);
+    const statusCounts = getStatusCountsForItems(orgPplList);
     setPeopleStatusCounts(statusCounts);
   }, [orgPplList, filteredPeople])
 
   useEffect(()=> {
-    console.log('received new reports');
-    const statusCounts = getReportByAssignment(OrgReportList);
+    const statusCounts = getStatusCountsForItems(OrgReportList);
     setReportStatusCounts(statusCounts);
   }, [OrgReportList])
 
   useEffect(()=> {
-    console.log('received new missions');
-    const statusCounts = getMissionCountByStatus(allMissions);
+    const statusCounts = getStatusCountsForItems(allMissions);
     setMissionStatusCounts(statusCounts);
   }, [allMissions])
 
   useEffect(()=> {
-    console.log('received new communications');
-    const statusCounts = getCommunicationCountByStatus(allCommunications);
+    const statusCounts = getStatusCountsForItems(allCommunications);
     setCommunicationStatusCounts(statusCounts);
   }, [allCommunications])
 
