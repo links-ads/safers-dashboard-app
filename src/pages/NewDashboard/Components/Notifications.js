@@ -1,4 +1,4 @@
-import React, { useEffect, useState }  from 'react';
+import React, { Fragment, useEffect, useState }  from 'react';
 import { Container, Row } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllEventAlerts } from '../../../store/events/action';
@@ -44,35 +44,42 @@ const NotificationsBar = () => {
   // These should return some JSX which will be rendered as the contents
   // of the panel. (The panel - NotificationCard - is completely generic)
 
-  const renderer = (noDataMessage, itemsCounts) => {
+  const renderer = (noDataMessage, label, itemsCounts) => {
     if (!itemsCounts) {
-      return <h3>Loading...</h3>
+      return <p>Loading...</p>
     } 
     if (Object.keys(itemsCounts).length===0 ) {
-      return <h3>{noDataMessage}</h3>;
+      return <p>{noDataMessage}</p>;
     }
     return (
-      <>
+      <Fragment className="noborder">
         {
           Object.keys(itemsCounts).map(key => 
-            <h3 key={`item_${key}`}>
-              {`${key} : ${itemsCounts[key]}`}
-            </h3>
+            <>
+              <Row fluid className="flow row-cols-2" key={`${label}_row_${key}`}>
+                <div className="w-5" key={`${label}_label_${key}`}>
+                  {`${key}`}
+                </div>
+                <div className="w-6" key={`${label}_value_${key}`}>
+                  {`${itemsCounts[key]}`}
+                </div>
+              </Row><hr />
+            </>
           )
         }
-      </>
+      </Fragment>
     );
   }
 
-  const renderCommunications = () => renderer('No new communications', communicationStatusCounts);
+  const renderCommunications = () => renderer('No new communications', 'comms', communicationStatusCounts);
   
-  const renderActivities = () => renderer('No new activities', activityStatusCounts);
+  const renderActivities = () => renderer('No new activities', 'act', activityStatusCounts);
 
-  const renderPeople = () => renderer('No new people activity', peopleStatusCounts);
+  const renderPeople = () => renderer('No new people activity', 'ppl', peopleStatusCounts);
 
-  const renderReports = () => renderer('No new reports', reportStatusCounts);
+  const renderReports = () => renderer('No new reports', 'reps', reportStatusCounts);
 
-  const renderMissions = () => renderer('No new missions', missionStatusCounts);
+  const renderMissions = () => renderer('No new missions', 'miss', missionStatusCounts);
 
   // useEffects
 

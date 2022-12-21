@@ -18,7 +18,7 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
 
   return (
     <div className="card noborder">
-      <Card className="justify-items-stretch">
+      <Card className="justify-items-stretch noborder">
         <Container fluid>
           <CardGroup className="gx-1 p-2 ">
             <Card className="noborder">
