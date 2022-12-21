@@ -21,7 +21,7 @@ const initialState = {
   isPageActive: false,
   isNewAlert: false,
   newItemsCount: 0,
-  fireBreak: null
+  selectedFireBreak: null
 };
 
 const dataLayerReducer = (state = initialState, action) => {
@@ -45,7 +45,7 @@ const dataLayerReducer = (state = initialState, action) => {
   case actionTypes.GET_ALL_FILTERED_MAP_REQUESTS_SUCCESS: return getAllFilteredMapRequestsSuccess(state, action);
   case actionTypes.GET_ALL_FILTERED_MAP_REQUESTS_FAIL: return getAllFilteredMapRequestsFail(state, action);
   case actionTypes.SET_MAP_REQUEST_PARAMS: return setMapRequestsParams(state, action)
-  case actionTypes.SET_FIRE_BREAK: return setFireBreak(state, action)
+  case actionTypes.SET_SELECTED_FIRE_BREAK: return setSelectedFireBreak(state, action)
   default:
     return state;
   }
@@ -196,9 +196,9 @@ const getTimeSeriesDataFail = (state) => {
   return updateObject(state, updatedState);
 }
 
-const setFireBreak = (state, action) => {
+const setSelectedFireBreak = (state, action) => {
   const updatedState = {
-    fireBreak: action.payload,
+    selectedFireBreak: action.payload,
     error: false
   }
   return updateObject(state, updatedState)

@@ -239,9 +239,9 @@ export const setMapRequestParams = (payload) => {
   };
 };
 
-export const setFireBreak = (payload) => {
+export const setSelectedFireBreak = (payload) => {
   return {
-    type: actionTypes.SET_FIRE_BREAK,
+    type: actionTypes.SET_SELECTED_FIRE_BREAK,
     payload
   }
 }
