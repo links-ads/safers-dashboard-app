@@ -5,6 +5,7 @@ import { getAllEventAlerts } from '../../../store/events/action';
 import NotificationCard from './NotificationCard';
 import { getAllPeople } from '../../../store/people/action';
 import { getAllReports } from '../../../store/reports/action';
+import { MOCK_MISSIONS } from '../mocks/missionsmock.ts';
 
 const NotificationsBar = () => {
   const dispatch = useDispatch();
@@ -13,22 +14,38 @@ const NotificationsBar = () => {
   let [activityStatusCounts, setActivityStatusCounts] = useState( {undefined: 0} );
   let [peopleStatusCounts, setPeopleStatusCounts] = useState( {undefined: 0} );
   let [reportStatusCounts, setReportStatusCounts] = useState( {undefined: 0});
+  let [missionStatusCounts, setMissionStatusCounts] = useState( { undefined: 0} );
 
   const defaultAOI = useSelector(state => state?.user?.defaultAoi);
   const { allReports: OrgReportList } = useSelector(state => state?.reports);
   const { allAlerts: alerts, filteredAlerts } = useSelector(state => state?.alerts);
   const { allPeople: orgPplList, filteredPeople } = useSelector(state => state.people);
+  const allMissions  =  MOCK_MISSIONS;
 
   console.log('Alerts!', alerts);
   console.log('orgPplList', orgPplList);
   console.log('filteredPeople', filteredPeople);
   console.log('OrgReportList', OrgReportList);
+  console.log('allMissions', allMissions);
 
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
 
+  const getMissionCountByStatus = (missions) => {
+    // build an object whose keys are mission types and values are
+    // counts of missions matching that status
+    let statusCounts = {};
+    missions.forEach( mission => {
+      if (mission?.status in statusCounts) {
+        statusCounts[mission.status] += 1;
+      } else {
+        statusCounts[mission.status] = 1;
+      }
+    })
+    console.log('missionStatusCounts', statusCounts);
+    return statusCounts;
+  }
+
   const getAlertCountByStatus = (alerts) => {
-    // build an object whose keys are alert types and values are
-    // counts of alerts matching that status
     let statusCounts = {};
     alerts.forEach( alert=> {
       if (alert?.status in statusCounts) {
@@ -79,7 +96,10 @@ const NotificationsBar = () => {
   };
 
   const renderActivities = () => {
-    if (!activityStatusCounts || Object.keys(activityStatusCounts).length===0 ) {
+    if (!activityStatusCounts) {
+      return <h3>Loading...</h3>
+    } 
+    if (Object.keys(activityStatusCounts).length===0 ) {
       return <h3>No new Event activity</h3>;
     }
     return (
@@ -96,7 +116,10 @@ const NotificationsBar = () => {
   }
 
   const renderPeople = () => {
-    if (!peopleStatusCounts || Object.keys(peopleStatusCounts).length===0 ) {
+    if (!peopleStatusCounts) {
+      return <h3>Loading...</h3>
+    } 
+    if (Object.keys(peopleStatusCounts).length===0 ) {
       return <h3>No new People activity</h3>;
     }
     return (
@@ -113,8 +136,11 @@ const NotificationsBar = () => {
   };
 
   const renderReports = () => {
-    if (!reportStatusCounts || Object.keys(reportStatusCounts).length===0 ) {
-      return <h3>No new Reports</h3>;
+    if (!reportStatusCounts) {
+      return <h3>Loading...</h3>
+    } 
+    if (Object.keys(reportStatusCounts).length===0 ) {
+      return <h3>No new Report activity</h3>;
     }
     return (
       <>
@@ -128,6 +154,27 @@ const NotificationsBar = () => {
       </>
     );
   }
+
+  const renderMissions = () => {
+    if (!missionStatusCounts) {
+      return <h3>Loading...</h3>
+    } 
+    if (Object.keys(missionStatusCounts).length===0 ) {
+      return <h3>No new Mission activity</h3>;
+    }
+    return (
+      <>
+        {
+          Object.keys(missionStatusCounts).map(key => 
+            <h3 key={`item_${key}`}>
+              {`${key} : ${missionStatusCounts[key]}`}
+            </h3>
+          )
+        }
+      </>
+    );
+  }
+
 
 
   // useEffects
@@ -162,6 +209,12 @@ const NotificationsBar = () => {
     setReportStatusCounts(statusCounts);
   }, [OrgReportList])
 
+  useEffect(()=> {
+    console.log('received new missions');
+    const statusCounts = getMissionCountByStatus(allMissions);
+    setMissionStatusCounts(statusCounts);
+  }, [allMissions])
+
   return (
     <div className="">
       <Container fluid className="">
@@ -188,7 +241,7 @@ const NotificationsBar = () => {
           <NotificationCard 
             cardName="Mission" 
             iconClass="fas fa-flag-checkered" 
-            contentRenderer={ renderLorem }
+            contentRenderer={ renderMissions }
             linkURL="/chatbot?tab=3"
           />
           <NotificationCard 
