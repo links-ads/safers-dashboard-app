@@ -1,5 +1,5 @@
 import React, { useEffect }  from 'react';
-import { Container, Row, Card } from 'reactstrap';
+import { Container, CardBody, Card, Row, CardGroup, CardTitle } from 'reactstrap';
 import { useDispatch } from 'react-redux';
 import { getAllEventAlerts } from '../../../store/events/action';
 import PropTypes from 'prop-types';
@@ -20,21 +20,25 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
     <div className="card">
       <Card className="justify-items-stretch">
         <Container fluid>
-          <Row className="gx-1 p-2 place-content-stretch">
-            <Card className="col-9 card p-1 place-content-stretch">
-              <div className="col card-body">{ cardName }</div>
+          <CardGroup className="gx-1 p-2 ">
+            <Card outline={false}>
+              <CardTitle className="col-12 card p-1 ">
+                <Row>
+                  <div className="col-8">{ cardName }</div>
+                  <div className="col-4">
+                    <Link to ={ linkURL }>
+                      <span className='d-none d-sm-block'><i className={iconClass}></i></span>
+                    </Link>
+                  </div>
+                </Row>
+              </CardTitle>
+              <CardBody className="col-12 p-1">
+                <Card outline={false} className="col-12 p-1">
+                  <div className="">{ contentRenderer() }</div>
+                </Card>  
+              </CardBody>
             </Card>
-            <Card className="col-3 card p-1">
-              <div className="card-body">
-                <Link to ={ linkURL }>
-                  <span className='d-none d-sm-block'><i className={iconClass}></i></span>
-                </Link>
-              </div>
-            </Card>
-          </Row>
-          <Row className="gx-1">
-            <Card className="col-12 p-1"><div className="card-body">{ contentRenderer() }</div></Card>
-          </Row>
+          </CardGroup>
         </Container>
       </Card>
     </div>
