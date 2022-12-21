@@ -53,7 +53,7 @@ const PolygonMap = ({
   handleAreaValidation,
   singlePolygonOnly = false
 }) => {
-  const fireBreak = useSelector(state => state.dataLayer.fireBreak)
+  const selectedFireBreak = useSelector(state => state.dataLayer.selectedFireBreak);
 
   const mapRef = useRef();
   const finalLayerSet = [
@@ -150,7 +150,7 @@ const PolygonMap = ({
 
   const renderToolbar = () => (
     <>
-      {fireBreak !== null ? (
+      {selectedFireBreak !== null ? (
         <MapControlButton
           top='50px'
           style={modeId == 'drawLineString' ? { backgroundColor: 'lightgray' } : {}}
@@ -189,7 +189,7 @@ const PolygonMap = ({
   };
 
   useEffect(() => {
-    const tempFeatures = coordinates? getGeoFeatures(coordinates) : [];
+    const tempFeatures = coordinates ? getGeoFeatures(coordinates) : []
     setFeatures(tempFeatures);
     toggleMode('editing');
   },[coordinates])

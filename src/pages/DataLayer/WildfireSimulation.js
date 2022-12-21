@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,23 +15,27 @@ import {
   postMapRequest,
   getAllMapRequests
 } from '../../store/appAction';
-import { setFireBreak } from '../../store/datalayer/action';
+import { setSelectedFireBreak } from '../../store/datalayer/action';
 import 'react-rangeslider/lib/index.css'
 import moment from 'moment';
 import MapInput from '../../components/BaseMap/MapInput';
 import { MAP } from '../../constants/common';
+import { FIRE_BREAK_OPTIONS } from './constants'
 
 // increase the bbox used to view Wildfire layers by 20 kms
 const DEFAULT_WILDFIRE_GEOMETRY_BUFFER = 20
 
 const TIME_LIMIT = 72;
 
+const DEFAULT_FIRE_BREAK_TYPE = 'canadair';
+
 const TABLE_HEADERS = [
   'timeHours',
   'windDirection',
   'windSpeed',
   'fuelMoistureContent',
-  'fireBreak',
+  'fireBreakType',
+  'fireBreakData',
 ];
 
 const PROBABILITY_INFO = 'PROPAGATOR output for each time step is a probability (from 0 to 1) field that expresses for each pixel the probability of the fire to reach that specific point in the given time step. In order to derive a contour, we can select to show the contour related to the 0.5, 0.75 and 0.9 of the probability.  For example, the 50% - 0.5 probability contour encapsulates all the pixels who have more than 50% of probability to be reached by fire at the given simulation time.'
@@ -77,10 +81,14 @@ const WildfireSimulation = ({
   const dispatch = useDispatch();
 
   const error = useSelector(state => state.auth.error);
-  const fireBreak = useSelector(state => state.dataLayer.fireBreak)
+  const selectedFireBreak = useSelector(state => state.dataLayer.selectedFireBreak)
 
   // to manage number of dynamic (vertical) table rows in `Boundary Conditions`
   const [tableEntries, setTableEntries] = useState([0]);
+  const [fireBreakSelectedOptions, setFireBreakSelectedOptions] = useState({ 0: DEFAULT_FIRE_BREAK_TYPE });
+
+  // reset global state when form is closed
+  useEffect(() => () => dispatch(setSelectedFireBreak(null)), []);
 
   const WildfireSimulationSchema = Yup.object().shape({
     simulationTitle: Yup.string()
@@ -129,8 +137,6 @@ const WildfireSimulation = ({
             .min(0, t('field-err-fuel-moisture', {ns: 'dataLayers' }))
             .max(100,  t('field-err-fuel-moisture', {ns: 'dataLayers' }))
             .required(t('field-empty-err', { ns: 'common' })),
-          fireBreak: Yup.string()
-            .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
         }))
   });
 
@@ -193,8 +199,41 @@ const WildfireSimulation = ({
     return endTime;
   }
 
-  const handleFireBreakClick = (position) => {
-    dispatch(setFireBreak(fireBreak === position ? null : position))
+  const handleTableEntriesAddClick = () => {
+    const nextIndex = tableEntries.length;
+    setTableEntries([ ...tableEntries, nextIndex ]);
+
+    // add selected fire break key for boundary condition
+    // when new boundary condition is created
+    setFireBreakSelectedOptions(prev => ({
+      ...prev,
+      [nextIndex]: DEFAULT_FIRE_BREAK_TYPE
+    }))
+  }
+
+  const handleTableEntriesDeleteClick = (position) => {
+    setTableEntries(
+      tableEntries.filter(
+        entry => entry !== position
+      )
+    );
+
+    // remove selected fire break key for boundary condition when it is deleted
+    setFireBreakSelectedOptions(prev => Object
+      .entries(prev)
+      .reduce((acc, [k, v]) =>
+        Number(k) === position ? acc : { ...acc, [k]: v }, {})
+    );
+  }
+
+  const handleFireBreakTypeChange = (value, position) => {
+    // toggle fire break 'draw mode' off when changing type
+    dispatch(setSelectedFireBreak(null));
+    setFireBreakSelectedOptions(prev => ({ ...prev, [position]: value }))
+  }
+
+  const handleFireBreakDrawClick = (position) => {
+    dispatch(setSelectedFireBreak(selectedFireBreak === position ? null : position))
   }
 
   return (
@@ -217,7 +256,12 @@ const WildfireSimulation = ({
                 windDirection: '',
                 windSpeed: '',
                 fuelMoistureContent: '',
-                fireBreak: ''
+                fireBreak: {
+                  canadair: '',
+                  helicopter: '',
+                  waterLine: '',
+                  vehicle: ''
+                },
               }],
             }}
             validationSchema={WildfireSimulationSchema}
@@ -451,48 +495,26 @@ const WildfireSimulation = ({
 
                   <Col xl={7} className='mx-auto'>
                     <Card className='map-card mb-0 position-relative' style={{ height: 670 }}>
-                      {<div style={{
-                        position: 'absolute',
-                        top: '0.5rem',
-                        left: '0.5rem',
-                        zIndex: 1000,
-                      }}>
-                        {tableEntries.map(position => {
-                          const isSelected = position === fireBreak,
-                            id = values.boundaryConditions?.[position]?.timeOffset ?? position
-                          return (
-                            <button
-                              key={position}
-                              onClick={() => handleFireBreakClick(position)}
-                              style={{
-                                width: 'fit-content',
-                                padding: '0.25rem',
-                                marginRight: '0.5rem',
-                                backgroundColor: isSelected ? '#e27b1d' : '#2c2d34',
-                                color: isSelected ? '#000' : '#fff',
-                                borderRadius: '3px'
-                              }}
-                            >
-                              FireBreak {id}hrs
-                            </button>
-                          )
-                        })}
-                      </div>}
                       <MapSection
                         setCoordinates={(wktConversion, isAreaValid) => {
                           // called if map is used to draw polygon
                           // we assume it's valid WKT
-
-                          if (fireBreak !== null) {
-                            setFieldValue(`boundaryConditions.${fireBreak}.fireBreak`, wktConversion);
+                          if (selectedFireBreak !== null) {
+                            const existingFireBreakData = values.boundaryConditions?.[selectedFireBreak]?.fireBreak,
+                              selectedFireBreakType = fireBreakSelectedOptions[selectedFireBreak],
+                              updatedFireBreakData = {
+                                ...existingFireBreakData,
+                                [selectedFireBreakType]: wktConversion
+                              }
+                            setFieldValue(`boundaryConditions.${selectedFireBreak}.fireBreak`, updatedFireBreakData);
                           } else {
                             setFieldValue('mapSelection', wktConversion);
                             setFieldValue('isMapAreaValid', isAreaValid);
                             setFieldValue('isMapAreaValidWKT', true);
                           }
                         }}
-                        coordinates={fireBreak !== null
-                          ? values.boundaryConditions?.[fireBreak]?.fireBreak
+                        coordinates={selectedFireBreak !== null
+                          ? values.boundaryConditions?.[selectedFireBreak]?.fireBreak?.[fireBreakSelectedOptions[selectedFireBreak]]
                           : values.mapSelection}
                         togglePolygonMap={true}
                         handleAreaValidation={feature => {
@@ -509,10 +531,9 @@ const WildfireSimulation = ({
                     <Label for="boundaryConditions" className='m-0'>
                       {t('boundaryConditions')}
                     </Label>
-                    <table className='on-demand-table'
+                    <table className='on-demand-table align-content-between'
                     >
-                      <thead>
-                        <tr></tr>
+                      <thead className='d-flex justify-content-evenly mt-3'>
                         {TABLE_HEADERS.map(header => (
                           <tr
                             key={header}>
@@ -525,19 +546,19 @@ const WildfireSimulation = ({
                         ))}
                       </thead>
                       <FieldArray name='boundaryConditions'>
-                        {() => {
-                          return (
-                            <tbody>
-                              {tableEntries.map((position) => (
+                        {() => (
+                          <tbody>
+                            {tableEntries.map((position) => {
+                              const isFireBreakSelected = position === selectedFireBreak,
+                                drawButtonStyles = !isFireBreakSelected ? {
+                                  backgroundColor: '#2c2d34',
+                                } : {}
+                              return (
                                 <tr key={position}>
                                   <td style={{ justifyContent: 'center' }}>
                                     {<i
                                       className="bx bx-trash font-size-24 p-0 w-auto"
-                                      onClick={() => setTableEntries(
-                                        tableEntries.filter(
-                                          entry => entry !== position
-                                        )
-                                      )}
+                                      onClick={() => handleTableEntriesDeleteClick(position)}
                                       style={{
                                         cursor: 'pointer',
                                         visibility: position === 0 ? 'hidden' : 'visible'
@@ -586,30 +607,49 @@ const WildfireSimulation = ({
                                     />
                                     {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.fuelMoistureContent)}
                                   </td>
+                                  <div className='d-flex align-items-center gap-2 mb-1 mt-1'>
+                                    <Input
+                                      type='select'
+                                      className="btn-sm sort-select-input"
+                                      value={fireBreakSelectedOptions[position]}
+                                      onChange={({ target: { value }}) =>
+                                        handleFireBreakTypeChange(value, position)
+                                      }
+                                    >
+                                      {FIRE_BREAK_OPTIONS.map(({ label, value }) => (
+                                        <option key={value} value={value}>{label}</option>
+                                      ))}
+                                    </Input>
+                                    <button
+                                      key={position}
+                                      onClick={() => handleFireBreakDrawClick(position)}
+                                      className='btn btn-primary'
+                                      color="primary"
+                                      style={drawButtonStyles}
+                                    >
+                                      {isFireBreakSelected ? 'Finish' :  'Draw'}
+                                    </button>
+                                  </div>
                                   <td>
                                     <Input
                                       name={`boundaryConditions.${position}.fireBreak`}
                                       id={`boundaryConditions.${position}.fireBreak`}
                                       readOnly
                                       type="textarea"
-                                      value={values.boundaryConditions?.[position]?.fireBreak}
+                                      value={values.boundaryConditions?.[position]?.fireBreak?.[fireBreakSelectedOptions[position]] ?? ''}
                                       onBlur={handleBlur}
                                     />
-                                    {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.fireBreak)}
                                   </td>
                                 </tr>
-                              ))}
-                            </tbody>
-                          )
-                        }}
+                              )
+                            })}
+                          </tbody>
+                        )}
                       </FieldArray>
                       <i
                         onClick={() => {
                           if (tableEntries.length === +values.simulationTimeLimit) return;
-
-                          setTableEntries(
-                            [...tableEntries, tableEntries.length]
-                          )
+                          handleTableEntriesAddClick()
                         }}
                         className="bx bx-plus-circle p-0 ms-2 w-auto"
                         style={{ cursor: 'pointer', alignSelf: 'center', fontSize: '2.5rem' }}
