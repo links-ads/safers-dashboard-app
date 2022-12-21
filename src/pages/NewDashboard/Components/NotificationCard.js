@@ -17,23 +17,23 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
   }, []);
 
   return (
-    <div className="card">
+    <div className="card noborder">
       <Card className="justify-items-stretch">
         <Container fluid>
           <CardGroup className="gx-1 p-2 ">
-            <Card outline={false}>
+            <Card className="noborder">
               <CardTitle className="col-12 card p-1 ">
                 <Row>
-                  <div className="col-8">{ cardName }</div>
-                  <div className="col-4">
+                  <div className="col-9">{ cardName }</div>
+                  <div className="col-3">
                     <Link to ={ linkURL }>
                       <span className='d-none d-sm-block'><i className={iconClass}></i></span>
                     </Link>
                   </div>
                 </Row>
               </CardTitle>
-              <CardBody className="col-12 p-1">
-                <Card outline={false} className="col-12 p-1">
+              <CardBody className="noborder col-12 p-1">
+                <Card className="noborder col-12 p-1">
                   <div className="">{ contentRenderer() }</div>
                 </Card>  
               </CardBody>

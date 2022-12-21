@@ -7,8 +7,10 @@
   box-shadow: $box-shadow;
 }
 
-.card.noborder {
+.noborder {
+  border: 0px solid grey;
   margin-bottom: $grid-gutter-width;
+  box-shadow: none !important;
 }
 
 .card-drop {
