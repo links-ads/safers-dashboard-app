@@ -6,27 +6,30 @@ import NotificationCard from './NotificationCard';
 import { getAllPeople } from '../../../store/people/action';
 import { getAllReports } from '../../../store/reports/action';
 import { MOCK_MISSIONS } from '../mocks/missionsmock.ts';
+import { MOCK_COMMUNICATIONS } from '../mocks/communicationsmock.ts';
 
 const NotificationsBar = () => {
   const dispatch = useDispatch();
-  const lorem = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.';
-
+  
   let [activityStatusCounts, setActivityStatusCounts] = useState( {undefined: 0} );
   let [peopleStatusCounts, setPeopleStatusCounts] = useState( {undefined: 0} );
   let [reportStatusCounts, setReportStatusCounts] = useState( {undefined: 0});
   let [missionStatusCounts, setMissionStatusCounts] = useState( { undefined: 0} );
+  let [communicationStatusCounts, setCommunicationStatusCounts] = useState( { undefined: 0} );
 
   const defaultAOI = useSelector(state => state?.user?.defaultAoi);
   const { allReports: OrgReportList } = useSelector(state => state?.reports);
   const { allAlerts: alerts, filteredAlerts } = useSelector(state => state?.alerts);
   const { allPeople: orgPplList, filteredPeople } = useSelector(state => state.people);
   const allMissions  =  MOCK_MISSIONS;
+  const allCommunications = MOCK_COMMUNICATIONS;
 
   console.log('Alerts!', alerts);
   console.log('orgPplList', orgPplList);
   console.log('filteredPeople', filteredPeople);
   console.log('OrgReportList', OrgReportList);
   console.log('allMissions', allMissions);
+  console.log('allCommunications', allCommunications);
 
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
 
@@ -42,6 +45,21 @@ const NotificationsBar = () => {
       }
     })
     console.log('missionStatusCounts', statusCounts);
+    return statusCounts;
+  }
+
+  const getCommunicationCountByStatus = (communications) => {
+    // build an object whose keys are mission types and values are
+    // counts of missions matching that status
+    let statusCounts = {};
+    communications.forEach( communication => {
+      if (communication?.status in statusCounts) {
+        statusCounts[communication.status] += 1;
+      } else {
+        statusCounts[communication.status] = 1;
+      }
+    })
+    console.log('communicationStatusCounts', statusCounts);
     return statusCounts;
   }
 
@@ -90,10 +108,6 @@ const NotificationsBar = () => {
   // renderer functions. These are passed to the individual NotificationCards
   // These should return some JSX which will be rendered as the contents
   // of the panel. (The panel - NotificationCard - is completely generic)
-
-  const renderLorem = () => {
-    return lorem;
-  };
 
   const renderActivities = () => {
     if (!activityStatusCounts) {
@@ -175,11 +189,30 @@ const NotificationsBar = () => {
     );
   }
 
-
+  const renderCommunications = () => {
+    if (!communicationStatusCounts) {
+      return <h3>Loading...</h3>
+    } 
+    if (Object.keys(communicationStatusCounts).length===0 ) {
+      return <h3>No new communications</h3>;
+    }
+    return (
+      <>
+        {
+          Object.keys(communicationStatusCounts).map(key => 
+            <h3 key={`item_${key}`}>
+              {`${key} : ${communicationStatusCounts[key]}`}
+            </h3>
+          )
+        }
+      </>
+    );
+  }
 
   // useEffects
 
   useEffect(() => {
+    console.log('initial render');
     dispatch(getAllEventAlerts());
     const params = {
       bbox: undefined,
@@ -215,6 +248,12 @@ const NotificationsBar = () => {
     setMissionStatusCounts(statusCounts);
   }, [allMissions])
 
+  useEffect(()=> {
+    console.log('received new communications');
+    const statusCounts = getCommunicationCountByStatus(allCommunications);
+    setCommunicationStatusCounts(statusCounts);
+  }, [allCommunications])
+
   return (
     <div className="">
       <Container fluid className="">
@@ -247,7 +286,7 @@ const NotificationsBar = () => {
           <NotificationCard 
             cardName="Communications" 
             iconClass="fas fa-envelope" 
-            contentRenderer={ renderLorem }
+            contentRenderer={ renderCommunications }
             linkURL="/chatbot?tab=2"
           />
         </Row>
