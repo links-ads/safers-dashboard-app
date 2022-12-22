@@ -52,7 +52,7 @@ const NotificationsBar = () => {
       return <p>{noDataMessage}</p>;
     }
     return (
-      <Fragment className="noborder">
+      <Fragment>
         {
           Object.keys(itemsCounts).map(key => 
             <>
