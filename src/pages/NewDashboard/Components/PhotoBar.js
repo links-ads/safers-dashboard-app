@@ -3,8 +3,7 @@ import { useSelector, useDispatch} from 'react-redux'
 import { Container, Row, Card } from 'reactstrap';
 import { ReactComponent as Placeholder } from './placeholder.svg'
 import { getAllInSituAlerts } from '../../../store/insitu/action'
-import {Img} from 'react-image'
-import { Spinner } from 'reactstrap';
+import { Img } from 'react-image'
 
 const PhotoBar = () => {
   
@@ -51,13 +50,7 @@ const PhotoBar = () => {
               ? photoNumbers.map((photo, index)=> {
                 return(
                   <div key={`photo_${index}`} className="col-3 my-3">
-                    {/* <Placeholder width="100%" height="120px"/> */}
-                    <Spinner
-                      className="m-5"
-                      color="primary"
-                    >
-                    Loading...
-                    </Spinner>
+                    <Placeholder width="100%" height="120px"/>
                   </div>
                 )})
               : 
@@ -66,7 +59,7 @@ const PhotoBar = () => {
                   <div key={`photo_${photo.id}`} className="col-3 my-3">    
                     {/* This is a custom component which handles fallbacks */}
                     <Img 
-                      decode={false}
+                      decode={true}
                       unloader={<Placeholder width="100%" height="120px"/>} 
                       src={[`${photo.url}`]} 
                       width="100%" height="120px" 
