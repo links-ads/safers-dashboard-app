@@ -10,6 +10,8 @@ const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
 
   const isSelected = card.id === peopleId
 
+  if (!card) return null; // this is not set when data is polled, prevents black screen o'death
+
   const getBadge = () => {
     return (
       <>
