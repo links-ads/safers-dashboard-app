@@ -4,23 +4,23 @@ import { Container, Row, Card } from 'reactstrap';
 import { ReactComponent as Placeholder } from './placeholder.svg'
 import { getAllInSituAlerts } from '../../../store/insitu/action'
 import {Img} from 'react-image'
+import { Spinner } from 'reactstrap';
 
 const PhotoBar = () => {
   
   let [photoList, setPhotoList] = useState([]);
-  
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  const photoNumbers = [1,2,3,4,5,6,7,8];
+
   const allPhotos = useSelector(state => {
-    console.log('state', state);
-    console.log('photos', state?.inSituAlerts?.allAlerts);
     return state?.inSituAlerts?.allAlerts
   });
 
   const dispatch = useDispatch();
-  console.log('All photos', allPhotos.map(item => item.url));
 
   useEffect(() => {
     const dateRangeParams = {};
-    console.log('dispatching');
     dispatch(getAllInSituAlerts({
       type: undefined,
       order: '-date',
@@ -34,24 +34,30 @@ const PhotoBar = () => {
   }, []);
 
   useEffect(() => {
-    //TODO find out why this is not triggered when allPhotos is set
-    // ok, so it only triggers if []
-    console.log('got new photos');
     setPhotoList(allPhotos);
-    console.log('Photolist is now', allPhotos);
+    setIsLoaded(true);
+    console.log('Now isLoaded');
   }, [allPhotos])
 
   return (
     <div className="">
       <Container fluid className="flex-stretch">
+        {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
         <Card>
           <p className="align-self-baseline">In-situ Photos</p>
           <Row className="mx-4 gx-2 row-cols-8 flex-wrap">
+            
             {!photoList 
-              ? [1,2,3,4,5,6,7,8].map((photo, index)=> {
+              ? photoNumbers.map((photo, index)=> {
                 return(
                   <div key={`photo_${index}`} className="col-3 my-3">
-                    <Placeholder width="100%" height="120px"/>
+                    {/* <Placeholder width="100%" height="120px"/> */}
+                    <Spinner
+                      className="m-5"
+                      color="primary"
+                    >
+                    Loading...
+                    </Spinner>
                   </div>
                 )})
               : 
@@ -60,6 +66,7 @@ const PhotoBar = () => {
                   <div key={`photo_${photo.id}`} className="col-3 my-3">    
                     {/* This is a custom component which handles fallbacks */}
                     <Img 
+                      decode={false}
                       unloader={<Placeholder width="100%" height="120px"/>} 
                       src={[`${photo.url}`]} 
                       width="100%" height="120px" 
