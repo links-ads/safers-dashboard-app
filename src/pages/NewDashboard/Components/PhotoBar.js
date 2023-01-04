@@ -3,7 +3,7 @@ import { useSelector, useDispatch} from 'react-redux'
 import { Container, Row, Card } from 'reactstrap';
 import { ReactComponent as Placeholder } from './placeholder.svg'
 import { getAllInSituAlerts } from '../../../store/insitu/action'
-
+import {Img} from 'react-image'
 
 const PhotoBar = () => {
   
@@ -57,8 +57,14 @@ const PhotoBar = () => {
               : 
               photoList.slice(0,16).map(photo => {
                 return(
-                  <div key={`photo_${photo.id}`} className="col-3 my-3">
-                    <img src={`${photo.url}`} width="100%" height="120px" />
+                  <div key={`photo_${photo.id}`} className="col-3 my-3">    
+                    {/* This is a custom component which handles fallbacks */}
+                    <Img 
+                      unloader={<Placeholder width="100%" height="120px"/>} 
+                      src={[`${photo.url}`]} 
+                      width="100%" height="120px" 
+                      alt="Image is missing"
+                    />
                   </div>
                 )
               })}
