@@ -29,7 +29,6 @@ const PhotoBar = () => {
       default_bbox: false,
       ...dateRangeParams
     }));
-
   }, []);
 
   useEffect(() => {
@@ -49,14 +48,14 @@ const PhotoBar = () => {
             {!photoList 
               ? photoNumbers.map((photo, index)=> {
                 return(
-                  <div key={`photo_${index}`} className="col-3 my-3">
+                  <div key={`photoy_${index}`} className="col-3 my-3">
                     <Placeholder width="100%" height="120px"/>
                   </div>
                 )})
               : 
               photoList.slice(0,16).map(photo => {
                 return(
-                  <div key={`photo_${photo.id}`} className="col-3 my-3">    
+                  <div key={`photie_${photo.id}`} className="col-3 my-3">    
                     {/* This is a custom component which handles fallbacks */}
                     <Img 
                       decode={true}

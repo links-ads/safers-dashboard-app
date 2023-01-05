@@ -11,7 +11,7 @@ const TweetBar = () => {
           <p className="align-self-baseline">Latest Tweets</p>
           <Row className="mx-4 gx-2 row-cols-8 flex-wrap">
             {[1,2,3,4,5,6,7,8].map(number=>
-              <div key={`photo_${number}`} className="col-3 my-3">
+              <div key={`photon_${number}`} className="col-3 my-3">
                 <Placeholder width="100%" height="120px"/>
               </div>
             )}

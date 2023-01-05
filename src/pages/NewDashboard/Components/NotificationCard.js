@@ -10,7 +10,7 @@ import { Link } from 'react-router-dom';
 const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) => {
 
   return (
-    <div className="card noborder">
+    <div key={`card_${cardName}`} className="card noborder">
       <Card className="justify-items-stretch noborder">
         <Container fluid>
           <CardGroup className="gx-1 p-2 ">
