@@ -5,8 +5,8 @@ import { getAllEventAlerts } from '../../../store/events/action';
 import NotificationCard from './NotificationCard';
 import { getAllPeople } from '../../../store/people/action';
 import { getAllReports } from '../../../store/reports/action';
-import { MOCK_MISSIONS } from '../mocks/missionsmock.ts';
-import { MOCK_COMMUNICATIONS } from '../mocks/communicationsmock.ts';
+// import { MOCK_MISSIONS } from '../mocks/missionsmock.ts';
+// import { MOCK_COMMUNICATIONS } from '../mocks/communicationsmock.ts';
 
 const NotificationsBar = () => {
   const dispatch = useDispatch();
@@ -21,8 +21,10 @@ const NotificationsBar = () => {
   const { allReports: OrgReportList } = useSelector(state => state?.reports);
   const { allAlerts: alerts, filteredAlerts } = useSelector(state => state?.alerts);
   const { allPeople: orgPplList, filteredPeople } = useSelector(state => state.people);
-  const allMissions  =  MOCK_MISSIONS;
-  const allCommunications = MOCK_COMMUNICATIONS;
+  //const allMissions  =  useSelector(state => !state.missions.allMissions || state.missions.allMissions.length===0 ? MOCK_MISSIONS : state.missions.allMissions);
+  //const allCommunications = useSelector(state => !state.comms.allComms || state.comms.allComms.length === 0 ?  MOCK_COMMUNICATIONS : state.comms.allComms);
+  const allMissions  =  useSelector(state => state?.missions?.allMissions || []);
+  const allCommunications = useSelector(state => state.comms.allComms  || []);
 
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
 
@@ -56,11 +58,11 @@ const NotificationsBar = () => {
         {
           Object.keys(itemsCounts).map(key => 
             <>
-              <Row fluid className="flow row-cols-2" key={`${label}_row_${key}`}>
-                <div className="w-5" key={`${label}_label_${key}`}>
+              <Row fluid className="" key={`${label}_row_${key}`}>
+                <div className="w-9" key={`${label}_label_${key}`}>
                   {`${key}`}
                 </div>
-                <div className="w-6" key={`${label}_value_${key}`}>
+                <div className="w-2" key={`${label}_value_${key}`}>
                   {`${itemsCounts[key]}`}
                 </div>
               </Row><hr />
