@@ -59,10 +59,10 @@ const NotificationsBar = () => {
           Object.keys(itemsCounts).map(key => 
             <>
               <Row fluid className="" key={`${label}_row_${key}`}>
-                <div className="w-9" key={`${label}_label_${key}`}>
+                <div className="w-10" key={`${label}_label_${key}`}>
                   {`${key}`}
                 </div>
-                <div className="w-2" key={`${label}_value_${key}`}>
+                <div className="w-1" key={`${label}_value_${key}`}>
                   {`${itemsCounts[key]}`}
                 </div>
               </Row><hr />

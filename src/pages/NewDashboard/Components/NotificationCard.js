@@ -15,18 +15,18 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
         <div>
           <CardGroup className="gx-1 p-2 ">
             <Card className="noborder m-1">
-              <CardTitle className="col-12 card p-1 ">
+              <CardTitle className="col-12 card ">
                 <Row>
                   <div className="col-10">{ cardName }</div>
-                  <div className="col-2">
+                  <div className="col-1">
                     <Link to ={ linkURL }>
-                      <span className='d-none d-sm-block'><i className={iconClass}></i></span>
+                      <span><i className={iconClass}></i></span>
                     </Link>
                   </div>
                 </Row>
               </CardTitle>
-              <CardBody className="noborder col-12 p-1">
-                <Card className="noborder col-12 p-1">
+              <CardBody className="noborder col-12 p-0">
+                <Card className="noborder col-12">
                   <div className="">{ contentRenderer() }</div>
                 </Card>  
               </CardBody>
