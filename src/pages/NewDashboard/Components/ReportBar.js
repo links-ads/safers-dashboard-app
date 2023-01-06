@@ -29,14 +29,14 @@ const ReportBar = () => {
 
   return (
     <div className="">
-      <Container fluid className="flex-stretch">
+      <Container fluid className="">
         <Card>
           <p className="align-self-baseline">Reports</p>
-          <Row className="mx-4 gx-2 row-cols-8 flex-wrap">
+          <Row xs={1} sm={1} md={2} lg={2} xl={4} className="mx-4 gx-2" >
             {
               reportList ? 
                 reportList.map(report=> 
-                  <Card className="col-3 my-3" key={`report_${report.report_id}`}>
+                  <Card className="my-3" key={`report_${report.report_id}`}>
                     <Report
                       key={report.report_id}
                       card={report}

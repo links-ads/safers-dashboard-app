@@ -6,7 +6,7 @@ import NotificationsBar from './Components/Notifications';
 import AOIBar from './Components/AOIBar';
 import PhotoBar from './Components/PhotoBar';
 import ReportBar from './Components/ReportBar';
-import TweetBar from './Components/TweetBar';
+// import TweetBar from './Components/TweetBar'; -- out of scope
 
 const NewDashboard = () => {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ const NewDashboard = () => {
         <AOIBar />
         <PhotoBar />
         <ReportBar />
-        <TweetBar />
+        {/* <TweetBar /> -- out of scope for now */}
       </Container>
     </div>
   );
