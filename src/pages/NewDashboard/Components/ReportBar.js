@@ -25,8 +25,6 @@ const ReportBar = () => {
 
   useEffect(() => {
     setReportList(allReports);
-    console.log('Now got reports');
-    console.log('allReports', allReports);
   }, [allReports])
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, CardBody, Card, Row, CardGroup, CardTitle } from 'reactstrap';
+import { CardBody, Card, Row, CardGroup, CardTitle } from 'reactstrap';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
@@ -12,7 +12,7 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
   return (
     <div key={`card_${cardName}`} className="card noborder">
       <Card className="justify-items-stretch noborder">
-        <Container fluid>
+        <div>
           <CardGroup className="gx-1 p-2 ">
             <Card className="noborder m-1">
               <CardTitle className="col-12 card p-1 ">
@@ -32,7 +32,7 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
               </CardBody>
             </Card>
           </CardGroup>
-        </Container>
+        </div>
       </Card>
     </div>
   );
