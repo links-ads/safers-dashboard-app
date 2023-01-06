@@ -1,6 +1,6 @@
 export const MOCK_REPORTS = [
   {
-    name: 'Report 123',
+    name: 'MOCK 123',
     report_id: '123',
     mission_id: '4404',
     timestamp: '2023-01-01T13:19:15.004Z',
@@ -9,7 +9,7 @@ export const MOCK_REPORTS = [
     status: 'Notified',
     content: 'Submitted',
     visibility: 'Private',
-    description: 'report fire on the hills',
+    description: 'This is mock data.',
     reporter: {
       name: 'first.responder.test.2',
       organization: 'Test Organization',
@@ -40,7 +40,7 @@ export const MOCK_REPORTS = [
     location: [1, 2],
   },
   {
-    name: 'Report 456',
+    name: 'MOCK 456',
     report_id: '456',
     mission_id: '456',
     timestamp: '2023-04-04T08:19:15.004Z',
@@ -49,7 +49,7 @@ export const MOCK_REPORTS = [
     status: 'Notified',
     content: 'Submitted',
     visibility: 'Private',
-    description: 'scrub fire',
+    description: 'More mock data!',
     reporter: {
       name: 'first.responder.test.2',
       organization: 'Test Organization',

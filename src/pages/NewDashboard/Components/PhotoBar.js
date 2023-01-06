@@ -1,6 +1,6 @@
 import React, {useEffect, useState}  from 'react';
 import { useSelector, useDispatch} from 'react-redux'
-import { Container, Row, Card } from 'reactstrap';
+import { Container, Card, Row } from 'reactstrap';
 import { ReactComponent as Placeholder } from './placeholder.svg'
 import { getAllInSituAlerts } from '../../../store/insitu/action'
 import { Img } from 'react-image'
@@ -34,28 +34,26 @@ const PhotoBar = () => {
   useEffect(() => {
     setPhotoList(allPhotos);
     setIsLoaded(true);
-    console.log('Now isLoaded');
   }, [allPhotos])
 
   return (
     <div className="">
-      <Container fluid className="flex-stretch">
+      <Container fluid className="flex-stretch align-content-center flex-wrap">
         {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
         <Card>
           <p className="align-self-baseline">In-situ Photos</p>
-          <Row className="mx-4 gx-2 row-cols-8 flex-wrap">
-            
+          <Row xs={1} sm={2} md={3} lg={4}>
             {!photoList 
               ? photoNumbers.map((photo, index)=> {
                 return(
-                  <div key={`photoy_${index}`} className="col-3 my-3">
+                  <div key={`photoy_${index}`} className="p-3 my-3">
                     <Placeholder width="100%" height="120px"/>
                   </div>
                 )})
               : 
               photoList.slice(0,16).map(photo => {
                 return(
-                  <div key={`photie_${photo.id}`} className="col-3 my-3">    
+                  <div key={`photie_${photo.id}`} className="p-3 my-3">    
                     {/* This is a custom component which handles fallbacks */}
                     <Img 
                       decode={true}
@@ -64,6 +62,7 @@ const PhotoBar = () => {
                       width="100%" height="120px" 
                       alt="Image is missing"
                     />
+                    {/* <p>I am a picture!</p> */}
                   </div>
                 )
               })}
