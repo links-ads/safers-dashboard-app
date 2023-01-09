@@ -26,7 +26,7 @@ const publicRoutes = [
 ]
 
 const privateRoutes = [
-  { path: '/', component: FireAlerts },
+  { path: '/', component: NewDashboard },
   { path: '/my-profile/:operation', component: MyProfile },
   { path: '/fire-alerts', component: FireAlerts },
   { path: '/data-layer', component: DataLayerDashboard },

@@ -51,7 +51,7 @@ const PhotoBar = () => {
                   </div>
                 )})
               : 
-              photoList.slice(0,16).map(photo => {
+              photoList.slice(0,8).map(photo => {
                 return(
                   <div key={`photie_${photo.id}`} className="p-3 my-3">    
                     {/* This is a custom component which handles fallbacks */}

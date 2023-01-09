@@ -119,13 +119,13 @@ const SidebarContent = (props) => {
       <SimpleBar style={{ maxHeight: '100%' }} ref={ref}>
         <div id='sidebar-menu'>
           <ul className='metismenu list-unstyled' id='side-menu'>
-            <li>
+            {/* <li>
               <Link to='/dashboard' className=''>
                 <i className='bx bx-layout'></i>
 
                 <span>{props.t('[Old Dashboard]')}</span>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link to='/fire-alerts' className=''>
                 <i className='bx bx-error-circle'></i>
