@@ -27,6 +27,7 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
               </CardTitle>
               <CardBody className="noborder col-12 p-0">
                 <Card className="noborder col-12">
+                  <hr />
                   <div className="">{ contentRenderer() }</div>
                 </Card>  
               </CardBody>
