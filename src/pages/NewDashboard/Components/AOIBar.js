@@ -1,5 +1,6 @@
 import React  from 'react';
 import { Container, Row, Card } from 'reactstrap';
+import EventsPanel from './EventsPanel';
 import MapComponent from './Map'
 
 const AOIBar = () => {
@@ -15,9 +16,7 @@ const AOIBar = () => {
             <div className="col-1" />
             <Container className="col-4">
               <Row className="col-12">
-                <Card>
-                  <h1> Events panel</h1>
-                </Card>
+                <EventsPanel />
               </Row>
               <Row className="col-12">
                 <Card>
