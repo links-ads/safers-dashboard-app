@@ -109,5 +109,6 @@
   "profile": "Προφίλ",
   "logout": "Αποσύνδεση",
   "field-err-integer": "Πρέπει να είναι ακέραιο αριθμός",
-  "tot tweets": "Συνολικός αριθμός tweets"
+  "tot tweets": "Συνολικός αριθμός tweets",
+  "Change Map Style": "Change Map Style"
 }

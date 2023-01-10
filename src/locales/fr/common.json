@@ -102,5 +102,6 @@
   "field-err-between": "Devrait être entre {{min}} et {{max}}",
   "wkt-info-topic": "Manuel WKT",
   "wkt-info-desc1": "Example de format WKT supporté",
-  "wkt-info-desc2": "Pour plus d'information, consulter le lien wiki suivant"
+  "wkt-info-desc2": "Pour plus d'information, consulter le lien wiki suivant",
+  "Change Map Style": "Change Map Style"
 }
