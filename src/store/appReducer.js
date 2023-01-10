@@ -13,6 +13,7 @@ import reportReducer from './reports/reducer';
 import commsReducer from './comms/reducer';
 import missionReducer from './missions/reducer';
 import peopleReducer from './people/reducer';
+import mapReducer from './map/map.slice';
 
 import storage from 'redux-persist/lib/storage/session';//or session
 
@@ -30,6 +31,7 @@ const appReducer = combineReducers({
   comms: commsReducer,
   missions: missionReducer,
   people: peopleReducer,
+  map: mapReducer,
 });
 
 const rootReducer = (state, action) => {
