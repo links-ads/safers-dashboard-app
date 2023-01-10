@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react';
  */
 
 export const useLocalStorage = (
-  key: string,
+  key,
   defaultValue = '',
   { serialize = JSON.stringify, deserialize = JSON.parse } = {},
 ) => {
