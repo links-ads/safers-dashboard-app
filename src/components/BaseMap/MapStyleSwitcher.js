@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 
 export const MapStyleSwitcher = ({
   mapStyles = {},
-  // selectedMapStyle,
   selectMapStyle,
 }) => {
   const { t } = useTranslation();
