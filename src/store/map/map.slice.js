@@ -12,14 +12,14 @@ const MAP_STYLES = [
     uri: 'mapbox://styles/mapbox/satellite-v9',
   },
   {
-    label: 'Light',
-    thumbnail: '/light.png',
-    uri: 'mapbox://styles/mapbox/light-v10',
-  },
-  {
     label: 'Navigation',
     thumbnail: '/navigation.png',
     uri: 'mapbox://styles/mapbox/navigation-day-v1'
+  },
+  {
+    label: 'Terrain',
+    thumbnail: '/terrain.png',
+    uri: 'mapbox://styles/astrosat/clcq9le7w003k14qspiwt4837'
   },
 ];
 
