@@ -33,19 +33,13 @@ const mapSlice = createSlice({
   name: 'map',
   initialState,
   reducers: {
-    setMapStyles: (state, { payload }) => {
-      state.mapStyles = payload;
-    },
     setSelectedMapStyle: (state, { payload }) => {
       state.selectedMapStyle = payload;
     },
   },
 });
 
-export const {
-  setMapStyles,
-  setSelectedMapStyle,
-} = mapSlice.actions;
+export const { setSelectedMapStyle, } = mapSlice.actions;
 
 const baseSelector = state => state?.map;
 
