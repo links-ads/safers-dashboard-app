@@ -36,7 +36,7 @@ const EventsPanel = () => {
       </Row>
       <Row>    
         { eventList && eventList.length>0 ?
-          eventList.map( event => <EventItem key={event} event={event} /> ) :
+          eventList.map( event => <EventItem key={event?.id} event={event} /> ) :
           <h3>No current events</h3>
         }
       </Row>

@@ -5,10 +5,10 @@ import { getAllEventAlerts } from '../../../store/events/action';
 import NotificationCard from './NotificationCard';
 import { getAllPeople } from '../../../store/people/action';
 import { getAllReports } from '../../../store/reports/action';
-//import { MOCK_MISSIONS } from '../mocks/missionsmock.ts';
-//import { MOCK_COMMUNICATIONS } from '../mocks/communicationsmock.ts';
+import { withTranslation } from 'react-i18next'
+import PropTypes from 'prop-types';
 
-const NotificationsBar = () => {
+const NotificationsBar = ({ t }) => {
   const dispatch = useDispatch();
   
   let [activityStatusCounts, setActivityStatusCounts] = useState( {undefined: 0} );
@@ -21,8 +21,6 @@ const NotificationsBar = () => {
   const { allReports: OrgReportList } = useSelector(state => state?.reports);
   const { allAlerts: alerts, filteredAlerts } = useSelector(state => state?.alerts);
   const { allPeople: orgPplList, filteredPeople } = useSelector(state => state.people);
-  //const allMissions  =  useSelector(state => !state.missions.allMissions || state.missions.allMissions.length===0 ? MOCK_MISSIONS : state.missions.allMissions);
-  //const allCommunications = useSelector(state => !state.comms.allComms || state.comms.allComms.length === 0 ?  MOCK_COMMUNICATIONS : state.comms.allComms);
   const allMissions  =  useSelector(state => state?.missions?.allMissions || []);
   const allCommunications = useSelector(state => state.comms.allComms  || []);
 
@@ -73,15 +71,15 @@ const NotificationsBar = () => {
     );
   }
 
-  const renderCommunications = () => renderer('No new communications', 'comms', communicationStatusCounts);
+  const renderCommunications = () => renderer(t('No new communications'), 'comms', communicationStatusCounts);
   
-  const renderActivities = () => renderer('No new activities', 'act', activityStatusCounts);
+  const renderActivities = () => renderer(t('No new activities'), 'act', activityStatusCounts);
 
-  const renderPeople = () => renderer('No new people activity', 'ppl', peopleStatusCounts);
+  const renderPeople = () => renderer(t('No new people activity'), 'ppl', peopleStatusCounts);
 
-  const renderReports = () => renderer('No new reports', 'reps', reportStatusCounts);
+  const renderReports = () => renderer(t('No new reports'), 'reps', reportStatusCounts);
 
-  const renderMissions = () => renderer('No new missions', 'miss', missionStatusCounts);
+  const renderMissions = () => renderer(t('No new missions'), 'miss', missionStatusCounts);
 
   // useEffects
 
@@ -125,34 +123,34 @@ const NotificationsBar = () => {
   return (
     <div className="">
       <Container fluid className="">
-        <p className="align-self-baseline alert-title">Area of interest: { nameOfAOI }</p>
+        <p className="align-self-baseline alert-title">{t('Area of Interest')} : { nameOfAOI }</p>
         <Row xs={1} sm={2} md={3} lg={5} >
           <NotificationCard 
-            cardName="Fire Alerts" 
+            cardName={t('fire-alerts')}
             iconClass="bx bx-error-circle" 
             contentRenderer={ renderActivities }
             linkURL="/"
           />
           <NotificationCard 
-            cardName="People" 
+            cardName={t('people')}
             iconClass="fas fa-user-alt" 
             contentRenderer={ renderPeople }
             linkURL="/chatbot?tab=1"
           />
           <NotificationCard 
-            cardName="Reports" 
+            cardName={t('Reports')}
             iconClass="fas fa-file-image" 
             contentRenderer={ renderReports }
             linkURL="/chatbot?tab=4"
           />
           <NotificationCard 
-            cardName="Mission" 
+            cardName={t('Mission')}
             iconClass="fas fa-flag-checkered" 
             contentRenderer={ renderMissions }
             linkURL="/chatbot?tab=3"
           />
           <NotificationCard 
-            cardName="Communications" 
+            cardName={t('communications')}
             iconClass="fas fa-envelope" 
             contentRenderer={ renderCommunications }
             linkURL="/chatbot?tab=2"
@@ -163,4 +161,8 @@ const NotificationsBar = () => {
   );
 }
 
-export default NotificationsBar;
+NotificationsBar.propTypes = {
+  t: PropTypes.func
+}
+
+export default withTranslation(['common'])(NotificationsBar);
