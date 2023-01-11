@@ -32,7 +32,7 @@ const ReportBar = ({t}) => {
     <div className="">
       <Container fluid className="">
         <Card>
-          <p className="align-self-baseline alert-title">{t('Reports')}</p>
+          <p className="align-self-baseline alert-title">{t('Reports', {ns: 'common'})}</p>
           <Row xs={1} sm={1} md={2} lg={2} xl={4} className="mx-4 gx-2" >
             {
               reportList ? 
@@ -59,4 +59,4 @@ ReportBar.propTypes = {
   t: PropTypes.func
 }
 
-export default withTranslation(['common'])(ReportBar);
+export default withTranslation(['dashboard'])(ReportBar);

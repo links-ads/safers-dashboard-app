@@ -10,5 +10,11 @@
   "precipitation": "Précipitation",
   "weather var per hr": "Variables météorologiques sur une base horaire",
   "Wind": "Vent",
-  "Relative Humidity": "Humidité relative"
+  "Relative Humidity": "Humidité relative",
+  "No new events": "Aucuns nouveaux événements",
+  "No new communications": "Aucunes nouvelles communications",
+  "No new activities": "Aucunes nouvelles activités",
+  "No new people activity": "Aucunes nouvelles activités de personnes",
+  "No new reports": "Aucuns nouveaux rapports",
+  "No new missions": "Aucunes nouvelles missions"
 }

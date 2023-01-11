@@ -43,7 +43,7 @@ const PhotoBar = ({t}) => {
       <Container fluid className="flex-stretch align-content-center flex-wrap">
         {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
         <Card>
-          <p className="align-self-baseline alert-title">{t('in-situ-cameras')}</p>
+          <p className="align-self-baseline alert-title">{t('in-situ-cameras', {ns: 'common'})}</p>
           <Row xs={1} sm={2} md={3} lg={4}>
             {!photoList 
               ? photoNumbers.map((photo, index)=> {
@@ -78,4 +78,4 @@ PhotoBar.propTypes = {
   t: PropTypes.func
 }
 
-export default withTranslation(['common'])(PhotoBar);
+export default withTranslation(['dashboard'])(PhotoBar);

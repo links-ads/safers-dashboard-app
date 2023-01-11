@@ -19,26 +19,27 @@ const EventsPanel = ({t}) => {
     const eventParams = {
       order: '-date',
       status: undefined,
-      bbox: '',
+      bbox:undefined,
       default_bbox: true,
       ...dateRangeParams
     };
     dispatch(setEventParams(eventParams))
-    dispatch(getAllEventAlerts(eventParams, true, true));
+    dispatch(getAllEventAlerts(eventParams, true, false));
   }, []);
 
   useEffect(()=>{
     setEventList(events);
+    console.log('events', events);
   }, [events])
 
   return (
     <Card>
       <Row>
-        <p className='alert-title'>{t('Events')}</p>
+        <p className='alert-title'>{t('Events', {ns: 'common'})}</p>
       </Row>
       <Row>    
         { eventList && eventList.length>0 ?
-          eventList.map( event => <EventItem key={event?.id} event={event} /> ) :
+          eventList.map( event => <EventItem key={event?.id} event={event} t={t} /> ) :
           <h3>No current events</h3>
         }
       </Row>
@@ -50,4 +51,4 @@ EventsPanel.propTypes = {
   t: PropTypes.func
 }
 
-export default withTranslation(['common'])(EventsPanel);
+export default withTranslation(['dashboard'])(EventsPanel);

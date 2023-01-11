@@ -102,10 +102,5 @@
   "field-err-between": "Devrait être entre {{min}} et {{max}}",
   "wkt-info-topic": "Manuel WKT",
   "wkt-info-desc1": "Example de format WKT supporté",
-  "wkt-info-desc2": "Pour plus d'information, consulter le lien wiki suivant",
-  "No new communications": "Pas de nouvelles communications",
-  "No new activities": "Pas de nouvelles activités",
-  "No new people activity": "Pas de nouvelles personnes",
-  "No new missions": "Pas de nouvelles missions",
-  "No new reports": "Pas de nouveaux rapports"
+  "wkt-info-desc2": "Pour plus d'information, consulter le lien wiki suivant"
 }

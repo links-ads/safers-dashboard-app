@@ -71,15 +71,15 @@ const NotificationsBar = ({ t }) => {
     );
   }
 
-  const renderCommunications = () => renderer(t('No new communications'), 'comms', communicationStatusCounts);
+  const renderCommunications = () => renderer(t('No new communications', {ns: 'dashboard'}), 'comms', communicationStatusCounts);
   
-  const renderActivities = () => renderer(t('No new activities'), 'act', activityStatusCounts);
+  const renderActivities = () => renderer(t('No new activities', {ns: 'dashboard'}), 'act', activityStatusCounts);
 
-  const renderPeople = () => renderer(t('No new people activity'), 'ppl', peopleStatusCounts);
+  const renderPeople = () => renderer(t('No new people activity', {ns: 'dashboard'}), 'ppl', peopleStatusCounts);
 
-  const renderReports = () => renderer(t('No new reports'), 'reps', reportStatusCounts);
+  const renderReports = () => renderer(t('No new reports', {ns: 'dashboard'}), 'reps', reportStatusCounts);
 
-  const renderMissions = () => renderer(t('No new missions'), 'miss', missionStatusCounts);
+  const renderMissions = () => renderer(t('No new missions', {ns: 'dashboard'}), 'miss', missionStatusCounts);
 
   // useEffects
 
