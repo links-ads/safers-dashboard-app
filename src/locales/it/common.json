@@ -110,5 +110,10 @@
   "logout": "disconnetti",
   "field-err-integer": "Numero non valido",
   "tot tweets": "tweet totali",
-  "Change Map Style": "Change Map Style"
+  "Change Map Style": "Change Map Style",
+  "Streets": "Streets",
+  "Outdoors": "Outdoors",
+  "Satellite Streets": "Satellite Streets",
+  "Navigation": "Navigation",
+  "Terrain": "Terrain"
 }

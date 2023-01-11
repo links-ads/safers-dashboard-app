@@ -103,5 +103,10 @@
   "wkt-info-topic": "Manuel WKT",
   "wkt-info-desc1": "Example de format WKT supporté",
   "wkt-info-desc2": "Pour plus d'information, consulter le lien wiki suivant",
-  "Change Map Style": "Change Map Style"
+  "Change Map Style": "Change Map Style",
+  "Streets": "Streets",
+  "Outdoors": "Outdoors",
+  "Satellite Streets": "Satellite Streets",
+  "Navigation": "Navigation",
+  "Terrain": "Terrain"
 }

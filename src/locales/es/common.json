@@ -110,5 +110,10 @@
   "logout": "desconexión",
   "field-err-integer": "Este campo debe contener un número entero",
   "tot tweets": "Número total de tuits",
-  "Change Map Style": "Change Map Style"
+  "Change Map Style": "Change Map Style",
+  "Streets": "Streets",
+  "Outdoors": "Outdoors",
+  "Satellite Streets": "Satellite Streets",
+  "Navigation": "Navigation",
+  "Terrain": "Terrain"
 }
