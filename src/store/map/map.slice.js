@@ -4,12 +4,17 @@ const MAP_STYLES = [
   {
     label: 'Streets',
     thumbnail: '/streets.png',
-    uri: 'mapbox://styles/mapbox/streets-v11',
+    uri: 'mapbox://styles/mapbox/streets-v12',
   },
   {
-    label: 'Satellite',
+    label: 'Outdoors',
+    thumbnail: '/outdoors.png',
+    uri: 'mapbox://styles/mapbox/outdoors-v12',
+  },
+  {
+    label: 'Satellite Streets',
     thumbnail: '/satellite.png',
-    uri: 'mapbox://styles/mapbox/satellite-v9',
+    uri: 'mapbox://styles/mapbox/satellite-streets-v12',
   },
   {
     label: 'Navigation',
