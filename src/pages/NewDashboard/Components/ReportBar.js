@@ -33,7 +33,7 @@ const ReportBar = ({t}) => {
       <Container fluid className="">
         <Card>
           <p className="align-self-baseline alert-title">{t('Reports', {ns: 'common'})}</p>
-          <Row xs={1} sm={1} md={2} lg={2} xl={4} className="mx-4 gx-2" >
+          <Row xs={1} sm={1} md={2} lg={2} xl={3} className="mx-4 gx-2" >
             {
               reportList ? 
                 reportList.map(report=> 

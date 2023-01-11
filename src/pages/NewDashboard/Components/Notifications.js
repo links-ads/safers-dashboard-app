@@ -121,7 +121,7 @@ const NotificationsBar = ({ t }) => {
   }, [allCommunications])
 
   return (
-    <div className="">
+    <div className="mx-2 px-1">
       <Container fluid className="">
         <p className="align-self-baseline alert-title">{t('Area of Interest')} : { nameOfAOI }</p>
         <Row xs={1} sm={2} md={3} lg={5} >

@@ -19,8 +19,9 @@ const AOIBar = () => {
                 <EventsPanel />
               </Row>
               <Row className="col-12">
-                <Card>
-                  <h1>Pin Values panel</h1>
+                <Card className="">
+                  <div className="alert-title"><p>Pin Values panel</p></div>
+                  <div><p>To be done</p></div>
                 </Card>                
               </Row>
             </Container>

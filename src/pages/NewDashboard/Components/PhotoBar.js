@@ -28,7 +28,7 @@ const PhotoBar = ({t}) => {
       camera_id: undefined,
       bbox:  undefined,
       default_date: false,
-      default_bbox: false,
+      default_bbox: true,
       ...dateRangeParams
     }));
   }, []);
@@ -44,7 +44,10 @@ const PhotoBar = ({t}) => {
         {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
         <Card>
           <p className="align-self-baseline alert-title">{t('in-situ-cameras', {ns: 'common'})}</p>
-          <Row xs={1} sm={2} md={3} lg={4}>
+          <Row className="mx-3" xs={1} sm={2} md={3} lg={4}>
+            { photoList && photoList.length === 0 
+              ? <div className="card noborder m-8 p-8">No photos in AOI</div>
+              : null}
             {!photoList 
               ? photoNumbers.map((photo, index)=> {
                 return(
