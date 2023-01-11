@@ -4,15 +4,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setEventParams } from '../../../store/appAction';
 import { getAllEventAlerts } from '../../../store/appAction';
 import { EventItem } from './EventItem'
+import { withTranslation } from 'react-i18next'
+import PropTypes from 'prop-types';
 
-const EventsPanel = () => {
+const EventsPanel = ({t}) => {
 
   const dispatch = useDispatch();
   const { allAlerts: events } = useSelector(state => state.eventAlerts);  
 
   let [eventList, setEventList] = useState([]);
 
-  useEffect(() => {
+  useEffect (() => {
     const dateRangeParams = {};
     const eventParams = {
       order: '-date',
@@ -32,7 +34,7 @@ const EventsPanel = () => {
   return (
     <Card>
       <Row>
-        <p>Events</p>
+        <p className='alert-title'>{t('Events')}</p>
       </Row>
       <Row>    
         { eventList && eventList.length>0 ?
@@ -44,4 +46,8 @@ const EventsPanel = () => {
   );
 }
 
-export default EventsPanel;
+EventsPanel.propTypes = {
+  t: PropTypes.func
+}
+
+export default withTranslation(['common'])(EventsPanel);

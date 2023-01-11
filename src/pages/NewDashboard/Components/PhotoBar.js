@@ -4,8 +4,10 @@ import { Container, Card, Row } from 'reactstrap';
 import { ReactComponent as Placeholder } from './placeholder.svg'
 import { getAllInSituAlerts } from '../../../store/insitu/action'
 import { Img } from 'react-image'
+import { withTranslation } from 'react-i18next'
+import PropTypes from 'prop-types';
 
-const PhotoBar = () => {
+const PhotoBar = ({t}) => {
   
   let [photoList, setPhotoList] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -41,7 +43,7 @@ const PhotoBar = () => {
       <Container fluid className="flex-stretch align-content-center flex-wrap">
         {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
         <Card>
-          <p className="align-self-baseline">In-situ Photos</p>
+          <p className="align-self-baseline alert-title">{t('in-situ-cameras')}</p>
           <Row xs={1} sm={2} md={3} lg={4}>
             {!photoList 
               ? photoNumbers.map((photo, index)=> {
@@ -62,7 +64,6 @@ const PhotoBar = () => {
                       width="100%" height="120px" 
                       alt="Image is missing"
                     />
-                    {/* <p>I am a picture!</p> */}
                   </div>
                 )
               })}
@@ -73,4 +74,8 @@ const PhotoBar = () => {
   );
 }
 
-export default PhotoBar;
+PhotoBar.propTypes = {
+  t: PropTypes.func
+}
+
+export default withTranslation(['common'])(PhotoBar);

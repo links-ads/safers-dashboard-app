@@ -144,13 +144,13 @@ const NotificationsBar = ({ t }) => {
             linkURL="/chatbot?tab=4"
           />
           <NotificationCard 
-            cardName={t('Mission')}
+            cardName={t('mission')}
             iconClass="fas fa-flag-checkered" 
             contentRenderer={ renderMissions }
             linkURL="/chatbot?tab=3"
           />
           <NotificationCard 
-            cardName={t('communications')}
+            cardName={t('comms')}
             iconClass="fas fa-envelope" 
             contentRenderer={ renderCommunications }
             linkURL="/chatbot?tab=2"

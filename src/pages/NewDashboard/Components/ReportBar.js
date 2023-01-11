@@ -5,9 +5,10 @@ import { Container, Row, Card } from 'reactstrap';
 import { MOCK_REPORTS } from '../mocks/reportsmock.ts';
 import { getAllReports } from '../../../store/reports/action';
 import Report from '../../Chatbot/Reports/Components/Report'
+import { withTranslation } from 'react-i18next'
+import PropTypes from 'prop-types';
 
-
-const ReportBar = () => {
+const ReportBar = ({t}) => {
   let [reportList, setReportList] = useState([]);
 
   const allReports = useSelector(state => {
@@ -31,7 +32,7 @@ const ReportBar = () => {
     <div className="">
       <Container fluid className="">
         <Card>
-          <p className="align-self-baseline">Reports</p>
+          <p className="align-self-baseline alert-title">{t('Reports')}</p>
           <Row xs={1} sm={1} md={2} lg={2} xl={4} className="mx-4 gx-2" >
             {
               reportList ? 
@@ -54,4 +55,8 @@ const ReportBar = () => {
   );
 }
 
-export default ReportBar;
+ReportBar.propTypes = {
+  t: PropTypes.func
+}
+
+export default withTranslation(['common'])(ReportBar);
