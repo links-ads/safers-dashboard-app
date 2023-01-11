@@ -12,6 +12,12 @@ a {
   border-radius: 30px;
 }
 
+.btn-mapstyle {
+  background-color: $white;
+  color: $gray-100;
+  border: 1px solid #ddd;
+}
+
 .btn-dark,
 .btn-secondary {
   color: $gray-600 !important;
