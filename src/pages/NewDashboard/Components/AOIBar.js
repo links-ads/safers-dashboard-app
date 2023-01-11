@@ -9,16 +9,15 @@ const AOIBar = () => {
     <div className="">
       <Container fluid className="">
         <Card className='px-3'>
-          <Row className="gx-2 row-cols-2">
-            <Card className="col-7 px-1 py-2" >
+          <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
+            <Card className="gx-2" >
               <MapComponent  />
             </Card>
-            <div className="col-1" />
-            <Container className="col-4">
-              <Row className="col-12">
+            <Container className="p-2 my-0">
+              <Row className="">
                 <EventsPanel />
               </Row>
-              <Row className="col-12">
+              <Row className="">
                 <Card className="">
                   <div className="alert-title"><p>Pin Values panel</p></div>
                   <div><p>To be done</p></div>
