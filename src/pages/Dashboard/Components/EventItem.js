@@ -8,7 +8,7 @@ import { formatDate } from '../../../store/utility';
 export const EventItem = ({event, t}) => {
   return (
     <Card className='card alerts-card'>
-      <row xs={2}>
+      <div xs={2}>
         <span className='alert-title'>{event?.title}</span>
         <span className='alert-title float-end'>
           <Link to = '/event-alerts'>
@@ -18,12 +18,12 @@ export const EventItem = ({event, t}) => {
             />
           </Link>
         </span>
-      </row>
-      <row>
+      </div>
+      <div>
         <span className='text-black rounded-pill alert-badge event-alert-badge badge bg-secondary'>
           {t(event?.status.toLowerCase(), {ns: 'common'})}
         </span>
-      </row>
+      </div>
       <row>{`${t('Start', {ns: 'common'})} : ${formatDate(event?.start_date)}`}</row>
     </Card>
   );
