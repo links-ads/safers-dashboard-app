@@ -8,7 +8,6 @@ import { withTranslation } from 'react-i18next'
 import PropTypes from 'prop-types';
 
 const EventsPanel = ({t}) => {
-
   const dispatch = useDispatch();
   const { allAlerts: events } = useSelector(state => state.eventAlerts);  
 
@@ -27,10 +26,7 @@ const EventsPanel = ({t}) => {
     dispatch(getAllEventAlerts(eventParams, true, false));
   }, []);
 
-  useEffect(()=>{
-    setEventList(events);
-    console.log('events', events);
-  }, [events])
+  useEffect(()=> setEventList(events), [events])
 
   return (
     <Card>
@@ -40,7 +36,7 @@ const EventsPanel = ({t}) => {
       <Row>    
         { eventList && eventList.length>0 ?
           eventList.map( event => <EventItem key={event?.id} event={event} t={t} /> ) :
-          <h3>No current events</h3>
+          <p className="alert-title">No current events</p>
         }
       </Row>
     </Card>

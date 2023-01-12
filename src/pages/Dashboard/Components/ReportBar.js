@@ -2,7 +2,6 @@ import React  from 'react';
 import { useState, useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Container, Row, Card } from 'reactstrap';
-import { MOCK_REPORTS } from '../mocks/reportsmock.ts';
 import { getAllReports } from '../../../store/reports/action';
 import Report from '../../Chatbot/Reports/Components/Report'
 import { withTranslation } from 'react-i18next'
@@ -13,7 +12,7 @@ const ReportBar = ({t}) => {
 
   const allReports = useSelector(state => {
     if ((!(state?.reports?.allReports)) ||  state.reports.allReports.length === 0) {
-      return MOCK_REPORTS;
+      return [];
     }
     return state.reports.allReports
   });

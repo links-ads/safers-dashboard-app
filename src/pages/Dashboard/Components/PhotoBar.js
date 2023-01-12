@@ -12,7 +12,8 @@ const PhotoBar = ({t}) => {
   let [photoList, setPhotoList] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const photoNumbers = [1,2,3,4,5,6,7,8];
+
+  const NUMBER_OF_PHOTOS = 8;
 
   const allPhotos = useSelector(state => {
     return state?.inSituAlerts?.allAlerts
@@ -28,7 +29,7 @@ const PhotoBar = ({t}) => {
       camera_id: undefined,
       bbox:  undefined,
       default_date: false,
-      default_bbox: true,
+      default_bbox: false,
       ...dateRangeParams
     }));
   }, []);
@@ -45,18 +46,11 @@ const PhotoBar = ({t}) => {
         <Card>
           <p className="align-self-baseline alert-title">{t('in-situ-cameras', {ns: 'common'})}</p>
           <Row className="mx-3" xs={1} sm={2} md={3} lg={4}>
-            { photoList && photoList.length === 0 
-              ? <div className="card noborder m-8 p-8">No photos in AOI</div>
+            { !photoList || photoList.length === 0 
+              ? <div className="card noshadow m-8 p-8">No photos in AOI</div>
               : null}
-            {!photoList 
-              ? photoNumbers.map((photo, index)=> {
-                return(
-                  <div key={`photoy_${index}`} className="p-3 my-3">
-                    <Placeholder width="100%" height="120px"/>
-                  </div>
-                )})
-              : 
-              photoList.slice(0,8).map(photo => {
+            {
+              photoList.slice(0, NUMBER_OF_PHOTOS).map(photo => {
                 return(
                   <div key={`photie_${photo.id}`} className="p-3 my-3">    
                     {/* This is a custom component which handles fallbacks */}

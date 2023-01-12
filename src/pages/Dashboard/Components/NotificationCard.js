@@ -11,10 +11,10 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
 
   return (
     <div key={`card_${cardName}`} className="card">
-      <Card className="justify-items-stretch noborder">
+      <Card className="justify-items-stretch noshadow">
         <div>
           <CardGroup className="gx-1 p-2 ">
-            <Card className="noborder m-1">
+            <Card className="noshadow m-1">
               <CardTitle className="col-12 card ">
                 <Row>
                   <div className="col-10">{ cardName }</div>
@@ -25,8 +25,8 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
                   </div>
                 </Row>
               </CardTitle>
-              <CardBody className="noborder col-12 p-0">
-                <Card className="noborder col-12">
+              <CardBody className="noshadow col-12 p-0">
+                <Card className="noshadow col-12">
                   <hr />
                   <div className="">{ contentRenderer() }</div>
                 </Card>  

@@ -70,9 +70,9 @@ const SidebarContent = (props) => {
 
 
   function getDashboardNotificationCount() {
-    const newEvents = newEventsCount || 0;
-    const newAlerts = newAlertsCount || 0;
-    const newMapRequests = newMapRequestCount || 0;
+    const newEvents = newEventsCount ?? 0;
+    const newAlerts = newAlertsCount ?? 0;
+    const newMapRequests = newMapRequestCount ?? 0;
     return (newEvents+newAlerts+newMapRequests);
   }
 
@@ -117,65 +117,59 @@ const SidebarContent = (props) => {
   return (
     <React.Fragment>
       <SimpleBar style={{ maxHeight: '100%' }} ref={ref}>
-        <div id='sidebar-menu'>
-          <ul className='metismenu list-unstyled' id='side-menu'>
+        <div id="sidebar-menu">
+          <ul className="metismenu list-unstyled" id="side-menu">
             <li>
-              <Link to='/dashboard' className=''>
-                <i className='bx bxs-home'></i>
-                <span className='text-capitalize'>{props.t('Dashboard')}</span>
-                {getDashboardNotificationCount() > 0 && <span className='new-info-indicator float-end'>{getDashboardNotificationCount()}</span>}
+              <Link to="/dashboard" >
+                <i className="bx bxs-home"></i>
+                <span className="text-capitalize">{props.t('Dashboard')}</span>
+                {getDashboardNotificationCount() > 0 && <span className="new-info-indicator float-end">{getDashboardNotificationCount()}</span>}
               </Link>
             </li>
             <li>
-              <Link to='/fire-alerts' className=''>
-                <i className='bx bx-error-circle'></i>
-                <span className='text-capitalize'>{props.t('fire-alerts')}</span>
-                {newAlertsCount > 0  && <span className='new-info-indicator float-end'>{newAlertsCount}</span>}
+              <Link to="/fire-alerts" >
+                <i className="bx bx-error-circle"></i>
+                <span className="text-capitalize">{props.t('fire-alerts')}</span>
+                {newAlertsCount > 0  && <span className="new-info-indicator float-end">{newAlertsCount}</span>}
               </Link>
             </li>
             <li>
-              <Link to='/event-alerts' className=''>
-                <i className='bx bxs-hot'></i>
-                <span className='text-capitalize'>{props.t('Events')}</span>
-                {newEventsCount > 0 && <span className='new-info-indicator float-end'>{newEventsCount}</span>}
+              <Link to="/event-alerts" >
+                <i className="bx bxs-hot"></i>
+                <span className="text-capitalize">{props.t('Events')}</span>
+                {newEventsCount > 0 && <span className="new-info-indicator float-end">{newEventsCount}</span>}
               </Link>
             </li>
             <li>
-              <Link to='/data-layer' className=''>
-                <i className='bx bx-copy'></i>
-                <span className='text-capitalize'>{props.t('Data Layers')}</span>
+              <Link to="/data-layer" >
+                <i className="bx bx-copy"></i>
+                <span className="text-capitalize">{props.t('Data Layers')}</span>
                 {isNewMapRequestAlert && !isMapRequestPageActive 
                   ? (
-                    <span className='new-info-indicator float-end'>               
+                    <span className="new-info-indicator float-end">               
                       {newMapRequestCount}
                     </span>
                   ) 
                   : null}
               </Link>
             </li>
-            {/* <li>
-              <Link to='/social-monitoring'>
-                <i className='bx bxl-twitter'></i>
-                <span>{props.t('[Social Monitoring]')}</span>
-              </Link>
-            </li> */}
             <li>
-              <Link to='/insitu-alerts'>
-                <i className='bx bx-image'></i>
-                <span className='text-capitalize'>{props.t('In Situ Cameras', { ns: 'inSitu' })}</span>
+              <Link to="/insitu-alerts">
+                <i className="bx bx-image"></i>
+                <span className="text-capitalize">{props.t('In Situ Cameras', { ns: 'inSitu' })}</span>
               </Link>
             </li>
             <li>
-              <Link to='/chatbot'>
-                <i className='bx bx-bot'></i>
-                <span className='text-capitalize'>{props.t('chatbot-module')}</span>
+              <Link to="/chatbot">
+                <i className="bx bx-bot"></i>
+                <span className="text-capitalize">{props.t('chatbot-module')}</span>
               </Link>
             </li>
             <li>
-              <Link to='/notifications'>
-                <i className='bx bx-bell'></i>
-                <span className='text-capitalize'>{props.t('Notifications')}</span>
-                {isNewNotification && <span className='new-info-indicator float-end'>{newNotificationsCount}</span>}
+              <Link to="/notifications">
+                <i className="bx bx-bell"></i>
+                <span className="text-capitalize">{props.t('Notifications')}</span>
+                {isNewNotification && <span className="new-info-indicator float-end">{newNotificationsCount}</span>}
               </Link>
             </li>
           </ul>

@@ -7,9 +7,7 @@
   box-shadow: $box-shadow;
 }
 
-.noborder {
-  border: 0px solid grey;
-  margin-bottom: $grid-gutter-width;
+.noshadow {
   box-shadow: none !important;
 }
 
