@@ -8,10 +8,8 @@ import { withTranslation } from 'react-i18next'
 import PropTypes from 'prop-types';
 
 const PhotoBar = ({t}) => {
-  
-  let [photoList, setPhotoList] = useState([]);
+  const [photoList, setPhotoList] = useState([]);
   const [isLoaded, setIsLoaded] = useState(false);
-
 
   const NUMBER_OF_PHOTOS = 8;
 

@@ -11,7 +11,7 @@ const EventsPanel = ({t}) => {
   const dispatch = useDispatch();
   const { allAlerts: events } = useSelector(state => state.eventAlerts);  
 
-  let [eventList, setEventList] = useState([]);
+  const [eventList, setEventList] = useState([]);
 
   useEffect (() => {
     const dateRangeParams = {};

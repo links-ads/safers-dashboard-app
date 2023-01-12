@@ -11,11 +11,11 @@ import PropTypes from 'prop-types';
 const NotificationsBar = ({ t }) => {
   const dispatch = useDispatch();
   
-  let [activityStatusCounts, setActivityStatusCounts] = useState( {undefined: 0} );
-  let [peopleStatusCounts, setPeopleStatusCounts] = useState( {undefined: 0} );
-  let [reportStatusCounts, setReportStatusCounts] = useState( {undefined: 0});
-  let [missionStatusCounts, setMissionStatusCounts] = useState( { undefined: 0} );
-  let [communicationStatusCounts, setCommunicationStatusCounts] = useState( { undefined: 0} );
+  const [activityStatusCounts, setActivityStatusCounts] = useState( {undefined: 0} );
+  const [peopleStatusCounts, setPeopleStatusCounts] = useState( {undefined: 0} );
+  const [reportStatusCounts, setReportStatusCounts] = useState( {undefined: 0});
+  const [missionStatusCounts, setMissionStatusCounts] = useState( { undefined: 0} );
+  const [communicationStatusCounts, setCommunicationStatusCounts] = useState( { undefined: 0} );
 
   const defaultAOI = useSelector(state => state?.user?.defaultAoi);
   const { allReports: OrgReportList } = useSelector(state => state?.reports);
@@ -30,13 +30,11 @@ const NotificationsBar = ({ t }) => {
     // build an object whose keys are mission types and values are
     // counts of missions matching that status
     let statusCounts = {};
-    items.forEach( item => {
-      if (item?.status in statusCounts) {
-        statusCounts[item.status] += 1;
-      } else {
-        statusCounts[item.status] = 1;
-      }
-    })
+    items.forEach( item => 
+      item?.status in statusCounts
+        ? statusCounts[item.status] += 1
+        : statusCounts[item.status] = 1
+    )
     return statusCounts;
   }
 
@@ -48,7 +46,7 @@ const NotificationsBar = ({ t }) => {
     if (!itemsCounts) {
       return <p>Loading...</p>
     } 
-    if (Object.keys(itemsCounts).length===0 ) {
+    if (Object.keys(itemsCounts).length === 0 ) {
       return <p>{noDataMessage}</p>;
     }
     return (

@@ -8,7 +8,7 @@ import { withTranslation } from 'react-i18next'
 import PropTypes from 'prop-types';
 
 const ReportBar = ({t}) => {
-  let [reportList, setReportList] = useState([]);
+  const [reportList, setReportList] = useState([]);
 
   const allReports = useSelector(state => {
     if ((!(state?.reports?.allReports)) ||  state.reports.allReports.length === 0) {
@@ -23,9 +23,7 @@ const ReportBar = ({t}) => {
     dispatch(getAllReports({}, true));
   }, []);
 
-  useEffect(() => {
-    setReportList(allReports);
-  }, [allReports])
+  useEffect(() => setReportList(allReports), [allReports])
 
   return (
     <div className="">
