@@ -119,15 +119,8 @@ const SidebarContent = (props) => {
       <SimpleBar style={{ maxHeight: '100%' }} ref={ref}>
         <div id='sidebar-menu'>
           <ul className='metismenu list-unstyled' id='side-menu'>
-            {/* <li>
-              <Link to='/dashboard' className=''>
-                <i className='bx bx-layout'></i>
-
-                <span>{props.t('[Old Dashboard]')}</span>
-              </Link>
-            </li> */}
             <li>
-              <Link to='/new-dashboard' className=''>
+              <Link to='/dashboard' className=''>
                 <i className='bx bxs-home'></i>
                 <span className='text-capitalize'>{props.t('Dashboard')}</span>
                 {getDashboardNotificationCount() > 0 && <span className='new-info-indicator float-end'>{getDashboardNotificationCount()}</span>}
