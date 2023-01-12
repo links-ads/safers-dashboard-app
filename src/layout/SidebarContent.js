@@ -127,6 +127,13 @@ const SidebarContent = (props) => {
               </Link>
             </li> */}
             <li>
+              <Link to='/new-dashboard' className=''>
+                <i className='bx bxs-home'></i>
+                <span className='text-capitalize'>{props.t('Dashboard')}</span>
+                {getDashboardNotificationCount() > 0 && <span className='new-info-indicator float-end'>{getDashboardNotificationCount()}</span>}
+              </Link>
+            </li>
+            <li>
               <Link to='/fire-alerts' className=''>
                 <i className='bx bx-error-circle'></i>
                 <span className='text-capitalize'>{props.t('fire-alerts')}</span>
@@ -138,13 +145,6 @@ const SidebarContent = (props) => {
                 <i className='bx bxs-hot'></i>
                 <span className='text-capitalize'>{props.t('Events')}</span>
                 {newEventsCount > 0 && <span className='new-info-indicator float-end'>{newEventsCount}</span>}
-              </Link>
-            </li>
-            <li>
-              <Link to='/new-dashboard' className=''>
-                <i className='bx bxs-home'></i>
-                <span className='text-capitalize'>{props.t('Dashboard')}</span>
-                {getDashboardNotificationCount() > 0 && <span className='new-info-indicator float-end'>{getDashboardNotificationCount()}</span>}
               </Link>
             </li>
             <li>
