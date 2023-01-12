@@ -39,7 +39,7 @@ const PhotoBar = ({t}) => {
 
   return (
     <div>
-      <Container fluid className="mx-8 flex-stretch align-content-center flex-wrap">
+      <Container fluid="true" className="mx-8 flex-stretch align-content-center flex-wrap">
         {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
         <Card className="card">
           <Row className="align-self-baseline alert-title mx-5">{t('in-situ-cameras', {ns: 'common'})}</Row>

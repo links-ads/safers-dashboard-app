@@ -5,7 +5,7 @@ import MapComponent from './Map'
 
 const AOIBar = () => 
   <div >
-    <Container fluid >
+    <Container fluid="true" >
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
           <Card className="gx-2" >

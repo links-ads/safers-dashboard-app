@@ -24,7 +24,7 @@ export const EventItem = ({event, t}) => {
           {t(event?.status.toLowerCase(), {ns: 'common'})}
         </span>
       </div>
-      <row>{`${t('Start', {ns: 'common'})} : ${formatDate(event?.start_date)}`}</row>
+      <div>{`${t('Start', {ns: 'common'})} : ${formatDate(event?.start_date)}`}</div>
     </Card>
   );
 }

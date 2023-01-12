@@ -50,22 +50,22 @@ const NotificationsBar = ({ t }) => {
       return <p>{noDataMessage}</p>;
     }
     return (
-      <Fragment>
+      <>
         {
           Object.keys(itemsCounts).map(key => 
-            <>
-              <Row fluid xs={2} key={`${label}_row_${key}`}>
-                <div className="w-8" key={`${label}_label_${key}`}>
+            <Fragment key={`${label}_row_${key}`}>
+              <Row fluid="true" xs={2} className="">
+                <div className="w-8">
                   {`${key}`}
                 </div>
-                <div className="w-2" key={`${label}_value_${key}`}>
+                <div className="w-2">
                   {`${itemsCounts[key]}`}
                 </div>
               </Row><hr />
-            </>
+            </Fragment>
           )
         }
-      </Fragment>
+      </>
     );
   }
 
@@ -120,7 +120,7 @@ const NotificationsBar = ({ t }) => {
 
   return (
     <div className="mx-2 px-1">
-      <Container fluid>
+      <Container fluid="true">
         <p className="align-self-baseline alert-title">{t('Area of Interest')} : { nameOfAOI }</p>
         <Row xs={1} sm={2} md={3} lg={5} >
           <NotificationCard 

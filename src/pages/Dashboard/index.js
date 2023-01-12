@@ -7,7 +7,7 @@ import ReportBar from './Components/ReportBar';
 
 const NewDashboard = () => 
   <div className="page-content">
-    <Container fluid className="sign-up-aoi-map-bg">
+    <Container fluid="true" className="sign-up-aoi-map-bg">
       <NotificationsBar />
       <AOIBar />
       <PhotoBar />

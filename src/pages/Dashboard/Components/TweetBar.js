@@ -6,7 +6,7 @@ const TWEET_NUMBERS = [1,2,3,4,5,6,7,8];
 
 const TweetBar = () => 
   <div>
-    <Container fluid className="flex-stretch">
+    <Container fluid="true" className="flex-stretch">
       <Card>
         <p className="align-self-baseline">Latest Tweets</p>
         <Row className="mx-4 gx-2 row-cols-8 flex-wrap">
