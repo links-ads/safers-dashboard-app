@@ -13,7 +13,7 @@ const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) =
       <div>
         <CardGroup className="gx-1 p-2 ">
           <Card className="noshadow m-1">
-            <CardTitle className="col-12 card ">
+            <CardTitle className="col-12 card noshadow">
               <Row>
                 <div className="col-10">{ cardName }</div>
                 <div className="col-1">

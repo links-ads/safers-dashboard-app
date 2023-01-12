@@ -20,7 +20,6 @@ const PhotoBar = ({t}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const dateRangeParams = {};
     dispatch(getAllInSituAlerts({
       type: undefined,
       order: '-date',
@@ -28,7 +27,6 @@ const PhotoBar = ({t}) => {
       bbox:  undefined,
       default_date: false,
       default_bbox: false,
-      ...dateRangeParams
     }));
   }, []);
 

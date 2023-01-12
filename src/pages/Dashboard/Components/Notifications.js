@@ -54,7 +54,7 @@ const NotificationsBar = ({ t }) => {
         {
           Object.keys(itemsCounts).map(key => 
             <Fragment key={`${label}_row_${key}`}>
-              <Row fluid="true" xs={2} className="">
+              <Row fluid="true" xs={2}>
                 <div className="w-8">
                   {`${key}`}
                 </div>

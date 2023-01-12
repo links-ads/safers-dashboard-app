@@ -22,7 +22,7 @@ const MyProfile = ({t}) => {
 
   return (
     <div className="page-content">
-      <Container fluid className='p-0'>
+      <Container fluid="true" className='p-0'>
         <Row className='g-0'>
           <Col>
             <div className='tab-container p-3'>

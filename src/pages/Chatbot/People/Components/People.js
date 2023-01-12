@@ -51,7 +51,7 @@ const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
               <Col>
                 <CardText>
                   <span className='float-end alert-source-text me-2 mb-1'>
-                    {t('last-updated')}: {formatDate(card?.timestamp)}
+                    {t('last-updated')}: {formatDate(card.timestamp)}
                   </span>
                 </CardText>
               </Col>

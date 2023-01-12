@@ -94,7 +94,7 @@ const Authentication = () => {
   return (
     <div>
       <PreLoader isLoading={isLoading} loadingMsg="Please wait.." />
-      <Container fluid className="p-0" data-test="containerComponent">
+      <Container fluid="true" className="p-0" data-test="containerComponent">
         <Row className="g-0">
           <Col xl={7} className="bg-overlay">
             <p data-test="overlay-text"> Structured Approaches for<br></br>

@@ -14,7 +14,6 @@ export const EventItem = ({event, t}) => {
           <Link to = '/event-alerts'>
             <i
               className="mm-active bx bxs-hot btn float-end"
-              aria-label='event-goto-button'
             />
           </Link>
         </span>

@@ -14,13 +14,11 @@ const EventsPanel = ({t}) => {
   const [eventList, setEventList] = useState([]);
 
   useEffect (() => {
-    const dateRangeParams = {};
     const eventParams = {
       order: '-date',
       status: undefined,
       bbox:undefined,
       default_bbox: true,
-      ...dateRangeParams
     };
     dispatch(setEventParams(eventParams))
     dispatch(getAllEventAlerts(eventParams, true, false));
