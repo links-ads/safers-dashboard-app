@@ -38,11 +38,11 @@ const PhotoBar = ({t}) => {
   }, [allPhotos])
 
   return (
-    <div className="">
-      <Container fluid className="flex-stretch align-content-center flex-wrap">
+    <div>
+      <Container fluid className="mx-8 flex-stretch align-content-center flex-wrap">
         {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
-        <Card>
-          <p className="align-self-baseline alert-title">{t('in-situ-cameras', {ns: 'common'})}</p>
+        <Card className="card">
+          <Row className="align-self-baseline alert-title mx-5">{t('in-situ-cameras', {ns: 'common'})}</Row>
           <Row className="mx-3" xs={1} sm={2} md={3} lg={4}>
             { !photoList || photoList.length === 0 
               ? <div className="card noshadow m-8 p-8">No photos in AOI</div>

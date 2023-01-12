@@ -26,10 +26,10 @@ const ReportBar = ({t}) => {
   useEffect(() => setReportList(allReports), [allReports])
 
   return (
-    <div className="">
-      <Container fluid className="">
+    <div>
+      <Container fluid>
         <Card>
-          <p className="align-self-baseline alert-title">{t('Reports', {ns: 'common'})}</p>
+          <Row className="align-self-baseline alert-title mx-4">{t('Reports', {ns: 'common'})}</Row>
           <Row xs={1} sm={1} md={2} lg={2} xl={3} className="mx-4 gx-2" >
             {
               reportList ? 

@@ -54,7 +54,7 @@ const NotificationsBar = ({ t }) => {
         {
           Object.keys(itemsCounts).map(key => 
             <>
-              <Row fluid xs={2} className="" key={`${label}_row_${key}`}>
+              <Row fluid xs={2} key={`${label}_row_${key}`}>
                 <div className="w-8" key={`${label}_label_${key}`}>
                   {`${key}`}
                 </div>
@@ -120,7 +120,7 @@ const NotificationsBar = ({ t }) => {
 
   return (
     <div className="mx-2 px-1">
-      <Container fluid className="">
+      <Container fluid>
         <p className="align-self-baseline alert-title">{t('Area of Interest')} : { nameOfAOI }</p>
         <Row xs={1} sm={2} md={3} lg={5} >
           <NotificationCard 

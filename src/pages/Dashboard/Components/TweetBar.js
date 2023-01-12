@@ -5,7 +5,7 @@ import { ReactComponent as Placeholder } from './placeholder.svg'
 const TWEET_NUMBERS = [1,2,3,4,5,6,7,8];
 
 const TweetBar = () => 
-  <div className="">
+  <div>
     <Container fluid className="flex-stretch">
       <Card>
         <p className="align-self-baseline">Latest Tweets</p>
