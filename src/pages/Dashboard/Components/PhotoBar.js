@@ -14,7 +14,7 @@ const PhotoBar = ({t}) => {
   const NUMBER_OF_PHOTOS = 8;
 
   const allPhotos = useSelector(state => {
-    return state?.inSituAlerts?.allAlerts
+    return state?.inSituAlerts?.filteredAlerts
   });
 
   const dispatch = useDispatch();
@@ -26,7 +26,7 @@ const PhotoBar = ({t}) => {
       camera_id: undefined,
       bbox:  undefined,
       default_date: false,
-      default_bbox: false,
+      default_bbox: true,
     }));
   }, []);
 
@@ -40,10 +40,10 @@ const PhotoBar = ({t}) => {
       <Container fluid="true" className="mx-8 flex-stretch align-content-center flex-wrap">
         {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
         <Card className="card">
-          <Row className="align-self-baseline alert-title mx-5">{t('in-situ-cameras', {ns: 'common'})}</Row>
-          <Row className="mx-3" xs={1} sm={2} md={3} lg={4}>
+          <Row className="align-self-baseline alert-title mx-4">{t('in-situ-cameras', {ns: 'common'})}</Row>
+          <Row xs={1} sm={2} md={3} lg={4}>
             { !photoList || photoList.length === 0 
-              ? <div className="card noshadow m-8 p-8">No photos in AOI</div>
+              ? <div className="card noshadow mx-4 p-8">{t('No photos in AOI')}</div>
               : null}
             {
               photoList.slice(0, NUMBER_OF_PHOTOS).map(photo => {

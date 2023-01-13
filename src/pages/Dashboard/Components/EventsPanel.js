@@ -34,7 +34,7 @@ const EventsPanel = ({t}) => {
       <Row>    
         { eventList && eventList.length>0 ?
           eventList.map( event => <EventItem key={event?.id} event={event} t={t} /> ) :
-          <p className="alert-title">No current events</p>
+          <p>{t('No current events')}</p>
         }
       </Row>
     </Card>
