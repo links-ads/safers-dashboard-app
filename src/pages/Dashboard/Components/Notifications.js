@@ -11,11 +11,11 @@ import PropTypes from 'prop-types';
 const NotificationsBar = ({ t }) => {
   const dispatch = useDispatch();
   
-  const [activityStatusCounts, setActivityStatusCounts] = useState( {undefined: 0} );
-  const [peopleStatusCounts, setPeopleStatusCounts] = useState( {undefined: 0} );
-  const [reportStatusCounts, setReportStatusCounts] = useState( {undefined: 0});
-  const [missionStatusCounts, setMissionStatusCounts] = useState( { undefined: 0} );
-  const [communicationStatusCounts, setCommunicationStatusCounts] = useState( { undefined: 0} );
+  const [activityStatusCounts, setActivityStatusCounts] = useState({});
+  const [peopleStatusCounts, setPeopleStatusCounts] = useState({});
+  const [reportStatusCounts, setReportStatusCounts] = useState({});
+  const [missionStatusCounts, setMissionStatusCounts] = useState({});
+  const [communicationStatusCounts, setCommunicationStatusCounts] = useState({});
 
   const defaultAOI = useSelector(state => state?.user?.defaultAoi);
   const { allReports: OrgReportList } = useSelector(state => state?.reports);
@@ -69,16 +69,6 @@ const NotificationsBar = ({ t }) => {
     );
   }
 
-  const renderCommunications = () => renderer(t('No new communications', {ns: 'dashboard'}), 'comms', communicationStatusCounts);
-  
-  const renderActivities = () => renderer(t('No new activities', {ns: 'dashboard'}), 'act', activityStatusCounts);
-
-  const renderPeople = () => renderer(t('No new people activity', {ns: 'dashboard'}), 'ppl', peopleStatusCounts);
-
-  const renderReports = () => renderer(t('No new reports', {ns: 'dashboard'}), 'reps', reportStatusCounts);
-
-  const renderMissions = () => renderer(t('No new missions', {ns: 'dashboard'}), 'miss', missionStatusCounts);
-
   // useEffects
 
   useEffect(() => {
@@ -126,31 +116,31 @@ const NotificationsBar = ({ t }) => {
           <NotificationCard 
             cardName={t('fire-alerts')}
             iconClass="bx bx-error-circle" 
-            contentRenderer={ renderActivities }
+            contentRenderer={ () => renderer(t('No new activities', {ns: 'dashboard'}), 'act', activityStatusCounts) }
             linkURL="/"
           />
           <NotificationCard 
             cardName={t('people')}
             iconClass="fas fa-user-alt" 
-            contentRenderer={ renderPeople }
+            contentRenderer={ () => renderer(t('No new people activity', {ns: 'dashboard'}), 'ppl', peopleStatusCounts) }
             linkURL="/chatbot?tab=1"
           />
           <NotificationCard 
             cardName={t('Reports')}
             iconClass="fas fa-file-image" 
-            contentRenderer={ renderReports }
+            contentRenderer={ () => renderer(t('No new reports', {ns: 'dashboard'}), 'reps', reportStatusCounts) }
             linkURL="/chatbot?tab=4"
           />
           <NotificationCard 
             cardName={t('mission')}
             iconClass="fas fa-flag-checkered" 
-            contentRenderer={ renderMissions }
+            contentRenderer={ () => renderer(t('No new missions', {ns: 'dashboard'}), 'miss', missionStatusCounts) }
             linkURL="/chatbot?tab=3"
           />
           <NotificationCard 
             cardName={t('comms')}
             iconClass="fas fa-envelope" 
-            contentRenderer={ renderCommunications }
+            contentRenderer={ () => renderer(t('No new communications', {ns: 'dashboard'}), 'comms', communicationStatusCounts) }
             linkURL="/chatbot?tab=2"
           />
         </Row>
