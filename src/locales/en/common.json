@@ -102,5 +102,11 @@
   "field-err-number": "This field must be an integer",
   "field-err-min": "Should be at least {{min}}",
   "field-err-max": "Should be at least {{max}}",
-  "field-err-between": "Should be between {{min}} and {{max}}"
+  "field-err-between": "Should be between {{min}} and {{max}}",
+  "Change Map Style": "Change Map Style",
+  "Streets": "Streets",
+  "Outdoors": "Outdoors",
+  "Satellite Streets": "Satellite Streets",
+  "Navigation": "Navigation",
+  "Terrain": "Terrain"
 }
