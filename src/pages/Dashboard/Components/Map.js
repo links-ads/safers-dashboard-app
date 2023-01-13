@@ -13,7 +13,12 @@ const MapComponent = () => {
   return (
     <Card className='map-card'>
       <Row style={{ height: 550 }} className="mb-5">
-        <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
+        <BaseMap 
+          layers={[polygonLayer]} 
+          initialViewState={viewState} 
+          screenControlPosition="top-right"
+          navControlPosition="bottom-right"
+        />
       </Row>
     </Card>
 
