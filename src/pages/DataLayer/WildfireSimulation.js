@@ -619,7 +619,11 @@ const WildfireSimulation = ({
                                     </Input>
                                     <button
                                       key={position}
-                                      onClick={() => handleFireBreakDrawClick(position)}
+                                      onClick={(e) => {
+                                        // disable button's default 'submit' type, prevent form submitting
+                                        e.preventDefault();
+                                        handleFireBreakDrawClick(position)
+                                      }}
                                       className='btn btn-primary'
                                       color="primary"
                                       style={drawButtonStyles}
