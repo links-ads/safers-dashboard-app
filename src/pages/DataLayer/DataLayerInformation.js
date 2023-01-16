@@ -16,6 +16,8 @@ import { formatDate } from '../../store/utility';
 import { useSelector } from 'react-redux';
 import { Card } from 'reactstrap';
 
+import { get } from 'lodash'
+
 const DataLayerInformationComponent = ({
   children,
   menuId,
@@ -274,14 +276,30 @@ const DataLayerInformationComponent = ({
 
   const getPixelValue = () => {
     let valueString = '';
-    if (featureInfoData?.features?.length > 0 && featureInfoData?.features[0]?.properties) {
-      for (const key in featureInfoData.features[0].properties) {
-        if (Object.hasOwnProperty.call(featureInfoData.features[0].properties, key)) {
-          valueString = valueString + `Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
+
+    if (featureInfoData?.features && featureInfoData.features[0].properties) {
+      // If Map Layer has a feature string to interpolate
+      if (currentLayer?.feature_string) {
+        const featureString = currentLayer.feature_string;
+
+        // Extract placeholder keys to be replaced.
+        const keys = featureString.match(/[^{}]+(?=})/g);
+
+        const properties = featureInfoData.features[0].properties;
+
+        valueString = featureString;
+        // Replace placeholders in string with values from properties object.
+        keys.forEach(key => {
+          valueString = valueString.replace(`{{${key}}}`, get(properties, key));
+        });
+      } else {
+        Object.keys(featureInfoData?.features[0]?.properties).forEach(key => {
+          valueString = `${valueString} Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
+        })
+
+        if (currentLayer?.units) {
+          valueString = `${valueString} ${currentLayer?.units}`
         }
-      }
-      if (currentLayer?.units) {
-        valueString = `${valueString} ${currentLayer?.units}`
       }
     }
     return valueString;
