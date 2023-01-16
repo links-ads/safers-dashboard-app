@@ -5,6 +5,7 @@ import { MapView } from '@deck.gl/core';
 import { useSelector } from 'react-redux';
 import { MAPBOX_TOKEN } from '../../config';
 import { getGeoFeatures, getWKTfromFeature } from '../../store/utility';
+import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
 import {
   Editor,
   DrawPolygonMode,
@@ -32,7 +33,6 @@ const POLYGON_LINE_DASH = '10,2';
 const POLYGON_ERROR_COLOR = 'rgba(255, 0, 0, 0.5)'
 
 const POINT_RADIUS = 8;
-
 
 const PolygonMap = ({
   layers = null,
@@ -150,7 +150,7 @@ const PolygonMap = ({
 
   const renderToolbar = () => (
     <>
-      {selectedFireBreak !== null ? (
+      {selectedFireBreak ? (
         <MapControlButton
           top='50px'
           style={modeId == 'drawLineString' ? { backgroundColor: 'lightgray' } : {}}
@@ -232,7 +232,9 @@ const PolygonMap = ({
               };
             }
             return {
-              stroke: POLYGON_LINE_COLOR,
+              stroke: selectedFireBreak
+                ? FIRE_BREAK_STROKE_COLORS[selectedFireBreak?.type]
+                : POLYGON_LINE_COLOR,
               fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
               r: POINT_RADIUS,

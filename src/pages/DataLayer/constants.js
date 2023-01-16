@@ -15,4 +15,11 @@ export const FIRE_BREAK_OPTIONS = [
   { label: 'Vehicle', value: 'vehicle' },
 ]
 
+export const FIRE_BREAK_STROKE_COLORS = {
+  canadair: 'rgb(255, 0, 0)',
+  helicopter: 'rgb(0,255,0)',
+  waterLine: 'rgb(255, 255, 0)',
+  vehicle: 'rgb(0, 0, 255)'
+}
+
 export const EUROPEAN_BBOX = [-18.369140, 14.519780, 41.660156, 71.130987]

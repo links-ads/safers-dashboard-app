@@ -3,9 +3,7 @@ import ReactTooltip from 'react-tooltip';
 import PropTypes from 'prop-types'
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
-import {
-  area as getFeatureArea
-} from '@turf/turf';
+import { area as getFeatureArea } from '@turf/turf';
 import { FieldArray, Formik } from 'formik';
 import MapSection from './Map';
 import * as Yup from 'yup'
@@ -226,14 +224,15 @@ const WildfireSimulation = ({
     );
   }
 
-  const handleFireBreakTypeChange = (value, position) => {
-    // toggle fire break 'draw mode' off when changing type
-    dispatch(setSelectedFireBreak(null));
-    setFireBreakSelectedOptions(prev => ({ ...prev, [position]: value }))
+  const handleFireBreakTypeChange = (type, position) => {
+    dispatch(setSelectedFireBreak({ position, type }));
+    setFireBreakSelectedOptions(prev => ({ ...prev, [position]: type }))
   }
 
   const handleFireBreakDrawClick = (position) => {
-    dispatch(setSelectedFireBreak(selectedFireBreak === position ? null : position))
+    const isSelected = selectedFireBreak?.position === position,
+      type = fireBreakSelectedOptions[position];
+    dispatch(setSelectedFireBreak(isSelected ? null : { position, type }))
   }
 
   return (
@@ -256,12 +255,7 @@ const WildfireSimulation = ({
                 windDirection: '',
                 windSpeed: '',
                 fuelMoistureContent: '',
-                fireBreak: {
-                  canadair: '',
-                  helicopter: '',
-                  waterLine: '',
-                  vehicle: ''
-                },
+                fireBreak: {},
               }],
             }}
             validationSchema={WildfireSimulationSchema}
@@ -499,23 +493,24 @@ const WildfireSimulation = ({
                         setCoordinates={(wktConversion, isAreaValid) => {
                           // called if map is used to draw polygon
                           // we assume it's valid WKT
-                          if (selectedFireBreak !== null) {
-                            const existingFireBreakData = values.boundaryConditions?.[selectedFireBreak]?.fireBreak,
-                              selectedFireBreakType = fireBreakSelectedOptions[selectedFireBreak],
+                          if (selectedFireBreak) {
+                            const existingFireBreakData = values.boundaryConditions?.[selectedFireBreak?.position]?.fireBreak,
+                              selectedFireBreakType = fireBreakSelectedOptions[selectedFireBreak?.position],
                               updatedFireBreakData = {
                                 ...existingFireBreakData,
                                 [selectedFireBreakType]: wktConversion
                               }
-                            setFieldValue(`boundaryConditions.${selectedFireBreak}.fireBreak`, updatedFireBreakData);
+                            setFieldValue(`boundaryConditions.${selectedFireBreak?.position}.fireBreak`, updatedFireBreakData);
                           } else {
-                            setFieldValue('mapSelection', wktConversion);
+                            setFieldValue('ignitionArea', wktConversion);
                             setFieldValue('isMapAreaValid', isAreaValid);
                             setFieldValue('isMapAreaValidWKT', true);
                           }
                         }}
-                        coordinates={selectedFireBreak !== null
-                          ? values.boundaryConditions?.[selectedFireBreak]?.fireBreak?.[fireBreakSelectedOptions[selectedFireBreak]]
-                          : values.mapSelection}
+                        coordinates={selectedFireBreak
+                          ? values.boundaryConditions?.[selectedFireBreak.position]?.fireBreak?.[fireBreakSelectedOptions[selectedFireBreak.position]]
+                          : values.ignitionArea
+                        }
                         togglePolygonMap={true}
                         handleAreaValidation={feature => {
                           const area = Math.ceil(getFeatureArea(feature));
@@ -549,7 +544,7 @@ const WildfireSimulation = ({
                         {() => (
                           <tbody>
                             {tableEntries.map((position) => {
-                              const isFireBreakSelected = position === selectedFireBreak,
+                              const isFireBreakSelected = position === selectedFireBreak?.position,
                                 drawButtonStyles = !isFireBreakSelected ? {
                                   backgroundColor: '#2c2d34',
                                 } : {}
@@ -617,7 +612,9 @@ const WildfireSimulation = ({
                                       }
                                     >
                                       {FIRE_BREAK_OPTIONS.map(({ label, value }) => (
-                                        <option key={value} value={value}>{label}</option>
+                                        <option key={value} value={value}>
+                                          {label}
+                                        </option>
                                       ))}
                                     </Input>
                                     <button
@@ -627,7 +624,7 @@ const WildfireSimulation = ({
                                       color="primary"
                                       style={drawButtonStyles}
                                     >
-                                      {isFireBreakSelected ? 'Finish' :  'Draw'}
+                                      {isFireBreakSelected ? 'Finish' :  'Edit'}
                                     </button>
                                   </div>
                                   <td>
@@ -648,7 +645,7 @@ const WildfireSimulation = ({
                       </FieldArray>
                       <i
                         onClick={() => {
-                          if (tableEntries.length === +values.simulationTimeLimit) return;
+                          if (tableEntries.length === +values.hoursOfProjection) return;
                           handleTableEntriesAddClick()
                         }}
                         className="bx bx-plus-circle p-0 ms-2 w-auto"
