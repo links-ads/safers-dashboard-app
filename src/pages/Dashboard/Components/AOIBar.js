@@ -49,7 +49,7 @@ const AOIBar = () => {
   };
 
   useEffect (() => {
-
+    // start with default date range, or use last selected date range
     const dateRangeParams = dateRange 
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {}
@@ -65,6 +65,23 @@ const AOIBar = () => {
     dispatch(getAllEventAlerts(eventParams, true, false));
   }, []);
 
+  useEffect (() => {
+    // user has altered date range
+    const dateRangeParams = dateRange 
+      ? { start_date: dateRange[0], end_date: dateRange[1] }
+      : {}
+
+    const eventParams = {
+      order: '-date',
+      status: undefined,
+      bbox:undefined,
+      default_bbox: true,
+      ...dateRangeParams
+    };
+    dispatch(setEventParams(eventParams))
+    dispatch(getAllEventAlerts(eventParams, true, false));
+  }, [dateRange]);
+
   useEffect(()=> {
     setEventList(events);
     setIconLayer(getIconLayer(events));
@@ -79,7 +96,7 @@ const AOIBar = () => {
             <Card className="gx-2" >
               <MapComponent iconLayer={iconLayer} />
             </Card>
-            <Container className="px-4 my-auto container">
+            <Container className="px-4 container">
               <Row >
                 <EventsPanel eventList={eventList} />
               </Row>
