@@ -26,6 +26,6 @@ const MapComponent = ({iconLayer}) => {
   );
 }
 MapComponent.propTypes = {
-  iconLayer: PropTypes.ny
+  iconLayer: PropTypes.any
 }
 export default MapComponent;
