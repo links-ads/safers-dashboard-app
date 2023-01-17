@@ -322,14 +322,14 @@ const DataLayerInformationComponent = ({
     <ContextMenuTrigger id={menuId}>
       {React.cloneElement(children, { onClick: generateGeoJson })}
     </ContextMenuTrigger>
-    <ContextMenu key={contextMenuKey} id={menuId} className="geo-menu">
+    {currentLayer ? <ContextMenu key={contextMenuKey} id={menuId} className="geo-menu">
       {currentLayer && <><MenuItem className="geo-menuItem" onClick={toggleDisplayLayerInfo}>
         Get Feature Info
       </MenuItem>
       {timeseriesExists && <MenuItem className="geo-menuItem" onClick={toggleTimeSeriesChart}>
           Time Series Chart
       </MenuItem>}</>}
-    </ContextMenu>
+    </ContextMenu>: null}
   </>)
 }
 
