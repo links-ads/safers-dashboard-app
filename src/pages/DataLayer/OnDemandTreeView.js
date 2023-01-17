@@ -1,5 +1,5 @@
 /* eslint-disable indent */
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
@@ -85,7 +85,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
       const tooltipDisplay = tooltipInfo || node.info;
       const isOwner = node?.user && node.user === user?.id;
       const item =
-        <>
+        <Fragment key={id}>
           <ListGroupItem
             key={index + id}
             className={`dl-item ${node.children && itemState[id] || selectedLayer?.title == node.title ? 'selected' : ''} mb-2`}
@@ -221,7 +221,7 @@ const OnDemandTreeView = ({ data, setCurrentLayer, t, setViewState, viewState, s
               {node.message}
             </ReactTooltip>
           }
-        </>
+        </Fragment>
       return item;
     });
   }

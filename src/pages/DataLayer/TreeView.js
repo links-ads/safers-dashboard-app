@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import ReactTooltip from 'react-tooltip';
 import moment from 'moment';
@@ -84,7 +84,7 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
       const id = node.id;
       const tooltipDisplay = tooltipInfo || node.info
       const item =
-        <>
+        <Fragment key={id}>
           <ListGroupItem
             key={index + id}
             className={`dl-item ${isParentOfSelected(id) ? `${metaActive} selected` : ''} mb-2`}
@@ -134,7 +134,7 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
             >
               {tooltipDisplay ?? 'Loading...'}
             </ReactTooltip>}
-        </>
+        </Fragment>
       return item;
     });
   }
