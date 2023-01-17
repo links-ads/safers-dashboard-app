@@ -6,6 +6,7 @@ import { getAllEventAlerts } from '../../../store/appAction';
 import { EventItem } from './EventItem'
 import { withTranslation } from 'react-i18next'
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const EventsPanel = ({t}) => {
   const dispatch = useDispatch();
@@ -28,6 +29,13 @@ const EventsPanel = ({t}) => {
 
   return (
     <Card className="mx-auto w-11 ml-2 alert-card-secondary">
+      <Row  className="align-self-baseline alert-title">
+        <div>
+          <Link to="/event-alerts">
+            <p>{t('Events', {ns: 'common'})} <i className="bx bxs-hot"></i></ p>
+          </Link>
+        </div>
+      </Row>
       <Row>
         <p className='alert-title'>{t('Events', {ns: 'common'})}</p>
       </Row>

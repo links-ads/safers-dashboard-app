@@ -6,6 +6,7 @@ import { getAllInSituAlerts } from '../../../store/insitu/action'
 import { Img } from 'react-image'
 import { withTranslation } from 'react-i18next'
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const PhotoBar = ({t}) => {
   const [photoList, setPhotoList] = useState([]);
@@ -40,10 +41,16 @@ const PhotoBar = ({t}) => {
       <Container fluid="true" className="mx-8 flex-stretch align-content-center flex-wrap">
         {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
         <Card className="card">
-          <Row className="align-self-baseline alert-title mx-4">{t('in-situ-cameras', {ns: 'common'})}</Row>
+          <Row  className="align-self-baseline alert-title mx-3">
+            <div>
+              <Link to="/insitu-alerts">
+                <p>{t('in-situ-cameras', {ns: 'common'})} <i className="bx bx-image float-right"></i></ p>
+              </Link>
+            </div>
+          </Row>
           <Row xs={1} sm={2} md={3} lg={4}>
             { !photoList || photoList.length === 0 
-              ? <div className="card noshadow mx-4 p-8">{t('No photos in AOI')}</div>
+              ? <div className="card noshadow mx-5">{t('No photos in AOI')}</div>
               : null}
             {
               photoList.slice(0, NUMBER_OF_PHOTOS).map(photo => {

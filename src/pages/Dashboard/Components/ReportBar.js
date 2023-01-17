@@ -4,6 +4,7 @@ import { Container, Row, Card } from 'reactstrap';
 import Report from '../../Chatbot/Reports/Components/Report'
 import { withTranslation } from 'react-i18next'
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 
 const ReportBar = ({t}) => {
   const allReports = useSelector(state => {
@@ -17,7 +18,13 @@ const ReportBar = ({t}) => {
     <div>
       <Container fluid="true">
         <Card>
-          <Row className="align-self-baseline alert-title mx-4">{t('Reports', {ns: 'common'})}</Row>
+          <Row className="align-self-baseline alert-title mx-3">
+            <div>
+              <Link to="/chatbot?tab=4">
+                <p>{t('Reports', {ns: 'common'})} <i className="fas fa-file-image float-right"></i></ p>
+              </Link>
+            </div>
+          </Row>
           <Row xs={1} sm={1} md={2} lg={2} xl={3} className="mx-4 gx-2" >
             { allReports && allReports.length === 0 
               ? <div><p className="ml-3">{t('No new reports in AOI')}</p></div>
