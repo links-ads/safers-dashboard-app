@@ -27,11 +27,11 @@ const EventsPanel = ({t}) => {
   useEffect(()=> setEventList(events), [events])
 
   return (
-    <Card>
+    <Card className="mx-auto w-11 ml-2 alert-card-secondary">
       <Row>
         <p className='alert-title'>{t('Events', {ns: 'common'})}</p>
       </Row>
-      <Row>    
+      <Row style={{maxHeight:250}} className='ml3-3 mr-5 overflow-auto'>    
         { eventList && eventList.length>0 ?
           eventList.map( event => <EventItem key={event?.id} event={event} t={t} /> ) :
           <p>{t('No current events')}</p>

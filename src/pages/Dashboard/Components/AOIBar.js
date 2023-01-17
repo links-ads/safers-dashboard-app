@@ -11,12 +11,12 @@ const AOIBar = () =>
           <Card className="gx-2" >
             <MapComponent  />
           </Card>
-          <Container className="p-2 my-0">
+          <Container className="px-4 my-auto container">
             <Row >
               <EventsPanel />
             </Row>
             <Row >
-              <Card >
+              <Card className="card alert-card-secondary" style={{minHeight: 300}}>
                 <div className="alert-title"><p>Pin Values panel</p></div>
                 <div><p>To be done</p></div>
               </Card>                

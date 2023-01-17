@@ -12,7 +12,7 @@ const MapComponent = () => {
 
   return (
     <Card className='map-card'>
-      <Row style={{ height: 550 }} className="mb-5">
+      <Row style={{ height: 550 }} className="mx-auto">
         <BaseMap 
           layers={[polygonLayer]} 
           initialViewState={viewState} 
