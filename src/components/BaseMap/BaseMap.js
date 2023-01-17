@@ -112,7 +112,6 @@ const BaseMap = ({
         <StaticMap
           mapboxApiAccessToken={MAPBOX_TOKEN}
           initialViewState={initialViewState}
-          // mapStyle={MAP_STYLE[mapStyle]}
           mapStyle={mapStyle? mapStyle.uri : selectedMapStyle.uri}
           ref={mapRef}
         />
