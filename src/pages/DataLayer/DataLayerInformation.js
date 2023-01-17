@@ -16,6 +16,8 @@ import { formatDate } from '../../store/utility';
 import { useSelector } from 'react-redux';
 import { Card } from 'reactstrap';
 
+import { get } from 'lodash'
+
 const DataLayerInformationComponent = ({
   children,
   menuId,
@@ -80,7 +82,7 @@ const DataLayerInformationComponent = ({
   }, [currentViewState])
 
   useEffect(()=> {
-    getPixelValue();
+    getFeatureInfo();
   }, [featureInfoData])
 
   useEffect(() => {
@@ -104,7 +106,7 @@ const DataLayerInformationComponent = ({
       <>{selectedPixel?.length > 0 && featureInfoData?.features?.length > 0 && <Card color="dark default-panel mt-3">
         <div className='d-flex justify-content-between align-items-center'>
           <div className='p-3 empty-loading'>
-            {getPixelValue()}
+            {getFeatureInfo()}
           </div>
           <h4 className='ps-3 mb-0'><i className='meta-close' onClick={clearInfo}>x</i></h4>
         </div>
@@ -272,16 +274,36 @@ const DataLayerInformationComponent = ({
     setSelectedDomain(null);
   }
 
-  const getPixelValue = () => {
+  const getFeatureInfo = () => {
     let valueString = '';
-    if (featureInfoData?.features?.length > 0 && featureInfoData?.features[0]?.properties) {
-      for (const key in featureInfoData.features[0].properties) {
-        if (Object.hasOwnProperty.call(featureInfoData.features[0].properties, key)) {
-          valueString = valueString + `Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
+
+    if (featureInfoData?.features && featureInfoData.features[0].properties) {
+      // If Map Layer has a feature string to interpolate
+      if (currentLayer?.feature_string) {
+        const featureString = currentLayer.feature_string;
+
+        // Extract placeholder keys to be replaced.
+        const keys = featureString.match(/[^{}]+(?=})/g);
+        valueString = featureString;
+
+        // If there are keys to inject into the string, then iterate
+        // around them and do so.
+        if (keys) {
+          const properties = featureInfoData.features[0].properties;
+
+          // Replace placeholders in string with values from properties object.
+          keys.forEach(key => {
+            valueString = valueString.replace(`{{${key}}}`, get(properties, key));
+          });
         }
-      }
-      if (currentLayer?.units) {
-        valueString = `${valueString} ${currentLayer?.units}`
+      } else {
+        Object.keys(featureInfoData?.features[0]?.properties).forEach(key => {
+          valueString = `${valueString} Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
+        })
+
+        if (currentLayer?.units) {
+          valueString = `${valueString} ${currentLayer?.units}`
+        }
       }
     }
     return valueString;
