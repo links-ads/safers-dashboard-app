@@ -100,7 +100,7 @@ const PolygonMap = ({
 
   const toggleMode = (evt) => {
     if(evt !== modeId) {
-      const tempModeId = evt ? evt : null;
+      const tempModeId = evt? evt : null;
       const mode = MODES.find((m) => m.id === tempModeId);
       const modeHandler = mode ? new mode.handler() : null;
       setModeId(tempModeId);
@@ -115,13 +115,13 @@ const PolygonMap = ({
 
   const editToggle = (mode) => {
     if (mode === 'drawLineString') {
-      toggleMode(modeId == 'drawLineString' ? 'editing' : 'drawLineString')
+      toggleMode(modeId === 'drawLineString' ? 'editing' : 'drawLineString')
     } else if (mode === 'drawPolygon') {
       if (singlePolygonOnly) {
         setAreaIsValid(true);
         setFeatures([]);
       }
-      toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon');
+      toggleMode(modeId === 'drawPolygon' ? 'editing' : 'drawPolygon');
     }
   }
 
