@@ -91,7 +91,9 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
             onClick={() => { onClickDLItem(id, node) }}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
-              setTooltipInfo(await fetchEndpoint(node.info_url));
+              if (node.info_url && node.children) {
+                setTooltipInfo(await fetchEndpoint(node.info_url));
+              }
             }}
             onMouseLeave={() => setTooltipInfo(undefined)}
           >
