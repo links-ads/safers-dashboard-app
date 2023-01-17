@@ -10,28 +10,27 @@ import { Link } from 'react-router-dom';
 const NotificationCard = ({cardName, iconClass, contentRenderer, linkURL='/'}) => 
   <div key={`card_${cardName}`} className="card">
     <Card className="justify-items-stretch noshadow">
-      <div>
-        <CardGroup className="gx-1 p-2 ">
-          <Card className="noshadow m-1">
-            <CardTitle className="col-12 card noshadow">
-              <Row>
-                <div className="col-10">{ cardName }</div>
-                <div className="col-1">
-                  <Link to ={ linkURL }>
-                    <span><i className={iconClass}></i></span>
-                  </Link>
-                </div>
-              </Row>
-            </CardTitle>
-            <CardBody className="noshadow col-12 p-0">
-              <Card className="noshadow col-12">
-                <hr />
-                <div>{ contentRenderer() }</div>
-              </Card>  
-            </CardBody>
-          </Card>
-        </CardGroup>
-      </div>
+     
+      <CardGroup className="gx-1 p-2 ">
+        <Card className="noshadow m-1">
+          <CardTitle className="col-12 card noshadow">
+            <Row>
+              <div className="col-10">{ cardName }</div>
+              <div className="col-1">
+                <Link to ={ linkURL }>
+                  <span><i className={iconClass}></i></span>
+                </Link>
+              </div>
+            </Row>
+          </CardTitle>
+          <CardBody className="noshadow col-12 p-0">
+            <Card className="noshadow col-12">
+              <hr />
+              <div>{ contentRenderer() }</div>
+            </Card>  
+          </CardBody>
+        </Card>
+      </CardGroup>
     </Card>
   </div>
 

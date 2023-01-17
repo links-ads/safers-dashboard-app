@@ -37,40 +37,37 @@ const PhotoBar = ({t}) => {
   }, [allPhotos])
 
   return (
-    <div>
-      <Container fluid="true" className="mx-8 flex-stretch align-content-center flex-wrap">
-        {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
-        <Card className="card">
-          <Row  className="align-self-baseline alert-title mx-3">
-            <div>
-              <Link to="/insitu-alerts">
-                <p>{t('in-situ-cameras', {ns: 'common'})} <i className="bx bx-image float-right"></i></ p>
-              </Link>
-            </div>
-          </Row>
-          <Row xs={1} sm={2} md={3} lg={4}>
-            { !photoList || photoList.length === 0 
-              ? <div className="card noshadow mx-5">{t('No photos in AOI')}</div>
-              : null}
-            {
-              photoList.slice(0, NUMBER_OF_PHOTOS).map(photo => {
-                return(
-                  <div key={`photie_${photo.id}`} className="p-3 my-3">    
-                    {/* This is a custom component which handles fallbacks */}
-                    <Img 
-                      decode={true}
-                      unloader={<Placeholder width="100%" height="120px"/>} 
-                      src={[`${photo.url}`]} 
-                      width="100%" height="120px" 
-                      alt="Image is missing"
-                    />
-                  </div>
-                )
-              })}
-          </Row>
-        </Card>
-      </Container>
-    </div>
+    
+    <Container fluid="true" className="mx-8 flex-stretch align-content-center flex-wrap">
+      {!isLoaded ? <Card><h1>Loading...</h1></Card> : null}
+      <Card className="card">
+        <Row  className="align-self-baseline alert-title mx-3">
+          <Link to="/insitu-alerts">
+            <p>{t('in-situ-cameras', {ns: 'common'})} <i className="bx bx-image float-right"></i></ p>
+          </Link>
+        </Row>
+        <Row xs={1} sm={2} md={3} lg={4}>
+          { !photoList || photoList.length === 0 
+            ? <div className="card noshadow mx-5">{t('No photos in AOI')}</div>
+            : null}
+          {
+            photoList.slice(0, NUMBER_OF_PHOTOS).map(photo => {
+              return(
+                <div key={`photie_${photo.id}`} className="p-3 my-3">    
+                  {/* This is a custom component which handles fallbacks */}
+                  <Img 
+                    decode={true}
+                    unloader={<Placeholder width="100%" height="120px"/>} 
+                    src={[`${photo.url}`]} 
+                    width="100%" height="120px" 
+                    alt="Image is missing"
+                  />
+                </div>
+              )
+            })}
+        </Row>
+      </Card>
+    </Container>
   );
 }
 

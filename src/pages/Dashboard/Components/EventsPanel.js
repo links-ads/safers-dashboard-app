@@ -8,11 +8,9 @@ import { Link } from 'react-router-dom';
 const EventsPanel = ({t, eventList}) => 
   <Card className="mx-auto w-11 ml-2 alert-card-secondary">
     <Row  className="align-self-baseline alert-title">
-      <div>
-        <Link to="/event-alerts">
-          <p>{t('Events', {ns: 'common'})} <i className="bx bxs-hot"></i></ p>
-        </Link>
-      </div>
+      <Link to="/event-alerts">
+        <p>{t('Events', {ns: 'common'})} <i className="bx bxs-hot"></i></ p>
+      </Link>
     </Row>
     <Row>
       <p className='alert-title'>{t('Events', {ns: 'common'})}</p>
