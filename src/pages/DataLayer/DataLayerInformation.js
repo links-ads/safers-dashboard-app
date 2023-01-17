@@ -82,7 +82,7 @@ const DataLayerInformationComponent = ({
   }, [currentViewState])
 
   useEffect(()=> {
-    getPixelValue();
+    getFeatureInfo();
   }, [featureInfoData])
 
   useEffect(() => {
@@ -106,7 +106,7 @@ const DataLayerInformationComponent = ({
       <>{selectedPixel?.length > 0 && featureInfoData?.features?.length > 0 && <Card color="dark default-panel mt-3">
         <div className='d-flex justify-content-between align-items-center'>
           <div className='p-3 empty-loading'>
-            {getPixelValue()}
+            {getFeatureInfo()}
           </div>
           <h4 className='ps-3 mb-0'><i className='meta-close' onClick={clearInfo}>x</i></h4>
         </div>
@@ -274,7 +274,7 @@ const DataLayerInformationComponent = ({
     setSelectedDomain(null);
   }
 
-  const getPixelValue = () => {
+  const getFeatureInfo = () => {
     let valueString = '';
 
     if (featureInfoData?.features && featureInfoData.features[0].properties) {
@@ -284,14 +284,18 @@ const DataLayerInformationComponent = ({
 
         // Extract placeholder keys to be replaced.
         const keys = featureString.match(/[^{}]+(?=})/g);
-
-        const properties = featureInfoData.features[0].properties;
-
         valueString = featureString;
-        // Replace placeholders in string with values from properties object.
-        keys.forEach(key => {
-          valueString = valueString.replace(`{{${key}}}`, get(properties, key));
-        });
+
+        // If there are keys to inject into the string, then iterate
+        // around them and do so.
+        if (keys) {
+          const properties = featureInfoData.features[0].properties;
+
+          // Replace placeholders in string with values from properties object.
+          keys.forEach(key => {
+            valueString = valueString.replace(`{{${key}}}`, get(properties, key));
+          });
+        }
       } else {
         Object.keys(featureInfoData?.features[0]?.properties).forEach(key => {
           valueString = `${valueString} Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
