@@ -24,7 +24,8 @@ const whitelistedUrls = [
 ]
 
 axiosApi.interceptors.request.use(async(config) => {
-  if(!isWhitelisted(config.url) || (isWhitelisted(config.url) && config.method==='post')){
+  const isPermitted = isWhitelisted(config.url);
+  if(!isPermitted || (isPermitted && config.method==='post')){
     store.dispatch(InProgress(true, 'Please wait..'));
   }
   return config
@@ -109,7 +110,10 @@ export function isSuccessResp(status) {
   return false;
 }
 
-function isWhitelisted (url) {  
-  return whitelistedUrls.findIndex(whiteListedurl => 
-    url.includes(whiteListedurl)) >-1;
+function isWhitelisted (url) {
+  // Check if any part of url includes a whitelisted URL. Some URLs
+  // have user/layer specific data, but we still want that to match.
+  // e.g. does the whitelisted`/data/layers/metadata/` exist in url 
+  // paramter `/api/data/layers/metadata/123/abc`
+  return !!whitelistedUrls.find(whitelisted => url.includes(whitelisted));
 }

@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { FullscreenControl, NavigationControl, MapContext, StaticMap } from 'react-map-gl';
 import { MapView } from '@deck.gl/core';
 import DeckGL from 'deck.gl';
@@ -112,13 +112,16 @@ const BaseMap = ({
         <StaticMap
           mapboxApiAccessToken={MAPBOX_TOKEN}
           initialViewState={initialViewState}
-          // mapStyle={MAP_STYLE[mapStyle]}
           mapStyle={mapStyle? mapStyle.uri : selectedMapStyle.uri}
           ref={mapRef}
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
-        {widgets.map((widget, index) => widget(index))}
+        {widgets.map((widget, index) => (
+          <Fragment key={index}>
+            {widget(index)}
+          </Fragment>
+        ))}
         {hoverInfo ? renderTooltip(hoverInfo) : null}
         <MapStyleSwitcher mapStyles={mapStyles} selectedMapStyle={selectedMapStyle} selectMapStyle={handleSelectMapStyle} />
       </DeckGL>
