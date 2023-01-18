@@ -3,6 +3,7 @@ import { PolygonLayer } from '@deck.gl/layers';
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
 import { fitBounds } from '@math.gl/web-mercator';
 import wkt from 'wkt';
+import { MAP_TYPES } from '../constants/common';
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
@@ -68,6 +69,35 @@ export const getViewState = (midPoint, zoomLevel = 4, selectedAlert, setHoverInf
     }
   };
 }
+
+export const getEventIconLayer = (alerts) => {
+  // fetch Event icon layer for Dashboard
+  const data = alerts?.map((alert) => {
+    const {
+      geometry,
+      ...properties
+    } = alert;
+    return {
+      type: 'Feature',
+      properties: properties,
+      geometry: geometry.features[0].geometry, // this seems wrong but it's how its shaped
+    };
+  });
+
+  return new GeoJsonPinLayer({
+    data,
+    getPosition: (feature) => feature.geometry.coordinates,
+    getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.EVENTS,feature),
+    icon: 'flag',
+    iconColor: '#ffffff',
+    clusterIconSize: 35,
+    getPinSize: () => 35,
+    pixelOffset: [-18,-18],
+    pinSize: 25,
+    onGroupClick: true,
+    onPointClick: true,
+  });
+};
 
 export const getPolygonLayer = (aoi) => {
   const coordinates = aoi.features[0].geometry.coordinates;

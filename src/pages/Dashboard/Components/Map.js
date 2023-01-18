@@ -5,10 +5,12 @@ import BaseMap from '../../../components/BaseMap/BaseMap';
 import { getPolygonLayer } from '../../../helpers/mapHelper';
 import { getViewState } from '../../../helpers/mapHelper';
 import PropTypes from 'prop-types';
+import { getEventIconLayer } from '../../../helpers/mapHelper';
 
-const MapComponent = ({iconLayer}) => {
+const MapComponent = ({ eventList }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = getPolygonLayer(objAoi);
+  const iconLayer = getEventIconLayer(eventList);
   const viewState = getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel);
 
   return (
@@ -25,7 +27,9 @@ const MapComponent = ({iconLayer}) => {
 
   );
 }
+
 MapComponent.propTypes = {
-  iconLayer: PropTypes.any
+  eventList: PropTypes.arrayOf(PropTypes.any),
 }
+
 export default MapComponent;

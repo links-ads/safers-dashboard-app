@@ -12,9 +12,6 @@ const EventsPanel = ({t, eventList}) =>
         <p>{t('Events', {ns: 'common'})} <i className="bx bxs-hot"></i></ p>
       </Link>
     </Row>
-    <Row>
-      <p className='alert-title'>{t('Events', {ns: 'common'})}</p>
-    </Row>
     <Row style={{maxHeight:250}} className='ml3-3 mr-5 overflow-auto'>    
       { eventList && eventList.length>0 ?
         eventList.map( event => <EventItem key={event?.id} event={event} t={t} /> ) :
