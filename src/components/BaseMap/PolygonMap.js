@@ -131,7 +131,7 @@ const PolygonMap = ({
   }
 
   const MapControlButton = ({top = '90px', style = {}, onClick, children}) => (
-    <div className="" style={{ position: 'absolute', top, right: '10px' }}>
+    <div style={{ position: 'absolute', top, right: '10px' }}>
       <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
         <button style={{...style}} onClick={onClick} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
           {children}

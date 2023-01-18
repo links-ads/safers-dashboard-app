@@ -183,7 +183,7 @@ const Tooltip = ({ object, coordinate, isEdit = false, setIsEdit, setFavorite, t
           </Row>
 
           <Row className='mt-3 my-2'>
-            <Col md={2} sm={2} className="">
+            <Col md={2} sm={2}>
               <CardText className='mb-2 px-0'>
                 <span className='mb-5'>{t('Info', { ns: 'common' })}: </span>
               </CardText>

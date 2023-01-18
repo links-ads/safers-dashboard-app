@@ -52,7 +52,7 @@ const Chatbot = () => {
 
   return (
     <div className='page-content'>
-      <Container fluid className='chatbot p-0'>
+      <Container fluid="true" className='chatbot p-0'>
         <div className='tab-container p-3'>
           <Nav tabs className='nav-default nav-tabs-custom nav-justified'>
             <NavItem>

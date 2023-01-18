@@ -7,6 +7,10 @@
   box-shadow: $box-shadow;
 }
 
+.noshadow {
+  box-shadow: none !important;
+}
+
 .card-drop {
   color: $body-color;
 }

@@ -10,6 +10,8 @@ const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
 
   const isSelected = card.id === peopleId
 
+  if (!card) return null; // this is not set when data is polled, prevents black screen o'death
+
   const getBadge = () => {
     return (
       <>
@@ -43,7 +45,7 @@ const People = ({ card, peopleId, setSelectedPeople/*, setFavorite*/ }) => {
             <Row className='mt-0'>
               <Col>
                 <p className="text-muted no-wrap text-capitalize mb-1">
-                  {t('Location' , {ns: 'common'})}: {(card.location).join(', ')}
+                  {t('Location' , {ns: 'common'})}: {(card.location) ? (card.location).join(', '): ''}
                 </p>
               </Col>
               <Col>
