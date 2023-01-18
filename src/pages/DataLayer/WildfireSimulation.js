@@ -27,6 +27,7 @@ import {
   PROBABILITY_RANGES,
   FIRE_BREAK_OPTIONS
 } from './constants'
+import { getWKTfromFeature } from '../../store/utility';
 
 Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
   return this.test(
@@ -222,6 +223,18 @@ const WildfireSimulation = ({
     dispatch(setSelectedFireBreak(isSelected ? null : { position, type }))
   }
 
+  const getAllGeojson = (formValues) => {
+    const { ignitionArea, boundaryConditions } = formValues;
+
+    const fireBreaks = boundaryConditions.reduce((acc, cur) => {
+      // will be sub-array of features if more than one line drawn
+      const features = Object.values(cur.fireBreak).flat();
+      return [...acc, ...features];
+    }, []);
+
+    return [ ...(ignitionArea ?? []), ...fireBreaks ];
+  }
+
   return (
     <Row>
       <Col>
@@ -231,7 +244,7 @@ const WildfireSimulation = ({
               simulationTitle: '',
               simulationDescription: '',
               probabilityRange: 0.75,
-              ignitionArea: '',
+              ignitionArea: null,
               isMapAreaValid: null,
               isMapAreaValidWKT: null,
               hoursOfProjection: 1,
@@ -259,9 +272,6 @@ const WildfireSimulation = ({
               setFieldValue,
               isSubmitting,
             }) => {
-              const coordinates = selectedFireBreak
-                ? values.boundaryConditions?.[selectedFireBreak.position]?.fireBreak?.[fireBreakSelectedOptions[selectedFireBreak.position]]
-                : values.ignitionArea;
               return (
                 <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-between'>
                   <Row>
@@ -408,7 +418,7 @@ const WildfireSimulation = ({
                             rows="5"
                             setCoordinates={(value) => {  mapInputOnChange(value, setFieldValue);  }}
                             onBlur={handleBlur}
-                            coordinates={values.ignitionArea}
+                            coordinates={getWKTfromFeature(values.ignitionArea)}
                             placeholder={t('mapSelectionTxtGuide')}
                           />
                           {touched.ignitionArea && getError('ignitionArea', errors, touched, false)}
@@ -481,7 +491,7 @@ const WildfireSimulation = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0 position-relative' style={{ height: 670 }}>
                         <MapSection
-                          setCoordinates={(wktConversion, isAreaValid) => {
+                          setCoordinates={(geoJson, isAreaValid) => {
                             // called if map is used to draw polygon
                             // we assume it's valid WKT
                             if (selectedFireBreak) {
@@ -489,16 +499,22 @@ const WildfireSimulation = ({
                               const selectedFireBreakType = fireBreakSelectedOptions[selectedFireBreak?.position];
                               const updatedFireBreakData = {
                                 ...existingFireBreakData,
-                                [selectedFireBreakType]: wktConversion
+                                [selectedFireBreakType]: [
+                                  ...(existingFireBreakData?.[selectedFireBreakType] ?? []),
+                                  {
+                                    ...geoJson[geoJson.length - 1],
+                                    properties: { fireBreakType: selectedFireBreakType }
+                                  }
+                                ]
                               }
                               setFieldValue(`boundaryConditions.${selectedFireBreak?.position}.fireBreak`, updatedFireBreakData);
                             } else {
-                              setFieldValue('ignitionArea', wktConversion);
+                              setFieldValue('ignitionArea', geoJson);
                               setFieldValue('isMapAreaValid', isAreaValid);
                               setFieldValue('isMapAreaValidWKT', true);
                             }
                           }}
-                          coordinates={coordinates}
+                          coordinates={getAllGeojson(values)}
                           togglePolygonMap={true}
                           handleAreaValidation={feature => {
                             const area = Math.ceil(getFeatureArea(feature));
@@ -621,7 +637,7 @@ const WildfireSimulation = ({
                                         id={`boundaryConditions.${position}.fireBreak`}
                                         readOnly
                                         type="textarea"
-                                        value={values.boundaryConditions?.[position]?.fireBreak?.[fireBreakSelectedOptions[position]] ?? ''}
+                                        value={getWKTfromFeature(values.boundaryConditions?.[position]?.fireBreak?.[fireBreakSelectedOptions[position]] ?? '')}
                                         onBlur={handleBlur}
                                       />
                                     </td>

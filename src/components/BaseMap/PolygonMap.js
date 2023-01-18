@@ -4,7 +4,7 @@ import MapGL, { FullscreenControl, NavigationControl, MapContext } from 'react-m
 import { MapView } from '@deck.gl/core';
 import { useSelector } from 'react-redux';
 import { MAPBOX_TOKEN } from '../../config';
-import { getGeoFeatures, getWKTfromFeature } from '../../store/utility';
+import { getWKTfromFeature } from '../../store/utility';
 import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
 import {
   Editor,
@@ -180,17 +180,17 @@ const PolygonMap = ({
         areaValidation = handleAreaValidation(val.data[0]);
       }
       setFeatures(val.data);
-      setCoordinates(getWKTfromFeature(val.data), areaValidation);
+      setCoordinates(val.data, areaValidation);
       toggleMode('editing');
     } else if (val.editType === 'movePosition') {
       setFeatures(val.data);
-      setCoordinates(getWKTfromFeature(val.data), areaValidation);
+      setCoordinates(val.data, areaValidation);
     }
   };
 
   useEffect(() => {
-    const tempFeatures = coordinates ? getGeoFeatures(coordinates) : []
-    setFeatures(tempFeatures);
+    // const tempFeatures = coordinates ? getGeoFeatures(coordinates) : []
+    setFeatures(Object.values(coordinates));
     toggleMode('editing');
   },[coordinates])
 
@@ -231,10 +231,9 @@ const PolygonMap = ({
                 r: POINT_RADIUS,
               };
             }
+            const stroke = FIRE_BREAK_STROKE_COLORS[data.feature.properties.fireBreakType] ?? POLYGON_LINE_COLOR
             return {
-              stroke: selectedFireBreak
-                ? FIRE_BREAK_STROKE_COLORS[selectedFireBreak?.type]
-                : POLYGON_LINE_COLOR,
+              stroke,
               fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
               r: POINT_RADIUS,
