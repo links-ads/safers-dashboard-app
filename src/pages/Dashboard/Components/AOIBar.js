@@ -6,13 +6,32 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setEventParams } from '../../../store/appAction';
 import { getAllEventAlerts } from '../../../store/appAction';
 import { moment } from 'moment'
+import { flattenDeep } from 'lodash'
+
+const findAllLeafNodes = (category) => {
+  // recursive function. Return the list of children of this node
+  // we then use lodash flattenDeep to get a flat list for the dropdown
+  if (!category.children) {
+    return category;
+  }
+  return category.children.map(item => findAllLeafNodes(item?.children));
+}
 
 const AOIBar = () => {
   const dispatch = useDispatch();
   
   const [eventList, setEventList] = useState([]);
+
   const {dateRange} = useSelector(state => state.common);
-  
+  const {mapRequests} = useSelector(state => {
+    const categories = state.dataLayer.allMapRequests;
+    const leafNodes = flattenDeep( categories.map(category => findAllLeafNodes(category)))
+    console.log('leafNodes', leafNodes);
+    return (leafNodes);
+  } );
+
+  console.log('mapRequests', mapRequests);
+
   // start with filtered alerts, looks better starting with none and showing
   // the right number in a few seconds, than starting with lots and then
   // shortening the list
@@ -35,6 +54,7 @@ const AOIBar = () => {
     dispatch(setEventParams(eventParams))
     dispatch(getAllEventAlerts(eventParams, true, false));  
   }
+
   useEffect (() => {
     updateEventList();
   }, []);
