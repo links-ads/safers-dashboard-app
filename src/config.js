@@ -8,4 +8,4 @@ export const AUTH_CLIENT_ID = process.env.REACT_APP_AUTH_CLIENT_ID ? process.env
 export const AUTH_TENANT_ID = process.env.REACT_APP_AUTH_TENANT_ID ? process.env.REACT_APP_AUTH_TENANT_ID : null
 export const REDIRECT_URL = process.env.REACT_APP_REDIRECT_URL ? process.env.REACT_APP_REDIRECT_URL : 'auth/sign-in'
 export const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN ? process.env.REACT_APP_MAPBOX_TOKEN : 'pk.eyJ1IjoidGlsYW5wZXJ1bWEiLCJhIjoiY2wwamF1aGZ0MGF4MTNlb2EwcDBpNGR6YSJ9.ay3qveZBddbe4zVS78iM3w'
-export const SIGNIN_REDIRECT = process.env.REACT_SIGNIN_REDIRECT ? process.env.REACT_SIGNIN_REDIRECT : '/fire-alerts' // Successful redirect of sign in / sign up
+export const SIGNIN_REDIRECT = process.env.REACT_SIGNIN_REDIRECT ? process.env.REACT_SIGNIN_REDIRECT : '/dashboard' // Successful redirect of sign in / sign up

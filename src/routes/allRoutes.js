@@ -5,7 +5,7 @@ import SelectArea from '../pages/Authentication/SelectArea';
 import MyProfile from '../pages/MyProfile';
 import FireAlerts from '../pages/FireAlerts';
 import DataLayerDashboard from '../pages/DataLayer';
-// import Dashboard from '../pages/Dashboard';
+import Dashboard from '../pages/Dashboard';
 import EventAlerts from '../pages/Events';
 import EventDashboard from '../pages/Events/Dashboard';
 import SocialMonitoring from '../pages/SocialMonitoring';
@@ -15,6 +15,7 @@ import Chatbot from '../pages/Chatbot';
 import ReportsDashboard from '../pages/Chatbot/Reports/Dashboard';
 import Pages404 from '../Utility/pages-404';
 import Pages500 from '../Utility/pages-500';
+import NewDashboard from '../pages/Dashboard';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },
@@ -25,12 +26,13 @@ const publicRoutes = [
 ]
 
 const privateRoutes = [
-  { path: '/', component: FireAlerts },
+  { path: '/', component: NewDashboard },
   { path: '/my-profile/:operation', component: MyProfile },
   { path: '/fire-alerts', component: FireAlerts },
   { path: '/data-layer', component: DataLayerDashboard },
   { path: '/event-alerts', component: EventAlerts },
   { path: '/event-dashboard/:id', component: EventDashboard },
+  { path: '/dashboard', component: Dashboard },
   { path: '/social-monitoring', component: SocialMonitoring },
   { path: '/notifications', component: Notifications },
   { path: '/insitu-alerts', component: InSituAlerts },

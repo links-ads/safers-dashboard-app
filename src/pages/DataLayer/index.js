@@ -412,9 +412,7 @@ const DataLayerDashboard = ({ t }) => {
                   <Nav className='d-flex flex-nowrap' pills fill>
                     <NavItem>
                       <NavLink
-                        className={{
-                          'active': activeTab === DATA_LAYERS_PANELS.mapLayers
-                        }}
+                        className={activeTab === DATA_LAYERS_PANELS.mapLayers ? 'active' : ''}
                         onClick={() => setActiveTab(DATA_LAYERS_PANELS.mapLayers)}
                       >
                         {t('operational-map-layer', { ns: 'dataLayers' })}
@@ -422,9 +420,7 @@ const DataLayerDashboard = ({ t }) => {
                     </NavItem>
                     <NavItem>
                       <NavLink
-                        className={{
-                          'active': activeTab === DATA_LAYERS_PANELS.onDemandMapLayers
-                        }}
+                        className={activeTab === DATA_LAYERS_PANELS.onDemandMapLayers ? 'active' : ''}
                         onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
                       >
                         {t('on-demand-map-layer', {ns: 'dataLayers'})}

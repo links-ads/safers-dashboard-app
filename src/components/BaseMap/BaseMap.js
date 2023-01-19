@@ -1,12 +1,18 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect } from 'react';
+import React, { useEffect, Fragment } from 'react';
 import { FullscreenControl, NavigationControl, MapContext, StaticMap } from 'react-map-gl';
 import { MapView } from '@deck.gl/core';
 import DeckGL from 'deck.gl';
 import { MAPBOX_TOKEN } from '../../config';
 import { FlyToInterpolator } from '@deck.gl/core';
 
+import { useSelector, useDispatch } from 'react-redux';
+
+import { useLocalStorage } from '../../customHooks/useLocalStorage';
+import { mapStylesSelector, selectedMapStyleSelector, setSelectedMapStyle } from '../../store/map/map.slice';
+
 import { useMap } from './MapContext';
+import { MapStyleSwitcher } from './MapStyleSwitcher';
 
 export const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
@@ -14,12 +20,6 @@ export const INITIAL_VIEW_STATE = {
   zoom: 4,
   bearing: 0,
   pitch: 0
-};
-const MAP_STYLE = {
-  mb_streets: 'mapbox://styles/mapbox/streets-v11',
-  mb_satellite: 'mapbox://styles/mapbox/satellite-v9',
-  mb_lite: 'mapbox://styles/mapbox/light-v10',
-  mb_nav: 'mapbox://styles/mapbox/navigation-day-v1'
 };
 
 const MAX_ZOOM = 20;
@@ -41,9 +41,18 @@ const BaseMap = ({
   widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
-  mapStyle = 'mb_streets'
 }) => {
   const { mapRef, deckRef } = useMap();
+  const dispatch = useDispatch();
+  const mapStyles = useSelector(mapStylesSelector);
+  const selectedMapStyle = useSelector(selectedMapStyleSelector);
+  const [ mapStyle, setMapStyle] = useLocalStorage('safers-map-style');
+
+  const handleSelectMapStyle = mapStyle => {
+    dispatch(setSelectedMapStyle(mapStyle));
+    setMapStyle(mapStyle);
+  };
+
   const finalLayerSet = [
     ...layers ? layers : null
   ];
@@ -103,13 +112,18 @@ const BaseMap = ({
         <StaticMap
           mapboxApiAccessToken={MAPBOX_TOKEN}
           initialViewState={initialViewState}
-          mapStyle={MAP_STYLE[mapStyle]}
+          mapStyle={mapStyle? mapStyle.uri : selectedMapStyle.uri}
           ref={mapRef}
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
         <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
-        {widgets.map((widget, index) => widget(index))}
+        {widgets.map((widget, index) => (
+          <Fragment key={index}>
+            {widget(index)}
+          </Fragment>
+        ))}
         {hoverInfo ? renderTooltip(hoverInfo) : null}
+        <MapStyleSwitcher mapStyles={mapStyles} selectedMapStyle={selectedMapStyle} selectMapStyle={handleSelectMapStyle} />
       </DeckGL>
     </>
   );

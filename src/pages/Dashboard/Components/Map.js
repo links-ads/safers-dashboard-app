@@ -1,21 +1,35 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
-
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import MapCards from '../../../components/BaseMap/MapCards';
+import { getPolygonLayer } from '../../../helpers/mapHelper';
+import { getViewState } from '../../../helpers/mapHelper';
+import PropTypes from 'prop-types';
+import { getEventIconLayer } from '../../../helpers/mapHelper';
 
-const MapComponent = () => {
-  const { polygonLayer, viewState } = useSelector(state => state.common);
+const MapComponent = ({ eventList }) => {
+  const objAoi = useSelector(state => state.user.defaultAoi);
+  const polygonLayer = getPolygonLayer(objAoi);
+  const iconLayer = getEventIconLayer(eventList);
+  const viewState = getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel);
+
   return (
     <Card className='map-card'>
-      <Row style={{ height: 350 }} className="mb-5">
-        <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
-        <MapCards />
+      <Row style={{ height: 550 }} className="mx-auto">
+        <BaseMap 
+          layers={[polygonLayer, iconLayer]} 
+          initialViewState={viewState} 
+          screenControlPosition="top-right"
+          navControlPosition="bottom-right"
+        />
       </Row>
     </Card>
 
   );
+}
+
+MapComponent.propTypes = {
+  eventList: PropTypes.arrayOf(PropTypes.any),
 }
 
 export default MapComponent;

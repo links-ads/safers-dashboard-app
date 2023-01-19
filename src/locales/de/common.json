@@ -48,5 +48,11 @@
   "Organization": "Organisation",
   "save-aoi-success-msg": "Área de interés configurada con éxito",
   "open": "OFFEN",
-  "All" : "Alles" 
+  "All" : "Alles",
+  "Change Map Style": "Change Map Style",
+  "Streets": "Streets",
+  "Outdoors": "Outdoors",
+  "Satellite Streets": "Satellite Streets",
+  "Navigation": "Navigation",
+  "Terrain": "Terrain"
 }

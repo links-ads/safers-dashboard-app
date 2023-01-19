@@ -16,7 +16,7 @@ const ReportsDashboard = () => {
 
   return (
     <div className="page-content">
-      <Container fluid >
+      <Container fluid="true" >
 
         <Row>
           <SummaryContainer reportDetail={reportDetail} />
