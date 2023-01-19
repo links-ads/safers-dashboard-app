@@ -221,6 +221,7 @@ const PolygonMap = ({
             setSelectedFeatureData(selected);
           }}
           featureStyle={(data) => {
+            // console.log('Data: ', data)
             if (data.index === 0 && handleAreaValidation) {
               setAreaIsValid(handleAreaValidation(data.feature))
             }
