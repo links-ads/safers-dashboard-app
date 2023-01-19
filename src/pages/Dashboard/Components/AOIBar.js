@@ -1,5 +1,5 @@
 import React, { useEffect, useState}  from 'react';
-import { Container, Row, Card } from 'reactstrap';
+import { Container, Row, Card, Input } from 'reactstrap';
 import EventsPanel from './EventsPanel';
 import MapComponent from './Map'
 import { useDispatch, useSelector } from 'react-redux';
@@ -21,16 +21,15 @@ const AOIBar = () => {
   const dispatch = useDispatch();
   
   const [eventList, setEventList] = useState([]);
+  const [selectedLayer, setSelectedLayer] = useState({});
 
   const {dateRange} = useSelector(state => state.common);
-  const {mapRequests} = useSelector(state => {
+  
+  const mapRequests = useSelector(state => {
     const categories = state.dataLayer.allMapRequests;
     const leafNodes = flattenDeep( categories.map(category => findAllLeafNodes(category)))
-    console.log('leafNodes', leafNodes);
-    return (leafNodes);
+    return leafNodes;
   } );
-
-  console.log('mapRequests', mapRequests);
 
   // start with filtered alerts, looks better starting with none and showing
   // the right number in a few seconds, than starting with lots and then
@@ -60,6 +59,14 @@ const AOIBar = () => {
   }, []);
 
   useEffect (() => {
+    //console.log('MapRequests has changed to', mapRequests);
+  }, [mapRequests]);
+
+  useEffect (() => {
+    console.log(`selectedLayer has changed to ${selectedLayer}`);
+  }, [selectedLayer]);
+
+  useEffect (() => {
     updateEventList();
   }, [dateRange]);
 
@@ -71,6 +78,24 @@ const AOIBar = () => {
     <Container fluid="true" >
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
+          <Card>
+            <Input
+              id="sortByDate"
+              className="btn-sm sort-select-input"
+              name="sortByDate"
+              placeholder={!mapRequests ? 'Loading...' : 'Select a layer'}
+              type="select"
+              onChange={(e) => {setSelectedLayer(e.target.value)}}
+              value={selectedLayer}
+            >
+              {
+                mapRequests
+                  ? mapRequests.map(request => <option key={`item_${request.key}`} value={`item_${request.key}`}>{`${request.datatype_id} : ${request.title}`}</option>)
+                  : null
+              }
+              
+            </Input>
+          </Card>
           <Card className="gx-2" >
             <MapComponent eventList={eventList} />
           </Card>
