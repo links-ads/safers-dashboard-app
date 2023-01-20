@@ -4,7 +4,6 @@ import MapGL, { FullscreenControl, NavigationControl, MapContext } from 'react-m
 import { MapView } from '@deck.gl/core';
 import { useSelector } from 'react-redux';
 import { MAPBOX_TOKEN } from '../../config';
-import { getWKTfromFeature } from '../../store/utility';
 import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
 import {
   Editor,
@@ -13,6 +12,7 @@ import {
   EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
+// import { getWKTfromFeature } from '../../store/utility';
 
 const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
@@ -31,6 +31,7 @@ const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
 const POLYGON_LINE_DASH = '10,2';
 const POLYGON_ERROR_COLOR = 'rgba(255, 0, 0, 0.5)'
+const TRANSPARENT_COLOR = 'rgba(0, 0, 0, 0)'
 
 const POINT_RADIUS = 8;
 
@@ -60,10 +61,15 @@ const PolygonMap = ({
     ...layers ? layers : null
   ];
 
+  const DRAW_TYPES = {
+    LINE_STRING: 'drawLineString',
+    POLYGON: 'drawPolygon',
+  };
+
   const MODES = [
     { id: 'editing', text: 'Edit Feature', handler: EditingMode },
-    { id: 'drawPolygon', text: 'Draw Polygon', handler: DrawPolygonMode },
-    { id: 'drawLineString', text: 'Draw Line String', handler: DrawLineStringMode },
+    { id: DRAW_TYPES.POLYGON, text: 'Draw Polygon', handler: DrawPolygonMode },
+    { id: DRAW_TYPES.LINE_STRING, text: 'Draw Line String', handler: DrawLineStringMode },
   ];
 
   const [viewport, setViewport] = useState(initialViewState);
@@ -114,27 +120,30 @@ const PolygonMap = ({
   };
 
   const editToggle = (mode) => {
-    if (mode === 'drawLineString') {
-      toggleMode(modeId === 'drawLineString' ? 'editing' : 'drawLineString')
-    } else if (mode === 'drawPolygon') {
+    if (mode === DRAW_TYPES.LINE_STRING) {
+      toggleMode(modeId === DRAW_TYPES.LINE_STRING ? 'editing' : DRAW_TYPES.LINE_STRING)
+    } else if (mode === DRAW_TYPES.POLYGON) {
       if (singlePolygonOnly) {
         setAreaIsValid(true);
         setFeatures([]);
       }
-      toggleMode(modeId === 'drawPolygon' ? 'editing' : 'drawPolygon');
+      toggleMode(modeId === DRAW_TYPES.POLYGON ? 'editing' : DRAW_TYPES.POLYGON);
     }
   }
 
   const clearMap = () => {
     setAreaIsValid(true);
     if(selectedFeatureData?.selectedFeature) {
-      const tempFeatures = [...features];
-      tempFeatures.splice(selectedFeatureData.selectedFeatureIndex, 1);
-      setFeatures(tempFeatures);
-      setCoordinates(getWKTfromFeature(tempFeatures));
-    } else {
-      setFeatures([]);
-      setCoordinates('');
+      console.log('SELECTED FEATURE: ', selectedFeatureData);
+      console.log('ALL FEATURES: ', features);
+      const feats = features.filter(feature => feature.properties.id !== selectedFeatureData.selectedFeature.properties.id);
+      console.log('NEW FEATES: ', feats);
+      setFeatures(() => {
+        setCoordinates(feats);
+        return feats
+      });
+      // setCoordinates(feats);
+      // setCoordinates(getWKTfromFeature(feats));
     }
   }
 
@@ -153,16 +162,16 @@ const PolygonMap = ({
       {selectedFireBreak ? (
         <MapControlButton
           top='50px'
-          style={modeId == 'drawLineString' ? { backgroundColor: 'lightgray' } : {}}
-          onClick={() => editToggle('drawLineString')}
+          style={modeId == DRAW_TYPES.LINE_STRING ? { backgroundColor: 'lightgray' } : {}}
+          onClick={() => editToggle(DRAW_TYPES.LINE_STRING)}
         >
           <i className="bx bx-minus" style={{ fontSize: '20px' }}></i>
         </MapControlButton>
       ) : (
         <MapControlButton
           top='50px'
-          style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}}
-          onClick={() => editToggle('drawPolygon')}
+          style={modeId == DRAW_TYPES.POLYGON ? { backgroundColor: 'lightgray' } : {}}
+          onClick={() => editToggle(DRAW_TYPES.POLYGON)}
         >
           <i className="bx bx-shape-triangle" style={{ fontSize: '20px' }}></i>
         </MapControlButton>
@@ -233,7 +242,13 @@ const PolygonMap = ({
               };
             }
             const stroke = FIRE_BREAK_STROKE_COLORS[data.feature.properties.fireBreakType] ?? POLYGON_LINE_COLOR
-            return {
+
+            return modeId === 'editing' ? {
+              stroke,
+              fill: TRANSPARENT_COLOR,
+              strokeDasharray: POLYGON_LINE_DASH,
+              r: POINT_RADIUS,
+            } : {
               stroke,
               fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,

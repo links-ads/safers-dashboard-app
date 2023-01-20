@@ -28,6 +28,7 @@ import {
   FIRE_BREAK_OPTIONS
 } from './constants'
 import { getWKTfromFeature } from '../../store/utility';
+import { stringify } from 'wkt';
 
 Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
   return this.test(
@@ -45,7 +46,13 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
   )
 })
 
-
+Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
+  return this.test(
+    'isValidWKTString',
+    message,
+    (value) => (typeof stringify(value[0]) === 'string')
+  );
+});
 
 const renderDynamicError = errorMessage => (
   errorMessage ? (
@@ -85,7 +92,8 @@ const WildfireSimulation = ({
       .required(t('field-empty-err', { ns: 'common' })),
     probabilityRange: Yup.string()
       .required(t('field-empty-err', { ns: 'common' })),
-    ignitionArea: Yup.string()
+    ignitionArea: Yup.array()
+      .isValidWKTString()
       .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
     isMapAreaValid: Yup.boolean()
@@ -137,6 +145,7 @@ const WildfireSimulation = ({
   ];
 
   const onSubmit = (formData) => {
+    // console.log('FORM DATA: ', formData);
     const boundary_conditions = Object.values(formData.boundaryConditions)
       .map(obj => ({
         time: Number(obj.timeOffset),
@@ -272,6 +281,7 @@ const WildfireSimulation = ({
               setFieldValue,
               isSubmitting,
             }) => {
+              console.log('FORM VALUES: ', values);
               return (
                 <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-between'>
                   <Row>
@@ -311,7 +321,7 @@ const WildfireSimulation = ({
                               id="simulationTitle"
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              value={values.simulationTitle}
+                              value={values.simulationTitle ?? ''}
                               placeholder="[Type Simulation Title]"
                             />
                             {touched.simulationTitle && getError('simulationTitle', errors, touched, false)}
@@ -333,7 +343,7 @@ const WildfireSimulation = ({
                               }
                               onChange={handleChange}
                               onBlur={handleBlur}
-                              value={values.simulationDescription}
+                              value={values.simulationDescription ?? ''}
                               placeholder={t('simulation-desc', {ns: 'dataLayers'})}
                             />
                             {touched.simulationDescription && getError('simulationDescription', errors, touched, false)}
@@ -375,7 +385,7 @@ const WildfireSimulation = ({
                                   onChange={handleChange}
                                   onBlur={handleBlur}
                                   checked={Number(values.probabilityRange === value)}
-                                  value={value}
+                                  value={value ?? ''}
                                   className='me-2'
                                 />
                                 {label}
@@ -398,7 +408,7 @@ const WildfireSimulation = ({
                             }
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.hoursOfProjection}
+                            value={values.hoursOfProjection ?? ''}
                             placeholder="Type Limit [hours]"
                           />
                           {touched.hoursOfProjection && getError('hoursOfProjection', errors, touched, false)}
@@ -416,7 +426,9 @@ const WildfireSimulation = ({
                             name="ignitionArea"
                             type="textarea"
                             rows="5"
-                            setCoordinates={(value) => {  mapInputOnChange(value, setFieldValue);  }}
+                            setCoordinates={(value) => {
+                              mapInputOnChange(value, setFieldValue);
+                            }}
                             onBlur={handleBlur}
                             coordinates={getWKTfromFeature(values.ignitionArea)}
                             placeholder={t('mapSelectionTxtGuide')}
@@ -449,7 +461,7 @@ const WildfireSimulation = ({
                                   setFieldValue('ignitionDateTime', value)
                                 }}
                                 onBlur={handleBlur}
-                                value={values.ignitionDateTime}
+                                value={values.ignitionDateTime ?? ''}
                               />
                             </Col>
                             <Col>
@@ -457,7 +469,7 @@ const WildfireSimulation = ({
                                 type="datetime-local"
                                 disabled
                                 value={
-                                  getDateOffset(values.ignitionDateTime, values.hoursOfProjection)
+                                  getDateOffset(values.ignitionDateTime, values.hoursOfProjection ?? '')
                                 }
                               />
                             </Col>
@@ -479,7 +491,7 @@ const WildfireSimulation = ({
                             name="simulationFireSpotting"
                             type="checkbox"
                             onChange={handleChange}
-                            value={values.simulationFireSpotting}
+                            value={values.simulationFireSpotting ?? ''}
                             className='m-0'
                             style={{ cursor: 'pointer' }}
                           />
@@ -495,6 +507,9 @@ const WildfireSimulation = ({
                             // called if map is used to draw polygon
                             // we assume it's valid WKT
                             if (selectedFireBreak) {
+                              // console.log('SELECTED FIRE BREAK: ', selectedFireBreak);
+                              // console.log('BOUNDARY CONDITIONS: ', values);
+                              // console.log('GEOJSON: ', geoJson);
                               const existingFireBreakData = values.boundaryConditions?.[selectedFireBreak?.position]?.fireBreak;
                               const selectedFireBreakType = fireBreakSelectedOptions[selectedFireBreak?.position];
                               const updatedFireBreakData = {
@@ -503,7 +518,7 @@ const WildfireSimulation = ({
                                   ...(existingFireBreakData?.[selectedFireBreakType] ?? []),
                                   {
                                     ...geoJson[geoJson.length - 1],
-                                    properties: { fireBreakType: selectedFireBreakType }
+                                    properties: { id: `${selectedFireBreakType}-${geoJson.length - 1}`, fireBreakType: selectedFireBreakType }
                                   }
                                 ]
                               }
@@ -536,11 +551,13 @@ const WildfireSimulation = ({
                           {BOUNDARY_CONDITIONS_TABLE_HEADERS.map(header => (
                             <tr
                               key={header}>
-                              <span
-                                style={{ fontWeight: 'bold' }}
-                              >
-                                {t(header)}
-                              </span>
+                              <td>
+                                <span
+                                  style={{ fontWeight: 'bold' }}
+                                >
+                                  {t(header)}
+                                </span>
+                              </td>
                             </tr>
                           ))}
                         </thead>
@@ -606,11 +623,11 @@ const WildfireSimulation = ({
                                       />
                                       {touched.boundaryConditions && renderDynamicError(errors.boundaryConditions?.[position]?.fuelMoistureContent)}
                                     </td>
-                                    <div className='d-flex align-items-center gap-2 mb-1 mt-1'>
+                                    <td className='d-flex align-items-center gap-2 mb-1 mt-1'>
                                       <Input
                                         type='select'
                                         className="btn-sm sort-select-input"
-                                        value={fireBreakSelectedOptions[position]}
+                                        value={fireBreakSelectedOptions[position] ?? ''}
                                         onChange={({ target: { value }}) =>
                                           handleFireBreakTypeChange(value, position)
                                         }
@@ -630,8 +647,9 @@ const WildfireSimulation = ({
                                       >
                                         {isFireBreakSelected ? 'Finish' :  'Edit'}
                                       </button>
-                                    </div>
+                                    </td>
                                     <td>
+                                      {/* {console.log('VALUES AGAIN: ', values, values.boundaryConditions?.[position]?.fireBreak?.[fireBreakSelectedOptions[position]])} */}
                                       <Input
                                         name={`boundaryConditions.${position}.fireBreak`}
                                         id={`boundaryConditions.${position}.fireBreak`}

@@ -68,6 +68,7 @@ export const filterNodesByProperty = (layers, params = {}) => {
 
 export const getWKTfromFeature = (feature) => {
   var tempFeature = null, tempWKT ='';
+  // console.log('TO WKT FEATURE: ', feature);
   if(!feature || feature.length == 0){
     tempWKT = '';
   } else if(feature.length > 1) {
