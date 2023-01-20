@@ -8,19 +8,43 @@ import { getAllEventAlerts } from '../../../store/appAction';
 import { moment } from 'moment'
 import { flattenDeep } from 'lodash'
 
-const nodeVisitor = (node) => {
+
+const doesItOverlapAoi = (geometry, userAoi) => {
+  console.log('userAoi', userAoi);
+  console.log('geometry',geometry);
+  return true;
+}
+
+const nodeVisitor = (node, userAoi, parentInfo={}) => {
   // node visitor. This is a recursive function called on each node
   // in the tree. We use this to veto certain nodes based on AOI
-  // geometry intersection
+  // geometry intersection.
   if (node.children) {
-    console.log('node key (has children)', node.key);
     if (node.geometry) {
-      console.log('has geometry, test it here');
+      // intermediate node, this has a lot of metadata like geometry
+      const overlaps = doesItOverlapAoi(node.bbox, userAoi);
+      if (overlaps) {
+        // we pass these down to the leaf nodes
+        const passDown = {
+          geometry: node.geometry,
+          requestId: node.request_id,
+          parentTitle: node.title,
+          id: node.id,
+        }
+        return node.children.map(child => nodeVisitor(child, userAoi, passDown));
+      }
+      else {
+        // prune the tree, these are out of bounds
+        return [];
+      }
+    } else {
+      // no geometry, so we're at top level
+      return node.children.map(child => nodeVisitor(child, userAoi));
     }
-    return node.children.map(child => nodeVisitor(child));
   } else {
-    console.log('node key (leaf node)', node.key);
-    return [node];
+    // no children, so a leaf node
+    // combine the node and the info passed down from the parent
+    return [{...node, ...parentInfo}];
   }
 }
 
@@ -33,12 +57,14 @@ const AOIBar = () => {
   const [selectedLayer, setSelectedLayer] = useState({});
 
   const {dateRange} = useSelector(state => state.common);
+  const { defaultAoi } = useSelector(state => state.user);
   
   const mapRequests = useSelector(state => {
     // Find leaf nodes (mapRequests).
 
     const categories = state.dataLayer.allMapRequests;
-    const leafNodes = flattenDeep(categories.map(category => nodeVisitor(category)))
+    const aoiBbox = defaultAoi.features[0].bbox;
+    const leafNodes = flattenDeep(categories.map(category => nodeVisitor(category, aoiBbox)))
     //console.log('leafNodes', JSON.stringify(leafNodes));
     
     return leafNodes;
