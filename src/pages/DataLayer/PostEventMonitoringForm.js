@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
-import { 
-  area as getFeatureArea 
+import {
+  area as getFeatureArea
 } from '@turf/turf';
 import { Formik } from 'formik';
 import MapSection from './Map';
@@ -18,6 +18,9 @@ import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import MapInput from '../../components/BaseMap/MapInput';
 
+import { stringify } from 'wkt';
+import { getWKTfromFeature } from '../../store/utility';
+
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {
   label: '50,000 hectares',
@@ -29,6 +32,15 @@ const MIN_START_DATE = {
   date: '2018-05-01',
 };
 const MIN_END_DATE = '2018-05-02';
+
+Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
+  return this.test(
+    'isValidWKTString',
+    message,
+    (value) => (typeof stringify(value[0]) === 'string')
+  );
+});
+
 
 const PostEventMonitoring = ({
   t,
@@ -43,7 +55,8 @@ const PostEventMonitoring = ({
     dataLayerType: Yup.array()
       .required(t('field-empty-err', { ns: 'common' })),
     requestTitle: Yup.string().required(t('field-empty-err', { ns: 'common' })),
-    mapSelection: Yup.string()
+    mapSelection: Yup.array()
+      .isValidWKTString()
       .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
     isMapAreaValid: Yup.boolean()
@@ -54,13 +67,13 @@ const PostEventMonitoring = ({
       .typeError(t('field-err-valid-date', {ns: 'common'}))
       .required(t('field-empty-err', { ns: 'common' }))
       .min(
-        MIN_START_DATE.date, 
+        MIN_START_DATE.date,
         t('field-err-date-min', {ns: 'dataLayers', datemin: MIN_START_DATE.label})
       ),
     endDate: Yup.date()
       .typeError(t('field-err-valid-date', {ns: 'common'}))
       .min(
-        MIN_END_DATE, 
+        MIN_END_DATE,
         t('field-err-date-above', {ns: 'dataLayers', datemin: MIN_START_DATE.label})
       )
   });
@@ -68,14 +81,14 @@ const PostEventMonitoring = ({
   const onSubmit = (formData) => {
     const payload = {
       data_types: formData.dataLayerType,
-      geometry: formData.mapSelection,
+      geometry: getWKTfromFeature(formData.mapSelection),
       title: formData.requestTitle,
       parameters: {
         start: new Date(formData.startDate).toISOString(),
         end: new Date(formData.endDate).toISOString(),
       },
     }
-    
+
     dispatch(postMapRequest(payload));
     dispatch(getAllMapRequests());
     backToOnDemandPanel();
@@ -92,14 +105,14 @@ const PostEventMonitoring = ({
       <Col>
         <Row>
           <Formik
-            initialValues={{ 
-              dataLayerType: '', 
-              requestTitle: '', 
-              mapSelection: '', 
+            initialValues={{
+              dataLayerType: '',
+              requestTitle: '',
+              mapSelection: null,
               isMapAreaValid: null,
               isMapAreaValidWKT: null,
-              startDate: null, 
-              endDate: null, 
+              startDate: null,
+              endDate: null,
             }}
             validationSchema={postEventMonitoringSchema}
             onSubmit={onSubmit}
@@ -142,7 +155,7 @@ const PostEventMonitoring = ({
                             <Label for="dataLayerType">
                               {t('dataLayerType')}
                             </Label>
-                            <Input 
+                            <Input
                               name="dataLayerType"
                               id="dataLayerType"
                               type="select"
@@ -163,14 +176,14 @@ const PostEventMonitoring = ({
                             </Input>
                             {touched.dataLayerType && getError('dataLayerType', errors, touched, false)}
                           </FormGroup>
-                        </Row> 
+                        </Row>
                         <Row>
                           <FormGroup className="form-group">
                             <Label for="requesTitle">
                               {t('requestTitle')}
                             </Label>
-                            <Input 
-                              name="requestTitle" 
+                            <Input
+                              name="requestTitle"
                               id="requestTitle"
                               onChange={handleChange}
                               onBlur={handleBlur}
@@ -193,7 +206,7 @@ const PostEventMonitoring = ({
                               rows="5"
                               setCoordinates={(value) => {  mapInputOnChange(value, setFieldValue);  }}
                               onBlur={handleBlur}
-                              coordinates={values.mapSelection}
+                              coordinates={getWKTfromFeature(values.mapSelection)}
                               placeholder={t('mapSelectionTxtGuide')}
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
@@ -216,7 +229,7 @@ const PostEventMonitoring = ({
                                     errors.startDate ? 'is-invalid' : ''
                                   }
                                   onChange={handleChange}
-                                  onBlur={handleBlur} 
+                                  onBlur={handleBlur}
                                   value={values.startDate}
                                 />
                                 {touched.startDate && getError('startDate', errors, touched, false)}
@@ -245,7 +258,7 @@ const PostEventMonitoring = ({
                       <Row>
                         <Row>
                           <Col>
-                            <Button 
+                            <Button
                               type="submit"
                               disabled={isSubmitting}
                               className='btn btn-primary'
@@ -267,10 +280,10 @@ const PostEventMonitoring = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection
-                          setCoordinates={(wktConversion, isAreaValid) => {
+                          setCoordinates={(geoJson, isAreaValid) => {
                             // called if map is used to draw polygon
                             // we asssume it's valid WKT
-                            setFieldValue('mapSelection', wktConversion);
+                            setFieldValue('mapSelection', geoJson);
                             setFieldValue('isMapAreaValid', isAreaValid);
                             setFieldValue('isMapAreaValidWKT', true);
                           }}

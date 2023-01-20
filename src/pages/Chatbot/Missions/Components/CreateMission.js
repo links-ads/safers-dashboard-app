@@ -15,6 +15,8 @@ import _ from 'lodash';
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css'
 
+import { getWKTfromFeature } from '../../../../store/utility';
+
 
 const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
@@ -67,7 +69,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   }, []);
 
   const handleDateRangePicker = (dates) => {
-    setDateRange(dates.map(date => 
+    setDateRange(dates.map(date =>
       moment(date).toISOString())
     );
   }
@@ -122,7 +124,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         start: dateRange[0] ?? null,
         end: dateRange[1] ?? null,
         source: 'Chatbot',
-        geometry: coordinates ? coordinates : null,
+        geometry: coordinates ? getWKTfromFeature(coordinates) : null,
         coordinatorTeamId: teamId ? parseInt(teamId) : null,
         coordinatorPersonId: chatbotUserId ? parseInt(chatbotUserId) : null
       }
@@ -167,7 +169,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         name="coordinates-value"
         placeholder={t('Map Selection', { ns: 'chatBot' })}
         rows="10"
-        coordinates={coordinates}
+        coordinates={getWKTfromFeature(coordinates)}
         setCoordinates={setCoordinates}
         isValidFormat={isValidCoordFormat}
         onBlur={() => { validateCoord(); }}

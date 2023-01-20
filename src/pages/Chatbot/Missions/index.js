@@ -17,6 +17,7 @@ import { MAP_TYPES } from '../../../constants/common';
 import CreateMission from './Components/CreateMission';
 import { getIconLayer } from '../../../helpers/mapHelper';
 import useInterval from '../../../customHooks/useInterval';
+import { getWKTfromFeature } from '../../../store/utility';
 
 
 const Missions = ({ pollingFrequency }) => {
@@ -162,7 +163,7 @@ const Missions = ({ pollingFrequency }) => {
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
-            coordinates={coordinates}
+            coordinates={getWKTfromFeature(coordinates)}
             onClick={onClick}
           />
         </Col>
