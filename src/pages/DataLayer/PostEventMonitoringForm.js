@@ -215,7 +215,7 @@ const PostEventMonitoring = ({
                                   place="right"
                                   class="alert-tooltip"
                                 >
-                                  <span>date fire started</span>
+                                  <span>{t('Date fire started')}</span>
                                 </ReactTooltip>                                
                                 <Input
                                   id="startDate"
@@ -241,7 +241,7 @@ const PostEventMonitoring = ({
                                   place="right"
                                   class="alert-tooltip"
                                 >
-                                  <span>date fire ended</span>
+                                  <span>{t('Date fire ended')}</span>
                                 </ReactTooltip>         
                                 <Input
                                   id="endDate"
