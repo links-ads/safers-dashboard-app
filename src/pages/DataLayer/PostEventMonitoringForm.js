@@ -13,7 +13,7 @@ import {
   postMapRequest,
   getAllMapRequests
 } from '../../store/appAction';
-
+import ReactTooltip from 'react-tooltip';
 import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import MapInput from '../../components/BaseMap/MapInput';
@@ -208,6 +208,15 @@ const PostEventMonitoring = ({
                                 <Label for="startDate">
                                   {t('startDate')}
                                 </Label>
+                                &nbsp;<i data-tip data-for="startDateToolTip" className='bx bx-info-circle font-size-16 me-1'/>
+                                <ReactTooltip
+                                  id="startDateToolTip" 
+                                  aria-haspopup="true" 
+                                  place="right"
+                                  class="alert-tooltip"
+                                >
+                                  <span>{t('Date fire started')}</span>
+                                </ReactTooltip>                                
                                 <Input
                                   id="startDate"
                                   name="startDate"
@@ -225,6 +234,15 @@ const PostEventMonitoring = ({
                                 <Label for="endDate">
                                   {t('endDate')}
                                 </Label>
+                                &nbsp;<i data-tip data-for="endDateToolTip" className='bx bx-info-circle font-size-16 me-1'/>
+                                <ReactTooltip
+                                  id="endDateToolTip" 
+                                  aria-haspopup="true" 
+                                  place="right"
+                                  class="alert-tooltip"
+                                >
+                                  <span>{t('Date fire ended')}</span>
+                                </ReactTooltip>         
                                 <Input
                                   id="endDate"
                                   name="endDate"
