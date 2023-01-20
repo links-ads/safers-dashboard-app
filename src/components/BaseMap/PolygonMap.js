@@ -134,7 +134,7 @@ const PolygonMap = ({
       setCoordinates(getWKTfromFeature(tempFeatures));
     } else {
       setFeatures([]);
-      setCoordinates('');
+      setCoordinates(null);
     }
   }
 
@@ -189,8 +189,7 @@ const PolygonMap = ({
   };
 
   useEffect(() => {
-    // const tempFeatures = coordinates ? getGeoFeatures(coordinates) : []
-    setFeatures(Object.values(coordinates));
+    if (coordinates) setFeatures(Object.values(coordinates));
     toggleMode('editing');
   },[coordinates])
 

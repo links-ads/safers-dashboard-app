@@ -27,6 +27,7 @@ import {
   PROBABILITY_RANGES,
   FIRE_BREAK_OPTIONS
 } from './constants'
+import { stringify } from 'wkt';
 import { getWKTfromFeature } from '../../store/utility';
 
 Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
@@ -45,7 +46,13 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
   )
 })
 
-
+Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
+  return this.test(
+    'isValidWKTString',
+    message,
+    (value) => (typeof stringify(value[0]) === 'string')
+  );
+});
 
 const renderDynamicError = errorMessage => (
   errorMessage ? (
@@ -85,7 +92,8 @@ const WildfireSimulation = ({
       .required(t('field-empty-err', { ns: 'common' })),
     probabilityRange: Yup.string()
       .required(t('field-empty-err', { ns: 'common' })),
-    ignitionArea: Yup.string()
+    ignitionArea: Yup.array()
+      .isValidWKTString()
       .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
     isMapAreaValid: Yup.boolean()
@@ -144,9 +152,13 @@ const WildfireSimulation = ({
         w_speed: Number(obj.windSpeed),
         moisture: Number(obj.fuelMoistureContent),
         fireBreak: obj.fireBreak
+          ? Object.entries(obj.fireBreak)
+            .reduce((acc, [key, value]) =>
+              ({ ...acc, [key]: getWKTfromFeature(value) }), {})
+          : {}
       }), []);
 
-    const transformedGeometry = formData.ignitionArea.startsWith('GEOMETRYCOLLECTION') ? formData.ignitionArea : `GEOMETRYCOLLECTION(${formData.ignitionArea})`
+    const transformedGeometry = getWKTfromFeature(formData.ignitionArea);
     const startDateTime = new Date(formData.ignitionDateTime).toISOString()
     const endDateTime = new Date(getDateOffset(startDateTime, formData.hoursOfProjection)).toISOString()
     const payload = {
@@ -218,8 +230,8 @@ const WildfireSimulation = ({
     // disable button's default 'submit' type, prevent form submitting
     e.preventDefault();
 
-    const isSelected = selectedFireBreak?.position === position,
-      type = fireBreakSelectedOptions[position];
+    const isSelected = selectedFireBreak?.position === position
+    const type = fireBreakSelectedOptions[position];
     dispatch(setSelectedFireBreak(isSelected ? null : { position, type }))
   }
 
@@ -228,7 +240,7 @@ const WildfireSimulation = ({
 
     const fireBreaks = boundaryConditions.reduce((acc, cur) => {
       // will be sub-array of features if more than one line drawn
-      const features = Object.values(cur.fireBreak).flat();
+      const features = Object.values(cur.fireBreak ?? {}).flat();
       return [...acc, ...features];
     }, []);
 
@@ -374,7 +386,7 @@ const WildfireSimulation = ({
                                   type="radio"
                                   onChange={handleChange}
                                   onBlur={handleBlur}
-                                  checked={Number(values.probabilityRange === value)}
+                                  checked={Number(values.probabilityRange) === value}
                                   value={value}
                                   className='me-2'
                                 />
