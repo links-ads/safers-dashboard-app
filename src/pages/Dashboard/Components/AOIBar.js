@@ -8,14 +8,22 @@ import { getAllEventAlerts } from '../../../store/appAction';
 import { moment } from 'moment'
 import { flattenDeep } from 'lodash'
 
-const findAllLeafNodes = (category) => {
-  // recursive function. Return the list of children of this node
-  // we then use lodash flattenDeep to get a flat list for the dropdown
-  if (!category.children) {
-    return category;
+const nodeVisitor = (node) => {
+  // node visitor. This is a recursive function called on each node
+  // in the tree. We use this to veto certain nodes based on AOI
+  // geometry intersection
+  if (node.children) {
+    console.log('node key (has children)', node.key);
+    if (node.geometry) {
+      console.log('has geometry, test it here');
+    }
+    return node.children.map(child => nodeVisitor(child));
+  } else {
+    console.log('node key (leaf node)', node.key);
+    return [node];
   }
-  return category.children.map(item => findAllLeafNodes(item?.children));
 }
+
 
 const AOIBar = () => {
   const dispatch = useDispatch();
@@ -27,8 +35,12 @@ const AOIBar = () => {
   const {dateRange} = useSelector(state => state.common);
   
   const mapRequests = useSelector(state => {
+    // Find leaf nodes (mapRequests).
+
     const categories = state.dataLayer.allMapRequests;
-    const leafNodes = flattenDeep( categories.map(category => findAllLeafNodes(category)))
+    const leafNodes = flattenDeep(categories.map(category => nodeVisitor(category)))
+    //console.log('leafNodes', JSON.stringify(leafNodes));
+    
     return leafNodes;
   } );
 
