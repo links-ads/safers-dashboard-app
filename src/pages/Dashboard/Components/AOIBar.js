@@ -21,6 +21,7 @@ const AOIBar = () => {
   const dispatch = useDispatch();
   
   const [eventList, setEventList] = useState([]);
+  const [selectedLayerId, setSelectedLayerId] = useState('');
   const [selectedLayer, setSelectedLayer] = useState({});
 
   const {dateRange} = useSelector(state => state.common);
@@ -63,7 +64,11 @@ const AOIBar = () => {
   }, [mapRequests]);
 
   useEffect (() => {
-    console.log(`selectedLayer has changed to ${selectedLayer}`);
+    setSelectedLayer(mapRequests.find(layer => layer.key === selectedLayerId));
+  }, [selectedLayerId]);
+
+  useEffect (() => {
+    console.log(`selectedLayer object ${JSON.stringify(selectedLayer)}`);
   }, [selectedLayer]);
 
   useEffect (() => {
@@ -78,25 +83,24 @@ const AOIBar = () => {
     <Container fluid="true" >
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
-          <Card>
+          
+          <Card className="gx-2" >
             <Input
               id="sortByDate"
               className="btn-sm sort-select-input"
               name="sortByDate"
               placeholder={!mapRequests ? 'Loading...' : 'Select a layer'}
               type="select"
-              onChange={(e) => {setSelectedLayer(e.target.value)}}
-              value={selectedLayer}
+              onChange={(e) => {setSelectedLayerId(e.target.value)}}
+              value={selectedLayerId}
             >
               {
                 mapRequests
-                  ? mapRequests.map(request => <option key={`item_${request.key}`} value={`item_${request.key}`}>{`${request.datatype_id} : ${request.title}`}</option>)
+                  ? mapRequests.map(request => <option key={`item_${request.key}`} value={`${request.key}`}>{`${request.datatype_id} : ${request.title}`}</option>)
                   : null
               }
               
             </Input>
-          </Card>
-          <Card className="gx-2" >
             <MapComponent eventList={eventList} />
           </Card>
           <Container className="px-4 container">
