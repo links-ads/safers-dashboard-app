@@ -85,6 +85,16 @@ export const getWKTfromFeature = (feature) => {
   return newWKT;
 }
 
+export const addWktValidation = (Yup) => {
+  return Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
+    return this.test(
+      'isValidWKTString',
+      message,
+      (value) => (typeof wkt.stringify(value[0]) === 'string')
+    );
+  });
+}
+
 export const getGeoFeatures = (wktString) => {
   const tempGeoJSON = wkt.parse(wktString);
   const tempFeatures = [];

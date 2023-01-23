@@ -35,7 +35,7 @@ const Comms = ({ pollingFrequency }) => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState('');
+  const [coordinates, setCoordinates] = useState(null);
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
   const [commsParams, setCommsParams] = useState(dateRange ? { start: dateRange[0], end: dateRange[1] } : {});
@@ -43,11 +43,11 @@ const Comms = ({ pollingFrequency }) => {
   const dispatch = useDispatch();
 
   const allReports = filteredComms || allComms;
- 
+
   const loadComms = () => {
     setCommID(undefined);
     const params = {
-      ...commsParams, 
+      ...commsParams,
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,

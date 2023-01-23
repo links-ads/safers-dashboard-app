@@ -18,8 +18,7 @@ import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import MapInput from '../../components/BaseMap/MapInput';
 
-import { stringify } from 'wkt';
-import { getWKTfromFeature } from '../../store/utility';
+import { getWKTfromFeature, addWktValidation } from '../../store/utility';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {
@@ -33,14 +32,7 @@ const MIN_START_DATE = {
 };
 const MIN_END_DATE = '2018-05-02';
 
-Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
-  return this.test(
-    'isValidWKTString',
-    message,
-    (value) => (typeof stringify(value[0]) === 'string')
-  );
-});
-
+addWktValidation(Yup);
 
 const PostEventMonitoring = ({
   t,
@@ -280,10 +272,10 @@ const PostEventMonitoring = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection
-                          setCoordinates={(geoJson, isAreaValid) => {
+                          setCoordinates={(features, isAreaValid) => {
                             // called if map is used to draw polygon
                             // we asssume it's valid WKT
-                            setFieldValue('mapSelection', geoJson);
+                            setFieldValue('mapSelection', features);
                             setFieldValue('isMapAreaValid', isAreaValid);
                             setFieldValue('isMapAreaValidWKT', true);
                           }}

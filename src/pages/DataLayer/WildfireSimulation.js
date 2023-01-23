@@ -27,8 +27,7 @@ import {
   PROBABILITY_RANGES,
   FIRE_BREAK_OPTIONS
 } from './constants'
-import { stringify } from 'wkt';
-import { getWKTfromFeature } from '../../store/utility';
+import { getWKTfromFeature, addWktValidation } from '../../store/utility';
 
 Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
   return this.test(
@@ -46,13 +45,7 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
   )
 })
 
-Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
-  return this.test(
-    'isValidWKTString',
-    message,
-    (value) => (typeof stringify(value[0]) === 'string')
-  );
-});
+addWktValidation(Yup);
 
 const renderDynamicError = errorMessage => (
   errorMessage ? (
@@ -92,7 +85,7 @@ const WildfireSimulation = ({
       .required(t('field-empty-err', { ns: 'common' })),
     probabilityRange: Yup.string()
       .required(t('field-empty-err', { ns: 'common' })),
-    ignitionArea: Yup.array()
+    mapSelection: Yup.array()
       .isValidWKTString()
       .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
@@ -158,7 +151,7 @@ const WildfireSimulation = ({
           : {}
       }), []);
 
-    const transformedGeometry = getWKTfromFeature(formData.ignitionArea);
+    const transformedGeometry = getWKTfromFeature(formData.mapSelection);
     const startDateTime = new Date(formData.ignitionDateTime).toISOString()
     const endDateTime = new Date(getDateOffset(startDateTime, formData.hoursOfProjection)).toISOString()
     const payload = {
@@ -230,13 +223,13 @@ const WildfireSimulation = ({
     // disable button's default 'submit' type, prevent form submitting
     e.preventDefault();
 
-    const isSelected = selectedFireBreak?.position === position
+    const isSelected = selectedFireBreak?.position === position;
     const type = fireBreakSelectedOptions[position];
     dispatch(setSelectedFireBreak(isSelected ? null : { position, type }))
   }
 
   const getAllGeojson = (formValues) => {
-    const { ignitionArea, boundaryConditions } = formValues;
+    const { mapSelection, boundaryConditions } = formValues;
 
     const fireBreaks = boundaryConditions.reduce((acc, cur) => {
       // will be sub-array of features if more than one line drawn
@@ -244,7 +237,7 @@ const WildfireSimulation = ({
       return [...acc, ...features];
     }, []);
 
-    return [ ...(ignitionArea ?? []), ...fireBreaks ];
+    return [ ...(mapSelection ?? []), ...fireBreaks ];
   }
 
   return (
@@ -256,7 +249,7 @@ const WildfireSimulation = ({
               simulationTitle: '',
               simulationDescription: '',
               probabilityRange: 0.75,
-              ignitionArea: null,
+              mapSelection: null,
               isMapAreaValid: null,
               isMapAreaValidWKT: null,
               hoursOfProjection: 1,
@@ -419,23 +412,23 @@ const WildfireSimulation = ({
 
                       <Row>
                         <FormGroup className="form-group">
-                          <Label for="ignitionArea">
-                            {t('ignitionArea')}
+                          <Label for="mapSelection">
+                            {t('mapSelection')}
                           </Label>
                           <MapInput
-                            className={errors.ignitionArea ? 'is-invalid' : ''}
-                            id="ignitionArea"
-                            name="ignitionArea"
+                            className={errors.mapSelection ? 'is-invalid' : ''}
+                            id="mapSelection"
+                            name="mapSelection"
                             type="textarea"
                             rows="5"
                             setCoordinates={(value) => {  mapInputOnChange(value, setFieldValue);  }}
                             onBlur={handleBlur}
-                            coordinates={getWKTfromFeature(values.ignitionArea)}
+                            coordinates={getWKTfromFeature(values.mapSelection)}
                             placeholder={t('mapSelectionTxtGuide')}
                           />
-                          {touched.ignitionArea && getError('ignitionArea', errors, touched, false)}
+                          {touched.mapSelection && getError('mapSelection', errors, touched, false)}
                           {values.isMapAreaValid === false ? getError('isMapAreaValid', errors, touched, false, true) : null}
-                          {values.isMapAreaValidWKT === false && values.ignitionArea !== '' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
+                          {values.isMapAreaValidWKT === false && values.mapSelection !== '' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
                         </FormGroup>
                       </Row>
 
@@ -503,7 +496,7 @@ const WildfireSimulation = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0 position-relative' style={{ height: 670 }}>
                         <MapSection
-                          setCoordinates={(geoJson, isAreaValid) => {
+                          setCoordinates={(features, isAreaValid) => {
                             // called if map is used to draw polygon
                             // we assume it's valid WKT
                             if (selectedFireBreak) {
@@ -514,14 +507,14 @@ const WildfireSimulation = ({
                                 [selectedFireBreakType]: [
                                   ...(existingFireBreakData?.[selectedFireBreakType] ?? []),
                                   {
-                                    ...geoJson[geoJson.length - 1],
+                                    ...features[features.length - 1],
                                     properties: { fireBreakType: selectedFireBreakType }
                                   }
                                 ]
                               }
                               setFieldValue(`boundaryConditions.${selectedFireBreak?.position}.fireBreak`, updatedFireBreakData);
                             } else {
-                              setFieldValue('ignitionArea', geoJson);
+                              setFieldValue('mapSelection', features);
                               setFieldValue('isMapAreaValid', isAreaValid);
                               setFieldValue('isMapAreaValidWKT', true);
                             }

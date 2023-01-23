@@ -15,8 +15,7 @@ import {
 } from '../../store/appAction';
 import wkt from 'wkt';
 import MapInput from '../../components/BaseMap/MapInput';
-import { stringify } from 'wkt';
-import { getWKTfromFeature } from '../../store/utility';
+import { getWKTfromFeature, addWktValidation } from '../../store/utility';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
   return this.test(
@@ -40,13 +39,7 @@ Yup.addMethod(Yup.date, 'max30Days', function (message) {
   )
 })
 
-Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
-  return this.test(
-    'isValidWKTString',
-    message,
-    (value) => (typeof stringify(value[0]) === 'string')
-  );
-});
+addWktValidation(Yup);
 
 const FireAndBurnedArea = ({
   t,
@@ -363,10 +356,10 @@ const FireAndBurnedArea = ({
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
                         <MapSection
-                          setCoordinates={(geoJson, isAreaValid) => {
+                          setCoordinates={(features, isAreaValid) => {
                             // called if map is used to draw polygon
                             // we asssume it's valid WKT
-                            setFieldValue('mapSelection', geoJson);
+                            setFieldValue('mapSelection', features);
                             setFieldValue('isMapAreaValid', isAreaValid);
                             setFieldValue('isMapAreaValidWKT', true);
                           }}

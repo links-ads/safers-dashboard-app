@@ -189,7 +189,9 @@ const PolygonMap = ({
   };
 
   useEffect(() => {
-    if (coordinates) setFeatures(Object.values(coordinates));
+    if (coordinates) {
+      setFeatures(coordinates);
+    }
     toggleMode('editing');
   },[coordinates])
 
@@ -220,7 +222,6 @@ const PolygonMap = ({
             setSelectedFeatureData(selected);
           }}
           featureStyle={(data) => {
-            // console.log('Data: ', data)
             if (data.index === 0 && handleAreaValidation) {
               setAreaIsValid(handleAreaValidation(data.feature))
             }
