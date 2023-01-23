@@ -150,10 +150,6 @@ const AOIBar = ({t}) => {
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
           <Card className="gx-2" >
-            {mapRequests && mapRequests.length===0 
-              ?<div className=''><p>{t('No map requests in this AOI')}</p></div>
-              : null
-            }
             {mapRequests && mapRequests.length>0
               ?
               <Input
@@ -165,6 +161,11 @@ const AOIBar = ({t}) => {
                 onChange={(e) => {setSelectedLayerId(e.target.value)}}
                 value={selectedLayerId}
               >
+                {
+                  mapRequests && mapRequests.length !== 0
+                    ? <option value={''} >--{t('Select a layer')}--</option>
+                    : <option value={''} >--{t('No layers in this AOI')}--</option>
+                }
                 {
                   mapRequests && mapRequests.length !== 0
                     ? mapRequests.map(request => <option key={`item_${request.key}`} value={`${request.key}`}>{`${request.datatype_id} : ${request.title}`}</option>)
