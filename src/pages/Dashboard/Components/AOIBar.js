@@ -25,9 +25,9 @@ const bboxToPolygon = (bbox) => {
 }
 
 const doesItOverlapAoi = (node, userAoi, showAll=false) => {
-  // using Turf.js to test for an overlap between the layer geometry and
-  // the bounding box of the user's AOI
-  const featureGeometry = node?.geometry;
+  // using Turf.js to test for an overlap between the layer and AOI geometries
+  // using bboxes for performance and also to increase likelihood of finding overlaps
+  const featureGeometry = polygon(bboxToPolygon(node.bbox));
   if (showAll) {
     return true; // used for debugging
   }
@@ -150,7 +150,7 @@ const AOIBar = ({t}) => {
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
           <Card className="gx-2" >
-            {mapRequests && mapRequests.length>0
+            {mapRequests
               ?
               <Input
                 id="sortByDate"
@@ -164,7 +164,12 @@ const AOIBar = ({t}) => {
                 {
                   mapRequests && mapRequests.length !== 0
                     ? <option value={''} >--{t('Select a layer')}--</option>
-                    : <option value={''} >--{t('No layers in this AOI')}--</option>
+                    : null
+                }
+                {
+                  mapRequests && mapRequests.length === 0
+                    ? <option value={''} >--{t('No layers in this AOI')}--</option>
+                    : null
                 }
                 {
                   mapRequests && mapRequests.length !== 0
