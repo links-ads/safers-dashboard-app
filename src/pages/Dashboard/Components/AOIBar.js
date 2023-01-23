@@ -1,3 +1,4 @@
+/* eslint-disable no-unreachable */
 import React, { useEffect, useState}  from 'react';
 import { Container, Row, Card, Input } from 'reactstrap';
 import EventsPanel from './EventsPanel';
@@ -7,12 +8,42 @@ import { setEventParams } from '../../../store/appAction';
 import { getAllEventAlerts } from '../../../store/appAction';
 import { moment } from 'moment'
 import { flattenDeep } from 'lodash'
+import { intersect, polygon } from '@turf/turf'
+import { withTranslation } from 'react-i18next'
+import PropTypes from 'prop-types';
+import wkt from 'wkt';
 
+const bboxToPolygon = (bbox) => {
+  // our Bbox is a 4-tuple with minx, miny, maxx, maxy, 
+  // convert to a multipolygon (doesnt work with with polygon, not sure why)
+  const minimumX = bbox[0];
+  const minimumY = bbox[1];
+  const maximumX = bbox[2];
+  const maximumY = bbox[3];
+  const ring = [[[minimumX,minimumY],[minimumX,maximumY],[maximumX,maximumY],[maximumX,minimumY],[minimumX,minimumY]]];
+  return ring;
+}
 
-const doesItOverlapAoi = (geometry, userAoi) => {
-  console.log('userAoi', userAoi);
-  console.log('geometry',geometry);
-  return true;
+const doesItOverlapAoi = (node, userAoi, showAll=false) => {
+  // using Turf.js to test for an overlap between the layer geometry and
+  // the bounding box of the user's AOI
+  const featureGeometry = node?.geometry;
+  if (showAll) {
+    return true; // used for debugging
+  }
+  if (!(featureGeometry && userAoi)) {
+    return false;
+  }
+  const aoiPolygon = polygon(bboxToPolygon(userAoi));
+
+  // avoid error if we get a geometrycollection, turf doesn't support these
+  const featureAsWKT = wkt.stringify(featureGeometry);
+  if (featureAsWKT.includes('GEOMETRYCOLLECTION')) {
+    console.info(`Feature AOI is a Geometry collection, this is not supported (feature title is ${node.title})`);
+    return false;
+  }
+  const intersects = intersect(aoiPolygon, featureGeometry);
+  return (intersects!=null);
 }
 
 const nodeVisitor = (node, userAoi, parentInfo={}) => {
@@ -22,9 +53,10 @@ const nodeVisitor = (node, userAoi, parentInfo={}) => {
   if (node.children) {
     if (node.geometry) {
       // intermediate node, this has a lot of metadata like geometry
-      const overlaps = doesItOverlapAoi(node.bbox, userAoi);
+      // test that this node intersects the default user AOI
+      const overlaps = doesItOverlapAoi(node, userAoi);
       if (overlaps) {
-        // we pass these down to the leaf nodes
+        // we pass these down to the leaf nodes and recurse down to the children
         const passDown = {
           geometry: node.geometry,
           requestId: node.request_id,
@@ -48,25 +80,21 @@ const nodeVisitor = (node, userAoi, parentInfo={}) => {
   }
 }
 
-
-const AOIBar = () => {
+const AOIBar = ({t}) => {
   const dispatch = useDispatch();
   
   const [eventList, setEventList] = useState([]);
   const [selectedLayerId, setSelectedLayerId] = useState('');
   const [selectedLayer, setSelectedLayer] = useState({});
-
+  
   const {dateRange} = useSelector(state => state.common);
-  const { defaultAoi } = useSelector(state => state.user);
+  const {defaultAoi} = useSelector(state => state.user);
   
   const mapRequests = useSelector(state => {
     // Find leaf nodes (mapRequests).
-
     const categories = state.dataLayer.allMapRequests;
     const aoiBbox = defaultAoi.features[0].bbox;
     const leafNodes = flattenDeep(categories.map(category => nodeVisitor(category, aoiBbox)))
-    //console.log('leafNodes', JSON.stringify(leafNodes));
-    
     return leafNodes;
   } );
 
@@ -98,7 +126,7 @@ const AOIBar = () => {
   }, []);
 
   useEffect (() => {
-    //console.log('MapRequests has changed to', mapRequests);
+    //
   }, [mapRequests]);
 
   useEffect (() => {
@@ -121,24 +149,30 @@ const AOIBar = () => {
     <Container fluid="true" >
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
-          
           <Card className="gx-2" >
-            <Input
-              id="sortByDate"
-              className="btn-sm sort-select-input"
-              name="sortByDate"
-              placeholder={!mapRequests ? 'Loading...' : 'Select a layer'}
-              type="select"
-              onChange={(e) => {setSelectedLayerId(e.target.value)}}
-              value={selectedLayerId}
-            >
-              {
-                mapRequests
-                  ? mapRequests.map(request => <option key={`item_${request.key}`} value={`${request.key}`}>{`${request.datatype_id} : ${request.title}`}</option>)
-                  : null
-              }
-              
-            </Input>
+            {mapRequests && mapRequests.length===0 
+              ?<div className=''><p>{t('No map requests in this AOI')}</p></div>
+              : null
+            }
+            {mapRequests && mapRequests.length>0
+              ?
+              <Input
+                id="sortByDate"
+                className="btn-sm sort-select-input"
+                name="sortByDate"
+                placeholder={'Select a layer'}
+                type="select"
+                onChange={(e) => {setSelectedLayerId(e.target.value)}}
+                value={selectedLayerId}
+              >
+                {
+                  mapRequests && mapRequests.length !== 0
+                    ? mapRequests.map(request => <option key={`item_${request.key}`} value={`${request.key}`}>{`${request.datatype_id} : ${request.title}`}</option>)
+                    : null
+                } 
+              </Input>
+              : null
+            }
             <MapComponent eventList={eventList} />
           </Card>
           <Container className="px-4 container">
@@ -158,4 +192,8 @@ const AOIBar = () => {
   );
 };
 
-export default AOIBar;
+AOIBar.propTypes = {
+  t: PropTypes.func
+}
+
+export default withTranslation(['dashboard'])(AOIBar);
