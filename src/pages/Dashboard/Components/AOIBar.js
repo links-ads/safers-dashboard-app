@@ -50,6 +50,7 @@ const nodeVisitor = (node, userAoi, parentInfo={}) => {
   // node visitor. This is a recursive function called on each node
   // in the tree. We use this to veto certain nodes based on AOI
   // geometry intersection.
+
   if (node.children) {
     if (node.geometry) {
       // intermediate node, this has a lot of metadata like geometry
@@ -74,9 +75,13 @@ const nodeVisitor = (node, userAoi, parentInfo={}) => {
       return node.children.map(child => nodeVisitor(child, userAoi));
     }
   } else {
-    // no children, so a leaf node
+    // no children, so a leaf node. If data is avaialble,
     // combine the node and the info passed down from the parent
-    return [{...node, ...parentInfo}];
+    if (node.status && node.status==='AVAILABLE' && node.info_url) {
+      return [{...node, ...parentInfo}];
+    } else {
+      return [];
+    }
   }
 }
 
@@ -173,7 +178,7 @@ const AOIBar = ({t}) => {
                 }
                 {
                   mapRequests && mapRequests.length !== 0
-                    ? mapRequests.map(request => <option key={`item_${request.key}`} value={`${request.key}`}>{`${request.datatype_id} : ${request.title}`}</option>)
+                    ? mapRequests.map(request => <option key={`item_${request.key}`} value={`${request.key}`}>{`${request.parentTitle} - ${request.title} (${request.datatype_id})`}</option>)
                     : null
                 } 
               </Input>
