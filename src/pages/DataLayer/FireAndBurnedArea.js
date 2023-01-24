@@ -15,6 +15,7 @@ import {
 } from '../../store/appAction';
 import wkt from 'wkt';
 import MapInput from '../../components/BaseMap/MapInput';
+import { getWKTfromFeature } from '../../store/utility';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
   return this.test(
@@ -29,7 +30,7 @@ Yup.addMethod(Yup.date, 'max30Days', function (message) {
       }
 
       const rangeCheck = moment(date).isBetween(
-        startDate, 
+        startDate,
         moment(startDate).add(30, 'days')
       )
 
@@ -38,7 +39,7 @@ Yup.addMethod(Yup.date, 'max30Days', function (message) {
   )
 })
 
-const FireAndBurnedArea = ({ 
+const FireAndBurnedArea = ({
   t,
   handleResetAOI,
   backToOnDemandPanel,
@@ -52,7 +53,9 @@ const FireAndBurnedArea = ({
     dataLayerType: Yup.array()
       .required(t('field-empty-err', { ns: 'common' })),
     requestTitle: Yup.string().required(t('field-empty-err', { ns: 'common' })),
-    mapSelection: Yup.string()
+    mapSelection: Yup.array()
+      .isValidWKTString(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
+      .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
     isMapAreaValid: Yup.boolean()
       .oneOf([true], t('field-err-wkt-large-area', {ns: 'dataLayers'})),
@@ -69,18 +72,18 @@ const FireAndBurnedArea = ({
       .integer(t('field-err-integer'))
       .typeError(t('field-err-number'))
       .min(1, t('field-err-min', { ns: 'common', min: 1 }))
-      .optional(), 
+      .optional(),
     resolution: Yup.number()
       .typeError(t('field-err-number'))
       .min(10, t('field-err-min', {min: 10}))
       .max(60, t('field-err-max', {max: 60}))
-      .optional(t('field-err-between', {min: 10, max: 60})), 
+      .optional(t('field-err-between', {min: 10, max: 60})),
   });
 
   const onSubmit = (formData) => {
     const payload = {
       data_types: formData.dataLayerType,
-      geometry: formData.mapSelection,
+      geometry: getWKTfromFeature(formData.mapSelection),
       title: formData.requestTitle,
       parameters: {
         start: new Date(formData.startDate).toISOString(),
@@ -109,16 +112,16 @@ const FireAndBurnedArea = ({
       <Col>
         <Row>
           <Formik
-            initialValues={{ 
-              dataLayerType: '', 
-              requestTitle: '', 
-              mapSelection: '',
+            initialValues={{
+              dataLayerType: '',
+              requestTitle: '',
+              mapSelection: null,
               isMapAreaValid: null,
               isMapAreaValidWKT: null,
-              startDate: null, 
-              endDate: null, 
+              startDate: null,
+              endDate: null,
               frequency: '',
-              resolution: 10, 
+              resolution: 10,
             }}
             validationSchema={fireAndBurnedAreaSchema}
             onSubmit={onSubmit}
@@ -161,7 +164,7 @@ const FireAndBurnedArea = ({
                             <Label for="dataLayerType">
                               {t('dataLayerType')}
                             </Label>
-                            <Input 
+                            <Input
                               name="dataLayerType"
                               id="dataLayerType"
                               type="select"
@@ -182,14 +185,14 @@ const FireAndBurnedArea = ({
                             </Input>
                             {touched.dataLayerType && getError('dataLayerType', errors, touched)}
                           </FormGroup>
-                        </Row> 
+                        </Row>
                         <Row>
                           <FormGroup className="form-group">
                             <Label for="requestTitle">
                               {t('requestTitle')}
                             </Label>
-                            <Input 
-                              name="requestTitle" 
+                            <Input
+                              name="requestTitle"
                               id="requestTitle"
                               className={
                                 errors.requestTitle ? 'is-invalid' : ''
@@ -215,7 +218,7 @@ const FireAndBurnedArea = ({
                               rows="5"
                               setCoordinates={(value) => {  mapInputOnChange(value, setFieldValue, true, values.resolution);  }}
                               onBlur={handleBlur}
-                              coordinates={values.mapSelection}
+                              coordinates={getWKTfromFeature(values.mapSelection)}
                               placeholder={t('mapSelectionTxtGuide')}
                             />
                             {touched.mapSelection && getError('mapSelection', errors, touched, false)}
@@ -238,7 +241,7 @@ const FireAndBurnedArea = ({
                                     errors.startDate ? 'is-invalid' : ''
                                   }
                                   onChange={handleChange}
-                                  onBlur={handleBlur} 
+                                  onBlur={handleBlur}
                                   value={values.startDate}
                                 />
                                 {getError('startDate', errors, touched, false)}
@@ -309,7 +312,7 @@ const FireAndBurnedArea = ({
                                   }
                                   onChange={({ target: { value } }) => {
                                     // NB not called if map is used, only if paste/type into field
-                                    const parsedValue = parseInt(value); 
+                                    const parsedValue = parseInt(value);
                                     setFieldValue('resolution', parsedValue);
                                     const features = wkt.parse(values.mapSelection);
                                     const isAreaValid = isRasterSizeWithinLimits(features, parsedValue,true);
@@ -329,7 +332,7 @@ const FireAndBurnedArea = ({
                       <Row>
                         <Row>
                           <Col>
-                            <Button 
+                            <Button
                               type="submit"
                               disabled={isSubmitting}
                               className='btn btn-primary'
@@ -350,11 +353,11 @@ const FireAndBurnedArea = ({
                     </Col>
                     <Col xl={7} className='mx-auto'>
                       <Card className='map-card mb-0' style={{ height: 670 }}>
-                        <MapSection 
-                          setCoordinates={(wktConversion, isAreaValid) => {
+                        <MapSection
+                          setCoordinates={(features, isAreaValid) => {
                             // called if map is used to draw polygon
                             // we asssume it's valid WKT
-                            setFieldValue('mapSelection', wktConversion);
+                            setFieldValue('mapSelection', features);
                             setFieldValue('isMapAreaValid', isAreaValid);
                             setFieldValue('isMapAreaValidWKT', true);
                           }}

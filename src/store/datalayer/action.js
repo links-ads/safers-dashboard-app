@@ -69,13 +69,13 @@ export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) =>
     let timeSeriesStr = '';
     for (const [request_index, url] of options.entries()) {
       const response = await fetch(url);
-      if (api.isSuccessResp(response.status)) {// Remove longitude / latitude and time entries in followup responses 
+      if (api.isSuccessResp(response.status)) {// Remove longitude / latitude and time entries in followup responses
         if(request_index > FIRST_REQUEST){
-          /* 
+          /*
             Each response contain following 3 lines in CSV format
             # longitude
             # latitude
-            # time 
+            # time
             So make sure only first response (from geoserver) has the 3 lines and follow up does not contain as we merge the responses and keep timeseries data together
           */
           const txt = await response.text();
@@ -89,12 +89,12 @@ export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) =>
         error = response?.error;
         break;
       }
-    }   
+    }
     if(!error.length) {
       return dispatch(getTimeSeriesDataSuccess(timeSeriesStr));
     }
-  } 
-  
+  }
+
   if (type === 'GetFeatureInfo') {
     const response = await fetch(options);
     if(api.isSuccessResp(response.status)) {
@@ -104,7 +104,7 @@ export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) =>
     }
   }
   return dispatch(getTimeSeriesDataFail(error));
-  
+
 };
 const getTimeSeriesDataSuccess = (TimeSeries) => {
   return {
@@ -238,3 +238,10 @@ export const setMapRequestParams = (payload) => {
     payload,
   };
 };
+
+export const setSelectedFireBreak = (payload) => {
+  return {
+    type: actionTypes.SET_SELECTED_FIRE_BREAK,
+    payload
+  }
+}

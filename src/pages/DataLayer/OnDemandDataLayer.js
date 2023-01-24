@@ -10,8 +10,20 @@ import { withTranslation } from 'react-i18next'
 import SimpleBar from 'simplebar-react';
 import { DATA_LAYERS_PANELS } from './constants';
 import DataLayerInformation from './DataLayerInformation';
+import wkt from 'wkt';
+import * as Yup from 'yup';
 
-const OnDemandDataLayer = ({ 
+Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
+  return this.test(
+    'isValidWKTString',
+    message,
+    (value) => value.length
+      ? typeof wkt.stringify(value[0]) === 'string'
+      : false
+  );
+});
+
+const OnDemandDataLayer = ({
   t,
   mapRequests,
   onDemandDomainOptions,
@@ -21,7 +33,7 @@ const OnDemandDataLayer = ({
   setDataDomain,
   sortByDate,
   setSortByDate,
-  handleResetAOI, 
+  handleResetAOI,
   getSlider,
   getLegend,
   bitmapLayer,
@@ -43,7 +55,7 @@ const OnDemandDataLayer = ({
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
 
-  // places fetched map requests into local state, 
+  // places fetched map requests into local state,
   // so that search filtering can then be applied
   useEffect(() => {
     setSearchedMapRequests(mapRequests)
@@ -76,7 +88,7 @@ const OnDemandDataLayer = ({
   const handleDialogButtonClick = ({ target: { value } }) => {
     setActiveTab(+value);
     toggleModal();
-  } 
+  }
 
   const handleViewStateChange = useCallback(
     // eslint-disable-next-line no-unused-vars
@@ -85,7 +97,7 @@ const OnDemandDataLayer = ({
     },
     [setViewState],
   );
-    
+
   let layers = [...bboxLayers];
   if (bitmapLayer) {
     layers.push(new BitmapLayer(bitmapLayer))
@@ -105,28 +117,28 @@ const OnDemandDataLayer = ({
           <h2>{t('select-data-type', {ns: 'dataLayers'})}</h2>
           <div className='d-flex flex-nowrap gap-5 my-5'>
             <button
-              value={DATA_LAYERS_PANELS.fireAndBurnedAreas} 
+              value={DATA_LAYERS_PANELS.fireAndBurnedAreas}
               onClick={handleDialogButtonClick}
               className='data-layers-dialog-btn'
             >
               {t('fireAndBurnedAreas' , {ns: 'dataLayers'})}
             </button>
-            <button 
-              value={DATA_LAYERS_PANELS.postEventMonitoring} 
+            <button
+              value={DATA_LAYERS_PANELS.postEventMonitoring}
               onClick={handleDialogButtonClick}
               className='data-layers-dialog-btn'
             >
               {t('post-event-monitoring', {ns: 'dataLayers'})}
             </button>
             <button
-              value={DATA_LAYERS_PANELS.wildfireSimulation} 
+              value={DATA_LAYERS_PANELS.wildfireSimulation}
               onClick={handleDialogButtonClick}
               className='data-layers-dialog-btn'
             >
               {t('wildfireSimulation', {ns: 'dataLayers'})}
             </button>
           </div>
-          <button 
+          <button
             onClick={toggleModal}
             className='data-layers-dialog-cancel'
           >
@@ -139,8 +151,8 @@ const OnDemandDataLayer = ({
           <Row xl={12}>
             <Col>
               <div className='d-flex justify-content-end'>
-                <Button 
-                  className="request-map btn-orange mb-3" 
+                <Button
+                  className="request-map btn-orange mb-3"
                   onClick={toggleModal}>
                   {t('requestMap', {ns : 'dataLayers'})}
                 </Button>
@@ -210,10 +222,10 @@ const OnDemandDataLayer = ({
           </Row>
           <Row>
             <Col>
-              <SimpleBar style={{ 
-                maxHeight: '500px', 
-                margin: '5px', 
-                zIndex: '100' 
+              <SimpleBar style={{
+                maxHeight: '500px',
+                margin: '5px',
+                zIndex: '100'
               }}>
                 <OnDemandTreeView
                   data={searchedMapRequests}
@@ -237,7 +249,7 @@ const OnDemandDataLayer = ({
                 </div>
               </div>
             ) : null}
-            <DataLayerInformation   
+            <DataLayerInformation
               currentLayer={currentLayer}
               tempLayerData={tempLayerData}
               setTempLayerData={setTempLayerData}

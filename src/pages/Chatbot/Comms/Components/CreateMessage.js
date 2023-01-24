@@ -22,6 +22,8 @@ import moment from 'moment'
 import toastr from 'toastr';
 import 'toastr/build/toastr.min.css'
 
+import { getWKTfromFeature } from '../../../../store/utility';
+
 const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
 
   const dispatch = useDispatch();
@@ -86,7 +88,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     const tempError = {...errors};
     if (scope && scope == 'Restricted' && (!restriction || restriction === '')) {
       tempError['restriction'] = t('field-empty-err', { ns: 'common' });
-    } 
+    }
     else {
       delete tempError['restriction'];
     }
@@ -148,7 +150,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
         end: dateRange[1] ? dateRange[1] : null,
         scope,
         restriction,
-        geometry: coordinates ? coordinates : null
+        geometry: coordinates ? getWKTfromFeature(coordinates) : null
       }
       dispatch(createMsg(payload))
     }
@@ -176,7 +178,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
           name="coordinates-value"
           placeholder={t('Map Selection', { ns: 'chatBot' })}
           rows="10"
-          coordinates={coordinates}
+          coordinates={getWKTfromFeature(coordinates)}
           setCoordinates={setCoordinates}
           isValidFormat={isValidCoordFormat}
           onBlur={()=> { validateCoord(); }}
