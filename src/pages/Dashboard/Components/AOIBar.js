@@ -96,14 +96,15 @@ const AOIBar = ({t}) => {
   const {defaultAoi} = useSelector(state => state.user);
   
   const mapRequests = useSelector(state => {
-    // Find leaf nodes (mapRequests).
+    // Find leaf nodes (mapRequests) in the mapRequest tree
+    // and put these in a flat array for use in the pulldown
     const categories = state.dataLayer.allMapRequests;
     const aoiBbox = defaultAoi.features[0].bbox;
     const leafNodes = flattenDeep(categories.map(category => nodeVisitor(category, aoiBbox)))
     return leafNodes;
   } );
 
-  // start with filtered alerts, looks better starting with none and showing
+  // start with filtered alerts. It looks better starting with none and showing
   // the right number in a few seconds, than starting with lots and then
   // shortening the list
   const {filteredAlerts: events } = useSelector(state => state.eventAlerts);  
@@ -126,17 +127,13 @@ const AOIBar = ({t}) => {
     dispatch(getAllEventAlerts(eventParams, true, false));  
   }
 
-  useEffect (() => {
-    updateEventList();
-  }, []);
+  useEffect (() => updateEventList(), []);
 
-  useEffect (() => {
-    //
-  }, [mapRequests]);
+  useEffect (() => {}, [mapRequests]);
 
-  useEffect (() => {
-    setSelectedLayer(mapRequests.find(layer => layer.key === selectedLayerId));
-  }, [selectedLayerId]);
+  useEffect (() => setSelectedLayer(
+    mapRequests.find(layer => layer.key === selectedLayerId))
+  , [selectedLayerId]);
 
   useEffect (() => {
     console.log(`selectedLayer object ${JSON.stringify(selectedLayer)}`);
@@ -146,9 +143,7 @@ const AOIBar = ({t}) => {
     updateEventList();
   }, [dateRange]);
 
-  useEffect(()=> {
-    setEventList(events);
-  }, [events]);
+  useEffect(()=> setEventList(events), [events]);
 
   return(
     <Container fluid="true" >
