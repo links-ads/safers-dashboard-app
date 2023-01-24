@@ -17,7 +17,7 @@ import WildfireSimulation from './WildfireSimulation'
 import { getAllDataLayers, setNewMapRequestState, setAlertApiParams, setDateRangeDisabled } from '../../store/appAction';
 import { getBoundingBox } from '../../helpers/mapHelper';
 import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
-import { filterNodesByProperty } from '../../store/utility';
+import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { setFilteredAlerts } from '../../store/alerts/action';
 import { MAP } from '../../constants/common';
@@ -370,7 +370,7 @@ const DataLayerDashboard = ({ t }) => {
 
   const mapInputOnChange  = (value, setFieldValue, checkRasterSize=false, resolution=null) => {
     // NB not called if map is used, only if paste/typed into field
-    setFieldValue('mapSelection', value);
+    setFieldValue('mapSelection', getGeoFeatures(value));
     if (!value) {
       setFieldValue('isMapAreaValid', true);
     } else {

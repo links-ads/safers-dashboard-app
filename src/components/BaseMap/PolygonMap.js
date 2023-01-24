@@ -2,11 +2,14 @@
 import React, { useEffect, useRef, useState } from 'react';
 import MapGL, { FullscreenControl, NavigationControl, MapContext } from 'react-map-gl';
 import { MapView } from '@deck.gl/core';
+import { useSelector } from 'react-redux';
 import { MAPBOX_TOKEN } from '../../config';
-import { getGeoFeatures, getWKTfromFeature } from '../../store/utility';
+import { getWKTfromFeature } from '../../store/utility';
+import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
 import {
   Editor,
   DrawPolygonMode,
+  DrawLineStringMode,
   EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
@@ -31,7 +34,6 @@ const POLYGON_ERROR_COLOR = 'rgba(255, 0, 0, 0.5)'
 
 const POINT_RADIUS = 8;
 
-
 const PolygonMap = ({
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
@@ -51,6 +53,7 @@ const PolygonMap = ({
   handleAreaValidation,
   singlePolygonOnly = false
 }) => {
+  const selectedFireBreak = useSelector(state => state.dataLayer.selectedFireBreak);
 
   const mapRef = useRef();
   const finalLayerSet = [
@@ -60,6 +63,7 @@ const PolygonMap = ({
   const MODES = [
     { id: 'editing', text: 'Edit Feature', handler: EditingMode },
     { id: 'drawPolygon', text: 'Draw Polygon', handler: DrawPolygonMode },
+    { id: 'drawLineString', text: 'Draw Line String', handler: DrawLineStringMode },
   ];
 
   const [viewport, setViewport] = useState(initialViewState);
@@ -109,24 +113,28 @@ const PolygonMap = ({
     setViewport(tempViewport);
   };
 
-  const editToggle = () => {
-    if (singlePolygonOnly) {
-      setAreaIsValid(true);
-      setFeatures([]);
+  const editToggle = (mode) => {
+    if (mode === 'drawLineString') {
+      toggleMode(modeId === 'drawLineString' ? 'editing' : 'drawLineString')
+    } else if (mode === 'drawPolygon') {
+      if (singlePolygonOnly) {
+        setAreaIsValid(true);
+        setFeatures([]);
+      }
+      toggleMode(modeId === 'drawPolygon' ? 'editing' : 'drawPolygon');
     }
-    toggleMode(modeId == 'drawPolygon' ? 'editing' : 'drawPolygon');
   }
 
   const clearMap = () => {
     setAreaIsValid(true);
-    if(selectedFeatureData.selectedFeature) {
+    if(selectedFeatureData?.selectedFeature) {
       const tempFeatures = [...features];
       tempFeatures.splice(selectedFeatureData.selectedFeatureIndex, 1);
       setFeatures(tempFeatures);
       setCoordinates(getWKTfromFeature(tempFeatures));
     } else {
       setFeatures([]);
-      setCoordinates('');
+      setCoordinates(null);
     }
   }
 
@@ -142,13 +150,23 @@ const PolygonMap = ({
 
   const renderToolbar = () => (
     <>
-      <MapControlButton 
-        top='50px' 
-        style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}}
-        onClick={editToggle}
-      >
-        <i className="bx bx-pencil" style={{ fontSize: '20px' }}></i>
-      </MapControlButton>
+      {selectedFireBreak ? (
+        <MapControlButton
+          top='50px'
+          style={modeId == 'drawLineString' ? { backgroundColor: 'lightgray' } : {}}
+          onClick={() => editToggle('drawLineString')}
+        >
+          <i className="bx bx-minus" style={{ fontSize: '20px' }}></i>
+        </MapControlButton>
+      ) : (
+        <MapControlButton
+          top='50px'
+          style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}}
+          onClick={() => editToggle('drawPolygon')}
+        >
+          <i className="bx bx-shape-triangle" style={{ fontSize: '20px' }}></i>
+        </MapControlButton>
+      )}
       <MapControlButton onClick={clearMap}>
         <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
       </MapControlButton>
@@ -162,17 +180,18 @@ const PolygonMap = ({
         areaValidation = handleAreaValidation(val.data[0]);
       }
       setFeatures(val.data);
-      setCoordinates(getWKTfromFeature(val.data), areaValidation);
+      setCoordinates(val.data, areaValidation);
       toggleMode('editing');
     } else if (val.editType === 'movePosition') {
       setFeatures(val.data);
-      setCoordinates(getWKTfromFeature(val.data), areaValidation);
-    } 
+      setCoordinates(val.data, areaValidation);
+    }
   };
 
   useEffect(() => {
-    const tempFeatures = coordinates? getGeoFeatures(coordinates) : [];
-    setFeatures(tempFeatures);
+    if (coordinates) {
+      setFeatures(coordinates);
+    }
     toggleMode('editing');
   },[coordinates])
 
@@ -213,8 +232,9 @@ const PolygonMap = ({
                 r: POINT_RADIUS,
               };
             }
+            const stroke = FIRE_BREAK_STROKE_COLORS[data.feature.properties.fireBreakType] ?? POLYGON_LINE_COLOR
             return {
-              stroke: POLYGON_LINE_COLOR,
+              stroke,
               fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
               r: POINT_RADIUS,

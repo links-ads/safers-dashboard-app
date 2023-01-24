@@ -17,6 +17,7 @@ import { MAP_TYPES } from '../../../constants/common';
 import CreateMission from './Components/CreateMission';
 import { getIconLayer } from '../../../helpers/mapHelper';
 import useInterval from '../../../customHooks/useInterval';
+import { getWKTfromFeature } from '../../../store/utility';
 
 
 const Missions = ({ pollingFrequency }) => {
@@ -36,7 +37,7 @@ const Missions = ({ pollingFrequency }) => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [coordinates, setCoordinates] = useState('');
+  const [coordinates, setCoordinates] = useState(null);
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMission, setToggleCreateNewMission] = useState(false);
   const [missionParams, setMissionParams] = useState(dateRange ? { start: dateRange[0], end: dateRange[1] } : {});
@@ -162,7 +163,7 @@ const Missions = ({ pollingFrequency }) => {
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
-            coordinates={coordinates}
+            coordinates={getWKTfromFeature(coordinates)}
             onClick={onClick}
           />
         </Col>
