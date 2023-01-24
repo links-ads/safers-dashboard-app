@@ -1,9 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
+
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import Pagination from 'rc-pagination';
 
-const PaginationWrapper = ({list, pageSize, setPageData}) => {
+const PaginationWrapper = ({ list, pageSize, setPageData }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const updatePage = page => {
@@ -19,19 +20,20 @@ const PaginationWrapper = ({list, pageSize, setPageData}) => {
     updatePage(1);
   }, [list]);
 
-  
-  return  <Pagination
-    pageSize={pageSize}
-    onChange={updatePage}
-    current={currentPage}
-    total={list.length}
-  />
-}
+  return (
+    <Pagination
+      pageSize={pageSize}
+      onChange={updatePage}
+      current={currentPage}
+      total={list.length}
+    />
+  );
+};
 
 PaginationWrapper.propTypes = {
   list: PropTypes.array,
   pageSize: PropTypes.number,
-  setPageData: PropTypes.func
-}
+  setPageData: PropTypes.func,
+};
 
 export default PaginationWrapper;

@@ -1,8 +1,10 @@
 import React from 'react';
-import { Card } from 'reactstrap';
-import BaseMap from '../../../components/BaseMap/BaseMap';
+
 import PropTypes from 'prop-types';
+import { Card } from 'reactstrap';
+
 import ToolTip from './Tooltip';
+import BaseMap from '../../../components/BaseMap/BaseMap';
 import SearchButton from '../../../components/SearchButton';
 
 const MapSection = ({
@@ -13,44 +15,36 @@ const MapSection = ({
   hideTooltip,
   getCamByArea,
   setNewWidth,
-  setNewHeight
+  setNewHeight,
 }) => {
+  const renderTooltip = info => {
+    if (!info || !info.picked) return null;
 
-  const renderTooltip = (info) => {
-    if (!info || !info.picked) return null
+    return <ToolTip object={info} />;
+  };
 
-    return <ToolTip object={info} />
-  }
-
-
-
-  const getSearchButton = (index) => {
-    return (
-      <SearchButton
-        index={index}
-        getInfoByArea={getCamByArea}
-      />
-    )
-  }
+  const getSearchButton = index => {
+    return <SearchButton index={index} getInfoByArea={getCamByArea} />;
+  };
 
   return (
-    <Card className='map-card mb-0' style={{ height: 730 }}>
+    <Card className="map-card mb-0" style={{ height: 730 }}>
       <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
         hoverInfo={hoverInfo}
         renderTooltip={renderTooltip}
         onClick={showTooltip}
-        onViewStateChange={(e) => hideTooltip(e, true)}
+        onViewStateChange={e => hideTooltip(e, true)}
         widgets={[getSearchButton]}
         setWidth={setNewWidth}
         setHeight={setNewHeight}
-        screenControlPosition='top-right'
-        navControlPosition='bottom-right'
+        screenControlPosition="top-right"
+        navControlPosition="bottom-right"
       />
     </Card>
-  )
-}
+  );
+};
 
 MapSection.propTypes = {
   viewState: PropTypes.any,
@@ -60,7 +54,7 @@ MapSection.propTypes = {
   hideTooltip: PropTypes.func,
   getCamByArea: PropTypes.func,
   setNewWidth: PropTypes.func,
-  setNewHeight: PropTypes.func
-}
+  setNewHeight: PropTypes.func,
+};
 
 export default MapSection;

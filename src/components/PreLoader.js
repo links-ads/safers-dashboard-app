@@ -1,32 +1,34 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
 
-const PreLoader =  ({isLoading = false, loadingMsg = ''}) => {
+const PreLoader = ({ isLoading = false, loadingMsg = '' }) => {
   return (
     <>
-      {isLoading && 
-        <div id='preloader'>
-          <div id='status' className='pre-loader-status'>
-            <div className='spinner-chase'>
-              <div className='chase-dot' />
-              <div className='chase-dot' />
-              <div className='chase-dot' />
-              <div className='chase-dot' />
-              <div className='chase-dot' />
-              <div className='chase-dot' />
+      {isLoading && (
+        <div id="preloader">
+          <div id="status" className="pre-loader-status">
+            <div className="spinner-chase">
+              <div className="chase-dot" />
+              <div className="chase-dot" />
+              <div className="chase-dot" />
+              <div className="chase-dot" />
+              <div className="chase-dot" />
+              <div className="chase-dot" />
             </div>
-            <p id='status-msg' className='mt-3'><i>{loadingMsg}</i></p>
+            <p id="status-msg" className="mt-3">
+              <i>{loadingMsg}</i>
+            </p>
           </div>
         </div>
-      }
+      )}
     </>
-  )
-}
+  );
+};
 
 PreLoader.propTypes = {
   isLoading: PropTypes.bool,
-  loadingMsg: PropTypes.string
-}
-  
+  loadingMsg: PropTypes.string,
+};
 
-export default PreLoader
+export default PreLoader;

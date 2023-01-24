@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState } from 'react';
-import MapGL, { FullscreenControl, NavigationControl, MapContext } from 'react-map-gl';
+
 import { MapView } from '@deck.gl/core';
-import { useSelector } from 'react-redux';
-import { MAPBOX_TOKEN } from '../../config';
-import { getWKTfromFeature } from '../../store/utility';
-import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
+import MapGL, {
+  FullscreenControl,
+  NavigationControl,
+  MapContext,
+} from 'react-map-gl';
 import {
   Editor,
   DrawPolygonMode,
@@ -13,24 +14,29 @@ import {
   EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
+import { useSelector } from 'react-redux';
+
+import { MAPBOX_TOKEN } from '../../config';
+import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
+import { getWKTfromFeature } from '../../store/utility';
 
 const INITIAL_VIEW_STATE = {
   longitude: 9.56005296,
   latitude: 43.02777403,
   zoom: 4,
   bearing: 0,
-  pitch: 0
+  pitch: 0,
 };
 const MAP_STYLE = {
   mb_streets: 'mapbox://styles/mapbox/streets-v11',
   mb_satellite: 'mapbox://styles/mapbox/satellite-v9',
   mb_lite: 'mapbox://styles/mapbox/light-v10',
-  mb_nav: 'mapbox://styles/mapbox/navigation-day-v1'
+  mb_nav: 'mapbox://styles/mapbox/navigation-day-v1',
 };
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
 const POLYGON_LINE_DASH = '10,2';
-const POLYGON_ERROR_COLOR = 'rgba(255, 0, 0, 0.5)'
+const POLYGON_ERROR_COLOR = 'rgba(255, 0, 0, 0.5)';
 
 const POINT_RADIUS = 8;
 
@@ -38,12 +44,12 @@ const PolygonMap = ({
   layers = null,
   initialViewState = INITIAL_VIEW_STATE,
   hoverInfo = null,
-  renderTooltip = () => { },
-  onClick = () => { },
-  onViewStateChange = () => { },
-  onViewportLoad = () => { },
-  setWidth = () => { },
-  setHeight = () => { },
+  renderTooltip = () => {},
+  onClick = () => {},
+  onViewStateChange = () => {},
+  onViewportLoad = () => {},
+  setWidth = () => {},
+  setHeight = () => {},
   // widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
@@ -51,19 +57,23 @@ const PolygonMap = ({
   setCoordinates,
   coordinates,
   handleAreaValidation,
-  singlePolygonOnly = false
+  singlePolygonOnly = false,
 }) => {
-  const selectedFireBreak = useSelector(state => state.dataLayer.selectedFireBreak);
+  const selectedFireBreak = useSelector(
+    state => state.dataLayer.selectedFireBreak,
+  );
 
   const mapRef = useRef();
-  const finalLayerSet = [
-    ...layers ? layers : null
-  ];
+  const finalLayerSet = [...(layers ? layers : null)];
 
   const MODES = [
     { id: 'editing', text: 'Edit Feature', handler: EditingMode },
     { id: 'drawPolygon', text: 'Draw Polygon', handler: DrawPolygonMode },
-    { id: 'drawLineString', text: 'Draw Line String', handler: DrawLineStringMode },
+    {
+      id: 'drawLineString',
+      text: 'Draw Line String',
+      handler: DrawLineStringMode,
+    },
   ];
 
   const [viewport, setViewport] = useState(initialViewState);
@@ -89,33 +99,32 @@ const PolygonMap = ({
     newHeight && setHeight(newHeight);
   };
 
-  const getPosition = (position) => {
+  const getPosition = position => {
     const props = position.split('-');
     return {
       position: 'absolute',
       [props[0]]: 10,
-      [props[1]]: 10
+      [props[1]]: 10,
     };
-  }
+  };
 
-  const toggleMode = (evt) => {
-    if(evt !== modeId) {
-      const tempModeId = evt? evt : null;
-      const mode = MODES.find((m) => m.id === tempModeId);
+  const toggleMode = evt => {
+    if (evt !== modeId) {
+      const tempModeId = evt ? evt : null;
+      const mode = MODES.find(m => m.id === tempModeId);
       const modeHandler = mode ? new mode.handler() : null;
       setModeId(tempModeId);
       setModeHandler(modeHandler);
     }
   };
 
-
-  const _updateViewport = (tempViewport) => {
+  const _updateViewport = tempViewport => {
     setViewport(tempViewport);
   };
 
-  const editToggle = (mode) => {
+  const editToggle = mode => {
     if (mode === 'drawLineString') {
-      toggleMode(modeId === 'drawLineString' ? 'editing' : 'drawLineString')
+      toggleMode(modeId === 'drawLineString' ? 'editing' : 'drawLineString');
     } else if (mode === 'drawPolygon') {
       if (singlePolygonOnly) {
         setAreaIsValid(true);
@@ -123,11 +132,11 @@ const PolygonMap = ({
       }
       toggleMode(modeId === 'drawPolygon' ? 'editing' : 'drawPolygon');
     }
-  }
+  };
 
   const clearMap = () => {
     setAreaIsValid(true);
-    if(selectedFeatureData?.selectedFeature) {
+    if (selectedFeatureData?.selectedFeature) {
       const tempFeatures = [...features];
       tempFeatures.splice(selectedFeatureData.selectedFeatureIndex, 1);
       setFeatures(tempFeatures);
@@ -136,32 +145,46 @@ const PolygonMap = ({
       setFeatures([]);
       setCoordinates(null);
     }
-  }
+  };
 
-  const MapControlButton = ({top = '90px', style = {}, onClick, children}) => (
+  const MapControlButton = ({
+    top = '90px',
+    style = {},
+    onClick,
+    children,
+  }) => (
     <div style={{ position: 'absolute', top, right: '10px' }}>
       <div className="mapboxgl-ctrl mapboxgl-ctrl-group">
-        <button style={{...style}} onClick={onClick} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
+        <button
+          style={{ ...style }}
+          onClick={onClick}
+          className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center"
+          type="button"
+        >
           {children}
         </button>
       </div>
     </div>
-  )
+  );
 
   const renderToolbar = () => (
     <>
       {selectedFireBreak ? (
         <MapControlButton
-          top='50px'
-          style={modeId == 'drawLineString' ? { backgroundColor: 'lightgray' } : {}}
+          top="50px"
+          style={
+            modeId === 'drawLineString' ? { backgroundColor: 'lightgray' } : {}
+          }
           onClick={() => editToggle('drawLineString')}
         >
           <i className="bx bx-minus" style={{ fontSize: '20px' }}></i>
         </MapControlButton>
       ) : (
         <MapControlButton
-          top='50px'
-          style={modeId == 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}}
+          top="50px"
+          style={
+            modeId === 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}
+          }
           onClick={() => editToggle('drawPolygon')}
         >
           <i className="bx bx-shape-triangle" style={{ fontSize: '20px' }}></i>
@@ -171,9 +194,9 @@ const PolygonMap = ({
         <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
       </MapControlButton>
     </>
-  )
+  );
 
-  const handleUpdate = (val) => {
+  const handleUpdate = val => {
     let areaValidation = true;
     if (val.editType === 'addFeature') {
       if (handleAreaValidation) {
@@ -193,7 +216,7 @@ const PolygonMap = ({
       setFeatures(coordinates);
     }
     toggleMode('editing');
-  },[coordinates])
+  }, [coordinates]);
 
   return (
     <>
@@ -210,8 +233,8 @@ const PolygonMap = ({
         onViewportLoad={onViewportLoad}
         layers={finalLayerSet}
         views={new MapView({ repeat: true })}
-      // ref={mapRef}
-      // controller={true}
+        // ref={mapRef}
+        // controller={true}
       >
         <Editor
           clickRadius={12}
@@ -221,9 +244,9 @@ const PolygonMap = ({
           onSelect={selected => {
             setSelectedFeatureData(selected);
           }}
-          featureStyle={(data) => {
+          featureStyle={data => {
             if (data.index === 0 && handleAreaValidation) {
-              setAreaIsValid(handleAreaValidation(data.feature))
+              setAreaIsValid(handleAreaValidation(data.feature));
             }
             if (data.state === RENDER_STATE.SELECTED) {
               return {
@@ -232,7 +255,9 @@ const PolygonMap = ({
                 r: POINT_RADIUS,
               };
             }
-            const stroke = FIRE_BREAK_STROKE_COLORS[data.feature.properties.fireBreakType] ?? POLYGON_LINE_COLOR
+            const stroke =
+              FIRE_BREAK_STROKE_COLORS[data.feature.properties.fireBreakType] ??
+              POLYGON_LINE_COLOR;
             return {
               stroke,
               fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
@@ -242,11 +267,14 @@ const PolygonMap = ({
           }}
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
-        <NavigationControl style={getPosition(navControlPosition)} showCompass={false} />
+        <NavigationControl
+          style={getPosition(navControlPosition)}
+          showCompass={false}
+        />
         {renderTooltip(hoverInfo)}
         {renderToolbar()}
       </MapGL>
     </>
   );
-}
+};
 export default PolygonMap;

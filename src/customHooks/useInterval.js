@@ -1,14 +1,14 @@
-import { useEffect }  from 'react';
+import { useEffect } from 'react';
 
-const useInterval = (callback, interval, dependencies=[]) => {
+const useInterval = (callback, interval, dependencies = []) => {
   useEffect(() => {
-    if(interval){
+    if (interval) {
       const timer = setInterval(() => {
         callback();
       }, interval);
       return () => clearInterval(timer);
     }
   }, dependencies);
-}
+};
 
 export default useInterval;

@@ -1,25 +1,31 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { Row, Col, Button, Input, Card, InputGroup, InputGroupText, Modal } from 'reactstrap';
-import { BitmapLayer } from 'deck.gl';
-import BaseMap from '../../components/BaseMap/BaseMap';
 
-import OnDemandTreeView from './OnDemandTreeView';
-import { formatDate } from '../../store/utility';
-import { withTranslation } from 'react-i18next'
+import { BitmapLayer } from 'deck.gl';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import {
+  Row,
+  Col,
+  Button,
+  Input,
+  Card,
+  InputGroup,
+  InputGroupText,
+  Modal,
+} from 'reactstrap';
 import SimpleBar from 'simplebar-react';
-import { DATA_LAYERS_PANELS } from './constants';
-import DataLayerInformation from './DataLayerInformation';
 import wkt from 'wkt';
 import * as Yup from 'yup';
 
+import { DATA_LAYERS_PANELS } from './constants';
+import DataLayerInformation from './DataLayerInformation';
+import OnDemandTreeView from './OnDemandTreeView';
+import BaseMap from '../../components/BaseMap/BaseMap';
+import { formatDate } from '../../store/utility';
+
 Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
-  return this.test(
-    'isValidWKTString',
-    message,
-    (value) => value.length
-      ? typeof wkt.stringify(value[0]) === 'string'
-      : false
+  return this.test('isValidWKTString', message, value =>
+    value.length ? typeof wkt.stringify(value[0]) === 'string' : false,
   );
 });
 
@@ -48,9 +54,9 @@ const OnDemandDataLayer = ({
   sliderChangeComplete,
   resetMap,
 }) => {
-  const [modalIsOpen, setModalIsOpen] = useState(false)
+  const [modalIsOpen, setModalIsOpen] = useState(false);
   const [searchedMapRequests, setSearchedMapRequests] = useState(null);
-  const [bboxLayers, setBboxLayers] = useState([])
+  const [bboxLayers, setBboxLayers] = useState([]);
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
@@ -58,37 +64,34 @@ const OnDemandDataLayer = ({
   // places fetched map requests into local state,
   // so that search filtering can then be applied
   useEffect(() => {
-    setSearchedMapRequests(mapRequests)
+    setSearchedMapRequests(mapRequests);
   }, [mapRequests]);
 
   const handleSearch = ({ target: { value } }) => {
     if (!value) setSearchedMapRequests(mapRequests);
-    const searchResult = searchDataTree(mapRequests, value)
+    const searchResult = searchDataTree(mapRequests, value);
     setSearchedMapRequests(searchResult);
   };
 
   const toggleModal = () => setModalIsOpen(prev => !prev);
 
-  const isTimeseries = currentLayer?.urls && Object.keys(currentLayer?.urls).length > 1
+  const isTimeseries =
+    currentLayer?.urls && Object.keys(currentLayer?.urls).length > 1;
 
   const getCurrentTimestamp = () => {
     if (isTimeseries) {
-      return (
-        timestamp ? (
-          <div className='timestamp-container'>
-            <p className='timestamp-display'>
-              {formatDate(timestamp)}
-            </p>
-          </div>
-        ) : null
-      )
+      return timestamp ? (
+        <div className="timestamp-container">
+          <p className="timestamp-display">{formatDate(timestamp)}</p>
+        </div>
+      ) : null;
     }
-  }
+  };
 
   const handleDialogButtonClick = ({ target: { value } }) => {
     setActiveTab(+value);
     toggleModal();
-  }
+  };
 
   const handleViewStateChange = useCallback(
     // eslint-disable-next-line no-unused-vars
@@ -100,8 +103,8 @@ const OnDemandDataLayer = ({
 
   let layers = [...bboxLayers];
   if (bitmapLayer) {
-    layers.push(new BitmapLayer(bitmapLayer))
-    layers.push(tempLayerData)
+    layers.push(new BitmapLayer(bitmapLayer));
+    layers.push(tempLayerData);
   }
 
   return (
@@ -113,35 +116,32 @@ const OnDemandDataLayer = ({
         id="data-layer-dialog"
         style={{ maxWidth: '50rem' }}
       >
-        <div className='d-flex flex-column align-items-center p-5'>
-          <h2>{t('select-data-type', {ns: 'dataLayers'})}</h2>
-          <div className='d-flex flex-nowrap gap-5 my-5'>
+        <div className="d-flex flex-column align-items-center p-5">
+          <h2>{t('select-data-type', { ns: 'dataLayers' })}</h2>
+          <div className="d-flex flex-nowrap gap-5 my-5">
             <button
               value={DATA_LAYERS_PANELS.fireAndBurnedAreas}
               onClick={handleDialogButtonClick}
-              className='data-layers-dialog-btn'
+              className="data-layers-dialog-btn"
             >
-              {t('fireAndBurnedAreas' , {ns: 'dataLayers'})}
+              {t('fireAndBurnedAreas', { ns: 'dataLayers' })}
             </button>
             <button
               value={DATA_LAYERS_PANELS.postEventMonitoring}
               onClick={handleDialogButtonClick}
-              className='data-layers-dialog-btn'
+              className="data-layers-dialog-btn"
             >
-              {t('post-event-monitoring', {ns: 'dataLayers'})}
+              {t('post-event-monitoring', { ns: 'dataLayers' })}
             </button>
             <button
               value={DATA_LAYERS_PANELS.wildfireSimulation}
               onClick={handleDialogButtonClick}
-              className='data-layers-dialog-btn'
+              className="data-layers-dialog-btn"
             >
-              {t('wildfireSimulation', {ns: 'dataLayers'})}
+              {t('wildfireSimulation', { ns: 'dataLayers' })}
             </button>
           </div>
-          <button
-            onClick={toggleModal}
-            className='data-layers-dialog-cancel'
-          >
+          <button onClick={toggleModal} className="data-layers-dialog-cancel">
             {t('cancel')}
           </button>
         </div>
@@ -150,11 +150,12 @@ const OnDemandDataLayer = ({
         <Col xl={5}>
           <Row xl={12}>
             <Col>
-              <div className='d-flex justify-content-end'>
+              <div className="d-flex justify-content-end">
                 <Button
                   className="request-map btn-orange mb-3"
-                  onClick={toggleModal}>
-                  {t('requestMap', {ns : 'dataLayers'})}
+                  onClick={toggleModal}
+                >
+                  {t('requestMap', { ns: 'dataLayers' })}
                 </Button>
               </div>
             </Col>
@@ -169,11 +170,15 @@ const OnDemandDataLayer = ({
                     name="sortByDate"
                     placeholder="Sort By : Date"
                     type="select"
-                    onChange={(e) => setSortByDate(e.target.value)}
+                    onChange={e => setSortByDate(e.target.value)}
                     value={sortByDate}
                   >
-                    <option value={'-date'} >{t('Sort By')} : {t('Date')} {t('desc')}</option>
-                    <option value={'date'} >{t('Sort By')} : {t('Date')} {t('asc')}</option>
+                    <option value={'-date'}>
+                      {t('Sort By')} : {t('Date')} {t('desc')}
+                    </option>
+                    <option value={'date'}>
+                      {t('Sort By')} : {t('Date')} {t('asc')}
+                    </option>
                   </Input>
                 </Col>
                 <Col xl={4}>
@@ -183,11 +188,13 @@ const OnDemandDataLayer = ({
                     name="dataDomain"
                     placeholder="Domain"
                     type="select"
-                    onChange={(e) => setDataDomain(e.target.value)}
+                    onChange={e => setDataDomain(e.target.value)}
                     value={dataDomain}
                   >
-                    <option value={''} >{t('domain')}: {t('domain-all')}</option>
-                    {onDemandDomainOptions?.map((option) => (
+                    <option value={''}>
+                      {t('domain')}: {t('domain-all')}
+                    </option>
+                    {onDemandDomainOptions?.map(option => (
                       <option key={option} value={option}>
                         {t('domain')}: {option}
                       </option>
@@ -196,19 +203,21 @@ const OnDemandDataLayer = ({
                 </Col>
               </Row>
             </Col>
-            <Col xl={2} className="d-flex justify-content-end align-items-center">
-              <Button color='link'
-                onClick={handleResetAOI} className='p-0'>
+            <Col
+              xl={2}
+              className="d-flex justify-content-end align-items-center"
+            >
+              <Button color="link" onClick={handleResetAOI} className="p-0">
                 {t('default-aoi')}
               </Button>
             </Col>
           </Row>
           <hr />
-          <Row className='mb-3'>
+          <Row className="mb-3">
             <Col xl={12}>
               <InputGroup>
-                <InputGroupText className='border-end-0'>
-                  <i className='fa fa-search' />
+                <InputGroupText className="border-end-0">
+                  <i className="fa fa-search" />
                 </InputGroupText>
                 <Input
                   id="searchEvent"
@@ -222,11 +231,13 @@ const OnDemandDataLayer = ({
           </Row>
           <Row>
             <Col>
-              <SimpleBar style={{
-                maxHeight: '500px',
-                margin: '5px',
-                zIndex: '100'
-              }}>
+              <SimpleBar
+                style={{
+                  maxHeight: '500px',
+                  margin: '5px',
+                  zIndex: '100',
+                }}
+              >
                 <OnDemandTreeView
                   data={searchedMapRequests}
                   setCurrentLayer={setCurrentLayer}
@@ -240,12 +251,12 @@ const OnDemandDataLayer = ({
             </Col>
           </Row>
         </Col>
-        <Col xl={7} className='mx-auto'>
-          <Card className='map-card mb-0' style={{ height: 670 }}>
+        <Col xl={7} className="mx-auto">
+          <Card className="map-card mb-0" style={{ height: 670 }}>
             {showLegend && !!legendUrl ? (
-              <div className='legend-container'>
-                <div className='legend'>
-                  <img src={legendUrl} />
+              <div className="legend-container">
+                <div className="legend">
+                  <img src={legendUrl} alt="Layer Legend" />
                 </div>
               </div>
             ) : null}
@@ -262,8 +273,8 @@ const OnDemandDataLayer = ({
                 initialViewState={viewState}
                 onViewStateChange={handleViewStateChange}
                 widgets={[]}
-                screenControlPosition='top-right'
-                navControlPosition='bottom-right'
+                screenControlPosition="top-right"
+                navControlPosition="bottom-right"
               />
             </DataLayerInformation>
             {getSlider()}
@@ -275,7 +286,7 @@ const OnDemandDataLayer = ({
       {information}
     </>
   );
-}
+};
 
 OnDemandDataLayer.propTypes = {
   t: PropTypes.any,
@@ -302,6 +313,6 @@ OnDemandDataLayer.propTypes = {
   dispatch: PropTypes.any,
   sliderChangeComplete: PropTypes.bool,
   resetMap: PropTypes.func,
-}
+};
 
 export default withTranslation(['common'])(OnDemandDataLayer);

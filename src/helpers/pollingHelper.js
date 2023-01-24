@@ -1,31 +1,29 @@
 import React, { useEffect, useRef, useState } from 'react';
 
+import { useDispatch, useSelector } from 'react-redux';
+
+import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 import {
-  useDispatch,
-  useSelector
-} from 'react-redux';
-import { 
-  getAllFireAlerts, 
-  setNewAlertState, 
-  getAllEventAlerts, 
+  getAllFireAlerts,
+  setNewAlertState,
+  getAllEventAlerts,
   setNewEventState,
   getAllNotifications,
   setNewNotificationState,
   getAllMapRequests,
-  setNewMapRequestState
+  setNewMapRequestState,
 } from '../store/appAction';
-import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 
 const MILLISECONDS = 1000;
-const pollingHelper = (props) => {
+const pollingHelper = props => {
   const dispatch = useDispatch();
-  const timer = useRef(null)
+  const timer = useRef(null);
 
   // Map Requests
   const {
     allMapRequests,
     params: mapRequestParams,
-    isPageActive: isMapRequestPageActive
+    isPageActive: isMapRequestPageActive,
   } = useSelector(state => state.dataLayer);
 
   // Alerts
@@ -37,42 +35,46 @@ const pollingHelper = (props) => {
   } = useSelector(state => state.alerts);
 
   // Events
-  const { 
-    allAlerts: allEvents, 
+  const {
+    allAlerts: allEvents,
     filteredAlerts: filteredEvents,
-    params: eventParams, 
-    isPageActive: isEventPageActive 
+    params: eventParams,
+    isPageActive: isEventPageActive,
   } = useSelector(state => state.eventAlerts);
 
   // Notifications
-  const { 
-    allNotifications, 
-    params: notificationParams, 
-    isPageActive: isNotificationPageActive 
+  const {
+    allNotifications,
+    params: notificationParams,
+    isPageActive: isNotificationPageActive,
   } = useSelector(state => state.notifications);
 
-  const {config, dateRange} = useSelector(state => state.common);
+  const { config, dateRange } = useSelector(state => state.common);
   const pollingFrequency = config ? config.polling_frequency : undefined;
 
-  const [currentNotificationCount, setCurrentNotificationCount] = useState(undefined);
-  const [currentMapRequestCount, setCurrentMapRequestCount] = useState(undefined);
+  const [currentNotificationCount, setCurrentNotificationCount] =
+    useState(undefined);
+  const [currentMapRequestCount, setCurrentMapRequestCount] =
+    useState(undefined);
 
   let dateRangeParams = {};
 
-  if(dateRange) {
+  if (dateRange) {
     delete alertParams.default_date;
     delete eventParams.default_date;
     delete notificationParams.default_date;
-    dateRangeParams = dateRange 
+    dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
-      : {}
+      : {};
   }
 
   const callAPIs = () => {
-    dispatch(getAllFireAlerts({...alertParams, ...dateRangeParams}));
-    dispatch(getAllEventAlerts({...eventParams, ...dateRangeParams}));
-    dispatch(getAllNotifications({...notificationParams, ...dateRangeParams}));
-    dispatch(getAllMapRequests({...mapRequestParams, ...dateRangeParams}));
+    dispatch(getAllFireAlerts({ ...alertParams, ...dateRangeParams }));
+    dispatch(getAllEventAlerts({ ...eventParams, ...dateRangeParams }));
+    dispatch(
+      getAllNotifications({ ...notificationParams, ...dateRangeParams }),
+    );
+    dispatch(getAllMapRequests({ ...mapRequestParams, ...dateRangeParams }));
   };
 
   useEffect(() => {
@@ -89,22 +91,34 @@ const pollingHelper = (props) => {
     }
   }, [alertParams, eventParams, notificationParams]);
 
+  useSetNewAlerts(
+    noOfMessages => {
+      if (!isAlertPageActive) {
+        dispatch(setNewAlertState(true, false, noOfMessages));
+      }
+    },
+    allAlerts,
+    filteredAlerts,
+    [allAlerts],
+  );
 
-  useSetNewAlerts((noOfMessages) => {
-    if(!isAlertPageActive){
-      dispatch(setNewAlertState(true, false, noOfMessages));
-    }
-  }, allAlerts, filteredAlerts, [allAlerts])
-
-  useSetNewAlerts((noOfMessages) => {
-    if(!isEventPageActive){
-      dispatch(setNewEventState(true, false, noOfMessages));
-    }
-  }, allEvents, filteredEvents, [allEvents])
+  useSetNewAlerts(
+    noOfMessages => {
+      if (!isEventPageActive) {
+        dispatch(setNewEventState(true, false, noOfMessages));
+      }
+    },
+    allEvents,
+    filteredEvents,
+    [allEvents],
+  );
 
   useEffect(() => {
-    const newNotificationsCount = allNotifications.length
-    if (currentNotificationCount && newNotificationsCount > currentNotificationCount) {
+    const newNotificationsCount = allNotifications.length;
+    if (
+      currentNotificationCount &&
+      newNotificationsCount > currentNotificationCount
+    ) {
       let difference = newNotificationsCount - currentNotificationCount;
       if (!isNotificationPageActive)
         dispatch(setNewNotificationState(true, false, difference));
@@ -124,11 +138,7 @@ const pollingHelper = (props) => {
     setCurrentMapRequestCount(newMapRequestCount);
   }, [allMapRequests]);
 
-  return (
-    <>
-      {props.children}
-    </>
-  );
-}
+  return <>{props.children}</>;
+};
 
 export default pollingHelper;

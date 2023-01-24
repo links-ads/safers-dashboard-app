@@ -1,9 +1,10 @@
-import React from 'react'
-import { Link } from 'react-router-dom'
-import { Container, Row, Col } from 'reactstrap'
+import React from 'react';
+
+import { Link } from 'react-router-dom';
+import { Container, Row, Col } from 'reactstrap';
 
 //Import Images
-import error from '../assets/images/error-img.png'
+import error from '../assets/images/error-img.png';
 
 const Pages404 = () => {
   return (
@@ -14,15 +15,11 @@ const Pages404 = () => {
             <Col lg="12">
               <div className="text-center mb-5">
                 <h1 className="display-2 font-weight-medium">
-                  4<i className="bx bx-buoy bx-spin text-primary display-3" />
-                  4
+                  4<i className="bx bx-buoy bx-spin text-primary display-3" />4
                 </h1>
                 <h4 className="text-uppercase">Sorry, page not found</h4>
                 <div className="mt-5 text-center">
-                  <Link
-                    className="btn btn-primary "
-                    to="/"
-                  >
+                  <Link className="btn btn-primary " to="/">
                     Back to Dashboard
                   </Link>
                 </div>
@@ -39,7 +36,7 @@ const Pages404 = () => {
         </Container>
       </div>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Pages404
+export default Pages404;

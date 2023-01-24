@@ -1,13 +1,29 @@
 import React, { useState } from 'react';
+
 import { Formik } from 'formik';
-import { Button, Col, Form, FormGroup, Input, Label, Row, InputGroup, InputGroupText, Alert } from 'reactstrap';
-import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  InputGroup,
+  InputGroupText,
+  Alert,
+} from 'reactstrap';
+import * as Yup from 'yup';
+
+import { getGeneralErrors, getError } from '../../helpers/errorHelper';
+import {
+  passwordHelper,
+  pwdRegEx,
+  pwdValidationTxt,
+} from '../../helpers/passwordHelper';
 import { resetPsw } from '../../store/appAction';
-import { useParams, Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { passwordHelper, pwdRegEx, pwdValidationTxt }  from '../../helpers/passwordHelper'
-import { getGeneralErrors, getError }  from '../../helpers/errorHelper'
 
 const ResetPassword = () => {
   const dispatch = useDispatch();
@@ -19,21 +35,20 @@ const ResetPassword = () => {
 
   const signUpSchema = Yup.object().shape({
     new_password1: Yup.string()
-      .matches(
-        pwdRegEx,
-        pwdValidationTxt
-      )
+      .matches(pwdRegEx, pwdValidationTxt)
       .required('The field cannot be empty'),
-    new_password2: Yup.string()
-      .oneOf([Yup.ref('new_password1')], 'Passwords must match'),
+    new_password2: Yup.string().oneOf(
+      [Yup.ref('new_password1')],
+      'Passwords must match',
+    ),
   });
 
-  if(resetPswRes?.detail) {
+  if (resetPswRes?.detail) {
     return (
-      <div className='forgot-psw'>
+      <div className="forgot-psw">
         <Alert color="success" role="alert">
-          {resetPswRes.detail}. Please <Link to='/auth/sign-in'>Sign in</Link>
-        </Alert>  
+          {resetPswRes.detail}. Please <Link to="/auth/sign-in">Sign in</Link>
+        </Alert>
       </div>
     );
   }
@@ -46,7 +61,7 @@ const ResetPassword = () => {
       }}
       validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
-        dispatch(resetPsw({...values, token, uid}));
+        dispatch(resetPsw({ ...values, token, uid }));
         setSubmitting(false);
       }}
     >
@@ -58,21 +73,19 @@ const ResetPassword = () => {
         handleBlur,
         handleSubmit,
         isSubmitting,
-      }) =>(
+      }) => (
         <>
-          <div className='forgot-psw'>
-            <h1 className='h4 forgot-psw'>Reset your password</h1>  
+          <div className="forgot-psw">
+            <h1 className="h4 forgot-psw">Reset your password</h1>
           </div>
-          <div className='tab-container'>
+          <div className="tab-container">
             <div className="container auth-form">
               {getGeneralErrors(error)}
               <Form onSubmit={handleSubmit} noValidate>
                 <Row form>
                   <Col>
                     <FormGroup className="form-group">
-                      <Label for="new_password1">
-                        New password:
-                      </Label>
+                      <Label for="new_password1">New password:</Label>
                       <InputGroup>
                         <Input
                           id="new_password1"
@@ -86,16 +99,24 @@ const ResetPassword = () => {
                           autoComplete="on"
                         />
                         <InputGroupText>
-                          <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
+                          <i
+                            data-testid="sign-up-password-toggle"
+                            onClick={() => {
+                              setPasswordToggle(!passwordToggle);
+                            }}
+                            className={`fa ${
+                              passwordToggle ? 'fa-eye-slash' : 'fa-eye'
+                            }`}
+                          />
                         </InputGroupText>
                       </InputGroup>
-                      {values.new_password1 && (<>{passwordHelper(values.new_password1)}</>)}
+                      {values.new_password1 && (
+                        <>{passwordHelper(values.new_password1)}</>
+                      )}
                       {getError('new_password1', errors, touched, false)}
                     </FormGroup>
                     <FormGroup className="form-group">
-                      <Label for="new_password2">
-                        Confirm password:
-                      </Label>
+                      <Label for="new_password2">Confirm password:</Label>
                       <InputGroup>
                         <Input
                           id="new_password2"
@@ -109,26 +130,38 @@ const ResetPassword = () => {
                           autoComplete="on"
                         />
                         <InputGroupText>
-                          <i data-testid="sign-up-password-toggle" onClick={() => { setPasswordToggle(!passwordToggle) }} className={`fa ${passwordToggle ? 'fa-eye-slash' : 'fa-eye'}`} />
+                          <i
+                            data-testid="sign-up-password-toggle"
+                            onClick={() => {
+                              setPasswordToggle(!passwordToggle);
+                            }}
+                            className={`fa ${
+                              passwordToggle ? 'fa-eye-slash' : 'fa-eye'
+                            }`}
+                          />
                         </InputGroupText>
                       </InputGroup>
                       {getError('new_password2', errors, touched, false)}
                     </FormGroup>
                   </Col>
                 </Row>
-                <div className='center-sign-in'>
+                <div className="center-sign-in">
                   <Button
                     type="button"
                     className="my-4 sign-in-btn"
                     color="secondary"
                     disabled={isSubmitting}
-                    onClick={()=>{navigate('/auth/sign-in');}}>
+                    onClick={() => {
+                      navigate('/auth/sign-in');
+                    }}
+                  >
                     Cancel
                   </Button>
                   <Button
                     className="my-4 sign-in-btn"
                     color="primary"
-                    disabled={isSubmitting}>
+                    disabled={isSubmitting}
+                  >
                     Change
                   </Button>
                 </div>
@@ -139,6 +172,6 @@ const ResetPassword = () => {
       )}
     </Formik>
   );
-}
+};
 
 export default ResetPassword;

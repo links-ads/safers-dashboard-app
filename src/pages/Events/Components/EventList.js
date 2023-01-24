@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types'
+
+import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
+
+import Alert from './Alert';
+import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
+import PaginationWrapper from '../../../components/Pagination';
+import { MAP_TYPES } from '../../../constants/common';
 import { getAlertIconColorFromContext } from '../../../helpers/mapHelper';
 import { PAGE_SIZE } from '../../../store/events/types';
-import Alert from './Alert';
-import PaginationWrapper from '../../../components/Pagination';
-import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
-import { MAP_TYPES } from '../../../constants/common';
-import { useDispatch } from 'react-redux';
 
 const EventList = ({
   alertId,
@@ -18,18 +20,14 @@ const EventList = ({
   setFavorite,
   setIconLayer,
   setPaginatedAlerts,
-  setSelectedAlert
+  setSelectedAlert,
 }) => {
-
   const dispatch = useDispatch();
   const [, setViewState] = useState({});
 
-  const getIconLayer = (alerts) => {
-    const data = alerts?.map((alert) => {
-      const {
-        geometry,
-        ...properties
-      } = alert;
+  const getIconLayer = alerts => {
+    const data = alerts?.map(alert => {
+      const { geometry, ...properties } = alert;
       return {
         type: 'Feature',
         properties: properties,
@@ -41,13 +39,14 @@ const EventList = ({
       data,
       dispatch,
       setViewState,
-      getPosition: (feature) => feature.geometry.coordinates,
-      getPinColor: feature => getAlertIconColorFromContext(MAP_TYPES.EVENTS,feature),
+      getPosition: feature => feature.geometry.coordinates,
+      getPinColor: feature =>
+        getAlertIconColorFromContext(MAP_TYPES.EVENTS, feature),
       icon: 'flag',
       iconColor: '#ffffff',
       clusterIconSize: 35,
       getPinSize: () => 35,
-      pixelOffset: [-18,-18],
+      pixelOffset: [-18, -18],
       pinSize: 25,
       onGroupClick: true,
       onPointClick: true,
@@ -63,23 +62,28 @@ const EventList = ({
 
   return (
     <>
-      <Row data-testid='event-list'>
-        {
-          paginatedAlerts.map((alert, index) => <Alert
-            key={index}
+      <Row data-testid="event-list">
+        {paginatedAlerts.map(alert => (
+          <Alert
+            key={alert}
             card={alert}
             setSelectedAlert={setSelectedAlert}
             setFavorite={setFavorite}
             alertId={alertId}
-          />)
-        }
+          />
+        ))}
       </Row>
 
-      <Row className='text-center my-1'>
-        <PaginationWrapper pageSize={PAGE_SIZE} list={filteredAlerts} setPageData={setPageData} />
+      <Row className="text-center my-1">
+        <PaginationWrapper
+          pageSize={PAGE_SIZE}
+          list={filteredAlerts}
+          setPageData={setPageData}
+        />
       </Row>
-    </>)
-}
+    </>
+  );
+};
 
 EventList.propTypes = {
   alertId: PropTypes.string,
@@ -87,11 +91,12 @@ EventList.propTypes = {
   filteredAlerts: PropTypes.array,
   paginatedAlerts: PropTypes.array,
   currentPage: PropTypes.number,
-  hideTooltip: PropTypes.func, setPaginatedAlerts: PropTypes.func,
+  hideTooltip: PropTypes.func,
+  setPaginatedAlerts: PropTypes.func,
   setCurrentPage: PropTypes.func,
   setFavorite: PropTypes.func,
   setIconLayer: PropTypes.func,
   setSelectedAlert: PropTypes.func,
-}
+};
 
 export default EventList;

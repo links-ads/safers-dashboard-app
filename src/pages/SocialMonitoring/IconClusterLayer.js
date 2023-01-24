@@ -25,15 +25,19 @@ export default class IconClusterLayer extends CompositeLayer {
   }
 
   updateState({ props, oldProps, changeFlags }) {
-    const rebuildIndex = changeFlags.dataChanged || props.sizeScale !== oldProps.sizeScale;
+    const rebuildIndex =
+      changeFlags.dataChanged || props.sizeScale !== oldProps.sizeScale;
 
     if (rebuildIndex) {
-      const index = new Supercluster({ maxZoom: 16, radius: props.sizeScale * Math.sqrt(2) });
+      const index = new Supercluster({
+        maxZoom: 16,
+        radius: props.sizeScale * Math.sqrt(2),
+      });
       index.load(
         props.data.map(d => ({
           geometry: { coordinates: props.getPosition(d) },
-          properties: d
-        }))
+          properties: d,
+        })),
       );
       this.setState({ index });
     }
@@ -42,7 +46,7 @@ export default class IconClusterLayer extends CompositeLayer {
     if (rebuildIndex || z !== this.state.z) {
       this.setState({
         data: this.state.index.getClusters([-180, -85, 180, 85], z),
-        z
+        z,
       });
     }
   }
@@ -72,9 +76,11 @@ export default class IconClusterLayer extends CompositeLayer {
         iconMapping,
         sizeScale,
         getPosition: d => d.geometry.coordinates,
-        getIcon: d => getIconName(d.properties.cluster ? d.properties.point_count : 1),
-        getSize: d => getIconSize(d.properties.cluster ? d.properties.point_count : 1)
-      })
+        getIcon: d =>
+          getIconName(d.properties.cluster ? d.properties.point_count : 1),
+        getSize: d =>
+          getIconSize(d.properties.cluster ? d.properties.point_count : 1),
+      }),
     );
   }
 }

@@ -1,30 +1,42 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
+
+import { area as getFeatureArea, bbox, bboxPolygon } from '@turf/turf';
+import { FlyToInterpolator } from 'deck.gl';
+import moment from 'moment';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import Slider from 'react-rangeslider';
 import { useDispatch, useSelector } from 'react-redux';
 //import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
-import { FlyToInterpolator } from 'deck.gl';
-import { Nav, Row, Col, NavItem, NavLink, TabPane, TabContent } from 'reactstrap';
-import { withTranslation } from 'react-i18next';
-import PropTypes from 'prop-types';
-
-import moment from 'moment';
-import Slider from 'react-rangeslider';
-import { getAllMapRequests } from '../../store/datalayer/action'
-import DataLayer from './DataLayer';
-import OnDemandDataLayer from './OnDemandDataLayer';
-import FireAndBurnedArea from './FireAndBurnedArea';
-import PostEventMonitoringForm from './PostEventMonitoringForm'
-import WildfireSimulation from './WildfireSimulation'
-import { getAllDataLayers, setNewMapRequestState, setAlertApiParams, setDateRangeDisabled } from '../../store/appAction';
-import { getBoundingBox } from '../../helpers/mapHelper';
-import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants'
-import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
-import { fetchEndpoint } from '../../helpers/apiHelper';
-import { setFilteredAlerts } from '../../store/alerts/action';
-import { MAP } from '../../constants/common';
-
+import {
+  Nav,
+  Row,
+  Col,
+  NavItem,
+  NavLink,
+  TabPane,
+  TabContent,
+} from 'reactstrap';
 import wkt from 'wkt';
-import { isWKTValid } from '../../helpers/mapHelper';
-import { area as getFeatureArea,  bbox, bboxPolygon } from '@turf/turf';
+
+import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
+import DataLayer from './DataLayer';
+import FireAndBurnedArea from './FireAndBurnedArea';
+import OnDemandDataLayer from './OnDemandDataLayer';
+import PostEventMonitoringForm from './PostEventMonitoringForm';
+import WildfireSimulation from './WildfireSimulation';
+import { MAP } from '../../constants/common';
+import { fetchEndpoint } from '../../helpers/apiHelper';
+import { getBoundingBox, isWKTValid } from '../../helpers/mapHelper';
+import { setFilteredAlerts } from '../../store/alerts/action';
+import {
+  getAllDataLayers,
+  setNewMapRequestState,
+  setAlertApiParams,
+  setDateRangeDisabled,
+} from '../../store/appAction';
+import { getAllMapRequests } from '../../store/datalayer/action';
+import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
 
 const DataLayerDashboard = ({ t }) => {
   const dispatch = useDispatch();
@@ -32,14 +44,16 @@ const DataLayerDashboard = ({ t }) => {
 
   const config = useSelector(state => state.common.config);
   const defaultAoi = useSelector(state => state.user?.defaultAoi);
-  const dataLayerBoundingBox = config?.restrict_data_to_aoi ? defaultAoi.features[0].bbox : EUROPEAN_BBOX
+  const dataLayerBoundingBox = config?.restrict_data_to_aoi
+    ? defaultAoi.features[0].bbox
+    : EUROPEAN_BBOX;
 
   const {
     dataLayers,
     metaData,
     isMetaDataLoading,
     timeSeries: timeSeriesData,
-    featureInfo: featureInfoData
+    featureInfo: featureInfoData,
   } = useSelector(state => state.dataLayer);
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests } = useSelector(state => state?.dataLayer);
@@ -47,7 +61,7 @@ const DataLayerDashboard = ({ t }) => {
   const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
-  const [selectOptions, setSelectOptions] = useState({})
+  const [selectOptions, setSelectOptions] = useState({});
   const [dataDomain, setDataDomain] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
   const [sliderValue, setSliderValue] = useState(0);
@@ -57,7 +71,7 @@ const DataLayerDashboard = ({ t }) => {
   const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
-  const [timestamp, setTimestamp] = useState('')
+  const [timestamp, setTimestamp] = useState('');
 
   const { operationalDomainOptions, onDemandDomainOptions } = selectOptions;
 
@@ -69,13 +83,14 @@ const DataLayerDashboard = ({ t }) => {
   //fetch data to populate and 'Domain' selects
   useEffect(() => {
     (async () => {
-      const [operationalDomainOptions, onDemandDomainOptions] = await Promise.all([
-        fetchEndpoint('/data/layers/domains'),
-        fetchEndpoint('/data/maprequests/domains')
-      ])
+      const [operationalDomainOptions, onDemandDomainOptions] =
+        await Promise.all([
+          fetchEndpoint('/data/layers/domains'),
+          fetchEndpoint('/data/maprequests/domains'),
+        ]);
       setSelectOptions({ operationalDomainOptions, onDemandDomainOptions });
-    })()
-  }, [])
+    })();
+  }, []);
 
   useEffect(() => {
     dispatch(setNewMapRequestState(false, true));
@@ -84,8 +99,8 @@ const DataLayerDashboard = ({ t }) => {
       dispatch(setAlertApiParams(undefined));
       dispatch(setNewMapRequestState(false, false));
       dispatch(setDateRangeDisabled(false));
-    }
-  }, []);
+    };
+  }, [dispatch]);
 
   useEffect(() => {
     setSliderValue(0);
@@ -94,16 +109,27 @@ const DataLayerDashboard = ({ t }) => {
     setBitmapLayer(undefined);
     setSliderRangeLimit(0);
     setCurrentLayer(undefined);
-  }, [activeTab])
+  }, [activeTab]);
 
   useEffect(() => {
     setBoundingBox(
-      getBoundingBox(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel, 300, 300));
+      getBoundingBox(
+        defaultAoi.features[0].properties.midPoint,
+        defaultAoi.features[0].properties.zoomLevel,
+        300,
+        300,
+      ),
+    );
   }, [defaultAoi]);
 
   useEffect(() => {
     if (!viewState && dataLayers.length > 0) {
-      setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel));
+      setViewState(
+        getViewState(
+          defaultAoi.features[0].properties.midPoint,
+          defaultAoi.features[0].properties.zoomLevel,
+        ),
+      );
     }
   }, [dataLayers]);
 
@@ -124,11 +150,11 @@ const DataLayerDashboard = ({ t }) => {
       // default_end: false,
       // default_bbox: false,
       // ...dateRangeParams,
-    }
+    };
 
     dispatch(getAllDataLayers(options));
-    dispatch(getAllMapRequests(options, true))
-  }, [dataDomain, sortByDate, dateRange, boundingBox]);
+    dispatch(getAllMapRequests(options, true));
+  }, [dataDomain, sortByDate, dateRange, boundingBox, dispatch]);
 
   useEffect(() => {
     setSliderValue(0);
@@ -136,7 +162,7 @@ const DataLayerDashboard = ({ t }) => {
     if (currentLayer && currentLayer.urls) {
       const urls = getUrls();
       const timestamps = getTimestamps();
-      setTimestamp(timestamps[sliderValue])
+      setTimestamp(timestamps[sliderValue]);
       const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
@@ -148,7 +174,10 @@ const DataLayerDashboard = ({ t }) => {
       if (sliderChangeComplete) {
         const urls = getUrls();
         if (urls[sliderValue]) {
-          const imageUrl = urls[sliderValue].replace('{bbox}', dataLayerBoundingBox);
+          const imageUrl = urls[sliderValue].replace(
+            '{bbox}',
+            dataLayerBoundingBox,
+          );
           setBitmapLayer(getBitmapLayer(imageUrl));
         }
       }
@@ -158,7 +187,6 @@ const DataLayerDashboard = ({ t }) => {
       }
     }
   }, [sliderValue, sliderChangeComplete]);
-
 
   useEffect(() => {
     let nextValue = sliderValue;
@@ -172,8 +200,7 @@ const DataLayerDashboard = ({ t }) => {
           setIsPlaying(false);
         }
       }, SLIDER_SPEED);
-    }
-    else {
+    } else {
       clearInterval(timer.current);
     }
   }, [isPlaying]);
@@ -202,58 +229,70 @@ const DataLayerDashboard = ({ t }) => {
 
       const hasChildren = !!children.length;
 
-      return hasChildren
-        ? [...acc, { ...datum, children }]
-        : acc;
+      return hasChildren ? [...acc, { ...datum, children }] : acc;
     }, []);
-  }
+  };
 
   const backToOnDemandPanel = () => {
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
-  }
+  };
 
   const getUrls = () => Object.values(currentLayer?.urls);
 
   const getTimestamps = () => {
-    return Object.keys(currentLayer?.urls)
-  }
+    return Object.keys(currentLayer?.urls);
+  };
 
-  const getBitmapLayer = (url) => {
+  const getBitmapLayer = url => {
     /*
      extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
      if this is an on-demand layer, it will have been hard-coded by the backend
     */
     const urlSearchParams = new URLSearchParams(url);
     const urlParams = Object.fromEntries(urlSearchParams.entries());
-    const bounds = urlParams?.bbox ? urlParams.bbox.split(',').map(Number) : dataLayerBoundingBox
+    const bounds = urlParams?.bbox
+      ? urlParams.bbox.split(',').map(Number)
+      : dataLayerBoundingBox;
 
     return {
       id: 'bitmap-layer',
       bounds: bounds,
       image: url,
       //_imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-      opacity: 0.5
-    }
-  }
+      opacity: 0.5,
+    };
+  };
 
-  const formatTooltip = value => moment(Object.assign({}, Object.keys(currentLayer?.urls))[value]).format('LLL');
+  const formatTooltip = value =>
+    moment(Object.assign({}, Object.keys(currentLayer?.urls))[value]).format(
+      'LLL',
+    );
 
-  const getSlider = (index) => {
+  const getSlider = index => {
     if (currentLayer?.urls && Object.keys(currentLayer?.urls).length > 1) {
       return (
-        <div style={{
-          position: 'absolute',
-          zIndex: 1,
-          bottom: '0px',
-          width: '70%',
-          margin: '0 15%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center'
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            zIndex: 1,
+            bottom: '0px',
+            width: '70%',
+            margin: '0 15%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <div className="mapboxgl-ctrl mapboxgl-ctrl-group mx-2">
-            <button onClick={() => setIsPlaying(!isPlaying)} className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center" type="button">
-              <i className={`h4 mb-0 mdi ${isPlaying ? 'mdi-stop' : 'mdi-play'}`} style={{ fontSize: '20px' }} />
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="mapboxgl-ctrl-icon d-flex justify-content-center align-items-center"
+              type="button"
+            >
+              <i
+                className={`h4 mb-0 mdi ${isPlaying ? 'mdi-stop' : 'mdi-play'}`}
+                style={{ fontSize: '20px' }}
+              />
             </button>
           </div>
           <Slider
@@ -265,7 +304,7 @@ const DataLayerDashboard = ({ t }) => {
             max={sliderRangeLimit}
             tooltip={true}
             onClick={() => {
-              setSliderChangeComplete(true)
+              setSliderChangeComplete(true);
             }}
             onChangeStart={() => {
               setIsPlaying(false);
@@ -274,32 +313,34 @@ const DataLayerDashboard = ({ t }) => {
             onChange={value => setSliderValue(value)}
             onChangeComplete={() => {
               setIsPlaying(false);
-              setSliderChangeComplete(true)
+              setSliderChangeComplete(true);
             }}
           />
         </div>
       );
     }
 
-    return null
-  }
+    return null;
+  };
 
   const getLegend = () => {
     if (currentLayer?.legend_url) {
       return (
-        <div style={{
-          position: 'absolute',
-          zIndex: 1,
-          top: '0.625rem',
-          left: '0.625rem',
-          display: 'flex',
-          alignItems: 'center',
-          padding: '0.25rem 0.41rem',
-          width: '1.813',
-          height: '1.813',
-          backgroundColor: '#fff',
-          borderRadius: '0.25rem'
-        }}>
+        <div
+          style={{
+            position: 'absolute',
+            zIndex: 1,
+            top: '0.625rem',
+            left: '0.625rem',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '0.25rem 0.41rem',
+            width: '1.813',
+            height: '1.813',
+            backgroundColor: '#fff',
+            borderRadius: '0.25rem',
+          }}
+        >
           <button
             type="button"
             className="btn float-start p-0"
@@ -311,7 +352,7 @@ const DataLayerDashboard = ({ t }) => {
         </div>
       );
     }
-  }
+  };
 
   const getViewState = (midPoint, zoomLevel = 4) => ({
     longitude: midPoint[0],
@@ -320,11 +361,16 @@ const DataLayerDashboard = ({ t }) => {
     pitch: 0,
     bearing: 0,
     transitionDuration: 1000,
-    transitionInterpolator: new FlyToInterpolator()
-  })
+    transitionInterpolator: new FlyToInterpolator(),
+  });
 
   const handleResetAOI = useCallback(() => {
-    setViewState(getViewState(defaultAoi.features[0].properties.midPoint, defaultAoi.features[0].properties.zoomLevel))
+    setViewState(
+      getViewState(
+        defaultAoi.features[0].properties.midPoint,
+        defaultAoi.features[0].properties.zoomLevel,
+      ),
+    );
   }, []);
 
   const sharedMapLayersProps = {
@@ -348,7 +394,7 @@ const DataLayerDashboard = ({ t }) => {
     showLegend,
     legendUrl: currentLayer?.legend_url,
     sliderChangeComplete,
-    resetMap
+    resetMap,
   };
 
   const isRasterSizeWithinLimits = (features, spatial_resolution) => {
@@ -359,16 +405,21 @@ const DataLayerDashboard = ({ t }) => {
       const polygon = features?.geometry ? features.geometry : features;
       // use Bounding box as that's what affects raster size, not the polygon area
       const bboxArea = getFeatureArea(bboxPolygon(bbox(polygon)));
-      const maxValidArea = Math.pow(spatial_resolution * MAX_RASTER_SIZE,2.0);
+      const maxValidArea = Math.pow(spatial_resolution * MAX_RASTER_SIZE, 2.0);
       // Keeping these commented out as they're really useful for troubleshooting
       //console.log(`max valid area at ${spatial_resolution} is ${maxValidArea/1000000.0}km^2, selection is ${bboxArea/1000000}km^2`)
       //console.log(`is valid is ${bboxArea < maxValidArea}`)
       return bboxArea < maxValidArea;
     }
     return false;
-  }
+  };
 
-  const mapInputOnChange  = (value, setFieldValue, checkRasterSize=false, resolution=null) => {
+  const mapInputOnChange = (
+    value,
+    setFieldValue,
+    checkRasterSize = false,
+    resolution = null,
+  ) => {
     // NB not called if map is used, only if paste/typed into field
     setFieldValue('mapSelection', getGeoFeatures(value));
     if (!value) {
@@ -378,28 +429,27 @@ const DataLayerDashboard = ({ t }) => {
       setFieldValue('isMapAreaValidWKT', isGeometryValid);
       const features = wkt.parse(value);
       if (features) {
-        const isAreaValid = checkRasterSize ? isRasterSizeWithinLimits(features, resolution) : Math.ceil(getFeatureArea(features)) <= MAP.MAX_GEOMETRY_AREA.value;
+        const isAreaValid = checkRasterSize
+          ? isRasterSizeWithinLimits(features, resolution)
+          : Math.ceil(getFeatureArea(features)) <= MAP.MAX_GEOMETRY_AREA.value;
         setFieldValue('isMapAreaValid', isAreaValid);
         setFieldValue('isMapAreaValidWKT', true);
       }
     }
-  }
-
+  };
 
   return (
-    <div className='page-content'>
-      <div className='mx-2 sign-up-aoi-map-bg'>
+    <div className="page-content">
+      <div className="mx-2 sign-up-aoi-map-bg">
         <Row>
-          <Col xl={5} className='mb-3'>
-            <Row className='d-flex align-items-baseline'>
-              <Col xl={4} className='d-flex align-items-baseline'>
-                <p className='alert-title'>
-                  {t('Data Layers')}
-                </p>
+          <Col xl={5} className="mb-3">
+            <Row className="d-flex align-items-baseline">
+              <Col xl={4} className="d-flex align-items-baseline">
+                <p className="alert-title">{t('Data Layers')}</p>
                 <button
                   type="button"
                   className="btn float-end mt-1 py-0 px-1"
-                  aria-label='refresh-events'
+                  aria-label="refresh-events"
                   onClick={() => {
                     dispatch(setFilteredAlerts(allMapRequests));
                   }}
@@ -409,21 +459,33 @@ const DataLayerDashboard = ({ t }) => {
               </Col>
               <Col xl={8}>
                 {activeTab < 2 ? (
-                  <Nav className='d-flex flex-nowrap' pills fill>
+                  <Nav className="d-flex flex-nowrap" pills fill>
                     <NavItem>
                       <NavLink
-                        className={activeTab === DATA_LAYERS_PANELS.mapLayers ? 'active' : ''}
-                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.mapLayers)}
+                        className={
+                          activeTab === DATA_LAYERS_PANELS.mapLayers
+                            ? 'active'
+                            : ''
+                        }
+                        onClick={() =>
+                          setActiveTab(DATA_LAYERS_PANELS.mapLayers)
+                        }
                       >
                         {t('operational-map-layer', { ns: 'dataLayers' })}
                       </NavLink>
                     </NavItem>
                     <NavItem>
                       <NavLink
-                        className={activeTab === DATA_LAYERS_PANELS.onDemandMapLayers ? 'active' : ''}
-                        onClick={() => setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)}
+                        className={
+                          activeTab === DATA_LAYERS_PANELS.onDemandMapLayers
+                            ? 'active'
+                            : ''
+                        }
+                        onClick={() =>
+                          setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers)
+                        }
                       >
-                        {t('on-demand-map-layer', {ns: 'dataLayers'})}
+                        {t('on-demand-map-layer', { ns: 'dataLayers' })}
                       </NavLink>
                     </NavItem>
                   </Nav>
@@ -435,27 +497,31 @@ const DataLayerDashboard = ({ t }) => {
         </Row>
         <TabContent activeTab={activeTab}>
           <TabPane tabId={DATA_LAYERS_PANELS.mapLayers}>
-            {activeTab === DATA_LAYERS_PANELS.mapLayers && <DataLayer
-              operationalMapLayers={filterNodesByProperty(dataLayers, {
-                domain: dataDomain
-              })}
-              operationalDomainOptions={operationalDomainOptions}
-              dispatch={dispatch}
-              metaData={metaData}
-              isMetaDataLoading={isMetaDataLoading}
-              {...sharedMapLayersProps}
-            />}
+            {activeTab === DATA_LAYERS_PANELS.mapLayers && (
+              <DataLayer
+                operationalMapLayers={filterNodesByProperty(dataLayers, {
+                  domain: dataDomain,
+                })}
+                operationalDomainOptions={operationalDomainOptions}
+                dispatch={dispatch}
+                metaData={metaData}
+                isMetaDataLoading={isMetaDataLoading}
+                {...sharedMapLayersProps}
+              />
+            )}
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.onDemandMapLayers}>
-            {activeTab === DATA_LAYERS_PANELS.onDemandMapLayers && <OnDemandDataLayer
-              mapRequests={filterNodesByProperty(allMapRequests, {
-                domain: dataDomain
-              })}
-              onDemandDomainOptions={onDemandDomainOptions}
-              dispatch={dispatch}
-              setActiveTab={setActiveTab}
-              {...sharedMapLayersProps}
-            />}
+            {activeTab === DATA_LAYERS_PANELS.onDemandMapLayers && (
+              <OnDemandDataLayer
+                mapRequests={filterNodesByProperty(allMapRequests, {
+                  domain: dataDomain,
+                })}
+                onDemandDomainOptions={onDemandDomainOptions}
+                dispatch={dispatch}
+                setActiveTab={setActiveTab}
+                {...sharedMapLayersProps}
+              />
+            )}
           </TabPane>
           <TabPane tabId={DATA_LAYERS_PANELS.fireAndBurnedAreas}>
             {/* ternary here to unmount and clear form */}
@@ -498,7 +564,7 @@ const DataLayerDashboard = ({ t }) => {
 };
 
 DataLayerDashboard.propTypes = {
-  t: PropTypes.func
-}
+  t: PropTypes.func,
+};
 
 export default withTranslation(['common', 'dataLayers'])(DataLayerDashboard);

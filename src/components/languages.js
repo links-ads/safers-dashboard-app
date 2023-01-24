@@ -1,10 +1,9 @@
-import ukFlag from '../assets/images/flags/uk.png'
-import france from '../assets/images/flags/france.jpg'
-import germany from '../assets/images/flags/germany.jpg'
-import greece from '../assets/images/flags/greece.jpg'
-import italy from '../assets/images/flags/italy.jpg'
-import spain from '../assets/images/flags/spain.jpg'
-
+import france from '../assets/images/flags/france.jpg';
+import germany from '../assets/images/flags/germany.jpg';
+import greece from '../assets/images/flags/greece.jpg';
+import italy from '../assets/images/flags/italy.jpg';
+import spain from '../assets/images/flags/spain.jpg';
+import ukFlag from '../assets/images/flags/uk.png';
 
 const languages = {
   en: {
@@ -31,6 +30,6 @@ const languages = {
     label: 'Spanish',
     flag: spain,
   },
-}
+};
 
-export default languages
+export default languages;

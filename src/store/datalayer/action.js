@@ -1,40 +1,39 @@
-import * as actionTypes from './types';
-import { endpoints } from '../../api/endpoints';
-import * as api from '../../api/base';
 import queryString from 'query-string';
 import toastr from 'toastr';
 
+import * as actionTypes from './types';
+import * as api from '../../api/base';
+import { endpoints } from '../../api/endpoints';
+
 // data layers
 
-export const getAllDataLayers = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.dataLayers.getAll.concat('?', queryString.stringify(options)));
+export const getAllDataLayers = options => async dispatch => {
+  const response = await api.get(
+    endpoints.dataLayers.getAll.concat('?', queryString.stringify(options)),
+  );
   if (response.status === 200) {
     return dispatch(getDataLayersSuccess(response.data));
-  }
-  else
-    return dispatch(getDataLayersFail(response.error));
+  } else return dispatch(getDataLayersFail(response.error));
 };
-const getDataLayersSuccess = (DataLayers) => {
+const getDataLayersSuccess = DataLayers => {
   return {
     type: actionTypes.GET_DATA_LAYERS_SUCCESS,
-    payload: DataLayers
+    payload: DataLayers,
   };
 };
-const getDataLayersFail = (error) => {
+const getDataLayersFail = error => {
   return {
     type: actionTypes.GET_DATA_LAYERS_FAIL,
-    payload: error
+    payload: error,
   };
 };
 
-export const getMetaData = (endpoint) => async (dispatch) => {
+export const getMetaData = endpoint => async dispatch => {
   dispatch(metaDataLoading());
   const response = await api.get(endpoint);
   if (response.status === 200) {
     return dispatch(getMetaDataSuccess(response.data));
-  }
-  else
-    return dispatch(getMetaDataFail(response.error));
+  } else return dispatch(getMetaDataFail(response.error));
 };
 
 const metaDataLoading = () => {
@@ -48,29 +47,30 @@ export const resetMetaData = () => {
     type: actionTypes.META_DATA_RESET,
   };
 };
-const getMetaDataSuccess = (DataLayers) => {
+const getMetaDataSuccess = DataLayers => {
   return {
     type: actionTypes.GET_META_DATA_SUCCESS,
-    payload: DataLayers
+    payload: DataLayers,
   };
 };
-const getMetaDataFail = (error) => {
+const getMetaDataFail = error => {
   return {
     type: actionTypes.GET_META_DATA_FAIL,
-    payload: error
+    payload: error,
   };
 };
 
-export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) => {
+export const getDataLayerTimeSeriesData = (options, type) => async dispatch => {
   // const response = await api.get('https://geoserver-test.safers-project.cloud/geoserver/ermes/wms'.concat('?', queryString.stringify(options)));
   let error = '';
   if (type === 'GetTimeSeries') {
-    const FIRST_REQUEST = 0 // Index
+    const FIRST_REQUEST = 0; // Index
     let timeSeriesStr = '';
     for (const [request_index, url] of options.entries()) {
       const response = await fetch(url);
-      if (api.isSuccessResp(response.status)) {// Remove longitude / latitude and time entries in followup responses
-        if(request_index > FIRST_REQUEST){
+      if (api.isSuccessResp(response.status)) {
+        // Remove longitude / latitude and time entries in followup responses
+        if (request_index > FIRST_REQUEST) {
           /*
             Each response contain following 3 lines in CSV format
             # longitude
@@ -80,133 +80,145 @@ export const getDataLayerTimeSeriesData = (options, type) => async (dispatch) =>
           */
           const txt = await response.text();
           const tempArr = txt.split('\n');
-          tempArr.splice(0,3);
+          tempArr.splice(0, 3);
           timeSeriesStr += tempArr.join('\n');
         } else {
-          timeSeriesStr = await response.text()
+          timeSeriesStr = await response.text();
         }
       } else {
         error = response?.error;
         break;
       }
     }
-    if(!error.length) {
+    if (!error.length) {
       return dispatch(getTimeSeriesDataSuccess(timeSeriesStr));
     }
   }
 
   if (type === 'GetFeatureInfo') {
     const response = await fetch(options);
-    if(api.isSuccessResp(response.status)) {
+    if (api.isSuccessResp(response.status)) {
       return dispatch(getFeatureInfoSuccess(await response.json()));
     } else {
       error = response?.error;
     }
   }
   return dispatch(getTimeSeriesDataFail(error));
-
 };
-const getTimeSeriesDataSuccess = (TimeSeries) => {
+const getTimeSeriesDataSuccess = TimeSeries => {
   return {
     type: actionTypes.GET_TIME_SERIES_SUCCESS,
-    payload: TimeSeries
+    payload: TimeSeries,
   };
 };
-const getFeatureInfoSuccess = (FeatureInfo) => {
+const getFeatureInfoSuccess = FeatureInfo => {
   return {
     type: actionTypes.GET_FEATURE_INFO_SUCCESS,
-    payload: FeatureInfo
+    payload: FeatureInfo,
   };
 };
-const getTimeSeriesDataFail = (error) => {
+const getTimeSeriesDataFail = error => {
   return {
     type: actionTypes.GET_TIME_SERIES_FAIL,
-    payload: error
+    payload: error,
   };
 };
 
 export const resetDataLayersResponseState = () => {
   return {
     type: actionTypes.RESET_DATA_LAYER_STATE,
-  }
+  };
 };
 
 // Request a map (POST)
-export const postMapRequest = (body) => async (dispatch) => {
+export const postMapRequest = body => async dispatch => {
   const response = await api.post(endpoints.dataLayers.mapRequests, body);
   if (response.status === 201) {
-    toastr.success(`Successfully create a map request called ${response?.data.title}`, response.data?.category_info?.group)
+    toastr.success(
+      `Successfully create a map request called ${response?.data.title}`,
+      response.data?.category_info?.group,
+    );
     return dispatch(postMapRequestSuccess(response.data));
-  }
-  else {
-    toastr.error(`Failure: ${response.status} - ${response.statusText}`, 'Post Map Error')
+  } else {
+    toastr.error(
+      `Failure: ${response.status} - ${response.statusText}`,
+      'Post Map Error',
+    );
     return dispatch(postMapRequestFail(response.error));
   }
 };
 
-const postMapRequestSuccess = (mapRequest) => {
+const postMapRequestSuccess = mapRequest => {
   return {
     type: actionTypes.POST_MAP_REQUESTS_SUCCESS,
-    payload: mapRequest
+    payload: mapRequest,
   };
 };
-const postMapRequestFail = (error) => {
+const postMapRequestFail = error => {
   return {
     type: actionTypes.POST_MAP_REQUESTS_FAIL,
-    payload: error
+    payload: error,
   };
 };
 
-export const deleteMapRequest = (id) => async (dispatch) => {
+export const deleteMapRequest = id => async dispatch => {
   const response = await api.del(`${endpoints.dataLayers.mapRequests}${id}`);
   if (response.status === 204) {
-    toastr.success(`Successfully deleted map request ${id}`, 'Delete Map Request')
-  }
-  else {
-    toastr.error(`Failure: ${response.status} - ${response.statusText}`, 'Delete Map Request Error')
+    toastr.success(
+      `Successfully deleted map request ${id}`,
+      'Delete Map Request',
+    );
+  } else {
+    toastr.error(
+      `Failure: ${response.status} - ${response.statusText}`,
+      'Delete Map Request Error',
+    );
     return dispatch({
       type: actionTypes.DELETE_MAP_REQUESTS_FAIL,
-      payload: response.error
+      payload: response.error,
     });
   }
 };
 
-
 // get All Map Requests (GET)
-export const getAllMapRequests = (options) => async (dispatch) => {
-  const response = await api.get(endpoints.dataLayers.mapRequests.concat('?', queryString.stringify(options)));
+export const getAllMapRequests = options => async dispatch => {
+  const response = await api.get(
+    endpoints.dataLayers.mapRequests.concat(
+      '?',
+      queryString.stringify(options),
+    ),
+  );
   if (response.status === 200) {
     return dispatch(getAllMapRequestsSuccess(response.data));
-  }
-  else
-    return dispatch(getAllMapRequestsFail(response.error));
+  } else return dispatch(getAllMapRequestsFail(response.error));
 };
 
-const getAllMapRequestsSuccess = (mapRequests) => {
+const getAllMapRequestsSuccess = mapRequests => {
   return {
     type: actionTypes.GET_ALL_MAP_REQUESTS_SUCCESS,
-    payload: mapRequests
+    payload: mapRequests,
   };
 };
 
-const getAllMapRequestsFail = (error) => {
+const getAllMapRequestsFail = error => {
   return {
     type: actionTypes.GET_ALL_MAP_REQUESTS_FAIL,
-    payload: error
+    payload: error,
   };
 };
 
 // get All Filtered Map Requests (GET)
-export const getAllFilteredMapRequests = (options) => async (dispatch) => {
-  const url = endpoints.dataLayers.mapRequests.concat('?', queryString.stringify(options))
+export const getAllFilteredMapRequests = options => async dispatch => {
+  const url = endpoints.dataLayers.mapRequests.concat(
+    '?',
+    queryString.stringify(options),
+  );
 
   const response = await api.get(url);
 
   if (response.status === 200) {
     return dispatch(getAllFilteredMapRequestsSuccess(response.data));
-  }
-  else
-    return dispatch(getAllFilteredMapRequestsFail(response.error));
+  } else return dispatch(getAllFilteredMapRequestsFail(response.error));
 };
 
 export const setNewMapRequestState = (eventState, pageState, newItemsCount) => {
@@ -214,34 +226,34 @@ export const setNewMapRequestState = (eventState, pageState, newItemsCount) => {
     type: actionTypes.SET_NEW_MAP_REQUEST_STATE,
     isNewAlert: eventState,
     isPageActive: pageState,
-    newItemsCount
-  }
+    newItemsCount,
+  };
 };
 
-const getAllFilteredMapRequestsSuccess = (mapRequests) => {
+const getAllFilteredMapRequestsSuccess = mapRequests => {
   return {
     type: actionTypes.GET_ALL_FILTERED_MAP_REQUESTS_SUCCESS,
-    payload: mapRequests
+    payload: mapRequests,
   };
 };
 
-const getAllFilteredMapRequestsFail = (error) => {
+const getAllFilteredMapRequestsFail = error => {
   return {
     type: actionTypes.GET_ALL_FILTERED_MAP_REQUESTS_FAIL,
-    payload: error
+    payload: error,
   };
 };
 
-export const setMapRequestParams = (payload) => {
+export const setMapRequestParams = payload => {
   return {
     type: actionTypes.SET_MAP_REQUEST_PARAMS,
     payload,
   };
 };
 
-export const setSelectedFireBreak = (payload) => {
+export const setSelectedFireBreak = payload => {
   return {
     type: actionTypes.SET_SELECTED_FIRE_BREAK,
-    payload
-  }
-}
+    payload,
+  };
+};

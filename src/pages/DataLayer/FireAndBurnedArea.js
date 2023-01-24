@@ -1,73 +1,80 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Button, Input, FormGroup, Label, Row, Col, Card, Form } from 'reactstrap';
+
 import { Formik } from 'formik';
 import moment from 'moment';
-import MapSection from './Map';
-import * as Yup from 'yup'
-import { getGeneralErrors, getError }  from '../../helpers/errorHelper';
-import { withTranslation } from 'react-i18next'
-import 'react-rangeslider/lib/index.css'
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import { useDispatch, useSelector } from 'react-redux';
 import {
-  postMapRequest,
-  getAllMapRequests
-} from '../../store/appAction';
+  Button,
+  Input,
+  FormGroup,
+  Label,
+  Row,
+  Col,
+  Card,
+  Form,
+} from 'reactstrap';
 import wkt from 'wkt';
+import * as Yup from 'yup';
+
+import MapSection from './Map';
 import MapInput from '../../components/BaseMap/MapInput';
+import { getGeneralErrors, getError } from '../../helpers/errorHelper';
+import 'react-rangeslider/lib/index.css';
+import { postMapRequest, getAllMapRequests } from '../../store/appAction';
 import { getWKTfromFeature } from '../../store/utility';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
-  return this.test(
-    'max30Days',
-    message,
-    (date, { parent }) => {
-      const startDate = parent.startDate;
+  return this.test('max30Days', message, (date, { parent }) => {
+    const startDate = parent.startDate;
 
-      // if startDate not yet been entered, allow validation to pass
-      if (startDate.toString() === 'Invalid Date') {
-        return true;
-      }
-
-      const rangeCheck = moment(date).isBetween(
-        startDate,
-        moment(startDate).add(30, 'days')
-      )
-
-      return rangeCheck;
+    // if startDate not yet been entered, allow validation to pass
+    if (startDate.toString() === 'Invalid Date') {
+      return true;
     }
-  )
-})
+
+    const rangeCheck = moment(date).isBetween(
+      startDate,
+      moment(startDate).add(30, 'days'),
+    );
+
+    return rangeCheck;
+  });
+});
 
 const FireAndBurnedArea = ({
   t,
   handleResetAOI,
   backToOnDemandPanel,
   mapInputOnChange,
-  isRasterSizeWithinLimits
+  isRasterSizeWithinLimits,
 }) => {
   const dispatch = useDispatch();
   const error = useSelector(state => state.auth.error);
 
   const fireAndBurnedAreaSchema = Yup.object().shape({
-    dataLayerType: Yup.array()
-      .required(t('field-empty-err', { ns: 'common' })),
+    dataLayerType: Yup.array().required(t('field-empty-err', { ns: 'common' })),
     requestTitle: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     mapSelection: Yup.array()
-      .isValidWKTString(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
-      .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
-      .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
-    isMapAreaValid: Yup.boolean()
-      .oneOf([true], t('field-err-wkt-large-area', {ns: 'dataLayers'})),
-    isMapAreaValidWKT: Yup.boolean()
-      .oneOf([true], t('field-err-vallid-wkt', {ns: 'common'})),
+      .isValidWKTString(t('field-err-vallid-wkt', { ns: 'dataLayers' }))
+      .typeError(t('field-err-vallid-wkt', { ns: 'dataLayers' }))
+      .required(t('field-err-vallid-wkt', { ns: 'dataLayers' })),
+    isMapAreaValid: Yup.boolean().oneOf(
+      [true],
+      t('field-err-wkt-large-area', { ns: 'dataLayers' }),
+    ),
+    isMapAreaValidWKT: Yup.boolean().oneOf(
+      [true],
+      t('field-err-vallid-wkt', { ns: 'common' }),
+    ),
     startDate: Yup.date()
-      .typeError(t('field-err-valid-date' , { ns: 'common' }))
+      .typeError(t('field-err-valid-date', { ns: 'common' }))
       .required(t('field-empty-err', { ns: 'common' })),
     endDate: Yup.date()
-      .typeError(t('field-err-valid-date' , { ns: 'common' }))
+      .typeError(t('field-err-valid-date', { ns: 'common' }))
       .required(t('field-empty-err', { ns: 'common' }))
-      .max30Days(t('field-err-endDate-duration', {ns: 'dataLayers'})),
+      .max30Days(t('field-err-endDate-duration', { ns: 'dataLayers' })),
     frequency: Yup.number()
       .integer(t('field-err-integer'))
       .typeError(t('field-err-number'))
@@ -75,12 +82,12 @@ const FireAndBurnedArea = ({
       .optional(),
     resolution: Yup.number()
       .typeError(t('field-err-number'))
-      .min(10, t('field-err-min', {min: 10}))
-      .max(60, t('field-err-max', {max: 60}))
-      .optional(t('field-err-between', {min: 10, max: 60})),
+      .min(10, t('field-err-min', { min: 10 }))
+      .max(60, t('field-err-max', { max: 60 }))
+      .optional(t('field-err-between', { min: 10, max: 60 })),
   });
 
-  const onSubmit = (formData) => {
+  const onSubmit = formData => {
     const payload = {
       data_types: formData.dataLayerType,
       geometry: getWKTfromFeature(formData.mapSelection),
@@ -91,20 +98,20 @@ const FireAndBurnedArea = ({
         frequency: formData.frequency || null,
         resolution: formData.resolution || null,
       },
-    }
+    };
 
     dispatch(postMapRequest(payload));
-    dispatch(getAllMapRequests())
-    backToOnDemandPanel()
-  }
+    dispatch(getAllMapRequests());
+    backToOnDemandPanel();
+  };
 
   // hardcoded for now, this will be replaced with an API call in time
   const layerTypes = [
-    {id: 36004, name:'Impact quantification'},
-    {id: 36005, name:'Fire front and smoke'},
-    {id: 36003, name:'Burned area geospatial image'},
-    {id: 36002, name:'Burned area severity map'},
-    {id: 36001, name:'Burned area delineation map'}
+    { id: 36004, name: 'Impact quantification' },
+    { id: 36005, name: 'Fire front and smoke' },
+    { id: 36003, name: 'Burned area geospatial image' },
+    { id: 36002, name: 'Burned area severity map' },
+    { id: 36001, name: 'Burned area delineation map' },
   ];
 
   return (
@@ -137,25 +144,32 @@ const FireAndBurnedArea = ({
               setFieldValue,
               isSubmitting,
             }) => {
-              return(
-                <Form onSubmit={handleSubmit} className='d-flex flex-column justify-content-between'>
+              return (
+                <Form
+                  onSubmit={handleSubmit}
+                  className="d-flex flex-column justify-content-between"
+                >
                   <Row>
-                    <Col xl={5} className='d-flex flex-column justify-content-between'>
+                    <Col
+                      xl={5}
+                      className="d-flex flex-column justify-content-between"
+                    >
                       <Row>
                         <Row>
                           <Col>
                             <h4>{t('requestMap')}</h4>
                           </Col>
                           <Col className="d-flex justify-content-end align-items-center">
-                            <Button color='link'
-                              onClick={handleResetAOI} className='p-0'>
-                              {t('default-aoi', {ns: 'common'})}
+                            <Button
+                              color="link"
+                              onClick={handleResetAOI}
+                              className="p-0"
+                            >
+                              {t('default-aoi', { ns: 'common' })}
                             </Button>
                           </Col>
                         </Row>
-                        <Row>
-                          {getGeneralErrors(error)}
-                        </Row>
+                        <Row>{getGeneralErrors(error)}</Row>
                         <Row>
                           <h5>{t('fireAndBurnedAreas')}</h5>
                         </Row>
@@ -176,14 +190,18 @@ const FireAndBurnedArea = ({
                               value={values.dataLayerType}
                               multiple
                             >
-                              <option disabled value=''>
-                                {t('selectLayerTypes', {ns: 'dataLayers'})}
+                              <option disabled value="">
+                                {t('selectLayerTypes', { ns: 'dataLayers' })}
                               </option>
                               {layerTypes.map(item => (
-                                <option key={`option_${item.name}`} value={item.id}>{`${item.id} - ${item.name}`}</option>
+                                <option
+                                  key={`option_${item.name}`}
+                                  value={item.id}
+                                >{`${item.id} - ${item.name}`}</option>
                               ))}
                             </Input>
-                            {touched.dataLayerType && getError('dataLayerType', errors, touched)}
+                            {touched.dataLayerType &&
+                              getError('dataLayerType', errors, touched)}
                           </FormGroup>
                         </Row>
                         <Row>
@@ -202,37 +220,66 @@ const FireAndBurnedArea = ({
                               value={values.requestTitle}
                               placeholder="[Type Request Title]"
                             />
-                            {touched.requestTitle && getError('requestTitle', errors, touched, false)}
+                            {touched.requestTitle &&
+                              getError('requestTitle', errors, touched, false)}
                           </FormGroup>
                         </Row>
                         <Row>
-                          <FormGroup className='form-group'>
+                          <FormGroup className="form-group">
                             <Label for="mapSelection">
                               {t('mapSelection')}
                             </Label>
                             <MapInput
-                              className={errors.mapSelection ? 'is-invalid' : ''}
+                              className={
+                                errors.mapSelection ? 'is-invalid' : ''
+                              }
                               id="mapSelection"
                               name="mapSelection"
                               type="textarea"
                               rows="5"
-                              setCoordinates={(value) => {  mapInputOnChange(value, setFieldValue, true, values.resolution);  }}
+                              setCoordinates={value => {
+                                mapInputOnChange(
+                                  value,
+                                  setFieldValue,
+                                  true,
+                                  values.resolution,
+                                );
+                              }}
                               onBlur={handleBlur}
-                              coordinates={getWKTfromFeature(values.mapSelection)}
+                              coordinates={getWKTfromFeature(
+                                values.mapSelection,
+                              )}
                               placeholder={t('mapSelectionTxtGuide')}
                             />
-                            {touched.mapSelection && getError('mapSelection', errors, touched, false)}
-                            {values.isMapAreaValid === false && values.mapSelection !== '' ? getError('isMapAreaValid', errors, touched, false, true) : null}
-                            {values.isMapAreaValidWKT === false && values.mapSelection !== '' ? getError('isMapAreaValidWKT', errors, touched, false, true) : null}
+                            {touched.mapSelection &&
+                              getError('mapSelection', errors, touched, false)}
+                            {values.isMapAreaValid === false &&
+                            values.mapSelection !== ''
+                              ? getError(
+                                  'isMapAreaValid',
+                                  errors,
+                                  touched,
+                                  false,
+                                  true,
+                                )
+                              : null}
+                            {values.isMapAreaValidWKT === false &&
+                            values.mapSelection !== ''
+                              ? getError(
+                                  'isMapAreaValidWKT',
+                                  errors,
+                                  touched,
+                                  false,
+                                  true,
+                                )
+                              : null}
                           </FormGroup>
                         </Row>
                         <Row>
-                          <FormGroup className='form-group'>
+                          <FormGroup className="form-group">
                             <Row>
                               <Col>
-                                <Label for="startDate">
-                                  {t('startDate')}
-                                </Label>
+                                <Label for="startDate">{t('startDate')}</Label>
                                 <Input
                                   id="startDate"
                                   name="startDate"
@@ -247,30 +294,27 @@ const FireAndBurnedArea = ({
                                 {getError('startDate', errors, touched, false)}
                               </Col>
                               <Col>
-                                <Label for="endDate">
-                                  {t('endDate')}
-                                </Label>
+                                <Label for="endDate">{t('endDate')}</Label>
                                 <Input
                                   id="endDate"
                                   name="endDate"
                                   type="date"
-                                  className={
-                                    errors.endDate ? 'is-invalid' : ''
-                                  }
+                                  className={errors.endDate ? 'is-invalid' : ''}
                                   onChange={handleChange}
                                   onBlur={handleBlur}
                                   value={values.endDate}
                                 />
-                                {touched.endDate && getError('endDate', errors, touched, false)}
+                                {touched.endDate &&
+                                  getError('endDate', errors, touched, false)}
                               </Col>
                             </Row>
                           </FormGroup>
                         </Row>
                         <Row>
                           <FormGroup>
-                            <Row className='d-flex align-items-baseline'>
+                            <Row className="d-flex align-items-baseline">
                               <Col xl={3}>
-                                <Label for="frequency" className='mb-0'>
+                                <Label for="frequency" className="mb-0">
                                   {t('frequency')}
                                 </Label>
                               </Col>
@@ -284,10 +328,11 @@ const FireAndBurnedArea = ({
                                   }
                                   onChange={handleChange}
                                   onBlur={handleBlur}
-                                  placeholder='[type here]'
+                                  placeholder="[type here]"
                                   value={values.frequency}
                                 />
-                                {touched.frequency && getError('frequency', errors, touched, false)}
+                                {touched.frequency &&
+                                  getError('frequency', errors, touched, false)}
                               </Col>
                               <Col xl={5} />
                             </Row>
@@ -295,9 +340,9 @@ const FireAndBurnedArea = ({
                         </Row>
                         <Row>
                           <FormGroup>
-                            <Row className='d-flex align-items-baseline'>
+                            <Row className="d-flex align-items-baseline">
                               <Col xl={3}>
-                                <Label for="resolution" className='mb-0'>
+                                <Label for="resolution" className="mb-0">
                                   {t('resolution')}
                                 </Label>
                               </Col>
@@ -306,7 +351,7 @@ const FireAndBurnedArea = ({
                                   id="resolution"
                                   name="resolution"
                                   type="num"
-                                  placeholder='10'
+                                  placeholder="10"
                                   className={
                                     errors.resolution ? 'is-invalid' : ''
                                   }
@@ -314,15 +359,31 @@ const FireAndBurnedArea = ({
                                     // NB not called if map is used, only if paste/type into field
                                     const parsedValue = parseInt(value);
                                     setFieldValue('resolution', parsedValue);
-                                    const features = wkt.parse(values.mapSelection);
-                                    const isAreaValid = isRasterSizeWithinLimits(features, parsedValue,true);
-                                    setFieldValue('isMapAreaValid', isAreaValid);
+                                    const features = wkt.parse(
+                                      values.mapSelection,
+                                    );
+                                    const isAreaValid =
+                                      isRasterSizeWithinLimits(
+                                        features,
+                                        parsedValue,
+                                        true,
+                                      );
+                                    setFieldValue(
+                                      'isMapAreaValid',
+                                      isAreaValid,
+                                    );
                                     setFieldValue('isMapAreaValidWKT', true);
                                   }}
                                   onBlur={handleBlur}
                                   value={values.resolution}
                                 />
-                                {touched.resolution && getError('resolution', errors, touched, false)}
+                                {touched.resolution &&
+                                  getError(
+                                    'resolution',
+                                    errors,
+                                    touched,
+                                    false,
+                                  )}
                               </Col>
                               <Col xl={5} />
                             </Row>
@@ -335,14 +396,14 @@ const FireAndBurnedArea = ({
                             <Button
                               type="submit"
                               disabled={isSubmitting}
-                              className='btn btn-primary'
+                              className="btn btn-primary"
                               color="primary"
                             >
                               {t('request')}
                             </Button>
                             <Button
                               onClick={backToOnDemandPanel}
-                              className='btn btn-secondary ms-3'
+                              className="btn btn-secondary ms-3"
                               color="secondary"
                             >
                               {t('cancel')}
@@ -351,8 +412,8 @@ const FireAndBurnedArea = ({
                         </Row>
                       </Row>
                     </Col>
-                    <Col xl={7} className='mx-auto'>
-                      <Card className='map-card mb-0' style={{ height: 670 }}>
+                    <Col xl={7} className="mx-auto">
+                      <Card className="map-card mb-0" style={{ height: 670 }}>
                         <MapSection
                           setCoordinates={(features, isAreaValid) => {
                             // called if map is used to draw polygon
@@ -364,7 +425,10 @@ const FireAndBurnedArea = ({
                           coordinates={values.mapSelection}
                           togglePolygonMap={true}
                           handleAreaValidation={feature => {
-                            const isAreaValid = isRasterSizeWithinLimits(feature, values.resolution);
+                            const isAreaValid = isRasterSizeWithinLimits(
+                              feature,
+                              values.resolution,
+                            );
                             return isAreaValid;
                           }}
                         />
@@ -372,13 +436,14 @@ const FireAndBurnedArea = ({
                     </Col>
                   </Row>
                 </Form>
-              )}}
+              );
+            }}
           </Formik>
         </Row>
       </Col>
     </Row>
   );
-}
+};
 
 FireAndBurnedArea.propTypes = {
   t: PropTypes.any,
@@ -386,6 +451,6 @@ FireAndBurnedArea.propTypes = {
   backToOnDemandPanel: PropTypes.func,
   mapInputOnChange: PropTypes.func,
   isRasterSizeWithinLimits: PropTypes.func,
-}
+};
 
 export default withTranslation(['dataLayers', 'common'])(FireAndBurnedArea);

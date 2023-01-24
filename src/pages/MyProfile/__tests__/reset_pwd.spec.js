@@ -1,16 +1,23 @@
 /* eslint-disable init-declarations */
 import React from 'react';
+
 import '@testing-library/jest-dom/extend-expect';
-import store from '../../../store'
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { Provider } from 'react-redux';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 
 import axiosMock from '../../../../__mocks__/axios';
-import { baseURL } from '../../../TestUtils';
+import { USERS } from '../../../../__mocks__/user';
 import { endpoints } from '../../../api/endpoints';
+import store from '../../../store';
 import { signInSuccess } from '../../../store/authentication/action';
-import {  USERS } from '../../../../__mocks__/user';
+import { baseURL } from '../../../TestUtils';
 import ResetPsw from '../ResetPsw';
 
 describe('Test Update Profile Component', () => {
@@ -28,11 +35,11 @@ describe('Test Update Profile Component', () => {
   beforeAll(() => {
     //set user in the store
     act(() => {
-      store.dispatch(signInSuccess(USERS))
-    })
+      store.dispatch(signInSuccess(USERS));
+    });
     mock = axiosMock;
     mock.onGet(`${baseURL}${endpoints.user.resetPsw}`).reply(200, USERS);
-  })
+  });
 
   afterEach(() => {
     jest.resetAllMocks();
@@ -43,41 +50,50 @@ describe('Test Update Profile Component', () => {
 
   beforeEach(() => {
     renderApp(store);
-  })
-
+  });
 
   it('renders', () => {
-    expect(screen).not.toBeNull()
+    expect(screen).not.toBeNull();
   });
 
   it('sets initial fields to be empty', () => {
-    expect(screen.getByTestId('old_password')).toHaveValue('')
-    expect(screen.getByTestId('new_password')).toHaveValue('')
-    expect(screen.getByTestId('confirm_password')).toHaveValue('')
+    expect(screen.getByTestId('old_password')).toHaveValue('');
+    expect(screen.getByTestId('new_password')).toHaveValue('');
+    expect(screen.getByTestId('confirm_password')).toHaveValue('');
   });
 
-  it('validates wrong password', async() => {
+  it('validates wrong password', async () => {
     act(() => {
-      fireEvent.change(screen.getByTestId('new_password'),{target: {value: 'john'}});
-    })
+      fireEvent.change(screen.getByTestId('new_password'), {
+        target: { value: 'john' },
+      });
+    });
     await waitFor(() => {
-      expect(screen.getByTestId('change-password')).toHaveTextContent('Uppercase letter')
-      expect(screen.getByTestId('change-password')).toHaveTextContent('Must contain number')
-      expect(screen.getByTestId('change-password')).toHaveTextContent('characters long')
-    })
+      expect(screen.getByTestId('change-password')).toHaveTextContent(
+        'Uppercase letter',
+      );
+      expect(screen.getByTestId('change-password')).toHaveTextContent(
+        'Must contain number',
+      );
+      expect(screen.getByTestId('change-password')).toHaveTextContent(
+        'characters long',
+      );
+    });
   });
 
   test('validates old password is required form will not submit', async () => {
-  
-    fireEvent.click(screen.getByRole('button', {name : 'CHANGE PASSWORD'}))
-    
-    await waitFor(() => expect(screen.getByRole('button', {name : 'CHANGE PASSWORD'})).not.toBeDisabled())
+    fireEvent.click(screen.getByRole('button', { name: 'CHANGE PASSWORD' }));
+
+    await waitFor(() =>
+      expect(
+        screen.getByRole('button', { name: 'CHANGE PASSWORD' }),
+      ).not.toBeDisabled(),
+    );
 
     await waitFor(() => {
-      expect(screen.getByTestId('change-password')).toHaveTextContent('The field cannot be empty')
-    })
-    
-  })
-
-  
-})
+      expect(screen.getByTestId('change-password')).toHaveTextContent(
+        'The field cannot be empty',
+      );
+    });
+  });
+});

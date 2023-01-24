@@ -6,10 +6,9 @@ import _ from 'lodash';
 export const getFilteredRec = (allRecords, filters, sort) => {
   let actFiltered = [...allRecords];
   const filterNames = Object.keys(filters);
-  filterNames.forEach((key) => {
-    if(filters[key] !== ''){
-      actFiltered = actFiltered.filter((o) => {
-
+  filterNames.forEach(key => {
+    if (filters[key] !== '') {
+      actFiltered = actFiltered.filter(o => {
         // matches against arrays of values
         if (Array.isArray(o[key])) {
           const lowercased = o[key].map(str => str.toLowerCase());
@@ -25,11 +24,15 @@ export const getFilteredRec = (allRecords, filters, sort) => {
           }
         }
 
-        return o[key] == filters[key]
+        return o[key] === filters[key];
       });
     }
   });
 
-  actFiltered = _.orderBy(actFiltered , [(o) => new Date(o[sort.fieldName])], [sort.order]);
+  actFiltered = _.orderBy(
+    actFiltered,
+    [o => new Date(o[sort.fieldName])],
+    [sort.order],
+  );
   return actFiltered;
-}
+};

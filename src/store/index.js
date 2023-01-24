@@ -1,6 +1,6 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage/session';//or session
+import storage from 'redux-persist/lib/storage/session'; //or session
 import thunk from 'redux-thunk';
 
 import reducers from './appReducer';
@@ -19,10 +19,12 @@ const persistedReducer = persistReducer(persistConfig, reducers);
 
 const store = createStore(
   persistedReducer,
-  composeEnhancers(applyMiddleware(
-    thunk,
-    // logger
-  ))
+  composeEnhancers(
+    applyMiddleware(
+      thunk,
+      // logger
+    ),
+  ),
 );
 
 export const persistor = persistStore(store);

@@ -1,32 +1,35 @@
 import * as actionTypes from './types';
-import { endpoints } from '../../api/endpoints';
 import * as api from '../../api/base';
+import { endpoints } from '../../api/endpoints';
 
-export const getAllReports = (options, isPolling=false) => async (dispatch) => {
-  const response = await api.get(endpoints.chatbot.reports.getReports, options);
-  if (response.status === 200) {
-    return dispatch(getReportsSuccess(response.data, isPolling));
-  }
-  else
-    return dispatch(getReportsFail(response.error));
-};
+export const getAllReports =
+  (options, isPolling = false) =>
+  async dispatch => {
+    const response = await api.get(
+      endpoints.chatbot.reports.getReports,
+      options,
+    );
+    if (response.status === 200) {
+      return dispatch(getReportsSuccess(response.data, isPolling));
+    } else return dispatch(getReportsFail(response.error));
+  };
 const getReportsSuccess = (reports, isPolling) => {
   return {
     type: actionTypes.GET_REPORTS_SUCCESS,
     payload: {
       reports,
-      isPolling
-    }
+      isPolling,
+    },
   };
 };
-const getReportsFail = (error) => {
+const getReportsFail = error => {
   return {
     type: actionTypes.GET_REPORTS_FAIL,
-    payload: error
+    payload: error,
   };
 };
 
-export const setFilterdReports = (payload, filterParams) => async (dispatch) => {
+export const setFilterdReports = (payload, filterParams) => async dispatch => {
   return dispatch(setFilters(payload, filterParams));
 };
 
@@ -34,61 +37,62 @@ const setFilters = (payload, filterParams) => {
   return {
     type: actionTypes.SET_REPORT_FILTERS,
     payload,
-    filterParams
+    filterParams,
   };
-}
+};
 
-export const setFavorite = (alertId, isFavorite) => async (dispatch) => {
-  const response = await api.post(endpoints.eventAlerts.setFavorite, { alert_id: alertId, is_favorite: isFavorite });
+export const setFavorite = (alertId, isFavorite) => async dispatch => {
+  const response = await api.post(endpoints.eventAlerts.setFavorite, {
+    alert_id: alertId,
+    is_favorite: isFavorite,
+  });
   if (response.status === 200) {
     return dispatch(setFavoriteSuccess(response.data));
-  }
-  else
-    return dispatch(setFavoriteFail(response.error));
+  } else return dispatch(setFavoriteFail(response.error));
 };
-const setFavoriteSuccess = (msg) => {
+const setFavoriteSuccess = msg => {
   return {
     type: actionTypes.SET_FAV_REPORT_SUCCESS,
     msg,
   };
 };
-const setFavoriteFail = (error) => {
+const setFavoriteFail = error => {
   return {
     type: actionTypes.SET_FAV_REPORT_FAIL,
-    payload: error
+    payload: error,
   };
-}
+};
 
 export const resetReportResponseState = () => {
   return {
     type: actionTypes.RESET_REPORT_STATE,
-  }
+  };
 };
 
-export const getReportDetail = (id) => async (dispatch) => {
-  const response = await api.get(endpoints.chatbot.reports.getReportInfo.replace(':report_id', id));
+export const getReportDetail = id => async dispatch => {
+  const response = await api.get(
+    endpoints.chatbot.reports.getReportInfo.replace(':report_id', id),
+  );
   if (response.status === 200) {
     return dispatch(getReportDetailSuccess(response.data));
-  }
-  else
-    return dispatch(getReportDetailFail(response.error));
-}
+  } else return dispatch(getReportDetailFail(response.error));
+};
 
-const getReportDetailSuccess = (alerts) => {
+const getReportDetailSuccess = alerts => {
   return {
     type: actionTypes.GET_REPORT_DETAIL_SUCCESS,
-    payload: alerts
+    payload: alerts,
   };
 };
-const getReportDetailFail = (error) => {
+const getReportDetailFail = error => {
   return {
     type: actionTypes.GET_REPORT_DETAIL_FAIL,
-    payload: error
+    payload: error,
   };
 };
-export const refreshReports = (payload) => {
+export const refreshReports = payload => {
   return {
     type: actionTypes.REFRESH_REPORTS,
-    payload: payload
+    payload: payload,
   };
-}
+};

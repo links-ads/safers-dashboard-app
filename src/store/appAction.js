@@ -7,7 +7,7 @@ export {
   isRemembered,
   signInOauth2,
   signUpOauth2,
-  refreshOAuthToken
+  refreshOAuthToken,
 } from './authentication/action';
 export {
   setDefaultAoi,
@@ -18,8 +18,8 @@ export {
   deleteAccount,
   resetProfilePsw,
   setUserInfo,
-  resetStatus
-} from './user/action'
+  resetStatus,
+} from './user/action';
 export {
   getOrgList,
   getRoleList,
@@ -27,8 +27,8 @@ export {
   getAllAreas,
   generalInProgress,
   getConfig,
-  setDateRangeDisabled
-} from './common/action'
+  setDateRangeDisabled,
+} from './common/action';
 export {
   getAllEventAlerts,
   setEventParams,
@@ -37,8 +37,8 @@ export {
   getEventInfo,
   editEventAlertInfo,
   setFilteredEventAlerts,
-  setEventFavoriteAlert
-} from './events/action'
+  setEventFavoriteAlert,
+} from './events/action';
 export {
   getSource,
   getAllFireAlerts,
@@ -48,8 +48,8 @@ export {
   editAlertInfo,
   setAlertApiParams,
   setNewAlertState,
-  resetAlertsResponseState
-} from './alerts/action'
+  resetAlertsResponseState,
+} from './alerts/action';
 export {
   getMetaData,
   resetMetaData,
@@ -59,7 +59,7 @@ export {
   getAllMapRequests,
   setNewMapRequestState,
   getDataLayerTimeSeriesData,
-} from './datalayer/action'
+} from './datalayer/action';
 export {
   getAllInSituAlerts,
   resetInSituAlertsResponseState,
@@ -69,32 +69,32 @@ export {
   getCameraList,
   getCameraSources,
   getCamera,
-  setInSituFavoriteAlert
-} from './insitu/action'
+  setInSituFavoriteAlert,
+} from './insitu/action';
 export {
   getInSituMedia,
   getStats,
   getTweets,
   getWeatherStats,
-  getWeatherVariables
-} from './dashboard/action'
+  getWeatherVariables,
+} from './dashboard/action';
 export {
   getAllNotifications,
   getAllNotificationSources,
   getAllNotificationScopesRestrictions,
   setNotificationParams,
   resetNotificationApiParams,
-  setNewNotificationState
-} from './notifications/action'
+  setNewNotificationState,
+} from './notifications/action';
 export {
   getAllPeople,
   setFilters,
   resetPeopleResponseState,
-  refreshPeople
-} from './people/action'
+  refreshPeople,
+} from './people/action';
 export {
   getAllComms,
   setFilterdComms,
   resetCommsResponseState,
-  refreshData
-} from './comms/action'
+  refreshData,
+} from './comms/action';
