@@ -7,11 +7,14 @@ import { getViewState } from '../../../helpers/mapHelper';
 import PropTypes from 'prop-types';
 import { getEventIconLayer } from '../../../helpers/mapHelper';
 
-const MapComponent = ({ eventList }) => {
+const MapComponent = ({ viewState, eventList }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = getPolygonLayer(objAoi);
   const iconLayer = getEventIconLayer(eventList);
-  const viewState = getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel);
+  if(!viewState) {
+    // default to user's AOI if not overriden
+    viewState = getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel);
+  } 
 
   return (
     <Card className='map-card'>
@@ -29,6 +32,7 @@ const MapComponent = ({ eventList }) => {
 }
 
 MapComponent.propTypes = {
+  viewState: PropTypes.any,
   eventList: PropTypes.arrayOf(PropTypes.any),
 }
 

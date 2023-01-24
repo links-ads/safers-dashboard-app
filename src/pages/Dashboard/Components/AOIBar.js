@@ -12,6 +12,8 @@ import { intersect, polygon } from '@turf/turf'
 import { withTranslation } from 'react-i18next'
 import PropTypes from 'prop-types';
 import wkt from 'wkt';
+import { useMap } from '../../../components/BaseMap/MapContext';
+import { getBoundedViewState } from '../../../helpers/mapHelper';
 
 const bboxToPolygon = (bbox) => {
   // our Bbox is a 4-tuple with minx, miny, maxx, maxy, 
@@ -63,6 +65,7 @@ const nodeVisitor = (node, userAoi, parentInfo={}) => {
           requestId: node.request_id,
           parentTitle: node.title,
           id: node.id,
+          bbox: node.bbox,
         }
         return node.children.map(child => nodeVisitor(child, userAoi, passDown));
       }
@@ -87,11 +90,13 @@ const nodeVisitor = (node, userAoi, parentInfo={}) => {
 
 const AOIBar = ({t}) => {
   const dispatch = useDispatch();
-  
+  const { deckRef } = useMap();
+
   const [eventList, setEventList] = useState([]);
   const [selectedLayerId, setSelectedLayerId] = useState('');
   const [selectedLayer, setSelectedLayer] = useState({});
-  
+  const [viewState, setViewState] = useState(null);
+
   const {dateRange} = useSelector(state => state.common);
   const {defaultAoi} = useSelector(state => state.user);
   
@@ -131,8 +136,15 @@ const AOIBar = ({t}) => {
 
   useEffect (() => {}, [mapRequests]);
 
-  useEffect (() => setSelectedLayer(
-    mapRequests.find(layer => layer.key === selectedLayerId))
+  useEffect (() => {
+    const selectedNode = mapRequests.find(layer => layer.key === selectedLayerId);
+    setSelectedLayer(selectedNode);
+    console.log('Selected Node', selectedNode);
+    if (selectedNode) {
+      const newViewState = getBoundedViewState(deckRef, selectedNode?.bbox);
+      setViewState({ ...viewState, ...newViewState });
+    }
+  }
   , [selectedLayerId]);
 
   useEffect (() => {
@@ -179,7 +191,7 @@ const AOIBar = ({t}) => {
               </Input>
               : null
             }
-            <MapComponent eventList={eventList} />
+            <MapComponent viewState={viewState} eventList={eventList} />
           </Card>
           <Container className="px-4 container">
             <Row >
@@ -199,6 +211,8 @@ const AOIBar = ({t}) => {
 };
 
 AOIBar.propTypes = {
+  viewState: PropTypes.any,
+  setViewState: PropTypes.func,
   t: PropTypes.func
 }
 
