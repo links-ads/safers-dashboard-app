@@ -96,6 +96,7 @@ const AOIBar = ({t}) => {
   const [selectedLayerId, setSelectedLayerId] = useState('');
   const [selectedLayer, setSelectedLayer] = useState({});
   const [viewState, setViewState] = useState(null);
+  const [viewMode, setViewMode] = useState('userAOI');
 
   const {dateRange} = useSelector(state => state.common);
   const {defaultAoi} = useSelector(state => state.user);
@@ -143,13 +144,15 @@ const AOIBar = ({t}) => {
     if (selectedNode) {
       const newViewState = getBoundedViewState(deckRef, selectedNode?.bbox);
       setViewState({ ...viewState, ...newViewState });
+      setViewMode('featureAOI');
+    } else {
+      // undefined, user chose 'choose a layer', reset to user AOI
+      setViewMode('userAOI');
     }
   }
   , [selectedLayerId]);
 
-  useEffect (() => {
-    console.log(`selectedLayer object ${JSON.stringify(selectedLayer)}`);
-  }, [selectedLayer]);
+  useEffect (() => {}, [selectedLayer]);
 
   useEffect (() => {
     updateEventList();
@@ -191,7 +194,12 @@ const AOIBar = ({t}) => {
               </Input>
               : null
             }
-            <MapComponent viewState={viewState} eventList={eventList} />
+            <MapComponent 
+              selectedLayer={selectedLayer}
+              viewMode={viewMode}
+              viewState={viewState} 
+              eventList={eventList} 
+            />
           </Card>
           <Container className="px-4 container">
             <Row >
