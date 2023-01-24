@@ -14,6 +14,8 @@ import PropTypes from 'prop-types';
 import wkt from 'wkt';
 import { useMap } from '../../../components/BaseMap/MapContext';
 import { getBoundedViewState } from '../../../helpers/mapHelper';
+import { FlyToInterpolator } from 'react-map-gl';
+
 
 const bboxToPolygon = (bbox) => {
   // our Bbox is a 4-tuple with minx, miny, maxx, maxy, 
@@ -143,7 +145,14 @@ const AOIBar = ({t}) => {
     console.log('Selected Node', selectedNode);
     if (selectedNode) {
       const newViewState = getBoundedViewState(deckRef, selectedNode?.bbox);
-      setViewState({ ...viewState, ...newViewState });
+      setViewState({ 
+        ...viewState, 
+        ...newViewState, 
+        pitch: 0,
+        bearing: 0,
+        transitionDuration: 1000,
+        transitionInterpolator: new FlyToInterpolator(), 
+      });
       setViewMode('featureAOI');
     } else {
       // undefined, user chose 'choose a layer', reset to user AOI

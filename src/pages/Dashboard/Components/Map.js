@@ -7,6 +7,27 @@ import { getViewState } from '../../../helpers/mapHelper';
 import PropTypes from 'prop-types';
 import { getEventIconLayer } from '../../../helpers/mapHelper';
 import { useMap } from '../../../components/BaseMap/MapContext';
+import { BitmapLayer } from 'deck.gl';
+
+const getBitmapLayer = (selectedLayer) => {
+  /*
+     extract bounds from url, this is passed in as an object with timestamps
+     as the keys and urls as the values. Only going to show first one for now
+    */
+  const firstURL = Object.values(selectedLayer.urls)[0];
+  const urlSearchParams = new URLSearchParams(firstURL);
+  const urlParams = Object.fromEntries(urlSearchParams.entries());
+  const bounds = urlParams?.bbox ? urlParams.bbox.split(',').map(Number) : selectedLayer.bbox;
+  console.log(`image at bounds ${bounds}`)
+  console.log(`imageURL ${firstURL}`)
+  return new BitmapLayer({
+    id: 'bitmap-layer',
+    bounds: bounds,
+    image: firstURL,
+    opacity: 1.0
+  });
+}
+
 
 const MapComponent = ({ selectedLayer, viewMode, viewState, eventList }) => {
   let objAoi = {};
@@ -33,7 +54,9 @@ const MapComponent = ({ selectedLayer, viewMode, viewState, eventList }) => {
     }
     
     layers.push(getPolygonLayer(reshapedLayer));    
-    
+    if (selectedLayer.urls) {
+      layers.push(getBitmapLayer(selectedLayer));
+    }
   }
 
   return (
