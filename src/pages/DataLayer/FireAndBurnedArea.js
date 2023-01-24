@@ -15,7 +15,7 @@ import {
 } from '../../store/appAction';
 import wkt from 'wkt';
 import MapInput from '../../components/BaseMap/MapInput';
-import { getWKTfromFeature, addWktValidation } from '../../store/utility';
+import { getWKTfromFeature } from '../../store/utility';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
   return this.test(
@@ -39,8 +39,6 @@ Yup.addMethod(Yup.date, 'max30Days', function (message) {
   )
 })
 
-addWktValidation(Yup);
-
 const FireAndBurnedArea = ({
   t,
   handleResetAOI,
@@ -56,7 +54,7 @@ const FireAndBurnedArea = ({
       .required(t('field-empty-err', { ns: 'common' })),
     requestTitle: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     mapSelection: Yup.array()
-      .isValidWKTString()
+      .isValidWKTString(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
     isMapAreaValid: Yup.boolean()

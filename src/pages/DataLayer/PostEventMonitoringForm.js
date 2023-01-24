@@ -18,7 +18,7 @@ import { withTranslation } from 'react-i18next'
 import 'react-rangeslider/lib/index.css'
 import MapInput from '../../components/BaseMap/MapInput';
 
-import { getWKTfromFeature, addWktValidation } from '../../store/utility';
+import { getWKTfromFeature } from '../../store/utility';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {
@@ -31,8 +31,6 @@ const MIN_START_DATE = {
   date: '2018-05-01',
 };
 const MIN_END_DATE = '2018-05-02';
-
-addWktValidation(Yup);
 
 const PostEventMonitoring = ({
   t,
@@ -48,7 +46,7 @@ const PostEventMonitoring = ({
       .required(t('field-empty-err', { ns: 'common' })),
     requestTitle: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     mapSelection: Yup.array()
-      .isValidWKTString()
+      .isValidWKTString(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
     isMapAreaValid: Yup.boolean()

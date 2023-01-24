@@ -27,7 +27,7 @@ import {
   PROBABILITY_RANGES,
   FIRE_BREAK_OPTIONS
 } from './constants'
-import { getWKTfromFeature, addWktValidation } from '../../store/utility';
+import { getWKTfromFeature } from '../../store/utility';
 
 Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
   return this.test(
@@ -44,8 +44,6 @@ Yup.addMethod(Yup.number, 'uniqueTimeOffset', function (message) {
     }
   )
 })
-
-addWktValidation(Yup);
 
 const renderDynamicError = errorMessage => (
   errorMessage ? (
@@ -86,7 +84,7 @@ const WildfireSimulation = ({
     probabilityRange: Yup.string()
       .required(t('field-empty-err', { ns: 'common' })),
     mapSelection: Yup.array()
-      .isValidWKTString()
+      .isValidWKTString(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .typeError(t('field-err-vallid-wkt', {ns: 'dataLayers'}))
       .required(t('field-err-vallid-wkt', {ns: 'dataLayers'})),
     isMapAreaValid: Yup.boolean()
