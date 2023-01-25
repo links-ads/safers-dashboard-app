@@ -24,7 +24,9 @@ const TweetComponent = ({ tweetID, i18n }) => {
         })
         .then(() => {
           setIsLoading(false);
-        });
+          return;
+        })
+        .catch(error => console.error(error));
     }
   }, [tweetID, i18n, i18n.language]);
 

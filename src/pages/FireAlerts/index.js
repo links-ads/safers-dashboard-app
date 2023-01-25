@@ -65,6 +65,67 @@ const FireAlerts = ({ t }) => {
 
   const dispatch = useDispatch();
 
+  const getAlerts = useCallback(
+    (isLoading = true) => {
+      const dateRangeParams = dateRange
+        ? { start_date: dateRange[0], end_date: dateRange[1] }
+        : {};
+
+      setAlertId(undefined);
+      const alertParams = {
+        order: sortByDate ? sortByDate : '-date',
+        source: alertSource ? alertSource : undefined,
+        default_date: false,
+        default_bbox: !boundingBox,
+        bbox: boundingBox ? boundingBox.toString() : undefined,
+        ...dateRangeParams,
+      };
+
+      dispatch(setAlertApiParams(alertParams));
+      dispatch(getAllFireAlerts(alertParams, true, isLoading));
+    },
+    [alertSource, boundingBox, dateRange, dispatch, sortByDate],
+  );
+
+  const getFireAlertLayer = useCallback(
+    (alerts, selectedAlert = {}) => {
+      const data = alerts.map(alert => {
+        const { center, id, ...properties } = alert;
+        return {
+          type: 'Feature',
+          properties: {
+            id,
+            ...properties,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: center,
+          },
+        };
+      });
+
+      return new GeoJsonPinLayer({
+        data,
+        dispatch,
+        setViewState,
+        getPosition: feature => feature.geometry.coordinates,
+        getPinColor: feature =>
+          getAlertIconColorFromContext(
+            MAP_TYPES.ALERTS,
+            feature,
+            selectedAlert,
+          ),
+        icon: 'fire',
+        iconColor: '#ffffff',
+        clusterIconSize: 35,
+        getPinSize: () => 35,
+        pixelOffset: [-18, -18],
+        pinSize: 25,
+      });
+    },
+    [dispatch],
+  );
+
   useEffect(() => {
     dispatch(getSource());
     dispatch(setNewAlertState(false, true));
@@ -72,11 +133,11 @@ const FireAlerts = ({ t }) => {
       dispatch(setAlertApiParams(undefined));
       dispatch(setNewAlertState(false, false));
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     getAlerts();
-  }, [sortByDate, alertSource, dateRange, boundingBox]);
+  }, [sortByDate, alertSource, dateRange, boundingBox, getAlerts]);
 
   useEffect(() => {
     if (success) toastr.success(success, '');
@@ -108,7 +169,7 @@ const FireAlerts = ({ t }) => {
     setCurrentPage(1);
     hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)));
-  }, [filteredAlerts]);
+  }, [defaultAoi.features, filteredAlerts, getFireAlertLayer, viewState]);
 
   const getAlertsByArea = () => {
     setBoundingBox(
@@ -118,21 +179,25 @@ const FireAlerts = ({ t }) => {
 
   const setFavorite = id => {
     const selectedAlert = _.find(filteredAlerts, { id });
-    dispatch(setFavoriteAlert(id, !selectedAlert.favorite)).then(result => {
-      if (result.type === SET_FAV_ALERT_SUCCESS) {
-        selectedAlert.favorite = !selectedAlert.favorite;
-        hoverInfo?.object &&
-          setHoverInfo({
-            object: {
-              properties: selectedAlert,
-            },
-            coordinate: selectedAlert.center,
-          });
-        const to = PAGE_SIZE * currentPage;
-        const from = to - PAGE_SIZE;
-        setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
-      }
-    });
+    dispatch(setFavoriteAlert(id, !selectedAlert.favorite))
+      .then(result => {
+        if (result.type === SET_FAV_ALERT_SUCCESS) {
+          selectedAlert.favorite = !selectedAlert.favorite;
+          hoverInfo?.object &&
+            setHoverInfo({
+              object: {
+                properties: selectedAlert,
+              },
+              coordinate: selectedAlert.center,
+            });
+          const to = PAGE_SIZE * currentPage;
+          const from = to - PAGE_SIZE;
+          setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
+        }
+
+        return;
+      })
+      .catch(error => console.error(error));
   };
 
   const validateEvent = id => {
@@ -166,25 +231,6 @@ const FireAlerts = ({ t }) => {
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
   };
 
-  const getAlerts = (isLoading = true) => {
-    const dateRangeParams = dateRange
-      ? { start_date: dateRange[0], end_date: dateRange[1] }
-      : {};
-
-    setAlertId(undefined);
-    const alertParams = {
-      order: sortByDate ? sortByDate : '-date',
-      source: alertSource ? alertSource : undefined,
-      default_date: false,
-      default_bbox: !boundingBox,
-      bbox: boundingBox ? boundingBox.toString() : undefined,
-      ...dateRangeParams,
-    };
-
-    dispatch(setAlertApiParams(alertParams));
-    dispatch(getAllFireAlerts(alertParams, true, isLoading));
-  };
-
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
@@ -216,38 +262,6 @@ const FireAlerts = ({ t }) => {
     }
   };
 
-  const getFireAlertLayer = (alerts, selectedAlert = {}) => {
-    const data = alerts.map(alert => {
-      const { center, id, ...properties } = alert;
-      return {
-        type: 'Feature',
-        properties: {
-          id,
-          ...properties,
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: center,
-        },
-      };
-    });
-
-    return new GeoJsonPinLayer({
-      data,
-      dispatch,
-      setViewState,
-      getPosition: feature => feature.geometry.coordinates,
-      getPinColor: feature =>
-        getAlertIconColorFromContext(MAP_TYPES.ALERTS, feature, selectedAlert),
-      icon: 'fire',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18, -18],
-      pinSize: 25,
-    });
-  };
-
   const handleResetAOI = useCallback(() => {
     setBoundingBox(undefined);
     setViewState(
@@ -256,7 +270,7 @@ const FireAlerts = ({ t }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, []);
+  }, [defaultAoi.features]);
 
   const hideTooltip = e => {
     if (e && e.viewState) {

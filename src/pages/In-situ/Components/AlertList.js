@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import _ from 'lodash';
 import PropTypes from 'prop-types';
@@ -47,28 +47,31 @@ const AlertList = ({
 
   const dispatch = useDispatch();
 
-  const getIconLayer = alerts => {
-    return new GeoJsonPinLayer({
-      data: alerts,
-      dispatch,
-      setViewState,
-      getPosition: feature => feature.geometry.coordinates,
-      getPinColor: feature =>
-        getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature),
-      icon: 'camera',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18, -18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
+  const getIconLayer = useCallback(
+    alerts => {
+      return new GeoJsonPinLayer({
+        data: alerts,
+        dispatch,
+        setViewState,
+        getPosition: feature => feature.geometry.coordinates,
+        getPinColor: feature =>
+          getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature),
+        icon: 'camera',
+        iconColor: '#ffffff',
+        clusterIconSize: 35,
+        getPinSize: () => 35,
+        pixelOffset: [-18, -18],
+        pinSize: 25,
+        onGroupClick: true,
+        onPointClick: true,
+      });
+    },
+    [dispatch, setViewState],
+  );
 
   useEffect(() => {
     if (selCam) {
-      !_.isEqual(viewState.midPoint, cameraInfo?.geometry?.coordinates) ||
+      !_.isEqual(viewState?.midPoint, cameraInfo?.geometry?.coordinates) ||
       isViewStateChanged
         ? setViewState(
             getViewState(
@@ -85,12 +88,24 @@ const AlertList = ({
           });
       setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));
     }
-  }, [cameraInfo]);
+  }, [
+    cameraInfo,
+    cameraList.features,
+    currentZoomLevel,
+    getIconLayer,
+    isViewStateChanged,
+    selCam,
+    setHoverInfo,
+    setIconLayer,
+    setIsViewStateChanged,
+    setViewState,
+    viewState,
+  ]);
 
   const setFavorite = id => {
     const selectedAlert = _.find(filteredAlerts, { id });
-    dispatch(setInSituFavoriteAlert(id, !selectedAlert.favorite)).then(
-      result => {
+    dispatch(setInSituFavoriteAlert(id, !selectedAlert.favorite))
+      .then(result => {
         if (result.type === SET_FAV_INSITU_ALERT_SUCCESS) {
           selectedAlert.favorite = !selectedAlert.favorite;
           const to = PAGE_SIZE * currentPage;
@@ -99,8 +114,10 @@ const AlertList = ({
             setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))),
           );
         }
-      },
-    );
+
+        return;
+      })
+      .catch(error => console.log(error));
   };
 
   const setSelectedAlert = id => {

@@ -59,24 +59,27 @@ const InSituAlerts = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const getIconLayer = alerts => {
-    return new GeoJsonPinLayer({
-      data: alerts,
-      dispatch,
-      setViewState,
-      getPosition: feature => feature.geometry.coordinates,
-      getPinColor: feature =>
-        getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature),
-      icon: 'camera',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18, -18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
+  const getIconLayer = useCallback(
+    alerts => {
+      return new GeoJsonPinLayer({
+        data: alerts,
+        dispatch,
+        setViewState,
+        getPosition: feature => feature.geometry.coordinates,
+        getPinColor: feature =>
+          getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature),
+        icon: 'camera',
+        iconColor: '#ffffff',
+        clusterIconSize: 35,
+        getPinSize: () => 35,
+        pixelOffset: [-18, -18],
+        pinSize: 25,
+        onGroupClick: true,
+        onPointClick: true,
+      });
+    },
+    [dispatch],
+  );
 
   useEffect(() => {
     dispatch(getCameraSources());
@@ -141,7 +144,7 @@ const InSituAlerts = () => {
       );
     }
     dispatch(setFilteredInSituAlerts(alerts));
-  }, [alerts]);
+  }, [alerts, defaultAoi.features, dispatch, viewState]);
 
   useEffect(() => {
     if (!viewState) {
@@ -157,7 +160,7 @@ const InSituAlerts = () => {
     dispatch(
       setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))),
     );
-  }, [filteredAlerts]);
+  }, [defaultAoi.features, dispatch, filteredAlerts, viewState]);
 
   const handleResetAOI = useCallback(() => {
     setViewState(
@@ -166,7 +169,7 @@ const InSituAlerts = () => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, []);
+  }, [defaultAoi.features]);
 
   const showTooltip = info => {
     if (info) {

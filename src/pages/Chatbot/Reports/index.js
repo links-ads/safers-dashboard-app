@@ -69,7 +69,7 @@ const Reports = ({ pollingFrequency }) => {
     };
     setReportParams(params);
     dispatch(getAllReports(params));
-  }, [dateRange, boundingBox, reportParams, dispatch]);
+  }, [dateRange, dispatch, boundingBox, reportParams]);
 
   useInterval(
     () => {
@@ -105,7 +105,7 @@ const Reports = ({ pollingFrequency }) => {
         ),
       );
     }
-  }, [allReports, dispatch, reportId]);
+  }, [allReports, dispatch]);
 
   const getReportsByArea = () => {
     setBoundingBox(

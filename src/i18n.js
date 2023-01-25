@@ -14,12 +14,8 @@ i18n
   .use(
     resourcesToBackend((language, namespace, callback) => {
       import(`./locales/${language}/${namespace}.json`)
-        .then(resources => {
-          callback(null, resources);
-        })
-        .catch(error => {
-          callback(error, null);
-        });
+        .then(resources => callback(null, resources))
+        .catch(error => callback(error, null));
     }),
   )
   .init({
@@ -36,7 +32,7 @@ i18n
       'dataLayerDashboard',
       'chatBot',
     ],
-    defaultNs: 'common',
+    defaultNS: 'common',
     lng: localStorage.getItem('I18N_LANGUAGE') || 'en',
     fallbackLng: 'en', // use en if detected lng is not available
     interpolation: {

@@ -62,39 +62,67 @@ const EventAlerts = ({ t }) => {
 
   const dispatch = useDispatch();
 
-  const getIconLayer = (alerts, selectedAlert = {}) => {
-    const data = alerts.map(alert => {
-      const { center, id, ...properties } = alert;
-      return {
-        type: 'Feature',
-        properties: {
-          id,
-          ...properties,
-        },
-        geometry: {
-          type: 'Point',
-          coordinates: center,
-        },
-      };
-    });
+  const getIconLayer = useCallback(
+    (alerts, selectedAlert = {}) => {
+      const data = alerts.map(alert => {
+        const { center, id, ...properties } = alert;
+        return {
+          type: 'Feature',
+          properties: {
+            id,
+            ...properties,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: center,
+          },
+        };
+      });
 
-    return new GeoJsonPinLayer({
-      data,
-      dispatch,
-      setViewState,
-      getPosition: feature => feature.geometry.coordinates,
-      getPinColor: feature =>
-        getAlertIconColorFromContext(MAP_TYPES.ALERTS, feature, selectedAlert),
-      icon: 'flag',
-      iconColor: '#ffffff',
-      clusterIconSize: 35,
-      getPinSize: () => 35,
-      pixelOffset: [-18, -18],
-      pinSize: 25,
-      onGroupClick: true,
-      onPointClick: true,
-    });
-  };
+      return new GeoJsonPinLayer({
+        data,
+        dispatch,
+        setViewState,
+        getPosition: feature => feature.geometry.coordinates,
+        getPinColor: feature =>
+          getAlertIconColorFromContext(
+            MAP_TYPES.ALERTS,
+            feature,
+            selectedAlert,
+          ),
+        icon: 'flag',
+        iconColor: '#ffffff',
+        clusterIconSize: 35,
+        getPinSize: () => 35,
+        pixelOffset: [-18, -18],
+        pinSize: 25,
+        onGroupClick: true,
+        onPointClick: true,
+      });
+    },
+    [dispatch],
+  );
+
+  const getEvents = useCallback(
+    (isLoading = true) => {
+      const dateRangeParams = dateRange
+        ? { start_date: dateRange[0], end_date: dateRange[1] }
+        : {};
+
+      setAlertId(undefined);
+      const eventParams = {
+        order: sortOrder ? sortOrder : '-date',
+        status: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
+        bbox: boundingBox?.toString(),
+        default_bbox: !boundingBox,
+        ...dateRangeParams,
+      };
+
+      dispatch(setEventParams(eventParams));
+      dispatch(getAllEventAlerts(eventParams, true, isLoading));
+    },
+    [boundingBox, checkedStatus, dateRange, dispatch, sortOrder],
+  );
 
   useEffect(() => {
     dispatch(setNewEventState(false, true));
@@ -102,11 +130,11 @@ const EventAlerts = ({ t }) => {
       dispatch(setEventParams(undefined));
       dispatch(setNewEventState(false, false));
     };
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     getEvents();
-  }, [dateRange, sortOrder, boundingBox, checkedStatus]);
+  }, [dateRange, sortOrder, boundingBox, checkedStatus, getEvents]);
 
   useEffect(() => {
     if (success) toastr.success(success, '');
@@ -136,25 +164,7 @@ const EventAlerts = ({ t }) => {
     setCurrentPage(1);
     hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)));
-  }, [filteredAlerts]);
-
-  const getEvents = (isLoading = true) => {
-    const dateRangeParams = dateRange
-      ? { start_date: dateRange[0], end_date: dateRange[1] }
-      : {};
-
-    setAlertId(undefined);
-    const eventParams = {
-      order: sortOrder ? sortOrder : '-date',
-      status: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
-      bbox: boundingBox?.toString(),
-      default_bbox: !boundingBox,
-      ...dateRangeParams,
-    };
-
-    dispatch(setEventParams(eventParams));
-    dispatch(getAllEventAlerts(eventParams, true, isLoading));
-  };
+  }, [defaultAoi.features, filteredAlerts, getIconLayer, viewState]);
 
   const getAlertsByArea = () => {
     setBoundingBox(
@@ -170,7 +180,7 @@ const EventAlerts = ({ t }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, []);
+  }, [defaultAoi.features]);
 
   const hideTooltip = e => {
     if (e && e.viewState) {
@@ -192,8 +202,8 @@ const EventAlerts = ({ t }) => {
 
   const setFavorite = id => {
     const selectedAlert = _.find(filteredAlerts, { id });
-    dispatch(setEventFavoriteAlert(id, !selectedAlert.favorite)).then(
-      result => {
+    dispatch(setEventFavoriteAlert(id, !selectedAlert.favorite))
+      .then(result => {
         if (result.type === SET_FAV_EVENT_ALERT_SUCCESS) {
           selectedAlert.favorite = !selectedAlert.favorite;
           hoverInfo.object &&
@@ -205,8 +215,10 @@ const EventAlerts = ({ t }) => {
           const from = to - PAGE_SIZE;
           setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
         }
-      },
-    );
+
+        return;
+      })
+      .catch(error => console.error(error));
   };
 
   const setSelectedAlert = (id, isEdit) => {
