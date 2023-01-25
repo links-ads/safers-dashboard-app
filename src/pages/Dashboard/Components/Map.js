@@ -2,7 +2,7 @@ import React , { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import { getBoundedViewState, getPolygonLayer } from '../../../helpers/mapHelper';
+import { getPolygonLayer } from '../../../helpers/mapHelper';
 import { getViewState } from '../../../helpers/mapHelper';
 import PropTypes from 'prop-types';
 import { getEventIconLayer } from '../../../helpers/mapHelper';
@@ -23,9 +23,9 @@ const getBitmapLayer = (selectedLayer) => {
   return new BitmapLayer({
     id: 'bitmap-layer',
     bounds: bounds,
-    image: firstURL,
-    //image:'http://placekitten.com/200/300',
-    opacity: 1.0
+    //image: firstURL,
+    image:'http://placekitten.com/200/300',
+    opacity: 0.5
   });
 }
 
@@ -50,8 +50,15 @@ const MapComponent = ({ selectedLayer, viewMode, eventList }) => {
     if (viewMode==='featureAOI') {
       // this mode is activated when user selects a layer in the pulldown list
       // show feature AOI instead, and overlay the raster
-      console.log('selectedLayer', selectedLayer);
-      setViewState({...viewState, ...getBoundedViewState(deckRef, selectedLayer.bbox)});
+            
+      // Work out new viewState
+      // This is a replacement for getBoundedViewState
+      // which throws up all sorts of errors as it calls DeckGL methods directly
+      // setViewState({...viewState, ...getBoundedViewState(deckRef, selectedLayer.bbox)});
+      const [minX, minY, maxX, maxY] = selectedLayer.bbox;
+      const midpoint  = [(minX+maxX)/2,(minY+maxY)/2];
+      const zoom = 10;
+      setViewState({...viewState, ...getViewState(midpoint, zoom)});
       const reshapedLayer = {
         features: [
           {geometry: selectedLayer.geometry.geometries[0],}
@@ -63,19 +70,19 @@ const MapComponent = ({ selectedLayer, viewMode, eventList }) => {
       }
     }  
     setLayers(displayLayers);
-  }, [setLayers, deckRef, userAoi, selectedLayer, setViewState, viewMode, eventList, getPolygonLayer, getBitmapLayer, getEventIconLayer, getBoundedViewState, getViewState]);
+  }, [setLayers, deckRef, userAoi, selectedLayer, setViewState, viewMode, eventList, getPolygonLayer, getBitmapLayer, getEventIconLayer, getViewState]);
 
-  // useEffect(() => {
-  //   console.log('viewState now', viewState);
-  // }, [viewState]);
+  useEffect(() => {
+    console.log('viewState now', viewState);
+  }, [viewState]);
 
-  // useEffect(() => {
-  //   console.log('viewMode now', viewMode);
-  // }, [viewMode]);
+  useEffect(() => {
+    console.log('viewMode now', viewMode);
+  }, [viewMode]);
 
-  // useEffect(() => {
-  //   console.log('layers now', layers);
-  // }, [layers]);
+  useEffect(() => {
+    console.log('layers now', layers);
+  }, [layers]);
 
   return (
     <Card className='map-card'>
