@@ -31,7 +31,7 @@ const getBitmapLayer = (selectedLayer) => {
 
 
 const MapComponent = ({ selectedLayer, viewMode, eventList }) => {
-  const objAoi = useSelector(state => state.user.defaultAoi);
+  const userAoi = useSelector(state => state.user.defaultAoi);
   const { deckRef } = useMap();
 
   let [layers, setLayers] = useState([]);
@@ -40,19 +40,18 @@ const MapComponent = ({ selectedLayer, viewMode, eventList }) => {
   useEffect(() => {
     let displayLayers = []; // QQQ
 
-    if(!viewState || viewState==={} || viewMode==='userAOI') {
+    if (viewMode === 'userAOI') {
       // default mode is to show user's home AOI 
-      console.log('objAoi', objAoi);
-      setViewState(getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel));
-      displayLayers.push(getPolygonLayer(objAoi));
-      displayLayers.push(getEventIconLayer(eventList));
+      console.log('userAoi', userAoi);
+      setViewState(getViewState(userAoi.features[0].properties.midPoint, userAoi.features[0].properties.zoomLevel));
+      displayLayers =[...displayLayers, getPolygonLayer(userAoi), getEventIconLayer(eventList)];
     } 
 
     if (viewMode==='featureAOI') {
       // this mode is activated when user selects a layer in the pulldown list
       // show feature AOI instead, and overlay the raster
-      let bbox = selectedLayer.bbox;
-      viewState = getBoundedViewState(deckRef, bbox); 
+      console.log('selectedLayer', selectedLayer);
+      setViewState({...viewState, ...getBoundedViewState(deckRef, selectedLayer.bbox)});
       const reshapedLayer = {
         features: [
           {geometry: selectedLayer.geometry.geometries[0],}
@@ -64,19 +63,19 @@ const MapComponent = ({ selectedLayer, viewMode, eventList }) => {
       }
     }  
     setLayers(displayLayers);
-  }, []);
+  }, [setLayers, deckRef, userAoi, selectedLayer, setViewState, viewMode, eventList, getPolygonLayer, getBitmapLayer, getEventIconLayer, getBoundedViewState, getViewState]);
 
-  useEffect(() => {
-    console.log('viewState now', viewState);
-  }, [viewState]);
+  // useEffect(() => {
+  //   console.log('viewState now', viewState);
+  // }, [viewState]);
 
-  useEffect(() => {
-    console.log('viewMode now', viewMode);
-  }, [viewState]);
+  // useEffect(() => {
+  //   console.log('viewMode now', viewMode);
+  // }, [viewMode]);
 
-  useEffect(() => {
-    console.log('layers now', layers);
-  }, [layers]);
+  // useEffect(() => {
+  //   console.log('layers now', layers);
+  // }, [layers]);
 
   return (
     <Card className='map-card'>
