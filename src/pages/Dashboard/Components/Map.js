@@ -24,6 +24,7 @@ const getBitmapLayer = (selectedLayer) => {
     id: 'bitmap-layer',
     bounds: bounds,
     image: firstURL,
+    //image:'http://placekitten.com/200/300',
     opacity: 1.0
   });
 }
@@ -31,14 +32,16 @@ const getBitmapLayer = (selectedLayer) => {
 
 const MapComponent = ({ selectedLayer, viewMode, viewState, eventList }) => {
   let objAoi = {};
-  let layers = [getEventIconLayer(eventList)];
   const { deckRef } = useMap();
+  let layers = [];
+  
 
   if(!viewState || viewMode==='userAOI') {
     // default mode is to show user's home AOI
     objAoi = useSelector(state => state.user.defaultAoi);
     viewState = getViewState(objAoi.features[0].properties.midPoint, objAoi.features[0].properties.zoomLevel);
     layers.push(getPolygonLayer(objAoi));
+    layers.push(getEventIconLayer(eventList));
   } 
 
   if (viewMode==='featureAOI') {
@@ -46,7 +49,7 @@ const MapComponent = ({ selectedLayer, viewMode, viewState, eventList }) => {
     // show feature AOI instead, and overlay the raster
     let bbox = selectedLayer.bbox;
     
-    viewState = getBoundedViewState(deckRef, bbox)
+    viewState = getBoundedViewState(deckRef, bbox); 
     const reshapedLayer = {
       features: [
         {geometry: selectedLayer.geometry.geometries[0],}
