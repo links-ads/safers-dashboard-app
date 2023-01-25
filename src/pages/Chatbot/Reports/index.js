@@ -61,15 +61,20 @@ const Reports = ({ pollingFrequency }) => {
 
   useEffect(() => {
     setReportId(undefined);
-    const params = {
-      ...reportParams,
-      bbox: boundingBox?.toString(),
-      default_date: false,
-      default_bbox: !boundingBox,
-    };
-    setReportParams(params);
-    dispatch(getAllReports(params));
-  }, [dateRange, dispatch, boundingBox, reportParams]);
+
+    setReportParams(previous => {
+      const params = {
+        ...previous,
+        bbox: boundingBox?.toString(),
+        default_date: false,
+        default_bbox: !boundingBox,
+      };
+
+      dispatch(getAllReports(params));
+
+      return params;
+    });
+  }, [dispatch, boundingBox, setReportParams]);
 
   useInterval(
     () => {
@@ -101,11 +106,10 @@ const Reports = ({ pollingFrequency }) => {
           dispatch,
           setViewState,
           { id: reportId },
-          'report_id',
         ),
       );
     }
-  }, [allReports, dispatch]);
+  }, [allReports, dispatch, reportId]);
 
   const getReportsByArea = () => {
     setBoundingBox(
@@ -128,7 +132,7 @@ const Reports = ({ pollingFrequency }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, []);
+  }, [defaultAoi.features]);
 
   const handleClick = info => {
     const { id } = info?.object?.properties ?? {};
