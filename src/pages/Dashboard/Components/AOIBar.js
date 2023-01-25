@@ -12,8 +12,8 @@ import { intersect, polygon } from '@turf/turf'
 import { withTranslation } from 'react-i18next'
 import PropTypes from 'prop-types';
 import wkt from 'wkt';
-import { useMap } from '../../../components/BaseMap/MapContext';
-import { getBoundedViewState } from '../../../helpers/mapHelper';
+//import { useMap } from '../../../components/BaseMap/MapContext';
+//import { getBoundedViewState } from '../../../helpers/mapHelper';
 //import { FlyToInterpolator } from 'react-map-gl';
 
 
@@ -92,12 +92,12 @@ const nodeVisitor = (node, userAoi, parentInfo={}) => {
 
 const AOIBar = ({t}) => {
   const dispatch = useDispatch();
-  const { deckRef } = useMap();
+  //const { deckRef } = useMap();
 
   const [eventList, setEventList] = useState([]);
   const [selectedLayerId, setSelectedLayerId] = useState('');
   const [selectedLayer, setSelectedLayer] = useState({});
-  const [viewState, setViewState] = useState(null);
+  //const [viewState, setViewState] = useState(null);
   const [viewMode, setViewMode] = useState('userAOI');
 
   const {dateRange} = useSelector(state => state.common);
@@ -144,16 +144,6 @@ const AOIBar = ({t}) => {
     setSelectedLayer(selectedNode);
     console.log('Selected Node', selectedNode);
     if (selectedNode) {
-      //TODO this fails if node <1 pixel at current zoom level
-      const newViewState = getBoundedViewState(deckRef, selectedNode?.bbox);
-      setViewState({ 
-        ...viewState, 
-        ...newViewState, 
-        // pitch: 0,
-        // bearing: 0,
-        // transitionDuration: 1000,
-        // transitionInterpolator: new FlyToInterpolator(), 
-      });
       setViewMode('featureAOI');
     } else {
       // undefined, user chose 'choose a layer', reset to user AOI
@@ -169,6 +159,10 @@ const AOIBar = ({t}) => {
   }, [dateRange]);
 
   useEffect(()=> setEventList(events), [events]);
+
+  useEffect(()=> {
+    console.log('View mode now', viewMode);
+  }, [viewMode]);
 
   return(
     <Container fluid="true" >
@@ -207,7 +201,6 @@ const AOIBar = ({t}) => {
             <MapComponent 
               selectedLayer={selectedLayer}
               viewMode={viewMode}
-              viewState={viewState} 
               eventList={eventList} 
             />
           </Card>
