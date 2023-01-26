@@ -92,12 +92,10 @@ const nodeVisitor = (node, userAoi, parentInfo={}) => {
 
 const AOIBar = ({t}) => {
   const dispatch = useDispatch();
-  //const { deckRef } = useMap();
 
   const [eventList, setEventList] = useState([]);
   const [selectedLayerId, setSelectedLayerId] = useState('');
   const [selectedLayer, setSelectedLayer] = useState({});
-  //const [viewState, setViewState] = useState(null);
   const [viewMode, setViewMode] = useState('userAOI');
 
   const {dateRange} = useSelector(state => state.common);
@@ -142,7 +140,6 @@ const AOIBar = ({t}) => {
   useEffect (() => {
     const selectedNode = mapRequests.find(layer => layer.key === selectedLayerId);
     setSelectedLayer(selectedNode);
-    console.log('Selected Node', selectedNode);
     if (selectedNode) {
       setViewMode('featureAOI');
     } else {
@@ -159,10 +156,6 @@ const AOIBar = ({t}) => {
   }, [dateRange]);
 
   useEffect(()=> setEventList(events), [events]);
-
-  useEffect(()=> {
-    console.log('View mode now', viewMode);
-  }, [viewMode]);
 
   return(
     <Container fluid="true" >

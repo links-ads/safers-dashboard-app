@@ -14,17 +14,16 @@ const getBitmapLayer = (selectedLayer) => {
      extract bounds from url, this is passed in as an object with timestamps
      as the keys and urls as the values. Only going to show first one for now
     */
-  const firstURL = Object.values(selectedLayer.urls)[0];
+  //const firstURL = Object.values(selectedLayer.urls)[0];
+  const firstURL = selectedLayer.legend_url;
   const urlSearchParams = new URLSearchParams(firstURL);
   const urlParams = Object.fromEntries(urlSearchParams.entries());
   const bounds = urlParams?.bbox ? urlParams.bbox.split(',').map(Number) : selectedLayer.bbox;
-  console.log(`image at bounds ${bounds}`)
-  console.log(`imageURL ${firstURL}`)
   return new BitmapLayer({
     id: 'bitmap-layer',
     bounds: bounds,
-    //image: firstURL,
-    image:'http://placekitten.com/200/300',
+    image: firstURL,
+    //image:'http://placekitten.com/200/300',
     opacity: 0.5
   });
 }
@@ -42,7 +41,6 @@ const MapComponent = ({ selectedLayer, viewMode, eventList }) => {
 
     if (viewMode === 'userAOI') {
       // default mode is to show user's home AOI 
-      console.log('userAoi', userAoi);
       setViewState(getViewState(userAoi.features[0].properties.midPoint, userAoi.features[0].properties.zoomLevel));
       displayLayers =[...displayLayers, getPolygonLayer(userAoi), getEventIconLayer(eventList)];
     } 
@@ -71,18 +69,6 @@ const MapComponent = ({ selectedLayer, viewMode, eventList }) => {
     }  
     setLayers(displayLayers);
   }, [setLayers, deckRef, userAoi, selectedLayer, setViewState, viewMode, eventList, getPolygonLayer, getBitmapLayer, getEventIconLayer, getViewState]);
-
-  useEffect(() => {
-    console.log('viewState now', viewState);
-  }, [viewState]);
-
-  useEffect(() => {
-    console.log('viewMode now', viewMode);
-  }, [viewMode]);
-
-  useEffect(() => {
-    console.log('layers now', layers);
-  }, [layers]);
 
   return (
     <Card className='map-card'>
