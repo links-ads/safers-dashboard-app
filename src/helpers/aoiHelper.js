@@ -106,6 +106,7 @@ const AoiHelper = ({ t }) => {
   const renderAreasOfInterest = () => {
     let aoisToSplit = _.cloneDeep(allAoi);
     const sortedAois = _.chunk(aoisToSplit, 3);
+    console.log('AOI CHUNKS: ', sortedAois);
 
     const selVal = selectedAoi ? selectedAoi.features[0].properties.id : null;
     return (

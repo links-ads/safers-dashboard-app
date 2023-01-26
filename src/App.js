@@ -24,11 +24,15 @@ const App = () => {
       <PreLoader isLoading={isLoading} loadingMsg={loadingMsg} />
       <Routes>
         {publicRoutes.map(route => (
-          <Route key={route} path={route.path} element={<route.component />} />
+          <Route
+            key={route.path}
+            path={route.path}
+            element={<route.component />}
+          />
         ))}
         {privateRoutes.map(route => (
           <Route
-            key={route}
+            key={route.path}
             path={route.path}
             element={
               <Authmiddleware

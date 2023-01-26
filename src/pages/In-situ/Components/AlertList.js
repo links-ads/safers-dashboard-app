@@ -70,7 +70,7 @@ const AlertList = ({
   );
 
   useEffect(() => {
-    if (selCam) {
+    if (selCam && cameraInfo) {
       !_.isEqual(viewState?.midPoint, cameraInfo?.geometry?.coordinates) ||
       isViewStateChanged
         ? setViewState(
@@ -153,7 +153,7 @@ const AlertList = ({
       <Row>
         {paginatedAlerts.map(alert => (
           <Alert
-            key={alert}
+            key={alert.id}
             card={alert}
             setSelectedAlert={setSelectedAlert}
             setFavorite={setFavorite}

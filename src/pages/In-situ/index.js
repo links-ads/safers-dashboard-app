@@ -232,7 +232,7 @@ const InSituAlerts = () => {
                   setIconLayer={setIconLayer}
                   setHoverInfo={setHoverInfo}
                   hideTooltip={hideTooltip}
-                  setViewState={setViewState}
+                  setViewState={useCallback(() => setViewState, [])}
                   setIsViewStateChanged={setIsViewStateChanged}
                 />
               </Col>

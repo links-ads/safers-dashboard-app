@@ -101,6 +101,7 @@ const BaseMap = ({
       [props[1]]: 10,
     };
   };
+
   return (
     <>
       <DeckGL
@@ -126,7 +127,8 @@ const BaseMap = ({
           showCompass={false}
         />
         {widgets.map((widget, index) => (
-          <Fragment key={widget}>{widget(index)}</Fragment>
+          // eslint-disable-next-line react/no-array-index-key
+          <Fragment key={index}>{widget(index)}</Fragment>
         ))}
         {hoverInfo ? renderTooltip(hoverInfo) : null}
         <MapStyleSwitcher

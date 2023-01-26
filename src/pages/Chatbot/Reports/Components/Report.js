@@ -25,7 +25,8 @@ const Report = ({ card, reportId, setSelectedReport /*, setFavorite*/ }) => {
 
   const getBadge = category => {
     let iconStatus = '';
-    switch (category) {
+    console.log('GET BADGE CATEGORY: ', category);
+    switch (category.toLowerCase()) {
       case 'effects':
         iconStatus = 'fa-dice';
         break;

@@ -15,7 +15,7 @@ import {
 } from '../store/appAction';
 
 const MILLISECONDS = 1000;
-const pollingHelper = props => {
+const PollingHelper = props => {
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -141,4 +141,4 @@ const pollingHelper = props => {
   return <>{props.children}</>;
 };
 
-export default pollingHelper;
+export default PollingHelper;
