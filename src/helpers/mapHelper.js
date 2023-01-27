@@ -100,7 +100,30 @@ export const getEventIconLayer = (alerts) => {
 };
 
 export const getPolygonLayer = (aoi) => {
+  // fetch polygon layer for user's home AOI
   const coordinates = aoi.features[0].geometry.coordinates;
+  return (new PolygonLayer({
+    id: 'polygon-layer',
+    data: coordinates,
+    pickable: true,
+    stroked: true,
+    filled: true,
+    extruded: false,
+    wireframe: true,
+    lineWidthMinPixels: 1,
+    opacity: .25,
+    getPolygon: d => d,
+    // getElevation: () => 10,
+    getFillColor: [192, 105, 25],
+    getLineColor: [0, 0, 0],
+    getLineWidth: 100
+  }))
+};
+
+export const getPolygonLayerFromGeometry = (geometry) => {
+  // fetch polygon for arbitrary polygonal geometry
+  // e.g. AOI for a data layer
+  const coordinates = geometry.coordinates;
   return (new PolygonLayer({
     id: 'polygon-layer',
     data: coordinates,

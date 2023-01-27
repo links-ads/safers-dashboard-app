@@ -2,7 +2,7 @@ import React , { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 import BaseMap from '../../../components/BaseMap/BaseMap';
-import { getPolygonLayer } from '../../../helpers/mapHelper';
+import { getPolygonLayer, getPolygonLayerFromGeometry } from '../../../helpers/mapHelper';
 import { getViewState } from '../../../helpers/mapHelper';
 import PropTypes from 'prop-types';
 import { getEventIconLayer } from '../../../helpers/mapHelper';
@@ -14,8 +14,7 @@ const getBitmapLayer = (selectedLayer) => {
      extract bounds from url, this is passed in as an object with timestamps
      as the keys and urls as the values. Only going to show first one for now
     */
-  //const firstURL = Object.values(selectedLayer.urls)[0];
-  const firstURL = selectedLayer.legend_url;
+  const firstURL = Object.values(selectedLayer.urls)[0];
   const urlSearchParams = new URLSearchParams(firstURL);
   const urlParams = Object.fromEntries(urlSearchParams.entries());
   const bounds = urlParams?.bbox ? urlParams.bbox.split(',').map(Number) : selectedLayer.bbox;
@@ -23,7 +22,6 @@ const getBitmapLayer = (selectedLayer) => {
     id: 'bitmap-layer',
     bounds: bounds,
     image: firstURL,
-    //image:'http://placekitten.com/200/300',
     opacity: 0.5
   });
 }
@@ -53,16 +51,13 @@ const MapComponent = ({ selectedLayer, viewMode, eventList }) => {
       // This is a replacement for getBoundedViewState
       // which throws up all sorts of errors as it calls DeckGL methods directly
       // setViewState({...viewState, ...getBoundedViewState(deckRef, selectedLayer.bbox)});
+      
+      console.log('Selected Layer',selectedLayer);
       const [minX, minY, maxX, maxY] = selectedLayer.bbox;
       const midpoint  = [(minX+maxX)/2,(minY+maxY)/2];
       const zoom = 10;
       setViewState({...viewState, ...getViewState(midpoint, zoom)});
-      const reshapedLayer = {
-        features: [
-          {geometry: selectedLayer.geometry.geometries[0],}
-        ]
-      }
-      displayLayers.push(getPolygonLayer(reshapedLayer));    
+      displayLayers.push(getPolygonLayerFromGeometry(selectedLayer?.geometry));    
       if (selectedLayer.urls) {
         displayLayers.push(getBitmapLayer(selectedLayer));
       }
