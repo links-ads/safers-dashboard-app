@@ -11,12 +11,19 @@ import { getIconLayer, getViewState } from '../../../../../helpers/mapHelper';
 import { formatDate } from '../../../../../store/utility';
 import MapSection from '../Components/Map';
 
-//i18n
-
 const SummaryContainer = ({ reportDetail, t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
 
   const navigate = useNavigate();
+
+  console.log('Report', reportDetail);
+  const getStringOrUknownText = text => {
+    if (!text || text === '') {
+      return t('Unknown');
+    } else {
+      return `${t(text)}`;
+    }
+  };
 
   if (!reportDetail) return null;
 
@@ -28,7 +35,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
 
   const dateDisplay = reportDetail?.timestamp
     ? formatDate(reportDetail.timestamp)
-    : 'Unknown';
+    : t('Unknown');
   return (
     <>
       <Row>
@@ -47,50 +54,59 @@ const SummaryContainer = ({ reportDetail, t }) => {
           {' '}
           {t('Results')} &gt;
         </span>{' '}
-        <span className="event-alert-title">{reportDetail.name}</span>
+        <span className="event-alert-title">
+          {getStringOrUknownText(reportDetail.name)}
+        </span>
       </Col>
 
       <Col md={3}>
         <Col className="ms-2 report-info">
           <Row className="mb-3">
-            <span className="text-title">{reportDetail.name}</span>
-          </Row>
-          <Row className="my-2">
-            <span>
-              {t('Hazard Type')}: {reportDetail.hazard}
+            <span className="text-title">
+              {getStringOrUknownText(reportDetail.name)}
             </span>
           </Row>
           <Row className="my-2">
             <span>
-              {t('status', { ns: 'common' })}: {reportDetail.status}
+              {t('Hazard Type')}: {getStringOrUknownText(reportDetail.hazard)}
             </span>
           </Row>
           <Row className="my-2">
             <span>
-              {t('category', { ns: 'common' })}:{' '}
-              {reportDetail.categories.join(', ')}
+              {t('Status', { ns: 'reports' })} :
+              {getStringOrUknownText(reportDetail.status)}
             </span>
           </Row>
           <Row className="my-2">
-            <Col lg={2} id="cat-info">
-              <span>{t('Details')}: </span>
+            <span>
+              {t('Category', { ns: 'reports' })} :{' '}
+              {reportDetail.categories.length > 0
+                ? reportDetail.categories.join(', ')
+                : t('Unknown')}
+            </span>
+          </Row>
+          <Row className="my-2">
+            <Col lg={3} id="cat-info">
+              <div>
+                {<span>{`${t('Details')} : `}</span>}
+                {reportDetail.categories_info.length > 0
+                  ? reportDetail.categories_info.map(info => (
+                    <span key={info}>{getStringOrUknownText(info)}</span>
+                  ))
+                  : t('Unknown')}
+              </div>
             </Col>
-            <Col lg={1}>&nbsp;</Col>
             <Col
               lg={9}
               className="mt-lg-0 ms-lg-0 mt-sm-2 ms-sm-2"
               aria-labelledby="cat-info"
-            >
-              {reportDetail.categories_info.map(info => (
-                <div key={info}>{info}</div>
-              ))}
-            </Col>
+            ></Col>
           </Row>
           <Row className="mt-3 mb-2">
             <span>{t('Description')}:</span>
           </Row>
           <Row>
-            <span>{reportDetail.description}</span>
+            <span>{getStringOrUknownText(reportDetail.description)}</span>
           </Row>
         </Col>
       </Col>
@@ -100,7 +116,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
             <Row>
               <Col>
                 <span className="font-size-18">{t('Username')}</span> :{' '}
-                {reportDetail.reporter?.name}
+                {getStringOrUknownText(reportDetail.reporter?.name)}
               </Col>
             </Row>
             <Row>
@@ -108,7 +124,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
                 <span className="font-size-18">
                   {t('Organization', { ns: 'common' })}
                 </span>{' '}
-                : {reportDetail.reporter?.organization}
+                : {getStringOrUknownText(reportDetail.reporter?.organization)}
               </Col>
             </Row>
           </Col>
