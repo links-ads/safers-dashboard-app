@@ -115,7 +115,7 @@ exports[`Select Area Component Renders Should match snapshot 1`] = `
               </h5>
             </div>
             <hr />
-            <AoiHelper />
+            <withI18nextTranslation(AoiHelper) />
           </Col>
         </Row>
       </Row>

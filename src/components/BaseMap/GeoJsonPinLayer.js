@@ -15,5 +15,5 @@ export class GeoJsonPinLayer extends PinLayer {
 
 GeoJsonPinLayer.layerName = 'GeoJsonPinLayer';
 GeoJsonPinLayer.defaultProps = {
-  getPosition: { type: 'accessor', value: (x) => x.geometry.coordinates },
+  getPosition: { type: 'accessor', value: x => x.geometry.coordinates },
 };

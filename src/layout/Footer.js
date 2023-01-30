@@ -1,5 +1,6 @@
-import React from 'react'
-import { Container, Row, Col } from 'reactstrap'
+import React from 'react';
+
+import { Container, Row, Col } from 'reactstrap';
 
 const Footer = () => {
   return (
@@ -8,13 +9,12 @@ const Footer = () => {
         <Container fluid>
           <Row>
             <Col md={6}>{new Date().getFullYear()} © SAFERS.</Col>
-            <Col md={6}>
-            </Col>
+            <Col md={6}></Col>
           </Row>
         </Container>
       </footer>
     </React.Fragment>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

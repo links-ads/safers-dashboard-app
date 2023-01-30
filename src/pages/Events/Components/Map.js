@@ -1,13 +1,18 @@
-import _ from 'lodash';
 import React from 'react';
+
+import _ from 'lodash';
+import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Card } from 'reactstrap';
-import BaseMap from '../../../components/BaseMap/BaseMap';
-import { editEventAlertInfo, validateEventAlert } from '../../../store/events/action';
-import { PAGE_SIZE } from '../../../store/events/types';
-import PropTypes from 'prop-types';
+
 import ToolTip from './Tooltip';
+import BaseMap from '../../../components/BaseMap/BaseMap';
 import SearchButton from '../../../components/SearchButton';
+import {
+  editEventAlertInfo,
+  validateEventAlert,
+} from '../../../store/events/action';
+import { PAGE_SIZE } from '../../../store/events/types';
 
 const MapSection = ({
   currentPage,
@@ -23,36 +28,38 @@ const MapSection = ({
   getAlertsByArea,
   setIsEdit,
   setNewWidth,
-  setNewHeight
+  setNewHeight,
 }) => {
   const dispatch = useDispatch();
 
-  const renderTooltip = (info) => {
+  const renderTooltip = info => {
     const { object } = info;
     const coordinate = object?.geometry.coordinates;
 
     if (object) {
-      return <ToolTip
-        key={object.properties.id}
-        object={object.properties}
-        coordinate={coordinate}
-        isEdit={isEdit}
-        setIsEdit={setIsEdit}
-        setFavorite={setFavorite}
-        validateEvent={validateEvent}
-        editInfo={editInfo}
-      />
+      return (
+        <ToolTip
+          key={object.properties.id}
+          object={object.properties}
+          coordinate={coordinate}
+          isEdit={isEdit}
+          setIsEdit={setIsEdit}
+          setFavorite={setFavorite}
+          validateEvent={validateEvent}
+          editInfo={editInfo}
+        />
+      );
     }
-  }
+  };
 
-  const validateEvent = (id) => {
+  const validateEvent = id => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.status = 'VALIDATED';
     dispatch(validateEventAlert(id));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
-  }
+  };
 
   const editInfo = (id, desc) => {
     let selectedAlert = _.find(filteredAlerts, { id });
@@ -61,18 +68,13 @@ const MapSection = ({
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
-  }
+  };
 
-  const getSearchButton = (index) => {
-    return (
-      <SearchButton
-        index={index}
-        getInfoByArea={getAlertsByArea}
-      />
-    )
-  }
+  const getSearchButton = index => {
+    return <SearchButton index={index} getInfoByArea={getAlertsByArea} />;
+  };
   return (
-    <Card className='map-card mb-0' style={{ height: 730 }}>
+    <Card className="map-card mb-0" style={{ height: 730 }}>
       <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
@@ -83,12 +85,12 @@ const MapSection = ({
         widgets={[getSearchButton]}
         setWidth={setNewWidth}
         setHeight={setNewHeight}
-        screenControlPosition='top-right'
-        navControlPosition='bottom-right'
+        screenControlPosition="top-right"
+        navControlPosition="bottom-right"
       />
     </Card>
-  )
-}
+  );
+};
 
 MapSection.propTypes = {
   viewState: PropTypes.any,
@@ -106,7 +108,7 @@ MapSection.propTypes = {
   getAlertsByArea: PropTypes.func,
   setIsEdit: PropTypes.func,
   setNewWidth: PropTypes.func,
-  setNewHeight: PropTypes.func
-}
+  setNewHeight: PropTypes.func,
+};
 
 export default MapSection;

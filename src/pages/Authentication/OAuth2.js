@@ -1,9 +1,17 @@
 import React, { useEffect } from 'react';
+
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'reactstrap';
 import { useLocation } from 'react-router-dom';
+import { Button } from 'reactstrap';
+
+import {
+  AUTH_BASE_URL,
+  CLIENT_BASE_URL,
+  AUTH_CLIENT_ID,
+  AUTH_TENANT_ID,
+  REDIRECT_URL,
+} from '../../config';
 import { generalInProgress, signInOauth2 } from '../../store/appAction';
-import { AUTH_BASE_URL, CLIENT_BASE_URL, AUTH_CLIENT_ID, AUTH_TENANT_ID, REDIRECT_URL  } from '../../config'
 
 /* 
 The `authorize` fn gets the authorization_code from the Authentication Server
@@ -19,7 +27,11 @@ const OAuth2 = () => {
   const dispatch = useDispatch();
 
   const authorize = () => {
-    dispatch(generalInProgress('Please wait. You are being redirected to sign in page for SSO.'));
+    dispatch(
+      generalInProgress(
+        'Please wait. You are being redirected to sign in page for SSO.',
+      ),
+    );
 
     const params = {
       response_type: 'code',
@@ -31,7 +43,7 @@ const OAuth2 = () => {
       scope: 'offline_access',
     };
     const urlParams = new URLSearchParams(params).toString();
-    console.log(urlParams)
+    console.log(urlParams);
     window.location = `${AUTH_BASE_URL}/oauth2/authorize?${urlParams}`;
   };
 
@@ -42,15 +54,16 @@ const OAuth2 = () => {
   const authCode = params.get('code');
   useEffect(() => {
     if (!isLoggedIn && authCode) {
-      console.log(authCode)
-      dispatch(generalInProgress('You have successfully signed in. Please wait.'));
-      dispatch(signInOauth2({authCode}));
+      console.log(authCode);
+      dispatch(
+        generalInProgress('You have successfully signed in. Please wait.'),
+      );
+      dispatch(signInOauth2({ authCode }));
     }
-  }, []);
+  }, [authCode, dispatch, isLoggedIn]);
 
-  
   return (
-    <div className='text-center'>
+    <div className="text-center">
       <Button
         className="my-4 sign-in-btn"
         color="primary"
@@ -60,8 +73,8 @@ const OAuth2 = () => {
       >
         SSO SIGN IN
       </Button>
-    </div>     
+    </div>
   );
-}
+};
 
 export default OAuth2;

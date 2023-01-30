@@ -1,9 +1,10 @@
-import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
+
 import _ from 'lodash';
+import PropTypes from 'prop-types';
 import Pagination from 'rc-pagination';
 
-const PaginationWrapper = ({list, pageSize, setPageData}) => {
+const PaginationWrapper = ({ list, pageSize, setPageData }) => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const updatePage = page => {
@@ -17,21 +18,23 @@ const PaginationWrapper = ({list, pageSize, setPageData}) => {
   useEffect(() => {
     //Always set the default page to first if the list is updated
     updatePage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
 
-  
-  return  <Pagination
-    pageSize={pageSize}
-    onChange={updatePage}
-    current={currentPage}
-    total={list.length}
-  />
-}
+  return (
+    <Pagination
+      pageSize={pageSize}
+      onChange={updatePage}
+      current={currentPage}
+      total={list.length}
+    />
+  );
+};
 
 PaginationWrapper.propTypes = {
   list: PropTypes.array,
   pageSize: PropTypes.number,
-  setPageData: PropTypes.func
-}
+  setPageData: PropTypes.func,
+};
 
 export default PaginationWrapper;

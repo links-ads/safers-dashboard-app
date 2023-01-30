@@ -1,30 +1,61 @@
 import React, { useState, useEffect, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { Row, Col, Card, CardBody, CardTitle, Media, Form, Label, Input, Modal } from 'reactstrap';
-import avatar from '../../assets/images/users/profile.png';
-import { Formik } from 'formik';
-import { useSelector, useDispatch } from 'react-redux';
-import { getInfo, updateInfo, uploadProfImg, getRoleList, getOrgList, deleteAccount, signOut, resetStatus } from '../../store/appAction';
-import { getGeneralErrors, getError } from '../../helpers/errorHelper';
-import _ from 'lodash';
 
 import countryList from 'country-list';
-import * as Yup from 'yup';
+import { Formik } from 'formik';
+import _ from 'lodash';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  Row,
+  Col,
+  Card,
+  CardBody,
+  CardTitle,
+  Media,
+  Form,
+  Label,
+  Input,
+  Modal,
+} from 'reactstrap';
 import toastr from 'toastr';
-import 'toastr/build/toastr.min.css'
+import * as Yup from 'yup';
+
+import avatar from '../../assets/images/users/profile.png';
+import { getGeneralErrors, getError } from '../../helpers/errorHelper';
+import {
+  getInfo,
+  updateInfo,
+  uploadProfImg,
+  getRoleList,
+  getOrgList,
+  deleteAccount,
+  signOut,
+  resetStatus,
+} from '../../store/appAction';
+
+import 'toastr/build/toastr.min.css';
 
 //i18n
-import { withTranslation } from 'react-i18next'
-
 
 const UpdateProfile = ({ t }) => {
   toastr.options = {
     preventDuplicates: true,
-  }
+  };
 
   const { id } = useSelector(state => state.user.info);
-  const { uploadFileSuccessRes, deleteAccSuccessRes, uploadFileFailRes, deleteAccFailRes, updateStatus, info: user, defaultAoi } = useSelector(state => state.user);
-  const { orgList = [], roleList: roles = [] } = useSelector(state => state.common);
+  const {
+    uploadFileSuccessRes,
+    deleteAccSuccessRes,
+    uploadFileFailRes,
+    deleteAccFailRes,
+    updateStatus,
+    info: user,
+    defaultAoi,
+  } = useSelector(state => state.user);
+  const { orgList = [], roleList: roles = [] } = useSelector(
+    state => state.common,
+  );
   const [modal_backdrop, setmodal_backdrop] = useState(false);
   const [orgName, setorgName] = useState('');
   const [citizenId, setcitizenId] = useState('');
@@ -37,7 +68,7 @@ const UpdateProfile = ({ t }) => {
     country: user?.country || '',
     city: user?.city || '',
     role: user?.role || '',
-    address: user?.address || ''
+    address: user?.address || '',
   };
   const [error, setError] = useState(false);
   const fileUploader = useRef(null);
@@ -46,12 +77,10 @@ const UpdateProfile = ({ t }) => {
   const countryNames = countryList.getNames().sort();
 
   useEffect(() => {
-    dispatch(getInfo(id))
-    if (roles.length === 0)
-      dispatch(getRoleList());
-    if (orgList.length === 0)
-      dispatch(getOrgList());
-  }, []);
+    dispatch(getInfo(id));
+    if (roles.length === 0) dispatch(getRoleList());
+    if (orgList.length === 0) dispatch(getOrgList());
+  }, [dispatch, id, orgList.length, roles.length]);
 
   if (uploadFileSuccessRes?.detail) {
     toastr.success(uploadFileSuccessRes.detail, '');
@@ -63,8 +92,7 @@ const UpdateProfile = ({ t }) => {
         setCurrentRole(currentRoleObj.name);
       }
       const objCitizen = _.find(roles, { name: 'citizen' });
-      setcitizenId(objCitizen.id)
-
+      setcitizenId(objCitizen.id);
     }
   }, [user, roles]);
 
@@ -73,62 +101,65 @@ const UpdateProfile = ({ t }) => {
       toastr.success(t('updated-info', { ns: 'common' }), '');
       dispatch(resetStatus());
     }
-  }, [updateStatus]);
+  }, [dispatch, t, updateStatus]);
 
   if (deleteAccSuccessRes) {
     dispatch(signOut());
   }
 
   useEffect(() => {
-    const error = uploadFileFailRes ? uploadFileFailRes : (deleteAccFailRes ? deleteAccFailRes : false);
+    const error = uploadFileFailRes
+      ? uploadFileFailRes
+      : deleteAccFailRes
+      ? deleteAccFailRes
+      : false;
     setError(error);
   }, [uploadFileFailRes, deleteAccFailRes]);
 
   useEffect(() => {
     if (orgList.length && user?.organization) {
       const organization = _.find(orgList, { id: user.organization });
-      setorgName(organization.name.split('-')[0])
+      setorgName(organization.name.split('-')[0]);
     }
   }, [orgList, user]);
 
-  const onChangeFile = (event) => {
+  const onChangeFile = event => {
     event.stopPropagation();
     event.preventDefault();
     var file = event.target.files[0];
     dispatch(uploadProfImg(file));
-  }
-
+  };
 
   const confirmAccDelete = () => {
     dispatch(deleteAccount(id));
     setmodal_backdrop(false);
-  }
+  };
 
   const tog_modal = () => {
     setmodal_backdrop(!modal_backdrop);
     removeBodyCss();
-  }
+  };
 
   const removeBodyCss = () => {
     document.body.classList.add('no_padding');
-  }
+  };
 
   const handleClick = () => {
     fileUploader.current.click();
-  }
-  
-  const myProfileSchema = Yup.object().shape({
-    first_name: Yup.string()
-      .required(t('field-empty-err', { ns: 'common' })),
-    last_name: Yup.string()
-      .required(t('field-empty-err', { ns: 'common' })),
-    role: Yup.string()
-      .required(t('field-empty-err', { ns: 'common' })),
-  })
+  };
+
+  const myProfileSchema = Yup.object()
+    .shape({
+      first_name: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+      last_name: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+      role: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    })
     .when((values, schema) => {
       if (values.role !== citizenId) {
         return schema.shape({
-          organization: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+          organization: Yup.string().required(
+            t('field-empty-err', { ns: 'common' }),
+          ),
         });
       }
     });
@@ -140,9 +171,7 @@ const UpdateProfile = ({ t }) => {
   return (
     <>
       <Row>
-        <Col lg={12}>
-          {getGeneralErrors(error)}
-        </Col>
+        <Col lg={12}>{getGeneralErrors(error)}</Col>
       </Row>
       <Row>
         <Col lg={4}>
@@ -156,39 +185,68 @@ const UpdateProfile = ({ t }) => {
                       alt=""
                       className="avatar-md rounded-circle img-thumbnail"
                     />
-                    <div className='text-center mt-2 d-none'><a className='lnk-edit' onClick={(e) => { handleClick(e) }}>{t('Edit Image')}</a></div>
-                    <input type="file" id="file" ref={fileUploader} style={{ display: 'none' }} onChange={(e) => { onChangeFile(e) }} />
+                    <div className="text-center mt-2 d-none">
+                      <a
+                        className="lnk-edit"
+                        onClick={() => {
+                          handleClick();
+                        }}
+                      >
+                        {t('Edit Image')}
+                      </a>
+                    </div>
+                    <input
+                      type="file"
+                      id="file"
+                      ref={fileUploader}
+                      style={{ display: 'none' }}
+                      onChange={e => {
+                        onChangeFile(e);
+                      }}
+                    />
                   </div>
                   <Media body className="ms-4 align-self-center">
-                    <h1 className="h5">{user.first_name} {user.last_name}</h1>
+                    <h1 className="h5">
+                      {user.first_name} {user.last_name}
+                    </h1>
                     <h2 className="h6">{currentRole}</h2>
                   </Media>
                 </Media>
               </CardTitle>
               <div className="p-4">
-                <Row className='prof-list'>
-                  <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-mail-send me-2'></i><span>{t('Email')}</span>
+                <Row className="prof-list">
+                  <Col md="6" className="p-2 dflt-seperator">
+                    <i className="bx bx-mail-send me-2"></i>
+                    <span>{t('Email')}</span>
                   </Col>
-                  <Col md="6" className='p-2 dflt-seperator'>
+                  <Col md="6" className="p-2 dflt-seperator">
                     {user.email}
                   </Col>
-                  <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-map me-2'></i><span>{t('Location', { ns: 'common' })}</span>
+                  <Col md="6" className="p-2 dflt-seperator">
+                    <i className="bx bx-map me-2"></i>
+                    <span>{t('Location', { ns: 'common' })}</span>
                   </Col>
-                  <Col md="6" className='p-2 dflt-seperator'>
-                    {user.address && user.address.length > 0 ? `${user.address}, ` : ''}{user.city && user.city.length > 0 ? `${user.city}, ` : ''}{user.country && user.country.length > 0 ? `${user.country}` : ''}
+                  <Col md="6" className="p-2 dflt-seperator">
+                    {user.address && user.address.length > 0
+                      ? `${user.address}, `
+                      : ''}
+                    {user.city && user.city.length > 0 ? `${user.city}, ` : ''}
+                    {user.country && user.country.length > 0
+                      ? `${user.country}`
+                      : ''}
                   </Col>
-                  <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-shopping-bag me-2'></i><span>{t('Organization', { ns: 'common' })}</span>
+                  <Col md="6" className="p-2 dflt-seperator">
+                    <i className="bx bx-shopping-bag me-2"></i>
+                    <span>{t('Organization', { ns: 'common' })}</span>
                   </Col>
-                  <Col md="6" className='p-2 dflt-seperator'>
+                  <Col md="6" className="p-2 dflt-seperator">
                     {orgName}
                   </Col>
-                  <Col md="6" className='p-2 dflt-seperator'>
-                    <i className='bx bx-flag me-2'></i><span>{t('Area of Interest', { ns: 'common' })}</span>
+                  <Col md="6" className="p-2 dflt-seperator">
+                    <i className="bx bx-flag me-2"></i>
+                    <span>{t('Area of Interest', { ns: 'common' })}</span>
                   </Col>
-                  <Col md="6" className='p-2 dflt-seperator'>
+                  <Col md="6" className="p-2 dflt-seperator">
                     {defaultAoi?.features[0].properties.name}
                   </Col>
                 </Row>
@@ -220,11 +278,13 @@ const UpdateProfile = ({ t }) => {
                   handleSubmit,
                   isSubmitting,
                 }) => (
-                  <Form className='p-3' onSubmit={handleSubmit} noValidate>
+                  <Form className="p-3" onSubmit={handleSubmit} noValidate>
                     <Row>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-email-Input">{t('First Name')}</Label>
+                          <Label htmlFor="formrow-email-Input">
+                            {t('First Name')}
+                          </Label>
                           <Input
                             type="text"
                             id="first_name"
@@ -242,7 +302,9 @@ const UpdateProfile = ({ t }) => {
                       </Col>
                       <Col md={6}>
                         <div className="clearfix mb-3">
-                          <Label htmlFor="formrow-password-Input">{t('Last Name')}</Label>
+                          <Label htmlFor="formrow-password-Input">
+                            {t('Last Name')}
+                          </Label>
                           <Input
                             type="text"
                             id="last_name"
@@ -260,29 +322,51 @@ const UpdateProfile = ({ t }) => {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">{t('Organization', { ns: 'common' })}</Label>
+                          <Label htmlFor="formrow-password-Input">
+                            {t('Organization', { ns: 'common' })}
+                          </Label>
                           <Input
                             type="select"
                             id="organization"
-                            className={getError('organization', errors, touched)}
+                            className={getError(
+                              'organization',
+                              errors,
+                              touched,
+                            )}
                             name="organization"
                             placeholder="organization"
                             onChange={handleChange}
                             onBlur={handleBlur}
                             disabled={values.role === citizenId}
-                            value={values.role === citizenId ? '' : values.organization}
+                            value={
+                              values.role === citizenId
+                                ? ''
+                                : values.organization
+                            }
                             autoComplete="on"
                             data-testid="update-profile-org"
                           >
-                            <option value={''} >{values.role === citizenId ? 'N/A' : '--Select organisation--'}</option>
-                            {orgList.map((org, index) => { return (<option key={index} value={org.id}>{org.name}</option>) })}
+                            <option value={''}>
+                              {values.role === citizenId
+                                ? 'N/A'
+                                : '--Select organisation--'}
+                            </option>
+                            {orgList.map(org => {
+                              return (
+                                <option key={org.id} value={org.id}>
+                                  {org.name}
+                                </option>
+                              );
+                            })}
                           </Input>
                           {getError('organization', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">{t('Country')}</Label>
+                          <Label htmlFor="formrow-password-Input">
+                            {t('Country')}
+                          </Label>
                           <Input
                             id="country"
                             className={getError('country', errors, touched)}
@@ -294,15 +378,25 @@ const UpdateProfile = ({ t }) => {
                             value={values.country}
                             data-testid="update-profile-country"
                           >
-                            <option value={''} >--{t('Select your country')}--</option>
-                            {countryNames.map((countryName) => { return (<option key={countryName} value={countryName}>{countryName}</option>) })}
+                            <option value={''}>
+                              --{t('Select your country')}--
+                            </option>
+                            {countryNames.map(countryName => {
+                              return (
+                                <option key={countryName} value={countryName}>
+                                  {countryName}
+                                </option>
+                              );
+                            })}
                           </Input>
                           {getError('country', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">{t('City')}</Label>
+                          <Label htmlFor="formrow-password-Input">
+                            {t('City')}
+                          </Label>
                           <Input
                             type="text"
                             id="city"
@@ -320,7 +414,9 @@ const UpdateProfile = ({ t }) => {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">{t('Role')}</Label>
+                          <Label htmlFor="formrow-password-Input">
+                            {t('Role')}
+                          </Label>
                           <Input
                             id="role"
                             className={getError('role', errors, touched)}
@@ -332,15 +428,25 @@ const UpdateProfile = ({ t }) => {
                             value={values.role}
                             data-testid="update-profile-role"
                           >
-                            <option value={''} >--{t('Select your role')}--</option>
-                            {roles.map((roleObj, index) => { return (<option key={index} value={roleObj.id}>{roleObj.label}</option>) })}
+                            <option value={''}>
+                              --{t('Select your role')}--
+                            </option>
+                            {roles.map(roleObj => {
+                              return (
+                                <option key={roleObj.id} value={roleObj.id}>
+                                  {roleObj.label}
+                                </option>
+                              );
+                            })}
                           </Input>
                           {getError('role', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">{t('Address')}</Label>
+                          <Label htmlFor="formrow-password-Input">
+                            {t('Address')}
+                          </Label>
                           <Input
                             type="text"
                             id="address"
@@ -357,56 +463,84 @@ const UpdateProfile = ({ t }) => {
                         </div>
                       </Col>
                     </Row>
-                    <div className='text-center'>
-                      <button type="submit" data-testid="updateProfileButton" className="btn btn-primary w-md me-2" disabled={isSubmitting}>
+                    <div className="text-center">
+                      <button
+                        type="submit"
+                        data-testid="updateProfileButton"
+                        className="btn btn-primary w-md me-2"
+                        disabled={isSubmitting}
+                      >
                         {t('update-details')}
                       </button>
-                      <button type="button" className="btn btn-secondary w-md"
+                      <button
+                        type="button"
+                        className="btn btn-secondary w-md"
                         onClick={() => {
-                          tog_modal()
+                          tog_modal();
                         }}
-                        data-toggle="modal">
+                        data-toggle="modal"
+                      >
                         {t('delete-account')}
                       </button>
                       <Modal
                         isOpen={modal_backdrop}
                         toggle={() => {
-                          tog_modal()
+                          tog_modal();
                         }}
                         scrollable={true}
                         id="staticBackdrop"
                       >
                         <div className="modal-header">
-                          <h5 className="modal-title" id="staticBackdropLabel">{t('Warning', { ns: 'common' })}!</h5>
-                          <button type="button" className="btn-close"
+                          <h5 className="modal-title" id="staticBackdropLabel">
+                            {t('Warning', { ns: 'common' })}!
+                          </h5>
+                          <button
+                            type="button"
+                            className="btn-close"
                             onClick={() => {
-                              setmodal_backdrop(false)
-                            }} aria-label="Close"></button>
+                              setmodal_backdrop(false);
+                            }}
+                            aria-label="Close"
+                          ></button>
                         </div>
                         <div className="modal-body">
                           <p>{t('confirm-delete-text')}.</p>
                         </div>
                         <div className="modal-footer">
-                          <button type="button" className="btn btn-light" onClick={() => {
-                            setmodal_backdrop(false)
-                          }}>{t('Close', { ns: 'common' })}</button>
-                          <button type="button" className="btn btn-primary" onClick={() => { confirmAccDelete() }}>{t('Yes', { ns: 'common' })}</button>
+                          <button
+                            type="button"
+                            className="btn btn-light"
+                            onClick={() => {
+                              setmodal_backdrop(false);
+                            }}
+                          >
+                            {t('Close', { ns: 'common' })}
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={() => {
+                              confirmAccDelete();
+                            }}
+                          >
+                            {t('Yes', { ns: 'common' })}
+                          </button>
                         </div>
                       </Modal>
                     </div>
                   </Form>
                 )}
-              </Formik >
+              </Formik>
             </CardBody>
           </Card>
         </Col>
       </Row>
     </>
   );
-}
+};
 
 UpdateProfile.propTypes = {
   t: PropTypes.any,
-}
+};
 
 export default withTranslation(['myprofile'])(UpdateProfile);

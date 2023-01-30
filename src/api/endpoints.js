@@ -32,7 +32,7 @@ export const endpoints = {
     validate: '/event-alerts/validate',
     edit: '/events/:event_id/',
     getInSitu: '/event-alerts/inSitu',
-    getTweets: '/event-alerts/tweets'
+    getTweets: '/event-alerts/tweets',
   },
   user: {
     profile: '/users/',
@@ -49,7 +49,7 @@ export const endpoints = {
   notifications: {
     getAll: '/notifications/',
     sources: '/notifications/sources',
-    scopesRestrictions: '/notifications/scopes-restrictions'
+    scopesRestrictions: '/notifications/scopes-restrictions',
   },
   insitu: {
     cameraList: '/cameras/',
@@ -72,8 +72,7 @@ export const endpoints = {
       createMission: '/chatbot/missions',
     },
     people: {
-      getAll: '/chatbot/people'
-    }
-  }
+      getAll: '/chatbot/people',
+    },
+  },
 };
-

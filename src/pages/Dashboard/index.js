@@ -1,11 +1,13 @@
 import React from 'react';
+
 import { Container } from 'reactstrap';
-import NotificationsBar from './Components/Notifications';
+
 import AOIBar from './Components/AOIBar';
+import NotificationsBar from './Components/Notifications';
 import PhotoBar from './Components/PhotoBar';
 import ReportBar from './Components/ReportBar';
 
-const NewDashboard = () => 
+const NewDashboard = () => (
   <div className="page-content">
     <Container fluid="true" className="sign-up-aoi-map-bg">
       <NotificationsBar />
@@ -14,5 +16,6 @@ const NewDashboard = () =>
       <ReportBar />
     </Container>
   </div>
+);
 
 export default NewDashboard;

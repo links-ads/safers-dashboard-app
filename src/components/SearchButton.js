@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button } from 'reactstrap'
-import { useTranslation } from 'react-i18next';
+
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
+import { Button } from 'reactstrap';
 
 const SearchButton = ({ index, getInfoByArea }) => {
   const { t } = useTranslation();
@@ -13,19 +14,19 @@ const SearchButton = ({ index, getInfoByArea }) => {
         position: 'absolute',
         top: 10,
         textAlign: 'center',
-        marginLeft: '41%'
+        marginLeft: '41%',
       }}
       onClick={getInfoByArea}
     >
       <i className="bx bx-revision"></i>{' '}
       {t('Search This Area', { ns: 'common' })}
-    </Button >
-  )
-}
+    </Button>
+  );
+};
 
 SearchButton.propTypes = {
   index: PropTypes.number,
   getInfoByArea: PropTypes.func,
-}
+};
 
-export default SearchButton
+export default SearchButton;

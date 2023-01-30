@@ -1,7 +1,9 @@
 import React from 'react';
-import { Card } from 'reactstrap';
-import BaseMap from '../../../../components/BaseMap/BaseMap';
+
 import PropTypes from 'prop-types';
+import { Card } from 'reactstrap';
+
+import BaseMap from '../../../../components/BaseMap/BaseMap';
 import SearchButton from '../../../../components/SearchButton';
 
 const MapSection = ({
@@ -12,20 +14,14 @@ const MapSection = ({
   handleViewStateChange,
   setNewWidth,
   setNewHeight,
-  onClick
+  onClick,
 }) => {
-
-  const getSearchButton = (index) => {
-    return (
-      <SearchButton
-        index={index}
-        getInfoByArea={getReportsByArea}
-      />
-    )
-  }
+  const getSearchButton = index => {
+    return <SearchButton index={index} getInfoByArea={getReportsByArea} />;
+  };
 
   return (
-    <Card className='map-card mb-0' style={{ height: 730 }}>
+    <Card className="map-card mb-0" style={{ height: 730 }}>
       <BaseMap
         layers={[iconLayer]}
         initialViewState={viewState}
@@ -34,13 +30,13 @@ const MapSection = ({
         onViewStateChange={handleViewStateChange}
         setWidth={setNewWidth}
         setHeight={setNewHeight}
-        screenControlPosition='top-right'
-        navControlPosition='bottom-right'
+        screenControlPosition="top-right"
+        navControlPosition="bottom-right"
         onClick={onClick}
       />
     </Card>
-  )
-}
+  );
+};
 
 MapSection.propTypes = {
   viewState: PropTypes.any,
@@ -50,7 +46,7 @@ MapSection.propTypes = {
   handleViewStateChange: PropTypes.func,
   setNewWidth: PropTypes.func,
   setNewHeight: PropTypes.func,
-  onClick: PropTypes.func
-}
+  onClick: PropTypes.func,
+};
 
 export default MapSection;

@@ -3,8 +3,8 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import * as mockUser from '../../../mockData/mock_user';
-import authReducer from '../reducer';
 import { signInSuccess } from '../action';
+import authReducer from '../reducer';
 import { SIGN_IN_SUCCESS } from '../types';
 
 describe('fetchUser Success ', () => {
@@ -27,12 +27,12 @@ describe('fetchUser Success ', () => {
       user: {},
       isLoggedIn: false,
       error: false,
-      forgotPswresponse: null
+      forgotPswresponse: null,
     };
 
     store = mockStore(initialState);
     action = signInSuccess(SIGN_IN_SUCCESS);
-    
+
     newState = await authReducer(store.getState(), action);
     expect(newState).toEqual(mockUser.SUCCESS_FETCH_USER_STATE);
   });

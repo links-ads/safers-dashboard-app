@@ -112,5 +112,3 @@ dist
 .tern-port
 package-lock.json
 
-# Node version file
-.node-version

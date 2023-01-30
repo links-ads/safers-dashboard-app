@@ -4,28 +4,27 @@ import wkt from 'wkt';
 export const updateObject = (oldObject, updatedProperties) => {
   return {
     ...oldObject,
-    ...updatedProperties
+    ...updatedProperties,
   };
 };
-export const formatNumber = (number) => {
-  if (number > 1000)
-    return Math.floor(parseInt(number / 1000)) + 'K'
-  return number
-}
+export const formatNumber = number => {
+  if (number > 1000) return Math.floor(number / 1000) + 'K';
+  return number;
+};
 
 export const getDefaultDateRange = () => {
   const from = moment(new Date()).add(-3, 'days').format('YYYY-MM-DD');
   const to = moment(new Date()).format('YYYY-MM-DD');
   return [from, to];
-}
+};
 
 export const formatDefaultDate = (date, format = 'L') => {
   return moment(date).format(format);
-}
+};
 
 export const formatDate = (date, format = 'YYYY-MM-DD HH:mm:ss') => {
-  return moment(date).format(format)
-}
+  return moment(date).format(format);
+};
 
 export const getPropertyValue = (searchObject = {}, targetProperty) => {
   const match = searchObject[targetProperty];
@@ -39,13 +38,13 @@ export const getPropertyValue = (searchObject = {}, targetProperty) => {
 
       const childrenTargetProperty = getPropertyValue(
         children[i],
-        targetProperty
+        targetProperty,
       );
       if (childrenTargetProperty) return childrenTargetProperty;
     }
   }
   return null;
-}
+};
 
 export const filterNodesByProperty = (layers, params = {}) => {
   //params are key/value pairs of target properties and their
@@ -55,101 +54,102 @@ export const filterNodesByProperty = (layers, params = {}) => {
   //if all filters are inactive, return all layers
   if (paramsEntries.every(([key]) => !params[key])) return layers;
 
-  return layers?.filter((parent) =>
+  return layers?.filter(parent =>
     paramsEntries.every(([targetProperty, matchValue]) => {
       //if some filters are inactive, ignore, as that means they're not applied
       if (!matchValue) return true;
 
       const targetPropertyValue = getPropertyValue(parent, targetProperty);
       return targetPropertyValue === matchValue;
-    })
-  )
-}
+    }),
+  );
+};
 
-export const getWKTfromFeature = (feature) => {
-  var tempFeature = null, tempWKT ='';
-  if(!feature || feature.length == 0){
+export const getWKTfromFeature = feature => {
+  var tempFeature = null,
     tempWKT = '';
-  } else if(feature.length > 1) {
+  if (!feature || feature.length === 0) {
+    tempWKT = '';
+  } else if (feature.length > 1) {
     tempFeature = {
       type: 'GeometryCollection',
-      geometries: feature.map(x=> x.geometry)
-    }
+      geometries: feature.map(x => x.geometry),
+    };
     tempWKT = wkt.stringify(tempFeature);
   } else {
     tempWKT = wkt.stringify(feature[0].geometry);
   }
-  const newWKT = tempWKT.replace(/\d+\.\d+/g, function(match) {
+  const newWKT = tempWKT.replace(/\d+\.\d+/g, function (match) {
     return Number(match).toFixed(6);
   });
   return newWKT;
-}
+};
 
-export const getGeoFeatures = (wktString) => {
+export const getGeoFeatures = wktString => {
   const tempGeoJSON = wkt.parse(wktString);
   const tempFeatures = [];
   if (tempGeoJSON) {
     switch (tempGeoJSON.type) {
-    case 'MultiLineString':
-      tempGeoJSON.coordinates.forEach(element => {
+      case 'MultiLineString':
+        tempGeoJSON.coordinates.forEach(element => {
+          tempFeatures.push({
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'LineString',
+              coordinates: element,
+            },
+          });
+        });
+        break;
+
+      case 'MultiPolygon':
+        tempGeoJSON.coordinates.forEach(element => {
+          tempFeatures.push({
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Polygon',
+              coordinates: element,
+            },
+          });
+        });
+        break;
+
+      case 'MultiPoint':
+        tempGeoJSON.coordinates.forEach(element => {
+          tempFeatures.push({
+            type: 'Feature',
+            properties: {},
+            geometry: {
+              type: 'Point',
+              coordinates: element,
+            },
+          });
+        });
+        break;
+
+      case 'GeometryCollection':
+        tempGeoJSON.geometries.forEach(element => {
+          tempFeatures.push({
+            type: 'Feature',
+            properties: {},
+            geometry: element,
+          });
+        });
+        break;
+
+      default:
         tempFeatures.push({
           type: 'Feature',
           properties: {},
-          geometry: {
-            type: 'LineString',
-            coordinates: element
-          },
-        })
-      });
-      break;
-
-    case 'MultiPolygon':
-      tempGeoJSON.coordinates.forEach(element => {
-        tempFeatures.push({
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'Polygon',
-            coordinates: element
-          },
-        })
-      });
-      break;
-
-    case 'MultiPoint':
-      tempGeoJSON.coordinates.forEach(element => {
-        tempFeatures.push({
-          type: 'Feature',
-          properties: {},
-          geometry: {
-            type: 'Point',
-            coordinates: element
-          },
-        })
-      });
-      break;
-
-    case 'GeometryCollection':
-      tempGeoJSON.geometries.forEach(element => {
-        tempFeatures.push({
-          type: 'Feature',
-          properties: {},
-          geometry: element,
-        })
-      });
-      break;
-
-    default:
-      tempFeatures.push({
-        type: 'Feature',
-        properties: {},
-        geometry: wktString ? wkt.parse(wktString) : '',
-      })
-      break;
+          geometry: wktString ? wkt.parse(wktString) : '',
+        });
+        break;
     }
 
-    return tempFeatures
+    return tempFeatures;
   } else {
     return [];
   }
-}
+};

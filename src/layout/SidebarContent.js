@@ -1,28 +1,30 @@
-import PropTypes from 'prop-types'
-import React, { useEffect, useRef } from 'react'
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+
+import Menu from 'metismenujs';
+import PropTypes from 'prop-types';
+import { withTranslation } from 'react-i18next';
+import { useSelector } from 'react-redux';
+import { useLocation, Link } from 'react-router-dom';
+import SimpleBar from 'simplebar-react';
+
 import { SIGNIN_REDIRECT } from '../config';
 
 //i18n
-import { withTranslation } from 'react-i18next'
 
 // Import Scrollbar
-import SimpleBar from 'simplebar-react'
 
 // MetisMenu
-import MetisMenu from 'metismenujs'
 // import { withRouter } from 'react-router-dom'
-import { Link } from 'react-router-dom'
-import { useSelector } from 'react-redux';
 
-const SidebarContent = (props) => {
+const SidebarContent = props => {
   const newAlertsCount = useSelector(state => state.alerts.newItemsCount);
   const newEventsCount = useSelector(state => state.eventAlerts.newItemsCount);
-  const {isNewNotification, newItemsCount:newNotificationsCount } = useSelector(state => state.notifications);
-  const { 
-    isNewAlert: isNewMapRequestAlert, 
+  const { isNewNotification, newItemsCount: newNotificationsCount } =
+    useSelector(state => state.notifications);
+  const {
+    isNewAlert: isNewMapRequestAlert,
     newItemsCount: newMapRequestCount,
-    isPageActive: isMapRequestPageActive
+    isPageActive: isMapRequestPageActive,
   } = useSelector(state => state.dataLayer);
 
   const ref = useRef();
@@ -30,36 +32,38 @@ const SidebarContent = (props) => {
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
   useEffect(() => {
     const initMenu = () => {
-      new MetisMenu('#side-menu')
-    }
-    initMenu()
-  }, [])
+      new Menu('#side-menu');
+    };
+    initMenu();
+  }, []);
 
   useEffect(() => {
-    ref.current.recalculate()
-  })
+    ref.current.recalculate();
+  });
 
   useEffect(() => {
     let matchingMenuItem = null;
-    const ul = document.getElementById('side-menu')
-    const items = ul.getElementsByTagName('a')
+    const ul = document.getElementById('side-menu');
+    const items = ul.getElementsByTagName('a');
     for (let i = 0; i < items.length; ++i) {
-      const currentURL = location.pathname == '/' ? SIGNIN_REDIRECT : location.pathname;
-      if (currentURL == items[i].pathname) {
+      const currentURL =
+        location.pathname === '/' ? SIGNIN_REDIRECT : location.pathname;
+      if (currentURL === items[i].pathname) {
         matchingMenuItem = items[i];
       }
       ctrlParentDropdown(false, items[i]);
     }
     if (matchingMenuItem) {
-      ctrlParentDropdown(true, matchingMenuItem)
+      ctrlParentDropdown(true, matchingMenuItem);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   function scrollElement(item) {
     if (item) {
-      const currentPosition = item.offsetTop
+      const currentPosition = item.offsetTop;
       if (currentPosition > window.innerHeight) {
-        ref.current.getScrollElement().scrollTop = currentPosition - 300
+        ref.current.getScrollElement().scrollTop = currentPosition - 300;
       }
     }
   }
@@ -68,38 +72,37 @@ const SidebarContent = (props) => {
     add ? instance.classList.add(clsName) : instance.classList.remove(clsName);
   }
 
-
   function getDashboardNotificationCount() {
     const newEvents = newEventsCount ?? 0;
     const newAlerts = newAlertsCount ?? 0;
     const newMapRequests = newMapRequestCount ?? 0;
-    return (newEvents+newAlerts+newMapRequests);
+    return newEvents + newAlerts + newMapRequests;
   }
 
   function ctrlParentDropdown(activate = true, item) {
     classCtrl(activate, item, 'active');
-    const parent = item.parentElement
-    const parent2El = parent.childNodes[1]
+    const parent = item.parentElement;
+    const parent2El = parent.childNodes[1];
     if (parent2El && parent2El.id !== 'side-menu') {
       classCtrl(activate, parent2El, 'mm-show');
     }
 
     if (parent) {
       classCtrl(activate, parent, 'mm-active');
-      const parent2 = parent.parentElement
+      const parent2 = parent.parentElement;
 
       if (parent2) {
         classCtrl(activate, parent2, 'mm-show');
 
-        const parent3 = parent2.parentElement // li tag
+        const parent3 = parent2.parentElement; // li tag
 
         if (parent3) {
           classCtrl(activate, parent3, 'mm-active');
           classCtrl(activate, parent3.childNodes[0], 'mm-active');
-          const parent4 = parent3.parentElement // ul
+          const parent4 = parent3.parentElement; // ul
           if (parent4) {
             classCtrl(activate, parent4, 'mm-show');
-            const parent5 = parent4.parentElement
+            const parent5 = parent4.parentElement;
             if (parent5) {
               classCtrl(activate, parent5, 'mm-show');
               classCtrl(activate, parent5.childNodes[0], 'mm-active');
@@ -108,10 +111,10 @@ const SidebarContent = (props) => {
         }
       }
       scrollElement(item);
-      return false
+      return false;
     }
     scrollElement(item);
-    return false
+    return false;
   }
 
   return (
@@ -120,68 +123,92 @@ const SidebarContent = (props) => {
         <div id="sidebar-menu">
           <ul className="metismenu list-unstyled" id="side-menu">
             <li>
-              <Link to="/dashboard" >
+              <Link to="/dashboard">
                 <i className="bx bxs-home"></i>
                 <span className="text-capitalize">{props.t('Dashboard')}</span>
-                {getDashboardNotificationCount() > 0 && <span className="new-info-indicator float-end">{getDashboardNotificationCount()}</span>}
+                {getDashboardNotificationCount() > 0 && (
+                  <span className="new-info-indicator float-end">
+                    {getDashboardNotificationCount()}
+                  </span>
+                )}
               </Link>
             </li>
             <li>
-              <Link to="/fire-alerts" >
+              <Link to="/fire-alerts">
                 <i className="bx bx-error-circle"></i>
-                <span className="text-capitalize">{props.t('fire-alerts')}</span>
-                {newAlertsCount > 0  && <span className="new-info-indicator float-end">{newAlertsCount}</span>}
+                <span className="text-capitalize">
+                  {props.t('fire-alerts')}
+                </span>
+                {newAlertsCount > 0 && (
+                  <span className="new-info-indicator float-end">
+                    {newAlertsCount}
+                  </span>
+                )}
               </Link>
             </li>
             <li>
-              <Link to="/event-alerts" >
+              <Link to="/event-alerts">
                 <i className="bx bxs-hot"></i>
                 <span className="text-capitalize">{props.t('Events')}</span>
-                {newEventsCount > 0 && <span className="new-info-indicator float-end">{newEventsCount}</span>}
+                {newEventsCount > 0 && (
+                  <span className="new-info-indicator float-end">
+                    {newEventsCount}
+                  </span>
+                )}
               </Link>
             </li>
             <li>
-              <Link to="/data-layer" >
+              <Link to="/data-layer">
                 <i className="bx bx-copy"></i>
-                <span className="text-capitalize">{props.t('Data Layers')}</span>
-                {isNewMapRequestAlert && !isMapRequestPageActive 
-                  ? (
-                    <span className="new-info-indicator float-end">               
-                      {newMapRequestCount}
-                    </span>
-                  ) 
-                  : null}
+                <span className="text-capitalize">
+                  {props.t('Data Layers')}
+                </span>
+                {isNewMapRequestAlert && !isMapRequestPageActive ? (
+                  <span className="new-info-indicator float-end">
+                    {newMapRequestCount}
+                  </span>
+                ) : null}
               </Link>
             </li>
             <li>
               <Link to="/insitu-alerts">
                 <i className="bx bx-image"></i>
-                <span className="text-capitalize">{props.t('In Situ Cameras', { ns: 'inSitu' })}</span>
+                <span className="text-capitalize">
+                  {props.t('In Situ Cameras', { ns: 'inSitu' })}
+                </span>
               </Link>
             </li>
             <li>
               <Link to="/chatbot">
                 <i className="bx bx-bot"></i>
-                <span className="text-capitalize">{props.t('chatbot-module')}</span>
+                <span className="text-capitalize">
+                  {props.t('chatbot-module')}
+                </span>
               </Link>
             </li>
             <li>
               <Link to="/notifications">
                 <i className="bx bx-bell"></i>
-                <span className="text-capitalize">{props.t('Notifications')}</span>
-                {isNewNotification && <span className="new-info-indicator float-end">{newNotificationsCount}</span>}
+                <span className="text-capitalize">
+                  {props.t('Notifications')}
+                </span>
+                {isNewNotification && (
+                  <span className="new-info-indicator float-end">
+                    {newNotificationsCount}
+                  </span>
+                )}
               </Link>
             </li>
           </ul>
         </div>
       </SimpleBar>
     </React.Fragment>
-  )
-}
+  );
+};
 
 SidebarContent.propTypes = {
   location: PropTypes.object,
   t: PropTypes.any,
-}
+};
 
-export default withTranslation(['common'])(SidebarContent)
+export default withTranslation(['common'])(SidebarContent);

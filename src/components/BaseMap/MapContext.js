@@ -1,8 +1,4 @@
-import React, {
-  createContext,
-  useContext,
-  useRef,
-} from 'react';
+import React, { createContext, useContext, useRef } from 'react';
 
 export const MapContext = createContext(undefined);
 MapContext.displayName = 'MapContext';

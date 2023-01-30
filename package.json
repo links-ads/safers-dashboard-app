@@ -63,21 +63,13 @@
     "yup": "^0.32.11"
   },
   "scripts": {
-    "start": "node server/server.js",
-    "start:dev": "react-scripts start",
-    "dev": "react-scripts start",
+    "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "coverage": "react-scripts test --env=jsdom --watchAll=false --coverage",
     "eject": "react-scripts eject",
     "cypress:open": "cypress open",
     "analyze": "source-map-explorer 'build/static/js/*.js'"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
   },
   "browserslist": {
     "production": [
@@ -97,21 +89,16 @@
     "@testing-library/user-event": "^13.5.0",
     "ajv": "^8.10.0",
     "cypress": "^9.5.1",
-    "enzyme": "^3.11.0",
-    "enzyme-adapter-react-16": "^1.15.6",
-    "eslint": "^8.9.0",
-    "eslint-config-airbnb": "^19.0.4",
     "eslint-config-prettier": "^8.4.0",
-    "eslint-config-standard": "^16.0.3",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^5.2.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^27.5.1",
-    "jest-enzyme": "^7.1.2",
     "jest-fetch-mock": "^3.0.3",
+    "prettier": "^2.8.3",
     "react-test-renderer": "^17.0.2",
     "redux-mock-store": "^1.5.4",
     "source-map-explorer": "^2.5.2"

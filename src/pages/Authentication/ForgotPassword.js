@@ -1,10 +1,21 @@
 import React from 'react';
+
 import { Formik } from 'formik';
-import { Button, Col, Form, FormGroup, Input, Label, Row, Alert } from 'reactstrap';
-import * as Yup from 'yup'
 import { useDispatch, useSelector } from 'react-redux';
-import { reqResetPsw } from '../../store/appAction';
 import { useNavigate } from 'react-router-dom';
+import {
+  Button,
+  Col,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+  Row,
+  Alert,
+} from 'reactstrap';
+import * as Yup from 'yup';
+
+import { reqResetPsw } from '../../store/appAction';
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
@@ -14,15 +25,15 @@ const ForgotPassword = () => {
   const signUpSchema = Yup.object().shape({
     email: Yup.string()
       .email('Invalid email address')
-      .required('The field cannot be empty')
+      .required('The field cannot be empty'),
   });
-  
-  if(forgotPswresponse) {
+
+  if (forgotPswresponse) {
     return (
-      <div className='forgot-psw'>
+      <div className="forgot-psw">
         <Alert color="success" role="alert">
           Please check your email for the instructions on password resetting.
-        </Alert>  
+        </Alert>
       </div>
     );
   }
@@ -46,21 +57,21 @@ const ForgotPassword = () => {
         handleBlur,
         handleSubmit,
         isSubmitting,
-      }) =>(
+      }) => (
         <>
-          <div className='forgot-psw'>
-            <h1 className='h4 forgot-psw'>Forgot Password?</h1>  
-            <p className='h5 forgot-psw'>Enter your email address here to reset your password</p>  
+          <div className="forgot-psw">
+            <h1 className="h4 forgot-psw">Forgot Password?</h1>
+            <p className="h5 forgot-psw">
+              Enter your email address here to reset your password
+            </p>
           </div>
-          <div className='tab-container'>
+          <div className="tab-container">
             <div className="container auth-form">
               <Form onSubmit={handleSubmit} noValidate>
                 <Row form>
                   <Col>
                     <FormGroup className="form-group">
-                      <Label for="userEmail">
-                        EMAIL ADDRESS:
-                      </Label>
+                      <Label for="userEmail">EMAIL ADDRESS:</Label>
                       <Input
                         id="userEmail"
                         className={errors.email ? 'is-invalid' : ''}
@@ -72,23 +83,29 @@ const ForgotPassword = () => {
                         value={values.email}
                         autoComplete="on"
                       />
-                      {errors.email && touched.email && (<div className="invalid-feedback">{errors.email}</div>)}
+                      {errors.email && touched.email && (
+                        <div className="invalid-feedback">{errors.email}</div>
+                      )}
                     </FormGroup>
                   </Col>
                 </Row>
-                <div className='center-sign-in'>
+                <div className="center-sign-in">
                   <Button
                     type="button"
                     className="my-4 sign-in-btn"
                     color="secondary"
                     disabled={isSubmitting}
-                    onClick={()=>{navigate('/auth/sign-in');}}>
+                    onClick={() => {
+                      navigate('/auth/sign-in');
+                    }}
+                  >
                     BACK
                   </Button>
                   <Button
                     className="my-4 sign-in-btn"
                     color="primary"
-                    disabled={isSubmitting}>
+                    disabled={isSubmitting}
+                  >
                     SEND MAIL
                   </Button>
                 </div>
@@ -99,6 +116,6 @@ const ForgotPassword = () => {
       )}
     </Formik>
   );
-}
+};
 
 export default ForgotPassword;

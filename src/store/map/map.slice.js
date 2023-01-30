@@ -19,15 +19,14 @@ const MAP_STYLES = [
   {
     label: 'Navigation',
     thumbnail: '/navigation.png',
-    uri: 'mapbox://styles/mapbox/navigation-day-v1'
+    uri: 'mapbox://styles/mapbox/navigation-day-v1',
   },
   {
     label: 'Terrain',
     thumbnail: '/terrain.png',
-    uri: 'mapbox://styles/astrosat/clcq9le7w003k14qspiwt4837'
+    uri: 'mapbox://styles/astrosat/clcq9le7w003k14qspiwt4837',
   },
 ];
-
 
 export const initialState = {
   mapStyles: MAP_STYLES,
@@ -44,7 +43,7 @@ const mapSlice = createSlice({
   },
 });
 
-export const { setSelectedMapStyle, } = mapSlice.actions;
+export const { setSelectedMapStyle } = mapSlice.actions;
 
 const baseSelector = state => state?.map;
 

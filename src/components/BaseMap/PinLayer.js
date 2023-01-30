@@ -4,28 +4,27 @@ import { color } from 'd3-color';
 import { get, isArray } from 'lodash';
 import Supercluster from 'supercluster';
 
-import backgroundsIconAtlas from '../../assets/images/mappins/safers-pins.svg';
-import backgroundsIconMapping from '../../assets/images/mappins/safers-pins.json';
-import iconAtlas from '../../assets/images/mappins/safers-icons.svg';
 import iconMapping from '../../assets/images/mappins/safers-icons.json';
+import iconAtlas from '../../assets/images/mappins/safers-icons.svg';
+import backgroundsIconMapping from '../../assets/images/mappins/safers-pins.json';
+import backgroundsIconAtlas from '../../assets/images/mappins/safers-pins.svg';
 
 const COLOR_TRANSPARENT = [0, 0, 0, 0],
   COLOR_PRIMARY = [246, 190, 0, 255],
   COLOR_SECONDARY = [51, 63, 72, 255];
 
 export class PinLayer extends CompositeLayer {
-
   _getPixelOffset(feature) {
     // used to offset text/icons relative to pin anchor point
     if (typeof this.props.getPixelOffset === 'function') {
-      return this.props.getPixelOffset(feature)
+      return this.props.getPixelOffset(feature);
     }
-    return this.props.pixelOffset ? this.props.pixelOffset : [0,0];
+    return this.props.pixelOffset ? this.props.pixelOffset : [0, 0];
   }
 
   _getExpansionZoom(feature) {
     return this.state.index.getClusterExpansionZoom(
-      feature.properties.cluster_id
+      feature.properties.cluster_id,
     );
   }
 
@@ -52,10 +51,10 @@ export class PinLayer extends CompositeLayer {
         radius: this.props.clusterRadius,
       });
       index.load(
-        props.data.map((d) => ({
+        props.data.map(d => ({
           geometry: { coordinates: this.props.getPosition(d) },
           properties: d.properties,
-        }))
+        })),
       );
       this.setState({ index });
     }
@@ -70,16 +69,15 @@ export class PinLayer extends CompositeLayer {
   }
 
   getPickingInfo({ info, mode }) {
-   
     if (info.picked) {
       if (info.object.properties.cluster) {
         info.object.properties.expansion_zoom = this._getExpansionZoom(
-          info.object
+          info.object,
         );
         if (mode !== 'hover') {
           info.objects = this.state.index.getLeaves(
             info.object.properties.cluster_id,
-            Infinity
+            Infinity,
           );
         }
       }
@@ -177,16 +175,16 @@ export class PinLayer extends CompositeLayer {
           iconAtlas: backgroundsIconAtlas,
           iconMapping: backgroundsIconMapping,
           getPosition: this.props.getPosition,
-          getIcon: (d) => this._getPinIcon(d),
-          getSize: (d) => this._getPinLayerIconSize(d),
-          getColor: (d) => this._getPinColor(d),
+          getIcon: d => this._getPinIcon(d),
+          getSize: d => this._getPinLayerIconSize(d),
+          getColor: d => this._getPinColor(d),
           updateTriggers: {
             getPosition: this.props.updateTriggers.getPosition,
             getIcon: this.props.updateTriggers.getIcon,
             getSize: this.props.updateTriggers.getIconSize,
             getColor: this.props.updateTriggers.getIconColor,
           },
-        })
+        }),
       ),
       new IconLayer(
         this.getSubLayerProps({
@@ -195,11 +193,11 @@ export class PinLayer extends CompositeLayer {
           iconAtlas,
           iconMapping,
           getPosition: this.props.getPosition,
-          getPixelOffset: (d) => this._getPixelOffset(d),
-          getIcon: (d) => this._getIcon(d),
-          getColor: (d) => this._getIconColor(d),
-          getSize: (d) => this._getPinLayerIconSize(d) / 2,
-        })
+          getPixelOffset: d => this._getPixelOffset(d),
+          getIcon: d => this._getIcon(d),
+          getColor: d => this._getIconColor(d),
+          getSize: d => this._getPinLayerIconSize(d) / 2,
+        }),
       ),
       new TextLayer(
         this.getSubLayerProps({
@@ -209,19 +207,19 @@ export class PinLayer extends CompositeLayer {
           fontWeight: this.props.fontWeight,
           getPosition: this.props.getPosition,
           getPixelOffset: () => this._getPixelOffset(),
-          getText: (feature) =>
+          getText: feature =>
             feature.properties.cluster
               ? `${feature.properties.point_count}`
               : ' ',
           getSize: this.props.getTextSize,
-          getColor: (feature) => this._getTextColor(feature),
+          getColor: feature => this._getTextColor(feature),
           updateTriggers: {
             getPosition: this.props.updateTriggers.getPosition,
             getText: this.props.updateTriggers.getText,
             getSize: this.props.updateTriggers.getTextSize,
             getColor: this.props.updateTriggers.getTextColor,
           },
-        })
+        }),
       ),
     ];
   }
@@ -231,7 +229,7 @@ PinLayer.layerName = 'PinLayer';
 PinLayer.defaultProps = {
   // Shared accessors
   pickable: true,
-  getPosition: { type: 'accessor', value: (x) => x.position },
+  getPosition: { type: 'accessor', value: x => x.position },
   // ===== Pin/Cluster Layer Props =====
   // accessors
   getPinSize: { type: 'accessor', value: 80 },

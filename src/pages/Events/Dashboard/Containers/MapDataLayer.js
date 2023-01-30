@@ -1,18 +1,18 @@
 import React, { useState } from 'react';
-import { Button, ButtonGroup, Card, Row, Col } from 'reactstrap';
+
 import classnames from 'classnames';
+import { useTranslation } from 'react-i18next';
+import { Button, ButtonGroup, Card, Row, Col } from 'reactstrap';
 
 import BaseMap from '../../../../components/BaseMap/BaseMap';
-
-import { useTranslation } from 'react-i18next';
 
 const MapDataLayer = () => {
   // eslint-disable-next-line no-unused-vars
   const [viewState, setViewState] = useState(undefined);
   // eslint-disable-next-line no-unused-vars
-  const [ polygonLayer, setPolygonLayer ] = useState(undefined);
+  const [polygonLayer, setPolygonLayer] = useState(undefined);
   //to update when data layers ready
-  const [ dataLayer, setDataLayer ] = useState(1);
+  const [dataLayer, setDataLayer] = useState(1);
 
   const { t } = useTranslation();
 
@@ -21,31 +21,39 @@ const MapDataLayer = () => {
       <Row>
         <Col md={5}>
           <ButtonGroup>
-            <Button onClick={() => setDataLayer(1)}
-              className={classnames({
-                'active': dataLayer === 1,
-              }, 'switch-data-layer-btn left')}
+            <Button
+              onClick={() => setDataLayer(1)}
+              className={classnames(
+                {
+                  active: dataLayer === 1,
+                },
+                'switch-data-layer-btn left',
+              )}
             >
-              {t('Burned Area Delineation', {ns: 'common'})}
+              {t('Burned Area Delineation', { ns: 'common' })}
             </Button>
-          
-            <Button className={classnames({
-              'active': dataLayer === 2,
-            }, 'switch-data-layer-btn right')} onClick={() => setDataLayer(2)}>
-              {t('Fire Propagation', {ns: 'common'})}
+
+            <Button
+              className={classnames(
+                {
+                  active: dataLayer === 2,
+                },
+                'switch-data-layer-btn right',
+              )}
+              onClick={() => setDataLayer(2)}
+            >
+              {t('Fire Propagation', { ns: 'common' })}
             </Button>
           </ButtonGroup>
         </Col>
-        
       </Row>
       <Row className="h-100 w-100 mx-auto mt-3">
-        <Card className='map-card' style={{height : 400}}>
+        <Card className="map-card" style={{ height: 400 }}>
           <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
         </Card>
       </Row>
     </Col>
-
   );
-}
+};
 
 export default MapDataLayer;
