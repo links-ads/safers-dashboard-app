@@ -167,12 +167,12 @@ const NotificationsBar = ({ t }) => {
             linkURL="/chatbot?tab=3"
           />
           <NotificationCard
-            cardName={t('comms')}
+            cardName={t('Comms')}
             iconClass="fas fa-envelope"
             contentRenderer={() =>
               renderer(
                 t('No new communications', { ns: 'dashboard' }),
-                'comms',
+                'Comms',
                 communicationStatusCounts,
               )
             }
