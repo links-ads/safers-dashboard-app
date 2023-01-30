@@ -50,6 +50,15 @@ const NotificationsBar = ({ t }) => {
   // These should return some JSX which will be rendered as the contents
   // of the panel. (The panel - NotificationCard - is completely generic)
 
+  const fixString = stringToFix => {
+    // seems overkill, but having this inline meant ESLint and prettier had a fist fight
+    if (!stringToFix || stringToFix === 'null') {
+      return t('Unknown');
+    } else {
+      return stringToFix;
+    }
+  };
+
   const renderer = (noDataMessage, label, itemsCounts) => {
     if (!itemsCounts) {
       return <p>Loading...</p>;
@@ -62,7 +71,7 @@ const NotificationsBar = ({ t }) => {
         {Object.keys(itemsCounts).map(key => (
           <Fragment key={`${label}_row_${key}`}>
             <Row fluid="true" xs={2}>
-              <div className="w-8">{`${key}`}</div>
+              <div className="w-8">{`${fixString(key)}`}</div>
               <div className="w-2">{`${itemsCounts[key]}`}</div>
             </Row>
             <hr />
@@ -87,7 +96,8 @@ const NotificationsBar = ({ t }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const statusCounts = getStatusCountsForItems(alerts);
+    //const statusCounts = getStatusCountsForItems(alerts);
+    const statusCounts = getStatusCountsForItems([{ status: 'null' }]);
     setActivityStatusCounts(statusCounts);
   }, [filteredAlerts, alerts]);
 
