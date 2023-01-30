@@ -16,7 +16,6 @@ const SummaryContainer = ({ reportDetail, t }) => {
 
   const navigate = useNavigate();
 
-  console.log('Report', reportDetail);
   const getStringOrUknownText = text => {
     if (!text || text === '') {
       return t('Unknown');
