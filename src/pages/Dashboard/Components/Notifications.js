@@ -128,7 +128,7 @@ const NotificationsBar = ({ t }) => {
                 activityStatusCounts,
               )
             }
-            linkURL="/"
+            linkURL="/fire-alerts"
           />
           <NotificationCard
             cardName={t('people')}
