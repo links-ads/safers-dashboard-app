@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,7 +19,7 @@ const AOIBar = () => {
   // shortening the list
   const { filteredAlerts: events } = useSelector(state => state.eventAlerts);
 
-  const updateEventList = () => {
+  const updateEventList = useCallback(() => {
     // default to last 3 days, else use date range selector
     const dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
@@ -37,14 +37,15 @@ const AOIBar = () => {
     };
     dispatch(setEventParams(eventParams));
     dispatch(getAllEventAlerts(eventParams, true, false));
-  };
-  useEffect(() => {
-    updateEventList();
-  }, []);
+  }, [dateRange, dispatch]);
 
   useEffect(() => {
     updateEventList();
-  }, [dateRange]);
+  }, [updateEventList]);
+
+  useEffect(() => {
+    updateEventList();
+  }, [dateRange, updateEventList]);
 
   useEffect(() => {
     setEventList(events);

@@ -16,6 +16,7 @@ const MapComponent = () => {
 
   useEffect(() => {
     selectAoi(defaultAoi.features[0].properties.id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allAoi]);
 
   const selectAoi = id => {

@@ -86,6 +86,7 @@ const DataLayerInformationComponent = ({
 
   useEffect(() => {
     getFeatureInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [featureInfoData]);
 
   useEffect(() => {
@@ -315,10 +316,12 @@ const DataLayerInformationComponent = ({
         )}
       </>,
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartValues, selectedPixel, featureInfoData, zoomDomain, selectedDomain]);
 
   useEffect(() => {
     clearInfo();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLayer]);
 
   const apiFetch = requestType => {

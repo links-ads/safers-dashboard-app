@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { MapView } from '@deck.gl/core';
 import MapGL, {
@@ -83,21 +83,21 @@ const PolygonMap = ({
   const [selectedFeatureData, setSelectedFeatureData] = useState(null);
   const [areaIsValid, setAreaIsValid] = useState(true);
 
-  useEffect(() => {
-    window.addEventListener('resize', getMapSize);
-  }, []);
-
-  useEffect(() => {
-    getMapSize();
-  }, [layers]);
-
-  const getMapSize = () => {
+  const getMapSize = useCallback(() => {
     const newWidth = mapRef?.current?.deck?.width;
     newWidth && setWidth(newWidth);
 
     const newHeight = mapRef?.current?.deck.height;
     newHeight && setHeight(newHeight);
-  };
+  }, [setHeight, setWidth]);
+
+  useEffect(() => {
+    window.addEventListener('resize', getMapSize);
+  }, [getMapSize]);
+
+  useEffect(() => {
+    getMapSize();
+  }, [getMapSize, layers]);
 
   const getPosition = position => {
     const props = position.split('-');
@@ -216,6 +216,7 @@ const PolygonMap = ({
       setFeatures(coordinates);
     }
     toggleMode('editing');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coordinates]);
 
   return (

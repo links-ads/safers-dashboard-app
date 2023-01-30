@@ -8,6 +8,7 @@ const useInterval = (callback, interval, dependencies = []) => {
       }, interval);
       return () => clearInterval(timer);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 };
 

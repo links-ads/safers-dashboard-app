@@ -131,6 +131,7 @@ const DataLayerDashboard = ({ t }) => {
         ),
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataLayers]);
 
   useEffect(() => {
@@ -167,6 +168,7 @@ const DataLayerDashboard = ({ t }) => {
       setBitmapLayer(getBitmapLayer(imageUrl));
       setSliderRangeLimit(urls.length - 1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLayer]);
 
   useEffect(() => {
@@ -186,6 +188,7 @@ const DataLayerDashboard = ({ t }) => {
         setTimestamp(timestamps[sliderValue]);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sliderValue, sliderChangeComplete]);
 
   useEffect(() => {
@@ -203,12 +206,14 @@ const DataLayerDashboard = ({ t }) => {
     } else {
       clearInterval(timer.current);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isPlaying]);
 
   useEffect(() => {
     if (showLegend) {
       setShowLegend(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentLayer, metaData]);
 
   // This takes an array of objects and recursively filters out sibling
@@ -371,6 +376,7 @@ const DataLayerDashboard = ({ t }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const sharedMapLayersProps = {

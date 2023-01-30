@@ -27,6 +27,7 @@ const SearchContainer = () => {
   useEffect(() => {
     dispatch(getAllAreas());
     setMapLayers(defaultAoi);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getSearchData = () => {
@@ -50,6 +51,7 @@ const SearchContainer = () => {
 
   useEffect(() => {
     getSearchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange, selectedAoi]);
 
   const setMapLayers = objAoi => {

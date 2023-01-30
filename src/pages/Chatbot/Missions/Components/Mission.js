@@ -30,7 +30,6 @@ const Mission = ({ card, missionId, setSelectedMission /*, setFavorite*/ }) => {
         <>
           {msg.substr(0, 80)}...{' '}
           <a
-            href="javascript:void(0)"
             onClick={() => {
               setSeeMore(false);
             }}
@@ -44,7 +43,6 @@ const Mission = ({ card, missionId, setSelectedMission /*, setFavorite*/ }) => {
       <>
         {msg}{' '}
         <a
-          href="javascript:void(0)"
           onClick={() => {
             setSeeMore(true);
           }}

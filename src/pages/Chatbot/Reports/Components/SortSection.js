@@ -33,6 +33,7 @@ const SortSection = ({ t, boundingBox, mapFilter }) => {
     if (OrgReportList.length) {
       applyFilter(sortOrder, category, missionId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [OrgReportList, boundingBox]);
 
   const applyFilter = (sortOrder, category, missionId) => {

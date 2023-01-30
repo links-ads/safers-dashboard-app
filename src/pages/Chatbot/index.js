@@ -32,11 +32,13 @@ const Chatbot = () => {
     const queryString = location.search;
     const params = new URLSearchParams(queryString);
     const tab = params.get('tab');
+
     if (!tab) {
       setCustomActiveTab('1');
     } else if (tab && customActiveTab !== tab) {
       setCustomActiveTab(tab);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 
   const renderContent = tab => {

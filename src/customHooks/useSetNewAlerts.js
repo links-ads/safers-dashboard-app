@@ -21,6 +21,7 @@ const useSetNewAlerts = (
         ),
     );
     callback(comparedArr.length);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, dependencies);
 };
 

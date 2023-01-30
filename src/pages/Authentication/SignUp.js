@@ -56,6 +56,7 @@ const SignUp = () => {
   useEffect(() => {
     if (roles.length === 0) dispatch(getOrgList());
     if (orgList.length === 0) dispatch(getRoleList());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {

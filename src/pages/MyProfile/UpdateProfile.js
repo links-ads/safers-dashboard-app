@@ -80,7 +80,7 @@ const UpdateProfile = ({ t }) => {
     dispatch(getInfo(id));
     if (roles.length === 0) dispatch(getRoleList());
     if (orgList.length === 0) dispatch(getOrgList());
-  }, []);
+  }, [dispatch, id, orgList.length, roles.length]);
 
   if (uploadFileSuccessRes?.detail) {
     toastr.success(uploadFileSuccessRes.detail, '');
@@ -353,7 +353,7 @@ const UpdateProfile = ({ t }) => {
                             </option>
                             {orgList.map(org => {
                               return (
-                                <option key={org} value={org.id}>
+                                <option key={org.id} value={org.id}>
                                   {org.name}
                                 </option>
                               );
@@ -433,7 +433,7 @@ const UpdateProfile = ({ t }) => {
                             </option>
                             {roles.map(roleObj => {
                               return (
-                                <option key={roleObj} value={roleObj.id}>
+                                <option key={roleObj.id} value={roleObj.id}>
                                   {roleObj.label}
                                 </option>
                               );

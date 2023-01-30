@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-import MetisMenu from 'metismenujs';
+import Menu from 'metismenujs';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -32,7 +32,7 @@ const SidebarContent = props => {
   // Use ComponentDidMount and ComponentDidUpdate method symultaniously
   useEffect(() => {
     const initMenu = () => {
-      new MetisMenu('#side-menu');
+      new Menu('#side-menu');
     };
     initMenu();
   }, []);
@@ -56,6 +56,7 @@ const SidebarContent = props => {
     if (matchingMenuItem) {
       ctrlParentDropdown(true, matchingMenuItem);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
 
   function scrollElement(item) {

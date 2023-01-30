@@ -40,6 +40,7 @@ const AoiHelper = ({ t }) => {
     if (defaultAoi) {
       setMap(defaultAoi);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaultAoi]);
 
   useEffect(() => {
@@ -111,12 +112,14 @@ const AoiHelper = ({ t }) => {
     const selVal = selectedAoi ? selectedAoi.features[0].properties.id : null;
     return (
       <>
-        {sortedAois.map(aoisChunk => {
+        {sortedAois.map((aoisChunk, i) => {
           return (
-            <div className="d-flex flex-column me-5" key={aoisChunk}>
+            // eslint-disable-next-line react/no-array-index-key
+            <div className="d-flex flex-column me-5" key={i}>
               {aoisChunk.map((aoi, index) => {
                 return (
-                  <FormGroup key={aoi} className="form-group mb-2" check>
+                  // eslint-disable-next-line react/no-array-index-key
+                  <FormGroup key={index} className="form-group mb-2" check>
                     <Label check id={`selectAoi${index}`}>
                       <Input
                         id={`selectAoi${index}`}

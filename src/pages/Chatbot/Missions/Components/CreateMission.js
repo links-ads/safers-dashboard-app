@@ -52,12 +52,14 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       toastr.success(missionCreated.msg, '');
       onCancel();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [missionCreated]);
 
   useEffect(() => {
     if (coordinates) {
       validateCoord();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coordinates, validCoords]);
 
   //Clear success states on component unmount

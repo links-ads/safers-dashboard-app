@@ -55,12 +55,14 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       resetState();
       onCancel();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [msgCreated]);
 
   useEffect(() => {
     if (coordinates) {
       validateCoord();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [coordinates, validCoords]);
 
   //Clear success states on component unmount

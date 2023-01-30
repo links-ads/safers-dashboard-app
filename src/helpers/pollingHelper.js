@@ -82,6 +82,7 @@ const PollingHelper = props => {
       timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
       return () => clearInterval(timer.current);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -89,6 +90,7 @@ const PollingHelper = props => {
       clearInterval(timer.current);
       timer.current = setInterval(callAPIs, pollingFrequency * MILLISECONDS);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alertParams, eventParams, notificationParams]);
 
   useSetNewAlerts(
@@ -124,6 +126,7 @@ const PollingHelper = props => {
         dispatch(setNewNotificationState(true, false, difference));
     }
     setCurrentNotificationCount(newNotificationsCount);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allNotifications]);
 
   useEffect(() => {
@@ -136,6 +139,7 @@ const PollingHelper = props => {
       dispatch(setNewMapRequestState(true, isMapRequestPageActive, difference));
     }
     setCurrentMapRequestCount(newMapRequestCount);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allMapRequests]);
 
   return <>{props.children}</>;

@@ -88,6 +88,7 @@ const Comms = ({ pollingFrequency }) => {
 
   useEffect(() => {
     loadComms();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange, boundingBox]);
 
   useEffect(() => {
@@ -110,6 +111,7 @@ const Comms = ({ pollingFrequency }) => {
         ),
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allReports, commID]);
 
   const getReportsByArea = () => {
@@ -133,6 +135,7 @@ const Comms = ({ pollingFrequency }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onCancel = () => {

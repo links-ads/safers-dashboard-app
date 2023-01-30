@@ -18,6 +18,7 @@ const PaginationWrapper = ({ list, pageSize, setPageData }) => {
   useEffect(() => {
     //Always set the default page to first if the list is updated
     updatePage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [list]);
 
   return (

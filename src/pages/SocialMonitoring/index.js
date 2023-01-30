@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { FlyToInterpolator } from 'deck.gl';
 import PropTypes from 'prop-types';
@@ -30,23 +30,7 @@ const SocialMonitoring = ({ t }) => {
   const [viewState, setViewState] = useState(undefined);
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    if (!viewState) {
-      setViewState(
-        getViewState(
-          defaultAoi.features[0].properties.midPoint,
-          defaultAoi.features[0].properties.zoomLevel,
-        ),
-      );
-    }
-  }, []);
-
-  useEffect(() => {
-    getSearchData();
-    setIconLayer(getIconLayer(socialStats));
-  }, [dateRange, defaultAoi]);
-
-  const getSearchData = () => {
+  const getSearchData = useCallback(() => {
     const params = {};
     if (dateRange) {
       params.startDate = dateRange[0];
@@ -57,7 +41,23 @@ const SocialMonitoring = ({ t }) => {
     }
     dispatch(getStats(params));
     dispatch(getTweets(params));
-  };
+  }, [dateRange, defaultAoi, dispatch]);
+
+  useEffect(() => {
+    if (!viewState) {
+      setViewState(
+        getViewState(
+          defaultAoi.features[0].properties.midPoint,
+          defaultAoi.features[0].properties.zoomLevel,
+        ),
+      );
+    }
+  }, [defaultAoi.features, viewState]);
+
+  useEffect(() => {
+    getSearchData();
+    setIconLayer(getIconLayer(socialStats));
+  }, [dateRange, defaultAoi, getSearchData, socialStats]);
 
   const getViewState = (midPoint, zoomLevel = 4) => {
     return {

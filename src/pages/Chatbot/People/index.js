@@ -84,6 +84,7 @@ const People = ({ pollingFrequency }) => {
     };
     setPeopleParams(params);
     dispatch(getAllPeople(params, feFilters));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange, boundingBox]);
 
   useEffect(() => {
@@ -147,6 +148,7 @@ const People = ({ pollingFrequency }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onClick = info => {

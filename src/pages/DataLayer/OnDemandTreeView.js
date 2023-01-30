@@ -65,6 +65,7 @@ const OnDemandTreeView = ({
 
       return selectedLayer;
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLayer]);
 
   const toggleExpandCollapse = id => {
@@ -222,6 +223,7 @@ const OnDemandTreeView = ({
 
                       setBboxLayers(oldLayers => {
                         const isExistingLayer = oldLayers.find(
+                          // eslint-disable-next-line no-self-compare
                           layer => layer.id === layer.id,
                         );
 

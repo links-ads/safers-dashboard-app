@@ -76,7 +76,7 @@ const WildfireSimulation = ({
   });
 
   // reset global state when form is closed
-  useEffect(() => () => dispatch(setSelectedFireBreak(null)), []);
+  useEffect(() => () => dispatch(setSelectedFireBreak(null)), [dispatch]);
 
   const WildfireSimulationSchema = Yup.object().shape({
     simulationTitle: Yup.string().required(
