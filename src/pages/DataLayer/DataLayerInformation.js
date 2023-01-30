@@ -164,7 +164,6 @@ const DataLayerInformationComponent = ({
   };
 
   useEffect(() => {
-    console.log('Setting info');
     setInformation(
       <>
         {selectedPixel?.length > 0 && (
