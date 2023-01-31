@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import { useSelector } from 'react-redux';
@@ -18,6 +17,70 @@ import {
 import { getIconLayer } from '../../helpers/mapHelper';
 import { getDataLayerTimeSeriesData } from '../../store/appAction';
 import { formatDate } from '../../store/utility';
+
+const displayFeature = properties => {
+  const keys = Object.keys(properties);
+
+  const rows = keys.map(key => {
+    if (typeof properties[key] === 'object') {
+      return (
+        <div key={key} className="featureRow">
+          <span className="featureKey">{key}:</span>
+          <span className="featureValue">
+            {displayFeature(properties[key])}
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div key={key} className="featureRow">
+          <div className="featureCell">
+            <span className="featureKey">{key}:</span>
+            {properties[key] === 'number' ? (
+              <span className="featureValue">{properties[key].toFixed(2)}</span>
+            ) : (
+              <span className="featureValue">{properties[key]}</span>
+            )}
+          </div>
+        </div>
+      );
+    }
+  });
+
+  return rows;
+};
+
+/**
+ * Parse properties object, converting any JSON as strings to proper
+ * JSON. If there is an exception, then the value isn't JSON, so just
+ * assign it to the new object.
+ *
+ * @param {*} properties
+ * @return {*}
+ */
+const parseFeatureProperties = properties => {
+  let parsedProperties = null;
+
+  // Iterate each key in the object and try to parse it's value.
+  Object.keys(properties).forEach(key => {
+    try {
+      const transformed = JSON.parse(properties[key]);
+      parsedProperties = {
+        ...parsedProperties,
+        [key]: transformed,
+      };
+    } catch (error) {
+      // Non parseable value e.g. normal string, then just pass it
+      // through.
+      parsedProperties = {
+        ...parsedProperties,
+        [key]: properties[key],
+      };
+    }
+  });
+
+  return parsedProperties;
+};
 
 const DataLayerInformationComponent = ({
   children,
@@ -85,11 +148,6 @@ const DataLayerInformationComponent = ({
   }, [currentViewState]);
 
   useEffect(() => {
-    getFeatureInfo();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [featureInfoData]);
-
-  useEffect(() => {
     if (chartValues?.length > 0) {
       setTimeout(() => {
         chartContainerRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -108,7 +166,7 @@ const DataLayerInformationComponent = ({
   useEffect(() => {
     setInformation(
       <>
-        {selectedPixel?.length > 0 && featureInfoData?.features?.length > 0 && (
+        {selectedPixel?.length > 0 && (
           <Card color="dark default-panel mt-3">
             <div className="d-flex justify-content-between align-items-center">
               <div className="p-3 empty-loading">{getFeatureInfo()}</div>
@@ -325,7 +383,7 @@ const DataLayerInformationComponent = ({
   }, [currentLayer]);
 
   const apiFetch = requestType => {
-    var tempUrl = '';
+    var tempUrl = null;
     if (requestType === 'GetTimeSeries') {
       tempUrl = currentLayer.timeseries_urls.map(tsURL =>
         tsURL.replace(
@@ -336,15 +394,19 @@ const DataLayerInformationComponent = ({
         ),
       );
     } else if (requestType === 'GetFeatureInfo') {
-      tempUrl = currentLayer.pixel_url.replace(
-        '{bbox}',
-        `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${
-          tempSelectedPixel[0] + 0.0001
-        },${tempSelectedPixel[1] + 0.0001}`,
-      );
+      if (currentLayer?.pixel_url) {
+        tempUrl = currentLayer.pixel_url.replace(
+          '{bbox}',
+          `${tempSelectedPixel[0]},${tempSelectedPixel[1]},${
+            tempSelectedPixel[0] + 0.0001
+          },${tempSelectedPixel[1] + 0.0001}`,
+        );
+      }
     }
 
-    dispatch(getDataLayerTimeSeriesData(tempUrl, requestType));
+    if (tempUrl) {
+      dispatch(getDataLayerTimeSeriesData(tempUrl, requestType));
+    }
   };
 
   const toggleDisplayLayerInfo = () => {
@@ -369,41 +431,22 @@ const DataLayerInformationComponent = ({
   };
 
   const getFeatureInfo = () => {
-    let valueString = '';
+    if (featureInfoData?.features?.length > 0) {
+      if (featureInfoData.features[0]?.properties) {
+        const featureProperties = featureInfoData.features[0].properties;
 
-    if (featureInfoData?.features && featureInfoData.features[0].properties) {
-      // If Map Layer has a feature string to interpolate
-      if (currentLayer?.feature_string) {
-        const featureString = currentLayer.feature_string;
+        const properties = parseFeatureProperties(featureProperties);
+        const feats = displayFeature(properties);
 
-        // Extract placeholder keys to be replaced.
-        const keys = featureString.match(/[^{}]+(?=})/g);
-        valueString = featureString;
-
-        // If there are keys to inject into the string, then iterate
-        // around them and do so.
-        if (keys) {
-          const properties = featureInfoData.features[0].properties;
-
-          // Replace placeholders in string with values from properties object.
-          keys.forEach(key => {
-            valueString = valueString.replace(
-              `{{${key}}}`,
-              get(properties, key),
-            );
-          });
-        }
-      } else {
-        Object.keys(featureInfoData?.features[0]?.properties).forEach(key => {
-          valueString = `${valueString} Value of pixel: ${featureInfoData.features[0].properties[key]}\n`;
-        });
-
-        if (currentLayer?.units) {
-          valueString = `${valueString} ${currentLayer?.units}`;
-        }
+        return <div className="featureInfo">{feats}</div>;
       }
+    } else {
+      return (
+        <div className="featureInfo">
+          <p className="p-2 noFeatureInfo">No Feature Info available</p>
+        </div>
+      );
     }
-    return valueString;
   };
 
   const generateGeoJson = (data, event) => {
