@@ -23,7 +23,6 @@ import {
   getAllMissions,
   resetMissionResponseState,
 } from '../../../store/missions/action';
-import { getWKTfromFeature } from '../../../store/utility';
 
 const Missions = ({ pollingFrequency }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -217,7 +216,7 @@ const Missions = ({ pollingFrequency }) => {
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
-            coordinates={getWKTfromFeature(coordinates)}
+            coordinates={coordinates}
             onClick={onClick}
           />
         </Col>
