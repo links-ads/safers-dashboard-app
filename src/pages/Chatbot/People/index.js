@@ -69,27 +69,29 @@ const People = ({ pollingFrequency }) => {
 
   useEffect(() => {
     setPeopleId(undefined);
-    const params = {
-      ...peopleParams,
-      bbox: boundingBox?.toString(),
-      default_date: false,
-      default_bbox: !boundingBox,
-      ...(dateRange
-        ? {
-            start: dateRange[0],
-            end: dateRange[1],
-          }
-        : {}),
-    };
 
-    const feFilters = {
-      activity,
-      status,
-      sortOrder,
-    };
+    setPeopleParams(previous => {
+      const params = {
+        ...previous,
+        bbox: boundingBox?.toString(),
+        default_date: false,
+        default_bbox: !boundingBox,
+        ...(dateRange
+          ? {
+              start: dateRange[0],
+              end: dateRange[1],
+            }
+          : {}),
+      };
 
-    setPeopleParams(params);
-    dispatch(getAllPeople(params, feFilters));
+      const feFilters = {
+        activity,
+        status,
+        sortOrder,
+      };
+      dispatch(getAllPeople(params, feFilters));
+      return params;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateRange, boundingBox, dateRange]);
 
