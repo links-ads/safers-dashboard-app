@@ -68,13 +68,17 @@ const Reports = ({ pollingFrequency }) => {
         bbox: boundingBox?.toString(),
         default_date: false,
         default_bbox: !boundingBox,
+        ...(dateRange
+          ? {
+              start: dateRange[0],
+              end: dateRange[1],
+            }
+          : {}),
       };
-
       dispatch(getAllReports(params));
-
       return params;
     });
-  }, [dispatch, boundingBox, setReportParams]);
+  }, [dispatch, boundingBox, setReportParams, dateRange]);
 
   useInterval(
     () => {
@@ -136,6 +140,10 @@ const Reports = ({ pollingFrequency }) => {
 
   const handleClick = info => {
     const { id } = info?.object?.properties ?? {};
+    // only move map if icon is clicked
+    if (info.object) {
+      setViewState(getViewState(info.coordinate, currentZoomLevel));
+    }
     setReportId(reportId === id ? undefined : id);
   };
 

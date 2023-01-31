@@ -76,16 +76,24 @@ const People = ({ pollingFrequency }) => {
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
+      ...(dateRange
+        ? {
+            start: dateRange[0],
+            end: dateRange[1],
+          }
+        : {}),
     };
+
     const feFilters = {
       activity,
       status,
       sortOrder,
     };
+
     setPeopleParams(params);
     dispatch(getAllPeople(params, feFilters));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, boundingBox]);
+  }, [dateRange, boundingBox, dateRange]);
 
   useEffect(() => {
     if (success?.detail) {
@@ -153,6 +161,10 @@ const People = ({ pollingFrequency }) => {
 
   const onClick = info => {
     const { id } = info?.object?.properties ?? {};
+    // only move map if icon is clicked
+    if (info.object) {
+      setViewState(getViewState(info.coordinate, currentZoomLevel));
+    }
     setPeopleId(peopleId === id ? undefined : id);
   };
 
