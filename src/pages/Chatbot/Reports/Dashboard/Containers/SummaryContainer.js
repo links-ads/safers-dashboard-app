@@ -13,7 +13,7 @@ import MapSection from '../Components/Map';
 
 //i18n
 
-const NO_AVAILABLE_DATA = 'No available data';
+const NO_AVAILABLE_DATA = 'no-available-data';
 
 const SummaryContainer = ({ reportDetail, t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
@@ -30,7 +30,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
 
   const dateDisplay = reportDetail?.timestamp
     ? formatDate(reportDetail.timestamp)
-    : NO_AVAILABLE_DATA;
+    : t(NO_AVAILABLE_DATA, { ns: 'common' });
   return (
     <>
       <Row>
@@ -59,13 +59,14 @@ const SummaryContainer = ({ reportDetail, t }) => {
           </Row>
           <Row className="my-2">
             <span>
-              {t('Hazard Type')}: {reportDetail.hazard ?? NO_AVAILABLE_DATA}
+              {t('Hazard Type')}:{' '}
+              {reportDetail.hazard ?? t(NO_AVAILABLE_DATA, { ns: 'common' })}
             </span>
           </Row>
           <Row className="my-2">
             <span>
               {t('status', { ns: 'common' })}:{' '}
-              {reportDetail.status ?? NO_AVAILABLE_DATA}
+              {reportDetail.status ?? t(NO_AVAILABLE_DATA, { ns: 'common' })}
             </span>
           </Row>
           <Row className="my-2">
@@ -73,7 +74,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
               {t('category', { ns: 'common' })}:{' '}
               {reportDetail?.categories.length > 0
                 ? reportDetail.categories.join(', ')
-                : NO_AVAILABLE_DATA}
+                : t(NO_AVAILABLE_DATA, { ns: 'common' })}
             </span>
           </Row>
           <Row className="my-2">
@@ -90,14 +91,17 @@ const SummaryContainer = ({ reportDetail, t }) => {
                 ? reportDetail.categories_info.map(info => (
                     <div key={info}>{info}</div>
                   ))
-                : NO_AVAILABLE_DATA}
+                : t(NO_AVAILABLE_DATA, { ns: 'common' })}
             </Col>
           </Row>
           <Row className="mt-3 mb-2">
             <span>{t('Description')}:</span>
           </Row>
           <Row>
-            <span>{reportDetail.description ?? NO_AVAILABLE_DATA}</span>
+            <span>
+              {reportDetail.description ??
+                t(NO_AVAILABLE_DATA, { ns: 'common' })}
+            </span>
           </Row>
         </Col>
       </Col>
@@ -107,7 +111,8 @@ const SummaryContainer = ({ reportDetail, t }) => {
             <Row>
               <Col>
                 <span className="font-size-18">{t('Username')}</span> :{' '}
-                {reportDetail.reporter?.name ?? NO_AVAILABLE_DATA}
+                {reportDetail.reporter?.name ??
+                  t(NO_AVAILABLE_DATA, { ns: 'common' })}
               </Col>
             </Row>
             <Row>
@@ -115,7 +120,9 @@ const SummaryContainer = ({ reportDetail, t }) => {
                 <span className="font-size-18">
                   {t('Organization', { ns: 'common' })}
                 </span>{' '}
-                : {reportDetail.reporter?.organization ?? NO_AVAILABLE_DATA}
+                :{' '}
+                {reportDetail.reporter?.organization ??
+                  t(NO_AVAILABLE_DATA, { ns: 'common' })}
               </Col>
             </Row>
           </Col>
@@ -134,7 +141,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
                 <CardSubtitle className="my-auto font-size-15">
                   {reportDetail.location.length > 0
                     ? reportDetail.location?.join(', ')
-                    : NO_AVAILABLE_DATA}
+                    : t(NO_AVAILABLE_DATA, { ns: 'common' })}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -168,7 +175,8 @@ const SummaryContainer = ({ reportDetail, t }) => {
               <Col>
                 <CardText>
                   {t('Report Privacy')}:{' '}
-                  {reportDetail.visibility ?? NO_AVAILABLE_DATA}
+                  {reportDetail.visibility ??
+                    t(NO_AVAILABLE_DATA, { ns: 'common' })}
                 </CardText>
               </Col>
             </Row>
@@ -176,7 +184,8 @@ const SummaryContainer = ({ reportDetail, t }) => {
               <Col>
                 <CardText>
                   {t('Report ID')}:{' '}
-                  {reportDetail.report_id ?? NO_AVAILABLE_DATA}
+                  {reportDetail.report_id ??
+                    t(NO_AVAILABLE_DATA, { ns: 'common' })}
                 </CardText>
               </Col>
             </Row>
@@ -184,7 +193,8 @@ const SummaryContainer = ({ reportDetail, t }) => {
               <Col>
                 <CardText>
                   {t('Mission ID')}:{' '}
-                  {reportDetail.mission_id ?? NO_AVAILABLE_DATA}
+                  {reportDetail.mission_id ??
+                    t(NO_AVAILABLE_DATA, { ns: 'common' })}
                 </CardText>
               </Col>
             </Row>
