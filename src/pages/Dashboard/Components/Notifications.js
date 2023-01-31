@@ -96,7 +96,6 @@ const NotificationsBar = ({ t }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    //const statusCounts = getStatusCountsForItems(alerts);
     const statusCounts = getStatusCountsForItems([{ status: 'null' }]);
     setActivityStatusCounts(statusCounts);
   }, [filteredAlerts, alerts]);
