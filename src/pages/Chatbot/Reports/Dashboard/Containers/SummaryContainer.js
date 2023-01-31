@@ -65,13 +65,13 @@ const SummaryContainer = ({ reportDetail, t }) => {
           </Row>
           <Row className="my-2">
             <span>
-              {t('Category', { ns: 'reports' })} :{' '}
+              {t('category', { ns: 'common' })} :{' '}
               {reportDetail.categories.join(', ')}
             </span>
           </Row>
           <Row className="my-2">
             <Col lg={3} id="cat-info">
-              {<span>{`${t('Details')} : `}</span>}
+              {<span>{`${t('details', { ns: 'common' })} : `}</span>}
               {reportDetail.categories_info.map(info => (
                 <span key={info}>{info}</span>
               ))}
