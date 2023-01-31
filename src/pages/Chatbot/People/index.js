@@ -54,9 +54,7 @@ const People = ({ pollingFrequency }) => {
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [activitiesOptions, setActivitiesOptions] = useState([]);
-  const [peopleParams, setPeopleParams] = useState(
-    dateRange ? { start: dateRange[0], end: dateRange[1] } : {},
-  );
+  const [peopleParams, setPeopleParams] = useState({});
 
   const dispatch = useDispatch();
 

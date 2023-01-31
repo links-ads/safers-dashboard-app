@@ -52,9 +52,7 @@ const Comms = ({ pollingFrequency }) => {
   const [coordinates, setCoordinates] = useState(null);
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
-  const [commsParams, setCommsParams] = useState(
-    dateRange ? { start: dateRange[0], end: dateRange[1] } : {},
-  );
+  const [commsParams, setCommsParams] = useState({});
 
   const dispatch = useDispatch();
 
