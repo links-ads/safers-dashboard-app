@@ -76,7 +76,7 @@ const NotificationsBar = ({ t }) => {
     const params = {
       bbox: undefined,
       default_date: false,
-      default_bbox: false,
+      default_bbox: true,
     };
     const feFilters = {};
     dispatch(getAllPeople(params, feFilters));
