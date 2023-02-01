@@ -161,10 +161,6 @@ const People = ({ pollingFrequency }) => {
 
   const onClick = info => {
     const { id } = info?.object?.properties ?? {};
-    // only move map if icon is clicked
-    if (info.object) {
-      setViewState(getViewState(info.coordinate, currentZoomLevel));
-    }
     setPeopleId(peopleId === id ? undefined : id);
   };
 

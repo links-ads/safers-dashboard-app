@@ -138,10 +138,6 @@ const Reports = ({ pollingFrequency }) => {
 
   const handleClick = info => {
     const { id } = info?.object?.properties ?? {};
-    // only move map if icon is clicked
-    if (info.object) {
-      setViewState(getViewState(info.coordinate, currentZoomLevel));
-    }
     setReportId(reportId === id ? undefined : id);
   };
 
