@@ -102,6 +102,7 @@ const OnDemandTreeView = ({
     }
 
     if (
+      selectedLayer?.key === id ||
       selectedLayer?.key?.startsWith(id) ||
       selectedNode?.key?.startsWith(id)
     ) {
