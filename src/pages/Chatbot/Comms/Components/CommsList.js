@@ -74,7 +74,7 @@ const CommsList = ({
       <Row>
         {pageData.map(comm => (
           <Comm
-            key={comm.mission_id}
+            key={comm.id}
             card={comm}
             commID={commID}
             setSelectedComm={setSelectedComm}

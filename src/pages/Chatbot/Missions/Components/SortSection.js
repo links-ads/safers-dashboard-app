@@ -57,7 +57,7 @@ const SortSection = ({
 
   return (
     <>
-      <Row className="">
+      <Row>
         <Col>
           <Button onClick={setTogglePolygonMap}>
             {t('create-new-mission', { ns: 'chatBot' })}

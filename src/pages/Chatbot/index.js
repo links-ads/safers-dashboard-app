@@ -22,6 +22,9 @@ import { GENERAL } from '../../constants/common';
 const Chatbot = () => {
   const [customActiveTab, setCustomActiveTab] = useState();
   const { config } = useSelector(state => state.common);
+  const isProfessionalUser = useSelector(
+    state => state.user.info.is_professional,
+  );
   const pollingFrequency =
     config?.polling_frequency * GENERAL.MILLISEC_TO_SECOND ?? 0;
   const { t } = useTranslation();
@@ -98,12 +101,13 @@ const Chatbot = () => {
                 <span className="d-block">{t('Comms')}</span>
               </NavLink>
             </NavItem>
-            <NavItem>
+            <NavItem className={!isProfessionalUser ? 'disabled' : ''}>
               <NavLink
                 style={{ cursor: 'pointer' }}
                 className={classnames({
                   active: customActiveTab === '3',
                 })}
+                disabled={!isProfessionalUser}
                 onClick={() => {
                   navigate('/chatbot?tab=3');
                 }}
