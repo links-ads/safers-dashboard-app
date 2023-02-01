@@ -51,9 +51,7 @@ const Reports = ({ pollingFrequency }) => {
   const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
-  const [reportParams, setReportParams] = useState(
-    dateRange ? { start: dateRange[0], end: dateRange[1] } : {},
-  );
+  const [reportParams, setReportParams] = useState({});
 
   const dispatch = useDispatch();
 
@@ -68,13 +66,17 @@ const Reports = ({ pollingFrequency }) => {
         bbox: boundingBox?.toString(),
         default_date: false,
         default_bbox: !boundingBox,
+        ...(dateRange
+          ? {
+              start: dateRange[0],
+              end: dateRange[1],
+            }
+          : {}),
       };
-
       dispatch(getAllReports(params));
-
       return params;
     });
-  }, [dispatch, boundingBox, setReportParams]);
+  }, [dispatch, boundingBox, setReportParams, dateRange]);
 
   useInterval(
     () => {

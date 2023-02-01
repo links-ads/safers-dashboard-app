@@ -52,9 +52,7 @@ const Comms = ({ pollingFrequency }) => {
   const [coordinates, setCoordinates] = useState(null);
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
-  const [commsParams, setCommsParams] = useState(
-    dateRange ? { start: dateRange[0], end: dateRange[1] } : {},
-  );
+  const [commsParams, setCommsParams] = useState({});
 
   const dispatch = useDispatch();
 
@@ -67,7 +65,14 @@ const Comms = ({ pollingFrequency }) => {
       bbox: boundingBox?.toString(),
       default_date: false,
       default_bbox: !boundingBox,
+      ...(dateRange
+        ? {
+            start: dateRange[0],
+            end: dateRange[1],
+          }
+        : {}),
     };
+
     setCommsParams(params);
     dispatch(getAllComms(params, { sortOrder, status: commStatus, target }));
   };
@@ -89,7 +94,7 @@ const Comms = ({ pollingFrequency }) => {
   useEffect(() => {
     loadComms();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, boundingBox]);
+  }, [dateRange, boundingBox, dateRange]);
 
   useEffect(() => {
     if (success?.detail) {

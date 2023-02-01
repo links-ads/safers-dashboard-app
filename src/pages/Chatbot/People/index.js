@@ -54,9 +54,7 @@ const People = ({ pollingFrequency }) => {
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [activitiesOptions, setActivitiesOptions] = useState([]);
-  const [peopleParams, setPeopleParams] = useState(
-    dateRange ? { start: dateRange[0], end: dateRange[1] } : {},
-  );
+  const [peopleParams, setPeopleParams] = useState({});
 
   const dispatch = useDispatch();
 
@@ -71,21 +69,31 @@ const People = ({ pollingFrequency }) => {
 
   useEffect(() => {
     setPeopleId(undefined);
-    const params = {
-      ...peopleParams,
-      bbox: boundingBox?.toString(),
-      default_date: false,
-      default_bbox: !boundingBox,
-    };
-    const feFilters = {
-      activity,
-      status,
-      sortOrder,
-    };
-    setPeopleParams(params);
-    dispatch(getAllPeople(params, feFilters));
+
+    setPeopleParams(previous => {
+      const params = {
+        ...previous,
+        bbox: boundingBox?.toString(),
+        default_date: false,
+        default_bbox: !boundingBox,
+        ...(dateRange
+          ? {
+              start: dateRange[0],
+              end: dateRange[1],
+            }
+          : {}),
+      };
+
+      const feFilters = {
+        activity,
+        status,
+        sortOrder,
+      };
+      dispatch(getAllPeople(params, feFilters));
+      return params;
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, boundingBox]);
+  }, [dateRange, boundingBox, dateRange]);
 
   useEffect(() => {
     if (success?.detail) {
