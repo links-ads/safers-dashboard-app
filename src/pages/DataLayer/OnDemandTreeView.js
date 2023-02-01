@@ -47,6 +47,7 @@ const OnDemandTreeView = ({
   const [isDeleteMapRequestDialogOpen, setIsDeleteMapRequestDialogOpen] =
     useState(false);
   const [mapRequestToDelete, setMapRequestToDelete] = useState(null);
+  const [selectedNode, setSelectedNode] = useState({});
 
   const user = useSelector(state => state.user?.info);
 
@@ -61,6 +62,8 @@ const OnDemandTreeView = ({
       if (node) {
         const newViewState = getBoundedViewState(deckRef, node?.bbox);
         setViewState({ ...viewState, ...newViewState });
+        setSelectedNode(node);
+        // console.log('selectedNode now', selectedNode);
       }
 
       return selectedLayer;
@@ -82,6 +85,33 @@ const OnDemandTreeView = ({
     }));
   };
 
+  const isParentOfSelected = id => {
+    /*
+     * Node id should follow a syntax inheriting the parent id
+     * i.e. parent node - {parent id}, child - {parent id}.{child id}
+     * This fn is also appllied to leaf node
+     */
+    console.log('selectedLayer', selectedLayer);
+    console.log('selectedNode', selectedNode);
+    console.log('WWW', id);
+    console.log('XXX', selectedLayer?.key);
+    console.log('YYY', selectedNode?.key);
+
+    if (!selectedNode || !selectedLayer) {
+      return false;
+    }
+
+    if (
+      selectedLayer?.key?.startsWith(id) ||
+      selectedNode?.key?.startsWith(id)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  console.log('Reloading!');
+
   const mapper = (nodes, parentId, lvl) => {
     return nodes?.map((node, index) => {
       // use tree level to define main text
@@ -99,11 +129,14 @@ const OnDemandTreeView = ({
         <Fragment key={id}>
           <ListGroupItem
             key={node}
+            // className={`dl-item ${
+            //   (node.children && itemState[id]) ||
+            //   selectedLayer?.title === node.title
+            //     ? 'selected'
+            //     : ''
+            // } mb-2`}
             className={`dl-item ${
-              (node.children && itemState[id]) ||
-              selectedLayer?.title === node.title
-                ? 'selected'
-                : ''
+              isParentOfSelected(id) ? 'selected' : ''
             } mb-2`}
             onClick={() => {
               setCurrentLayer(oldLayer => {
@@ -125,6 +158,7 @@ const OnDemandTreeView = ({
                       node?.bbox,
                     );
                     setViewState({ ...viewState, ...newViewState });
+                    //setSelectedNode(node);
                   }
 
                   return selectedLayer;
@@ -241,6 +275,7 @@ const OnDemandTreeView = ({
                       );
 
                       setViewState({ ...viewState, ...newViewState });
+                      //setSelectedNode(node);
                     }}
                     className="bx bx-map font-size-16"
                   />
