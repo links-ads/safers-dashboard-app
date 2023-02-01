@@ -7,11 +7,15 @@ import { Link } from 'react-router-dom';
 import { Container, Row, Card } from 'reactstrap';
 
 import Report from '../../Chatbot/Reports/Components/Report';
+import { MAX_REPORTS } from '../constants';
 
 const ReportBar = ({ t }) => {
   const allReports = useSelector(state => {
     if (!state?.reports?.allReports || state.reports.allReports.length === 0) {
       return [];
+    }
+    if (state.reports.allReports.length > MAX_REPORTS) {
+      return state.reports.allReports.slice(0, MAX_REPORTS);
     }
     return state.reports.allReports;
   });
