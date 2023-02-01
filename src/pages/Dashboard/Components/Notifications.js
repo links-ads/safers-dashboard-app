@@ -46,19 +46,6 @@ const NotificationsBar = ({ t }) => {
     return statusCounts;
   };
 
-  // renderer functions. These are passed to the individual NotificationCards
-  // These should return some JSX which will be rendered as the contents
-  // of the panel. (The panel - NotificationCard - is completely generic)
-
-  const fixString = stringToFix => {
-    // seems overkill, but having this inline meant ESLint and prettier had a fist fight
-    if (!stringToFix || stringToFix === 'null') {
-      return t('Unknown');
-    } else {
-      return stringToFix;
-    }
-  };
-
   const renderer = (noDataMessage, label, itemsCounts) => {
     if (!itemsCounts) {
       return <p>Loading...</p>;
@@ -71,8 +58,9 @@ const NotificationsBar = ({ t }) => {
         {Object.keys(itemsCounts).map(key => (
           <Fragment key={`${label}_row_${key}`}>
             <Row fluid="true" xs={2}>
-              <div className="w-8">{`${fixString(key)}`}</div>
-              <div className="w-2">{`${itemsCounts[key]}`}</div>
+              {/* string 'null' because object.keys() outputs string array */}
+              <div className="w-8">{key === 'null' ? t('Unknown') : key}</div>
+              <div className="w-2">{itemsCounts[key]}</div>
             </Row>
             <hr />
           </Fragment>
