@@ -11,6 +11,10 @@ import { getIconLayer, getViewState } from '../../../../../helpers/mapHelper';
 import { formatDate } from '../../../../../store/utility';
 import MapSection from '../Components/Map';
 
+//i18n
+
+const NO_AVAILABLE_DATA = 'no-available-data';
+
 const SummaryContainer = ({ reportDetail, t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
 
@@ -26,7 +30,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
 
   const dateDisplay = reportDetail?.timestamp
     ? formatDate(reportDetail.timestamp)
-    : t('Unknown');
+    : t(NO_AVAILABLE_DATA, { ns: 'common' });
   return (
     <>
       <Row>
@@ -55,38 +59,49 @@ const SummaryContainer = ({ reportDetail, t }) => {
           </Row>
           <Row className="my-2">
             <span>
-              {t('Hazard Type')}: {reportDetail.hazard}
+              {t('Hazard Type')}:{' '}
+              {reportDetail.hazard ?? t(NO_AVAILABLE_DATA, { ns: 'common' })}
             </span>
           </Row>
           <Row className="my-2">
             <span>
-              {t('Status', { ns: 'reports' })} :{reportDetail.status}
+              {t('status', { ns: 'common' })}:{' '}
+              {reportDetail.status ?? t(NO_AVAILABLE_DATA, { ns: 'common' })}
             </span>
           </Row>
           <Row className="my-2">
             <span>
-              {t('category', { ns: 'common' })} :{' '}
-              {reportDetail.categories.join(', ')}
+              {t('category', { ns: 'common' })}:{' '}
+              {reportDetail?.categories.length > 0
+                ? reportDetail.categories.join(', ')
+                : t(NO_AVAILABLE_DATA, { ns: 'common' })}
             </span>
           </Row>
           <Row className="my-2">
-            <Col lg={3} id="cat-info">
-              {<span>{`${t('details', { ns: 'common' })} : `}</span>}
-              {reportDetail.categories_info.map(info => (
-                <span key={info}>{info}</span>
-              ))}
+            <Col lg={2} id="cat-info">
+              <span>{t('Details')}: </span>
             </Col>
+            <Col lg={1}>&nbsp;</Col>
             <Col
               lg={9}
               className="mt-lg-0 ms-lg-0 mt-sm-2 ms-sm-2"
               aria-labelledby="cat-info"
-            ></Col>
+            >
+              {reportDetail?.categories_info.length > 0
+                ? reportDetail.categories_info.map(info => (
+                    <div key={info}>{info}</div>
+                  ))
+                : t(NO_AVAILABLE_DATA, { ns: 'common' })}
+            </Col>
           </Row>
           <Row className="mt-3 mb-2">
             <span>{t('Description')}:</span>
           </Row>
           <Row>
-            <span>{reportDetail.description}</span>
+            <span>
+              {reportDetail.description ??
+                t(NO_AVAILABLE_DATA, { ns: 'common' })}
+            </span>
           </Row>
         </Col>
       </Col>
@@ -96,7 +111,8 @@ const SummaryContainer = ({ reportDetail, t }) => {
             <Row>
               <Col>
                 <span className="font-size-18">{t('Username')}</span> :{' '}
-                {reportDetail.reporter?.name}
+                {reportDetail.reporter?.name ??
+                  t(NO_AVAILABLE_DATA, { ns: 'common' })}
               </Col>
             </Row>
             <Row>
@@ -104,7 +120,9 @@ const SummaryContainer = ({ reportDetail, t }) => {
                 <span className="font-size-18">
                   {t('Organization', { ns: 'common' })}
                 </span>{' '}
-                : {reportDetail.reporter?.organization}
+                :{' '}
+                {reportDetail.reporter?.organization ??
+                  t(NO_AVAILABLE_DATA, { ns: 'common' })}
               </Col>
             </Row>
           </Col>
@@ -121,7 +139,9 @@ const SummaryContainer = ({ reportDetail, t }) => {
               </Col>
               <Col md={10}>
                 <CardSubtitle className="my-auto font-size-15">
-                  {reportDetail.location?.join(', ')}
+                  {reportDetail.location.length > 0
+                    ? reportDetail.location?.join(', ')
+                    : t(NO_AVAILABLE_DATA, { ns: 'common' })}
                 </CardSubtitle>
               </Col>
             </Row>
@@ -154,21 +174,27 @@ const SummaryContainer = ({ reportDetail, t }) => {
             <Row>
               <Col>
                 <CardText>
-                  {t('Report Privacy')}: {reportDetail.visibility}
+                  {t('Report Privacy')}:{' '}
+                  {reportDetail.visibility ??
+                    t(NO_AVAILABLE_DATA, { ns: 'common' })}
                 </CardText>
               </Col>
             </Row>
             <Row>
               <Col>
                 <CardText>
-                  {t('Report ID')}: {reportDetail.report_id}
+                  {t('Report ID')}:{' '}
+                  {reportDetail.report_id ??
+                    t(NO_AVAILABLE_DATA, { ns: 'common' })}
                 </CardText>
               </Col>
             </Row>
             <Row>
               <Col>
                 <CardText>
-                  {t('Mission ID')}: {reportDetail.mission_id}
+                  {t('Mission ID')}:{' '}
+                  {reportDetail.mission_id ??
+                    t(NO_AVAILABLE_DATA, { ns: 'common' })}
                 </CardText>
               </Col>
             </Row>
