@@ -95,7 +95,7 @@ const Chatbot = () => {
                 <span className="d-none d-sm-block me-2">
                   <i className="fas fa-envelope"></i>
                 </span>
-                <span className="d-block">{t('comms')}</span>
+                <span className="d-block">{t('Comms')}</span>
               </NavLink>
             </NavItem>
             <NavItem>

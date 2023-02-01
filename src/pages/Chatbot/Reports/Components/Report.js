@@ -25,7 +25,6 @@ const Report = ({ card, reportId, setSelectedReport /*, setFavorite*/ }) => {
 
   const getBadge = category => {
     let iconStatus = '';
-    console.log('GET BADGE CATEGORY: ', category);
     switch (category.toLowerCase()) {
       case 'effects':
         iconStatus = 'fa-dice';
@@ -40,14 +39,14 @@ const Report = ({ card, reportId, setSelectedReport /*, setFavorite*/ }) => {
         iconStatus = 'fa-ruler';
         break;
       default:
-        throw new Error('Unknown category');
+        throw new Error(t('Unknown category'));
     }
 
     return (
       <>
         <Badge className="me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0">
-          <i className={`fa ${iconStatus} text-danger me-1`}></i>
-          <span className="text-capitalize">{category}</span>
+          <i className={`fa ${t(iconStatus)} text-danger me-1`}></i>
+          <span className="text-capitalize">{t(category)}</span>
         </Badge>
       </>
     );

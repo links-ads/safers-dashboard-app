@@ -46,10 +46,6 @@ const NotificationsBar = ({ t }) => {
     return statusCounts;
   };
 
-  // renderer functions. These are passed to the individual NotificationCards
-  // These should return some JSX which will be rendered as the contents
-  // of the panel. (The panel - NotificationCard - is completely generic)
-
   const renderer = (noDataMessage, label, itemsCounts) => {
     if (!itemsCounts) {
       return <p>Loading...</p>;
@@ -62,8 +58,9 @@ const NotificationsBar = ({ t }) => {
         {Object.keys(itemsCounts).map(key => (
           <Fragment key={`${label}_row_${key}`}>
             <Row fluid="true" xs={2}>
-              <div className="w-8">{`${key}`}</div>
-              <div className="w-2">{`${itemsCounts[key]}`}</div>
+              {/* string 'null' because object.keys() outputs string array */}
+              <div className="w-8">{key === 'null' ? t('Unknown') : key}</div>
+              <div className="w-2">{itemsCounts[key]}</div>
             </Row>
             <hr />
           </Fragment>
@@ -87,7 +84,7 @@ const NotificationsBar = ({ t }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    const statusCounts = getStatusCountsForItems(alerts);
+    const statusCounts = getStatusCountsForItems([{ status: 'null' }]);
     setActivityStatusCounts(statusCounts);
   }, [filteredAlerts, alerts]);
 
@@ -128,7 +125,7 @@ const NotificationsBar = ({ t }) => {
                 activityStatusCounts,
               )
             }
-            linkURL="/"
+            linkURL="/fire-alerts"
           />
           <NotificationCard
             cardName={t('people')}
@@ -167,12 +164,12 @@ const NotificationsBar = ({ t }) => {
             linkURL="/chatbot?tab=3"
           />
           <NotificationCard
-            cardName={t('comms')}
+            cardName={t('Comms')}
             iconClass="fas fa-envelope"
             contentRenderer={() =>
               renderer(
                 t('No new communications', { ns: 'dashboard' }),
-                'comms',
+                'Comms',
                 communicationStatusCounts,
               )
             }

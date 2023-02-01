@@ -11,8 +11,6 @@ import { getIconLayer, getViewState } from '../../../../../helpers/mapHelper';
 import { formatDate } from '../../../../../store/utility';
 import MapSection from '../Components/Map';
 
-//i18n
-
 const SummaryContainer = ({ reportDetail, t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
 
@@ -28,7 +26,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
 
   const dateDisplay = reportDetail?.timestamp
     ? formatDate(reportDetail.timestamp)
-    : 'Unknown';
+    : t('Unknown');
   return (
     <>
       <Row>
@@ -62,29 +60,27 @@ const SummaryContainer = ({ reportDetail, t }) => {
           </Row>
           <Row className="my-2">
             <span>
-              {t('status', { ns: 'common' })}: {reportDetail.status}
+              {t('Status', { ns: 'reports' })} :{reportDetail.status}
             </span>
           </Row>
           <Row className="my-2">
             <span>
-              {t('category', { ns: 'common' })}:{' '}
+              {t('category', { ns: 'common' })} :{' '}
               {reportDetail.categories.join(', ')}
             </span>
           </Row>
           <Row className="my-2">
-            <Col lg={2} id="cat-info">
-              <span>{t('Details')}: </span>
+            <Col lg={3} id="cat-info">
+              {<span>{`${t('details', { ns: 'common' })} : `}</span>}
+              {reportDetail.categories_info.map(info => (
+                <span key={info}>{info}</span>
+              ))}
             </Col>
-            <Col lg={1}>&nbsp;</Col>
             <Col
               lg={9}
               className="mt-lg-0 ms-lg-0 mt-sm-2 ms-sm-2"
               aria-labelledby="cat-info"
-            >
-              {reportDetail.categories_info.map(info => (
-                <div key={info}>{info}</div>
-              ))}
-            </Col>
+            ></Col>
           </Row>
           <Row className="mt-3 mb-2">
             <span>{t('Description')}:</span>
