@@ -4,7 +4,9 @@ import { PinLayer } from './PinLayer';
 
 export class GeoJsonPinLayer extends PinLayer {
   updateState({ props, oldProps, changeFlags }) {
+    console.log('PROPS: ', { props, oldProps });
     const features = getGeojsonFeatures(props.data);
+    console.log('FEATURES: ', features);
     super.updateState({
       oldProps,
       changeFlags,

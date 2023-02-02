@@ -160,8 +160,10 @@ const DataLayerDashboard = ({ t }) => {
   useEffect(() => {
     setSliderValue(0);
     setIsPlaying(false);
+    console.log('CURRENT LAYER: ', currentLayer);
     if (currentLayer && currentLayer.urls) {
       const urls = getUrls();
+      console.log('URLS: ', urls);
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue]);
       const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
@@ -249,6 +251,7 @@ const DataLayerDashboard = ({ t }) => {
   };
 
   const getBitmapLayer = url => {
+    console.log('BITMAP URL: ', url);
     /*
      extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
      if this is an on-demand layer, it will have been hard-coded by the backend

@@ -43,6 +43,8 @@ export class PinLayer extends CompositeLayer {
   }
 
   updateState({ props, oldProps, changeFlags }) {
+    console.log('THIS PROPS: ', { instance: this.props, state: this.state });
+    console.log('PROPS: ', { props, oldProps });
     const rebuildIndex =
       changeFlags.dataChanged || props.sizeScale !== oldProps.sizeScale;
     if (rebuildIndex) {
@@ -87,6 +89,7 @@ export class PinLayer extends CompositeLayer {
 
   // ===== Pin/Cluster Layer Functions =====
   _getPinIcon(feature) {
+    console.log('PIN ICON FEATURE: ', feature);
     if (
       feature.properties.cluster &&
       this._getExpansionZoom(feature) <= this.props.maxZoom

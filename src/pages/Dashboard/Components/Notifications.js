@@ -6,107 +6,139 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row } from 'reactstrap';
 
 import NotificationCard from './NotificationCard';
-import { getAllEventAlerts } from '../../../store/events/action';
-import { getAllPeople } from '../../../store/people/action';
-import { getAllReports } from '../../../store/reports/action';
+// import { getAllEventAlerts } from '../../../store/events/action';
+// import { getAllPeople } from '../../../store/people/action';
+// import { getAllReports } from '../../../store/reports/action';
 
-const NotificationsBar = ({ t }) => {
-  const dispatch = useDispatch();
-
-  const [activityStatusCounts, setActivityStatusCounts] = useState({});
-  const [peopleStatusCounts, setPeopleStatusCounts] = useState({});
-  const [reportStatusCounts, setReportStatusCounts] = useState({});
-  const [missionStatusCounts, setMissionStatusCounts] = useState({});
-  const [communicationStatusCounts, setCommunicationStatusCounts] = useState(
-    {},
+const AreaCount = ({ t, noDataMessage, label, itemsCounts }) => {
+  if (!itemsCounts) {
+    return <p>Loading...</p>;
+  }
+  if (Object.keys(itemsCounts).length === 0) {
+    return <p>{noDataMessage}</p>;
+  }
+  return (
+    <>
+      {Object.keys(itemsCounts).map(key => (
+        <Fragment key={`${label}_row_${key}`}>
+          <Row fluid="true" xs={2}>
+            {/* string 'null' because object.keys() outputs string array */}
+            <div className="w-8">{key === 'null' ? t('Unknown') : key}</div>
+            <div className="w-2">{itemsCounts[key]}</div>
+          </Row>
+          <hr />
+        </Fragment>
+      ))}
+    </>
   );
+};
+
+const NotificationsBar = ({
+  t,
+  activityStatusCounts,
+  reportStatusCounts,
+  peopleStatusCounts,
+  missionStatusCounts,
+  communicationStatusCounts,
+}) => {
+  // const dispatch = useDispatch();
+
+  // const [activityStatusCounts, setActivityStatusCounts] = useState({});
+  // // const [peopleStatusCounts, setPeopleStatusCounts] = useState({});
+  // const [reportStatusCounts, setReportStatusCounts] = useState({});
+  // const [missionStatusCounts, setMissionStatusCounts] = useState({});
+  // const [communicationStatusCounts, setCommunicationStatusCounts] = useState(
+  //   {},
+  // );
 
   const defaultAOI = useSelector(state => state?.user?.defaultAoi);
-  const { allReports: OrgReportList } = useSelector(state => state?.reports);
-  const { allAlerts: alerts, filteredAlerts } = useSelector(
-    state => state?.alerts,
-  );
-  const { allPeople: orgPplList, filteredPeople } = useSelector(
-    state => state.people,
-  );
-  const allMissions = useSelector(state => state?.missions?.allMissions || []);
-  const allCommunications = useSelector(state => state.comms.allComms || []);
+  // const { allReports: OrgReportList } = useSelector(state => state?.reports);
+  // const { allAlerts: alerts, filteredAlerts } = useSelector(
+  //   state => state?.alerts,
+  // );
+  // // const { allPeople: orgPplList, filteredPeople } = useSelector(
+  // //   state => state.people,
+  // // );
+  // // console.log('PEOPLE: ', { orgPplList, filteredPeople });
+  // const allMissions = useSelector(state => state?.missions?.allMissions || []);
+  // const allCommunications = useSelector(state => state.comms.allComms || []);
 
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
 
-  const getStatusCountsForItems = items => {
-    // build an object whose keys are mission types and values are
-    // counts of missions matching that status
-    let statusCounts = {};
-    items.forEach(item =>
-      item?.status in statusCounts
-        ? (statusCounts[item.status] += 1)
-        : (statusCounts[item.status] = 1),
-    );
-    return statusCounts;
-  };
+  // const getStatusCountsForItems = items => {
+  //   // build an object whose keys are mission types and values are
+  //   // counts of missions matching that status
+  //   let statusCounts = {};
+  //   items.forEach(item =>
+  //     item?.status in statusCounts
+  //       ? (statusCounts[item.status] += 1)
+  //       : (statusCounts[item.status] = 1),
+  //   );
+  //   return statusCounts;
+  // };
 
-  const renderer = (noDataMessage, label, itemsCounts) => {
-    if (!itemsCounts) {
-      return <p>Loading...</p>;
-    }
-    if (Object.keys(itemsCounts).length === 0) {
-      return <p>{noDataMessage}</p>;
-    }
-    return (
-      <>
-        {Object.keys(itemsCounts).map(key => (
-          <Fragment key={`${label}_row_${key}`}>
-            <Row fluid="true" xs={2}>
-              {/* string 'null' because object.keys() outputs string array */}
-              <div className="w-8">{key === 'null' ? t('Unknown') : key}</div>
-              <div className="w-2">{itemsCounts[key]}</div>
-            </Row>
-            <hr />
-          </Fragment>
-        ))}
-      </>
-    );
-  };
+  // const renderer = (noDataMessage, label, itemsCounts) => {
+  //   if (!itemsCounts) {
+  //     return <p>Loading...</p>;
+  //   }
+  //   if (Object.keys(itemsCounts).length === 0) {
+  //     return <p>{noDataMessage}</p>;
+  //   }
+  //   return (
+  //     <>
+  //       {Object.keys(itemsCounts).map(key => (
+  //         <Fragment key={`${label}_row_${key}`}>
+  //           <Row fluid="true" xs={2}>
+  //             {/* string 'null' because object.keys() outputs string array */}
+  //             <div className="w-8">{key === 'null' ? t('Unknown') : key}</div>
+  //             <div className="w-2">{itemsCounts[key]}</div>
+  //           </Row>
+  //           <hr />
+  //         </Fragment>
+  //       ))}
+  //     </>
+  //   );
+  // };
 
   // useEffects
 
-  useEffect(() => {
-    dispatch(getAllEventAlerts());
-    const params = {
-      bbox: undefined,
-      default_date: false,
-      default_bbox: false,
-    };
-    const feFilters = {};
-    dispatch(getAllPeople(params, feFilters));
-    dispatch(getAllReports());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(getAllEventAlerts());
+  //   const params = {
+  //     bbox: undefined,
+  //     default_date: false,
+  //     default_bbox: false,
+  //   };
+  //   const feFilters = {};
+  //   dispatch(getAllPeople(params, feFilters));
+  //   dispatch(getAllReports());
+  // }, [dispatch]);
 
-  useEffect(() => {
-    const statusCounts = getStatusCountsForItems([{ status: 'null' }]);
-    setActivityStatusCounts(statusCounts);
-  }, [filteredAlerts, alerts]);
+  // useEffect(() => {
+  //   const statusCounts = getStatusCountsForItems([{ status: 'null' }]);
+  //   setActivityStatusCounts(statusCounts);
+  // }, [filteredAlerts, alerts]);
 
-  useEffect(() => {
-    const statusCounts = getStatusCountsForItems(orgPplList);
-    setPeopleStatusCounts(statusCounts);
-  }, [orgPplList, filteredPeople]);
+  // useEffect(() => {
+  //   const statusCounts = getStatusCountsForItems(orgPplList);
+  //   console.log('UPDATING PEOPLE COUNTS: ', statusCounts);
+  //   setPeopleStatusCounts(statusCounts);
+  // }, [orgPplList, filteredPeople]);
 
-  useEffect(() => {
-    const statusCounts = getStatusCountsForItems(OrgReportList);
-    setReportStatusCounts(statusCounts);
-  }, [OrgReportList]);
+  // useEffect(() => {
+  //   const statusCounts = getStatusCountsForItems(OrgReportList);
+  //   setReportStatusCounts(statusCounts);
+  // }, [OrgReportList]);
 
-  useEffect(() => {
-    const statusCounts = getStatusCountsForItems(allMissions);
-    setMissionStatusCounts(statusCounts);
-  }, [allMissions]);
+  // useEffect(() => {
+  //   const statusCounts = getStatusCountsForItems(allMissions);
+  //   setMissionStatusCounts(statusCounts);
+  // }, [allMissions]);
 
-  useEffect(() => {
-    const statusCounts = getStatusCountsForItems(allCommunications);
-    setCommunicationStatusCounts(statusCounts);
-  }, [allCommunications]);
+  // useEffect(() => {
+  //   const statusCounts = getStatusCountsForItems(allCommunications);
+  //   setCommunicationStatusCounts(statusCounts);
+  // }, [allCommunications]);
 
   return (
     <div className="mx-2 px-1">
@@ -118,61 +150,94 @@ const NotificationsBar = ({ t }) => {
           <NotificationCard
             cardName={t('fire-alerts')}
             iconClass="bx bx-error-circle"
-            contentRenderer={() =>
-              renderer(
-                t('No new activities', { ns: 'dashboard' }),
-                'act',
-                activityStatusCounts,
-              )
-            }
+            contentRenderer={() => (
+              <AreaCount
+                t={t}
+                noDataMessage={t('No new activities', { ns: 'dashboard' })}
+                label="act"
+                itemsCounts={activityStatusCounts}
+              />
+            )}
+            // contentRenderer={() =>
+            //   renderer(
+            //     t('No new activities', { ns: 'dashboard' }),
+            //     'act',
+            //     activityStatusCounts,
+            //   )
+            // }
             linkURL="/fire-alerts"
           />
           <NotificationCard
             cardName={t('people')}
             iconClass="fas fa-user-alt"
-            contentRenderer={() =>
-              renderer(
-                t('No new people activity', { ns: 'dashboard' }),
-                'ppl',
-                peopleStatusCounts,
-              )
-            }
+            contentRenderer={() => (
+              <AreaCount
+                t={t}
+                noDataMessage={t('No new people activity', { ns: 'dashboard' })}
+                label="ppl"
+                itemsCounts={peopleStatusCounts}
+              />
+            )}
             linkURL="/chatbot?tab=1"
           />
           <NotificationCard
             cardName={t('Reports')}
             iconClass="fas fa-file-image"
-            contentRenderer={() =>
-              renderer(
-                t('No new reports', { ns: 'dashboard' }),
-                'reps',
-                reportStatusCounts,
-              )
-            }
+            contentRenderer={() => (
+              <AreaCount
+                t={t}
+                noDataMessage={t('No new reports', { ns: 'dashboard' })}
+                label="reps"
+                itemsCounts={reportStatusCounts}
+              />
+            )}
+            // contentRenderer={() =>
+            //   renderer(
+            //     t('No new reports', { ns: 'dashboard' }),
+            //     'reps',
+            //     reportStatusCounts,
+            //   )
+            // }
             linkURL="/chatbot?tab=4"
           />
           <NotificationCard
             cardName={t('mission')}
             iconClass="fas fa-flag-checkered"
-            contentRenderer={() =>
-              renderer(
-                t('No new missions', { ns: 'dashboard' }),
-                'miss',
-                missionStatusCounts,
-              )
-            }
+            contentRenderer={() => (
+              <AreaCount
+                t={t}
+                noDataMessage={t('No new missions', { ns: 'dashboard' })}
+                label="miss"
+                itemsCounts={missionStatusCounts}
+              />
+            )}
+            // contentRenderer={() =>
+            //   renderer(
+            //     t('No new missions', { ns: 'dashboard' }),
+            //     'miss',
+            //     missionStatusCounts,
+            //   )
+            // }
             linkURL="/chatbot?tab=3"
           />
           <NotificationCard
-            cardName={t('Comms')}
+            cardName={t('Communications')}
             iconClass="fas fa-envelope"
-            contentRenderer={() =>
-              renderer(
-                t('No new communications', { ns: 'dashboard' }),
-                'Comms',
-                communicationStatusCounts,
-              )
-            }
+            contentRenderer={() => (
+              <AreaCount
+                t={t}
+                noDataMessage={t('No new communications', { ns: 'dashboard' })}
+                label="Comms"
+                itemsCounts={communicationStatusCounts}
+              />
+            )}
+            // contentRenderer={() =>
+            //   renderer(
+            //     t('No new communications', { ns: 'dashboard' }),
+            //     'Comms',
+            //     communicationStatusCounts,
+            //   )
+            // }
             linkURL="/chatbot?tab=2"
           />
         </Row>

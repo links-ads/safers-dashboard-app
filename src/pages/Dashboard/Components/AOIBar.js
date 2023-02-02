@@ -8,10 +8,10 @@ import EventsPanel from './EventsPanel';
 import MapComponent from './Map';
 import { setEventParams, getAllEventAlerts } from '../../../store/appAction';
 
-const AOIBar = () => {
+const AOIBar = ({ orgPplList }) => {
   const dispatch = useDispatch();
 
-  const [eventList, setEventList] = useState([]);
+  // const [eventList, setEventList] = useState([]);
   const { dateRange } = useSelector(state => state.common);
 
   // start with filtered alerts, looks better starting with none and showing
@@ -47,20 +47,22 @@ const AOIBar = () => {
     updateEventList();
   }, [dateRange, updateEventList]);
 
-  useEffect(() => {
-    setEventList(events);
-  }, [events]);
+  // useEffect(() => {
+  //   setEventList(events);
+  // }, [events]);
 
   return (
     <Container fluid="true">
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
           <Card className="gx-2">
-            <MapComponent eventList={eventList} />
+            <MapComponent eventList={events} orgPplList={orgPplList} />
+            {/* <MapComponent eventList={eventList} /> */}
           </Card>
           <Container className="px-4 container">
             <Row>
-              <EventsPanel eventList={eventList} />
+              <EventsPanel eventList={events} />
+              {/* <EventsPanel eventList={eventList} /> */}
             </Row>
             <Row>
               <Card
