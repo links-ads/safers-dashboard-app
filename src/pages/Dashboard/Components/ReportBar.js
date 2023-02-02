@@ -10,18 +10,10 @@ import Report from '../../Chatbot/Reports/Components/Report';
 import { MAX_REPORTS } from '../constants';
 
 const ReportBar = ({ t }) => {
-  const [allReports, filteredReports] = useSelector(state => {
-    if (!state?.reports?.allReports || state.reports.allReports.length === 0) {
-      return [undefined, undefined];
-    }
-    if (state.reports.allReports.length > MAX_REPORTS) {
-      return [
-        state.reports.allReports,
-        state.reports.allReports.slice(0, MAX_REPORTS),
-      ];
-    }
-    return [state.reports.allReports, state.reports.allReports];
-  });
+  const [allReports, truncatedReports] = useSelector(state => [
+    state?.reports?.allReports,
+    state?.reports?.allReports.slice(0, MAX_REPORTS),
+  ]);
 
   return (
     <Container fluid="true">
@@ -40,8 +32,8 @@ const ReportBar = ({ t }) => {
               <p className="ml-3">{t('No new reports in AOI')}</p>
             </div>
           ) : null}
-          {filteredReports
-            ? filteredReports.map(report => (
+          {truncatedReports
+            ? truncatedReports.map(report => (
                 <Card className="my-3" key={`report_${report.report_id}`}>
                   <Report
                     key={report.report_id}
