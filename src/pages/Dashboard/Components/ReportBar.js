@@ -10,14 +10,17 @@ import Report from '../../Chatbot/Reports/Components/Report';
 import { MAX_REPORTS } from '../constants';
 
 const ReportBar = ({ t }) => {
-  const allReports = useSelector(state => {
+  const [allReports, filteredReports] = useSelector(state => {
     if (!state?.reports?.allReports || state.reports.allReports.length === 0) {
-      return [];
+      return [undefined, undefined];
     }
     if (state.reports.allReports.length > MAX_REPORTS) {
-      return state.reports.allReports.slice(0, MAX_REPORTS);
+      return [
+        state.reports.allReports,
+        state.reports.allReports.slice(0, MAX_REPORTS),
+      ];
     }
-    return state.reports.allReports;
+    return [state.reports.allReports, state.reports.allReports];
   });
 
   return (
@@ -37,8 +40,8 @@ const ReportBar = ({ t }) => {
               <p className="ml-3">{t('No new reports in AOI')}</p>
             </div>
           ) : null}
-          {allReports
-            ? allReports.map(report => (
+          {filteredReports
+            ? filteredReports.map(report => (
                 <Card className="my-3" key={`report_${report.report_id}`}>
                   <Report
                     key={report.report_id}
@@ -51,6 +54,16 @@ const ReportBar = ({ t }) => {
               ))
             : null}
         </Row>
+        {allReports && allReports.length > MAX_REPORTS ? (
+          <Row xs={1} className="mx-4">
+            <Link to="/chatbot?tab=4">
+              <p>
+                {t('See more reports...', { ns: 'common' })}{' '}
+                <i className="fas fa-file-image float-right"></i>
+              </p>
+            </Link>
+          </Row>
+        ) : null}
       </Card>
     </Container>
   );
