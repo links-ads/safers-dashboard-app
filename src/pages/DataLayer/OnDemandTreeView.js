@@ -62,14 +62,31 @@ const OnDemandTreeView = ({
       if (node) {
         const newViewState = getBoundedViewState(deckRef, node?.bbox);
         setViewState({ ...viewState, ...newViewState });
-        setSelectedNode(node);
-        // console.log('selectedNode now', selectedNode);
       }
 
       return selectedLayer;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedLayer]);
+
+  const isParentOfSelected = id => {
+    /*
+     * Node id should follow a syntax inheriting the parent id
+     * i.e. parent node - {parent id}, child - {parent id}.{child id}
+     * This fn is also appllied to leaf node
+     */
+    if (!selectedNode) {
+      return false;
+    }
+
+    if (
+      selectedNode.key?.substring(0, id.length) === id &&
+      id.startsWith(selectedNode.key?.split('.')[0])
+    ) {
+      return true;
+    }
+    return false;
+  };
 
   const toggleExpandCollapse = id => {
     setItemState(prevState => ({
@@ -84,34 +101,6 @@ const OnDemandTreeView = ({
       [id]: !prevState[id],
     }));
   };
-
-  const isParentOfSelected = id => {
-    /*
-     * Node id should follow a syntax inheriting the parent id
-     * i.e. parent node - {parent id}, child - {parent id}.{child id}
-     * This fn is also appllied to leaf node
-     */
-    console.log('selectedLayer', selectedLayer);
-    console.log('selectedNode', selectedNode);
-    console.log('WWW', id);
-    console.log('XXX', selectedLayer?.key);
-    console.log('YYY', selectedNode?.key);
-
-    if (!selectedNode || !selectedLayer) {
-      return false;
-    }
-
-    if (
-      selectedLayer?.key === id ||
-      selectedLayer?.key?.startsWith(id) ||
-      selectedNode?.key?.startsWith(id)
-    ) {
-      return true;
-    }
-    return false;
-  };
-
-  console.log('Reloading!');
 
   const mapper = (nodes, parentId, lvl) => {
     return nodes?.map((node, index) => {
@@ -130,16 +119,11 @@ const OnDemandTreeView = ({
         <Fragment key={id}>
           <ListGroupItem
             key={node}
-            // className={`dl-item ${
-            //   (node.children && itemState[id]) ||
-            //   selectedLayer?.title === node.title
-            //     ? 'selected'
-            //     : ''
-            // } mb-2`}
             className={`dl-item ${
-              isParentOfSelected(id) ? 'selected' : ''
+              isParentOfSelected(node.key) ? `alert-card-active selected` : ''
             } mb-2`}
             onClick={() => {
+              setSelectedNode(node);
               setCurrentLayer(oldLayer => {
                 if (oldLayer) {
                   resetMap();
@@ -149,19 +133,22 @@ const OnDemandTreeView = ({
                     /([.])(?!.*[.]).*$/,
                     '',
                   );
+
                   // Flatten all the child nodes and find the one matching the key.
-                  const node = _(data).map('children').flatten().find({ key });
+                  const childNode = _(data)
+                    .map('children')
+                    .flatten()
+                    .find({ key });
+
                   // If a node was found, get it's bbox and pan/zoom the map to that
                   // location.
-                  if (node) {
+                  if (childNode) {
                     const newViewState = getBoundedViewState(
                       deckRef,
-                      node?.bbox,
+                      childNode?.bbox,
                     );
                     setViewState({ ...viewState, ...newViewState });
-                    //setSelectedNode(node);
                   }
-
                   return selectedLayer;
                 }
               });
@@ -276,7 +263,6 @@ const OnDemandTreeView = ({
                       );
 
                       setViewState({ ...viewState, ...newViewState });
-                      //setSelectedNode(node);
                     }}
                     className="bx bx-map font-size-16"
                   />
