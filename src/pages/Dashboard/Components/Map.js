@@ -7,22 +7,21 @@ import { Card, Row } from 'reactstrap';
 
 //import { MAP_TYPES } from 'constants/common';
 //import { MAP_TYPES } from 'constants/common';
+import { MAP, MAP_TYPES } from 'constants/common';
 import { setViewState } from 'store/common/action';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import {
   getPolygonLayer,
   getViewState,
-  //getEventIconLayer,
-  //getIconLayer,
-  getEventIconLayer2,
+  getEventIconLayer,
 } from '../../../helpers/mapHelper';
 
 const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
   const iconLayer = useMemo(
-    () => getEventIconLayer2(eventList, 'fire'),
+    () => getEventIconLayer(eventList, MAP_TYPES.ALERTS, 'fire'),
     [eventList],
   );
 
@@ -35,8 +34,9 @@ const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
 
   const peopleLayer = useMemo(
     () =>
-      getEventIconLayer2(
+      getEventIconLayer(
         orgPplList.filter(item => item.geometry.coordinates.length > 0),
+        MAP_TYPES.PEOPLE,
         'people',
       ),
     [orgPplList],
@@ -44,8 +44,9 @@ const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
 
   const reportLayer = useMemo(
     () =>
-      getEventIconLayer2(
+      getEventIconLayer(
         orgReportList.filter(item => item.geometry.coordinates.length > 0),
+        MAP_TYPES.REPORTS,
         'report',
       ),
     [orgReportList],
@@ -53,8 +54,9 @@ const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
 
   const commsLayer = useMemo(
     () =>
-      getEventIconLayer2(
+      getEventIconLayer(
         commsList.filter(item => item.geometry.coordinates.length > 0),
+        MAP_TYPES.COMMUNICATIONS,
         'flag',
       ),
     [commsList],

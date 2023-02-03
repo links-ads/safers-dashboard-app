@@ -167,9 +167,9 @@ export const getAsGeoJSON = data => {
 //   });
 // };
 
-export const getEventIconLayer2 = (alerts, marker) => {
-  // fetch other types of pin layer for dashboard
-  // slightly different data shape, which is confusing
+export const getEventIconLayer = (alerts, mapType, marker) => {
+  // fetch pin layer for dashboard
+  // caters for two slightly different data shapes, which is confusing
   // console.log('getEventIconLayer', alerts);
   const data = alerts?.map(alert => {
     let { geometry, ...properties } = alert;
@@ -187,8 +187,7 @@ export const getEventIconLayer2 = (alerts, marker) => {
   return new GeoJsonPinLayer({
     data,
     getPosition: feature => feature.geometry.coordinates,
-    getPinColor: feature =>
-      getAlertIconColorFromContext(MAP_TYPES.EVENTS, feature),
+    getPinColor: feature => getAlertIconColorFromContext(mapType, feature),
     icon: marker,
     iconColor: '#ffffff',
     clusterIconSize: 35,
@@ -213,7 +212,7 @@ export const getIconLayer = (
   return new GeoJsonPinLayer({
     data,
     // dispatch,
-    // setViewState,
+    setViewState,
     getPosition: feature => feature.geometry.coordinates,
     getPinColor: feature =>
       getAlertIconColorFromContext(mapType, feature, selectedItem),
