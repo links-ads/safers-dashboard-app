@@ -10,10 +10,8 @@ import Report from '../../Chatbot/Reports/Components/Report';
 import { MAX_REPORTS } from '../constants';
 
 const ReportBar = ({ t }) => {
-  const [allReports, truncatedReports] = useSelector(state => [
-    state?.reports?.allReports,
-    state?.reports?.allReports.slice(0, MAX_REPORTS),
-  ]);
+  const allReports = useSelector(state => state?.reports?.allReports);
+  const truncatedReports = allReports.slice(0, MAX_REPORTS);
 
   return (
     <Container fluid="true">
