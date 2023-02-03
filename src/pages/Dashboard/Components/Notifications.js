@@ -1,14 +1,11 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Container, Row } from 'reactstrap';
 
 import NotificationCard from './NotificationCard';
-// import { getAllEventAlerts } from '../../../store/events/action';
-// import { getAllPeople } from '../../../store/people/action';
-// import { getAllReports } from '../../../store/reports/action';
 
 const AreaCount = ({ t, noDataMessage, label, itemsCounts }) => {
   if (!itemsCounts) {
@@ -41,104 +38,8 @@ const NotificationsBar = ({
   missionStatusCounts,
   communicationStatusCounts,
 }) => {
-  // const dispatch = useDispatch();
-
-  // const [activityStatusCounts, setActivityStatusCounts] = useState({});
-  // // const [peopleStatusCounts, setPeopleStatusCounts] = useState({});
-  // const [reportStatusCounts, setReportStatusCounts] = useState({});
-  // const [missionStatusCounts, setMissionStatusCounts] = useState({});
-  // const [communicationStatusCounts, setCommunicationStatusCounts] = useState(
-  //   {},
-  // );
-
   const defaultAOI = useSelector(state => state?.user?.defaultAoi);
-  // const { allReports: OrgReportList } = useSelector(state => state?.reports);
-  // const { allAlerts: alerts, filteredAlerts } = useSelector(
-  //   state => state?.alerts,
-  // );
-  // // const { allPeople: orgPplList, filteredPeople } = useSelector(
-  // //   state => state.people,
-  // // );
-  // // console.log('PEOPLE: ', { orgPplList, filteredPeople });
-  // const allMissions = useSelector(state => state?.missions?.allMissions || []);
-  // const allCommunications = useSelector(state => state.comms.allComms || []);
-
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
-
-  // const getStatusCountsForItems = items => {
-  //   // build an object whose keys are mission types and values are
-  //   // counts of missions matching that status
-  //   let statusCounts = {};
-  //   items.forEach(item =>
-  //     item?.status in statusCounts
-  //       ? (statusCounts[item.status] += 1)
-  //       : (statusCounts[item.status] = 1),
-  //   );
-  //   return statusCounts;
-  // };
-
-  // const renderer = (noDataMessage, label, itemsCounts) => {
-  //   if (!itemsCounts) {
-  //     return <p>Loading...</p>;
-  //   }
-  //   if (Object.keys(itemsCounts).length === 0) {
-  //     return <p>{noDataMessage}</p>;
-  //   }
-  //   return (
-  //     <>
-  //       {Object.keys(itemsCounts).map(key => (
-  //         <Fragment key={`${label}_row_${key}`}>
-  //           <Row fluid="true" xs={2}>
-  //             {/* string 'null' because object.keys() outputs string array */}
-  //             <div className="w-8">{key === 'null' ? t('Unknown') : key}</div>
-  //             <div className="w-2">{itemsCounts[key]}</div>
-  //           </Row>
-  //           <hr />
-  //         </Fragment>
-  //       ))}
-  //     </>
-  //   );
-  // };
-
-  // useEffects
-
-  // useEffect(() => {
-  //   dispatch(getAllEventAlerts());
-  //   const params = {
-  //     bbox: undefined,
-  //     default_date: false,
-  //     default_bbox: false,
-  //   };
-  //   const feFilters = {};
-  //   dispatch(getAllPeople(params, feFilters));
-  //   dispatch(getAllReports());
-  // }, [dispatch]);
-
-  // useEffect(() => {
-  //   const statusCounts = getStatusCountsForItems([{ status: 'null' }]);
-  //   setActivityStatusCounts(statusCounts);
-  // }, [filteredAlerts, alerts]);
-
-  // useEffect(() => {
-  //   const statusCounts = getStatusCountsForItems(orgPplList);
-  //   console.log('UPDATING PEOPLE COUNTS: ', statusCounts);
-  //   setPeopleStatusCounts(statusCounts);
-  // }, [orgPplList, filteredPeople]);
-
-  // useEffect(() => {
-  //   const statusCounts = getStatusCountsForItems(OrgReportList);
-  //   setReportStatusCounts(statusCounts);
-  // }, [OrgReportList]);
-
-  // useEffect(() => {
-  //   const statusCounts = getStatusCountsForItems(allMissions);
-  //   setMissionStatusCounts(statusCounts);
-  // }, [allMissions]);
-
-  // useEffect(() => {
-  //   const statusCounts = getStatusCountsForItems(allCommunications);
-  //   setCommunicationStatusCounts(statusCounts);
-  // }, [allCommunications]);
 
   return (
     <div className="mx-2 px-1">
@@ -158,13 +59,6 @@ const NotificationsBar = ({
                 itemsCounts={activityStatusCounts}
               />
             )}
-            // contentRenderer={() =>
-            //   renderer(
-            //     t('No new activities', { ns: 'dashboard' }),
-            //     'act',
-            //     activityStatusCounts,
-            //   )
-            // }
             linkURL="/fire-alerts"
           />
           <NotificationCard
@@ -191,13 +85,6 @@ const NotificationsBar = ({
                 itemsCounts={reportStatusCounts}
               />
             )}
-            // contentRenderer={() =>
-            //   renderer(
-            //     t('No new reports', { ns: 'dashboard' }),
-            //     'reps',
-            //     reportStatusCounts,
-            //   )
-            // }
             linkURL="/chatbot?tab=4"
           />
           <NotificationCard
