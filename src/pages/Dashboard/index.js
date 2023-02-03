@@ -50,12 +50,12 @@ const NewDashboard = () => {
     const params = {
       bbox: undefined,
       default_date: false,
-      default_bbox: false,
+      default_bbox: true, // user AOI only
     };
-    dispatch(getAllEventAlerts(params));
-    dispatch(getAllPeople(params));
+    dispatch(getAllEventAlerts(params, {}));
+    dispatch(getAllPeople(params, {}));
     dispatch(getAllReports(params));
-    dispatch(getAllComms(params));
+    dispatch(getAllComms(params, {}));
   }, [dispatch]);
 
   useEffect(() => {

@@ -1,26 +1,31 @@
 import React, { useMemo } from 'react';
 
-import { compact } from 'lodash';
+//import { compact } from 'lodash';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
-import { MAP_TYPES } from 'constants/common';
+//import { MAP_TYPES } from 'constants/common';
+//import { MAP_TYPES } from 'constants/common';
 import { setViewState } from 'store/common/action';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import {
   getPolygonLayer,
   getViewState,
-  getEventIconLayer,
-  getIconLayer,
+  //getEventIconLayer,
+  //getIconLayer,
+  getEventIconLayer2,
 } from '../../../helpers/mapHelper';
 
 const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
-  const polygonLayer = getPolygonLayer(objAoi);
-  // console.log('EVENT LIST: ', eventList);
-  const iconLayer = getEventIconLayer(eventList);
+  const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
+  const iconLayer = useMemo(
+    () => getEventIconLayer2(eventList, 'fire'),
+    [eventList],
+  );
+
   console.log('Counts: ', {
     Events: eventList?.length,
     People: orgPplList?.length,
@@ -28,19 +33,31 @@ const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
     Comms: commsList?.length,
   });
 
-  const peopleLayer = getIconLayer(
-    orgPplList.filter(item => item.geometry.coordinates.length > 0),
-    MAP_TYPES.PEOPLE,
+  const peopleLayer = useMemo(
+    () =>
+      getEventIconLayer2(
+        orgPplList.filter(item => item.geometry.coordinates.length > 0),
+        'people',
+      ),
+    [orgPplList],
   );
 
-  const reportLayer = getIconLayer(
-    orgReportList.filter(item => item.geometry.coordinates.length > 0),
-    MAP_TYPES.REPORTS,
+  const reportLayer = useMemo(
+    () =>
+      getEventIconLayer2(
+        orgReportList.filter(item => item.geometry.coordinates.length > 0),
+        'report',
+      ),
+    [orgReportList],
   );
 
-  const commsLayer = getIconLayer(
-    commsList.filter(item => item.geometry.coordinates.length > 0),
-    MAP_TYPES.COMMUNICATIONS,
+  const commsLayer = useMemo(
+    () =>
+      getEventIconLayer2(
+        commsList.filter(item => item.geometry.coordinates.length > 0),
+        'flag',
+      ),
+    [commsList],
   );
 
   const viewState = useMemo(() => {
@@ -51,21 +68,17 @@ const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
     );
   }, [objAoi]);
 
-  const usableLayers = compact([
-    polygonLayer,
-    iconLayer,
-    peopleLayer,
-    reportLayer,
-    commsLayer,
-  ]);
-
-  console.log('Usable Layers', usableLayers);
-
   return (
     <Card className="map-card">
       <Row style={{ height: 550 }} className="mx-auto">
         <BaseMap
-          layers={usableLayers}
+          layers={[
+            polygonLayer,
+            iconLayer,
+            peopleLayer,
+            reportLayer,
+            commsLayer,
+          ]}
           setViewState={setViewState}
           initialViewState={viewState}
           screenControlPosition="top-right"
