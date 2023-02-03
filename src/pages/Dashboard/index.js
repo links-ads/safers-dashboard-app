@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'reactstrap';
 
+import { getAllComms } from 'store/appAction';
 import { getAllEventAlerts } from 'store/events/action';
 import { getAllPeople } from 'store/people/action';
 import { getAllReports } from 'store/reports/action';
@@ -37,26 +38,24 @@ const NewDashboard = () => {
   const { allPeople: orgPplList, filteredPeople } = useSelector(
     state => state.people,
   );
-  // console.log('PEOPLE: ', { orgPplList, filteredPeople });
 
   const { allReports: OrgReportList } = useSelector(state => state?.reports);
   const { allAlerts: alerts, filteredAlerts } = useSelector(
     state => state?.alerts,
   );
-  // console.log('PEOPLE: ', { orgPplList, filteredPeople });
   const allMissions = useSelector(state => state?.missions?.allMissions || []);
   const allCommunications = useSelector(state => state.comms.allComms || []);
 
   useEffect(() => {
-    dispatch(getAllEventAlerts());
     const params = {
       bbox: undefined,
       default_date: false,
       default_bbox: false,
     };
-    const feFilters = {};
-    dispatch(getAllPeople(params, feFilters));
-    dispatch(getAllReports());
+    dispatch(getAllEventAlerts(params));
+    dispatch(getAllPeople(params));
+    dispatch(getAllReports(params));
+    dispatch(getAllComms(params));
   }, [dispatch]);
 
   useEffect(() => {
@@ -95,7 +94,11 @@ const NewDashboard = () => {
           missionStatusCounts={missionStatusCounts}
           communicationStatusCounts={communicationStatusCounts}
         />
-        <AOIBar orgPplList={orgPplList} />
+        <AOIBar
+          orgPplList={orgPplList}
+          orgReportList={OrgReportList}
+          commsList={allCommunications}
+        />
         <PhotoBar />
         <ReportBar />
       </Container>

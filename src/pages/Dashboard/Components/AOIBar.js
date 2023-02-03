@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,7 +8,7 @@ import EventsPanel from './EventsPanel';
 import MapComponent from './Map';
 import { setEventParams, getAllEventAlerts } from '../../../store/appAction';
 
-const AOIBar = ({ orgPplList }) => {
+const AOIBar = ({ orgPplList, orgReportList, commsList }) => {
   const dispatch = useDispatch();
 
   // const [eventList, setEventList] = useState([]);
@@ -41,11 +41,11 @@ const AOIBar = ({ orgPplList }) => {
 
   useEffect(() => {
     updateEventList();
-  }, [updateEventList]);
-
-  useEffect(() => {
-    updateEventList();
   }, [dateRange, updateEventList]);
+
+  // useEffect(() => {
+  //   updateEventList();
+  // }, [dateRange, updateEventList]);
 
   // useEffect(() => {
   //   setEventList(events);
@@ -56,13 +56,16 @@ const AOIBar = ({ orgPplList }) => {
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
           <Card className="gx-2">
-            <MapComponent eventList={events} orgPplList={orgPplList} />
-            {/* <MapComponent eventList={eventList} /> */}
+            <MapComponent
+              eventList={events}
+              orgPplList={orgPplList}
+              orgReportList={orgReportList}
+              commsList={commsList}
+            />
           </Card>
           <Container className="px-4 container">
             <Row>
               <EventsPanel eventList={events} />
-              {/* <EventsPanel eventList={eventList} /> */}
             </Row>
             <Row>
               <Card
