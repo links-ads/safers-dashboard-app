@@ -7,5 +7,11 @@
   "cl1-txt": "Brände mit Holz/Pflanzen",
   "cl2-txt": "Brände mit brennbaren Materialien/Flüssigkeiten",
   "cl3-txt": "Brände mit Gasen",
-  "geo-direction-txt": "Geografische Richtung des Feuers in Bezug auf die Position der Kamera"
+  "geo-direction-txt": "Geografische Richtung des Feuers in Bezug auf die Position der Kamera",
+  "cam-data": "Data",
+  "cam-number": "Camera Number",
+  "cam-location": "Camera Location",
+  "cam-direction": "Camera Direction",
+  "cam-last-feed": "Last Uploaded feed",
+  "cam-info": "Last Uploaded feed"
 }

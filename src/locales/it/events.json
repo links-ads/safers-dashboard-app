@@ -1,13 +1,13 @@
 {
-  "Events": "Veranstaltungen",
-  "Ongoing": "Laufend",
-  "Closed": "Geschlossen",
-  "Important Info": "Wichtige Info",
-  "Location": "Standort",
-  "Date of Event": "Datum der Veranstaltung",
-  "Damages": "Schäden",
-  "People Affected": "Betroffene",
-  "Casualties": "Verluste",
-  "estimated-damage": "Geschätzter Schaden",
-  "search-input-txt": "Search for an event"
+  "Events": "Eventi",
+  "Ongoing": "In corso",
+  "Closed": "Chiuso",
+  "Important Info": "Informazioni importanti",
+  "Location": "Posizione",
+  "Date of Event": "Data dell'evento",
+  "Damages": "Danni",
+  "People Affected": "Persone coinvolte",
+  "Casualties": "Vittime",
+  "estimated-damage": "Danno stimato",
+  "search-input-txt": "Ricerca di un evento"
 }

@@ -12,5 +12,6 @@
   "cam-number": "Nombre de caméra",
   "cam-location": "Lieu des caméras",
   "cam-direction": "Direction des caméras",
-  "cam-last-feed": "Dernier chargement des informations"
+  "cam-last-feed": "Dernier chargement des informations",
+  "cam-info": "Last Uploaded feed"
 }
