@@ -39,17 +39,22 @@ const MapComponent = ({
   });
   const iconLayer = useMemo(
     () =>
-      getEventIconLayer('events-layer', eventList, MAP_TYPES.ALERTS, 'fire'),
+      getEventIconLayer(
+        `events-layer-${Date.now()}`,
+        eventList,
+        MAP_TYPES.ALERTS,
+        'flag',
+      ),
     [eventList],
   );
 
   const missionsLayer = useMemo(
     () =>
       getEventIconLayer(
-        'missions-layer',
+        `missions-layer-${Date.now()}`,
         missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.MISSIONS,
-        'fire',
+        'target',
       ),
     [missionsList],
   );
@@ -57,7 +62,7 @@ const MapComponent = ({
   const alertsLayer = useMemo(
     () =>
       getEventIconLayer(
-        'alerts-layer',
+        `people-layer-${Date.now()}`,
         alertsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.MISSIONS,
         'fire',
@@ -68,7 +73,7 @@ const MapComponent = ({
   const peopleLayer = useMemo(
     () =>
       getEventIconLayer(
-        'people-layer',
+        `people-layer-${Date.now()}`,
         orgPplList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.PEOPLE,
         'people',
@@ -79,7 +84,7 @@ const MapComponent = ({
   const reportLayer = useMemo(
     () =>
       getEventIconLayer(
-        'report-layer',
+        `report-layer-${Date.now()}`,
         orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.REPORTS,
         'report',
@@ -90,10 +95,10 @@ const MapComponent = ({
   const commsLayer = useMemo(
     () =>
       getEventIconLayer(
-        'comms-layer',
-        commsList.filter(item => item?.geometry?.coordinates?.length > 0),
+        `comms-layer-${Date.now()}`,
+        commsList.filter(item => item.geometry.coordinates.length > 0),
         MAP_TYPES.COMMUNICATIONS,
-        'flag',
+        'communications',
       ),
     [commsList],
   );
@@ -117,7 +122,7 @@ const MapComponent = ({
             visibleLayers.missions ? missionsLayer : null,
             visibleLayers.people ? peopleLayer : null,
             visibleLayers.reports ? reportLayer : null,
-            visibleLayers.comms ? commsLayer : null,
+            visibleLayers.communications ? commsLayer : null,
           ])}
           setViewState={setViewState}
           initialViewState={viewState}
