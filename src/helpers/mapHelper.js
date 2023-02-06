@@ -4,7 +4,6 @@ import { FlyToInterpolator } from 'deck.gl';
 import wkt from 'wkt';
 
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
-import { MAP_TYPES } from '../constants/common';
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;

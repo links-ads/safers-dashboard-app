@@ -3,8 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'reactstrap';
 
-import { getAllComms } from 'store/appAction';
+import { getAllComms, getAllFireAlerts } from 'store/appAction';
 import { getAllEventAlerts } from 'store/events/action';
+import { getAllMissions } from 'store/missions/action';
 import { getAllPeople } from 'store/people/action';
 import { getAllReports } from 'store/reports/action';
 
@@ -46,6 +47,27 @@ const NewDashboard = () => {
   const allMissions = useSelector(state => state?.missions?.allMissions || []);
   const allCommunications = useSelector(state => state.comms.allComms || []);
 
+  const layerVisibilities = {
+    events: true,
+    alerts: false,
+    people: false,
+    reports: false,
+    missions: false,
+    communications: false,
+  };
+
+  const [visibleLayers, setVisibleLayers] = useState(layerVisibilities);
+
+  const toggleLayer = layerName =>
+    setVisibleLayers({
+      ...visibleLayers,
+      [layerName]: !visibleLayers[layerName],
+    });
+
+  useEffect(() => {
+    console.log('Visible Layers is now', visibleLayers);
+  }, [visibleLayers]);
+
   useEffect(() => {
     const params = {
       bbox: undefined,
@@ -56,6 +78,8 @@ const NewDashboard = () => {
     dispatch(getAllPeople(params, {}));
     dispatch(getAllReports(params));
     dispatch(getAllComms(params, {}));
+    dispatch(getAllMissions(params, {}));
+    dispatch(getAllFireAlerts(params));
   }, [dispatch]);
 
   useEffect(() => {
@@ -92,11 +116,16 @@ const NewDashboard = () => {
           reportStatusCounts={reportStatusCounts}
           missionStatusCounts={missionStatusCounts}
           communicationStatusCounts={communicationStatusCounts}
+          toggleLayerCallback={toggleLayer}
+          visibleLayers={visibleLayers}
         />
         <AOIBar
           orgPplList={orgPplList}
           orgReportList={OrgReportList}
           commsList={allCommunications}
+          missionsList={allMissions}
+          alertsList={alerts}
+          visibleLayers={visibleLayers}
         />
         <PhotoBar />
         <ReportBar />

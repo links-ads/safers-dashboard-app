@@ -37,6 +37,8 @@ const NotificationsBar = ({
   peopleStatusCounts,
   missionStatusCounts,
   communicationStatusCounts,
+  toggleLayerCallback,
+  visibleLayers,
 }) => {
   const defaultAOI = useSelector(state => state?.user?.defaultAoi);
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
@@ -60,6 +62,8 @@ const NotificationsBar = ({
               />
             )}
             linkURL="/fire-alerts"
+            toggleLayer={() => toggleLayerCallback('alerts')}
+            isVisible={visibleLayers.alerts}
           />
           <NotificationCard
             cardName={t('people')}
@@ -73,6 +77,8 @@ const NotificationsBar = ({
               />
             )}
             linkURL="/chatbot?tab=1"
+            toggleLayer={() => toggleLayerCallback('people')}
+            isVisible={visibleLayers.people}
           />
           <NotificationCard
             cardName={t('Reports')}
@@ -86,6 +92,8 @@ const NotificationsBar = ({
               />
             )}
             linkURL="/chatbot?tab=4"
+            toggleLayer={() => toggleLayerCallback('reports')}
+            isVisible={visibleLayers.reports}
           />
           <NotificationCard
             cardName={t('mission')}
@@ -98,14 +106,9 @@ const NotificationsBar = ({
                 itemsCounts={missionStatusCounts}
               />
             )}
-            // contentRenderer={() =>
-            //   renderer(
-            //     t('No new missions', { ns: 'dashboard' }),
-            //     'miss',
-            //     missionStatusCounts,
-            //   )
-            // }
             linkURL="/chatbot?tab=3"
+            toggleLayer={() => toggleLayerCallback('missions')}
+            isVisible={visibleLayers.missions}
           />
           <NotificationCard
             cardName={t('Communications')}
@@ -118,14 +121,9 @@ const NotificationsBar = ({
                 itemsCounts={communicationStatusCounts}
               />
             )}
-            // contentRenderer={() =>
-            //   renderer(
-            //     t('No new communications', { ns: 'dashboard' }),
-            //     'Comms',
-            //     communicationStatusCounts,
-            //   )
-            // }
             linkURL="/chatbot?tab=2"
+            toggleLayer={() => toggleLayerCallback('communications')}
+            isVisible={visibleLayers.communications}
           />
         </Row>
       </Container>

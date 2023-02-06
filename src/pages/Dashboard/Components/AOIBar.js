@@ -8,7 +8,14 @@ import EventsPanel from './EventsPanel';
 import MapComponent from './Map';
 import { setEventParams, getAllEventAlerts } from '../../../store/appAction';
 
-const AOIBar = ({ orgPplList, orgReportList, commsList }) => {
+const AOIBar = ({
+  orgPplList,
+  orgReportList,
+  commsList,
+  missionsList,
+  alertsList,
+  visibleLayers,
+}) => {
   const dispatch = useDispatch();
 
   const [eventList, setEventList] = useState([]);
@@ -53,10 +60,13 @@ const AOIBar = ({ orgPplList, orgReportList, commsList }) => {
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
           <Card className="gx-2">
             <MapComponent
-              eventList={events}
+              eventList={eventList}
               orgPplList={orgPplList}
               orgReportList={orgReportList}
               commsList={commsList}
+              missionsList={missionsList}
+              alertsList={alertsList}
+              visibleLayers={visibleLayers}
             />
           </Card>
           <Container className="px-4 container">

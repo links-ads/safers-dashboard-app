@@ -13,6 +13,8 @@ const NotificationCard = ({
   iconClass,
   contentRenderer,
   linkURL = '/',
+  toggleLayer,
+  isVisible,
 }) => (
   <div key={`card_${cardName}`} className="card">
     <Card className="justify-items-stretch noshadow">
@@ -20,7 +22,13 @@ const NotificationCard = ({
         <Card className="noshadow m-1">
           <CardTitle className="col-12 card noshadow">
             <Row>
-              <div className="col-10">{cardName}</div>
+              <div className="col-8">{cardName}</div>
+              <div className="col-1">
+                <i
+                  onClick={toggleLayer}
+                  className={isVisible ? 'fa fa-eye-slash' : 'fa fa-eye'}
+                ></i>
+              </div>
               <div className="col-1">
                 <Link to={linkURL}>
                   <span>
