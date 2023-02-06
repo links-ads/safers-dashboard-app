@@ -30,19 +30,14 @@ const MapComponent = ({
 
   const iconLayer = useMemo(
     () =>
-      getEventIconLayer(
-        `events-layer-${Date.now()}`,
-        eventList,
-        MAP_TYPES.ALERTS,
-        'flag',
-      ),
+      getEventIconLayer('events-layer', eventList, MAP_TYPES.ALERTS, 'flag'),
     [eventList],
   );
 
   const missionsLayer = useMemo(
     () =>
       getEventIconLayer(
-        `missions-layer-${Date.now()}`,
+        'missions-layer',
         missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.MISSIONS,
         'target',
@@ -53,7 +48,7 @@ const MapComponent = ({
   const alertsLayer = useMemo(
     () =>
       getEventIconLayer(
-        `people-layer-${Date.now()}`,
+        'alerts-layer',
         alertsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.MISSIONS,
         'fire',
@@ -64,7 +59,7 @@ const MapComponent = ({
   const peopleLayer = useMemo(
     () =>
       getEventIconLayer(
-        `people-layer-${Date.now()}`,
+        'people-layer',
         orgPplList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.PEOPLE,
         'people',
@@ -75,7 +70,7 @@ const MapComponent = ({
   const reportLayer = useMemo(
     () =>
       getEventIconLayer(
-        `report-layer-${Date.now()}`,
+        'report-layer',
         orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.REPORTS,
         'report',
@@ -86,8 +81,8 @@ const MapComponent = ({
   const commsLayer = useMemo(
     () =>
       getEventIconLayer(
-        `comms-layer-${Date.now()}`,
-        commsList.filter(item => item.geometry.coordinates.length > 0),
+        'comms-layer',
+        commsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.COMMUNICATIONS,
         'communications',
       ),
