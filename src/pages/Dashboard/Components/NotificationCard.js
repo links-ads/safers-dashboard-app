@@ -26,7 +26,7 @@ const NotificationCard = ({
               <div className="col-1">
                 <i
                   onClick={toggleLayer}
-                  className={isVisible ? 'fa fa-eye-slash' : 'fa fa-eye'}
+                  className={isVisible ? 'fa fa-eye' : 'fa fa-eye-slash'}
                 ></i>
               </div>
               <div className="col-1">
