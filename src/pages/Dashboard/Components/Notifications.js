@@ -64,6 +64,7 @@ const NotificationsBar = ({
             linkURL="/fire-alerts"
             toggleLayer={() => toggleLayerCallback('alerts')}
             isVisible={visibleLayers.alerts}
+            t={t}
           />
           <NotificationCard
             cardName={t('people')}
@@ -79,6 +80,7 @@ const NotificationsBar = ({
             linkURL="/chatbot?tab=1"
             toggleLayer={() => toggleLayerCallback('people')}
             isVisible={visibleLayers.people}
+            t={t}
           />
           <NotificationCard
             cardName={t('Reports')}
@@ -94,6 +96,7 @@ const NotificationsBar = ({
             linkURL="/chatbot?tab=4"
             toggleLayer={() => toggleLayerCallback('reports')}
             isVisible={visibleLayers.reports}
+            t={t}
           />
           <NotificationCard
             cardName={t('mission')}
@@ -109,6 +112,7 @@ const NotificationsBar = ({
             linkURL="/chatbot?tab=3"
             toggleLayer={() => toggleLayerCallback('missions')}
             isVisible={visibleLayers.missions}
+            t={t}
           />
           <NotificationCard
             cardName={t('Communications')}
@@ -124,6 +128,7 @@ const NotificationsBar = ({
             linkURL="/chatbot?tab=2"
             toggleLayer={() => toggleLayerCallback('communications')}
             isVisible={visibleLayers.communications}
+            t={t}
           />
         </Row>
       </Container>

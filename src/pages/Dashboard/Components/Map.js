@@ -28,15 +28,6 @@ const MapComponent = ({
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
-  console.log('lists are', {
-    events: eventList,
-    people: orgPplList,
-    orgReportList: orgReportList,
-    commsList: commsList,
-    missionsList: missionsList,
-    alertsList: alertsList,
-    visibleLayers: visibleLayers,
-  });
   const iconLayer = useMemo(
     () =>
       getEventIconLayer(

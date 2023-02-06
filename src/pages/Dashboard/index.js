@@ -65,10 +65,6 @@ const NewDashboard = () => {
     });
 
   useEffect(() => {
-    console.log('Visible Layers is now', visibleLayers);
-  }, [visibleLayers]);
-
-  useEffect(() => {
     const params = {
       bbox: undefined,
       default_date: false,

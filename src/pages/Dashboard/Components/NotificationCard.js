@@ -2,6 +2,7 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import ReactTooltip from 'react-tooltip';
 import { CardBody, Card, Row, CardGroup, CardTitle } from 'reactstrap';
 
 // Does one of the cards in the Notifications bar
@@ -15,6 +16,7 @@ const NotificationCard = ({
   linkURL = '/',
   toggleLayer,
   isVisible,
+  t,
 }) => (
   <div key={`card_${cardName}`} className="card">
     <Card className="justify-items-stretch noshadow">
@@ -24,7 +26,17 @@ const NotificationCard = ({
             <Row>
               <div className="col-8">{cardName}</div>
               <div className="col-1">
+                <ReactTooltip
+                  aria-haspopup="true"
+                  place="right"
+                  id="showhideicon"
+                  class="alert-tooltip data-layers-alert-tooltip"
+                >
+                  {isVisible ? t('Turn layer off') : t('Turn layer on')}
+                </ReactTooltip>
                 <i
+                  data-tip
+                  data-for="showhideicon"
                   onClick={toggleLayer}
                   className={isVisible ? 'fa fa-eye' : 'fa fa-eye-slash'}
                 ></i>
