@@ -78,8 +78,8 @@ const People = ({ pollingFrequency }) => {
         default_bbox: !boundingBox,
         ...(dateRange
           ? {
-              start: dateRange[0],
-              end: dateRange[1],
+              StartDate: dateRange[0],
+              EndDate: dateRange[1],
             }
           : {}),
       };
