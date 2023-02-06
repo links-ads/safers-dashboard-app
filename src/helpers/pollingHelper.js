@@ -12,6 +12,7 @@ import {
   setNewNotificationState,
   getAllMapRequests,
   setNewMapRequestState,
+  getAllPeople,
 } from '../store/appAction';
 
 const MILLISECONDS = 1000;
@@ -75,6 +76,7 @@ const PollingHelper = props => {
       getAllNotifications({ ...notificationParams, ...dateRangeParams }),
     );
     dispatch(getAllMapRequests({ ...mapRequestParams, ...dateRangeParams }));
+    dispatch(getAllPeople({ ...dateRangeParams }, {}));
   };
 
   useEffect(() => {

@@ -27,7 +27,7 @@ const displayFeature = properties => {
         <div key={key} className="featureRow">
           <span className="featureKey">{key}:</span>
           <span className="featureValue">
-            {displayFeature(properties[key])}
+            {properties[key] ? displayFeature(properties[key]) : 'No data'}
           </span>
         </div>
       );
