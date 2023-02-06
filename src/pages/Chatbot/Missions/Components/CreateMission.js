@@ -150,7 +150,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
           onBlur={e => {
             validateField('title', e.target.value);
           }}
-          value={title}
+          value={title ?? ''}
         />
         {getError('title', errors, errors, false)}
       </FormGroup>
@@ -212,7 +212,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
                 );
                 setSelectedTeam(selectedTeam);
               }}
-              value={teamId}
+              value={selectedTeam?.id ?? ''}
             >
               <option value={''}>--{t('team')}--</option>
               {teamList?.map(team => {
@@ -260,7 +260,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
           onBlur={e => {
             validateField('desc', e.target.value);
           }}
-          value={desc}
+          value={desc ?? ''}
           rows="10"
         />
         {getError('desc', errors, errors, false)}
