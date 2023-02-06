@@ -140,7 +140,7 @@ const SignUp = () => {
             <Form onSubmit={handleSubmit} noValidate>
               {config?.allow_signup ? (
                 <>
-                  <Row form>
+                  <Row form="true">
                     <Col>
                       <FormGroup className="form-group">
                         <Label for="userEmail">EMAIL ADDRESS:</Label>
