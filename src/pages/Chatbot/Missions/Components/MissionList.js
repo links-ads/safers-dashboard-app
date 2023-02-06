@@ -83,7 +83,7 @@ const MissionList = ({
       <Row>
         {pageData.map(mission => (
           <Mission
-            key={mission.mission_id}
+            key={mission.id}
             card={mission}
             missionId={missionId}
             setSelectedMission={setSelectedMission}
