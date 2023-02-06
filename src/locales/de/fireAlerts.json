@@ -1,4 +1,5 @@
 {
   "Alert List": "Alarmliste",
-  "Confirm Event Alert": "Bitte bestätigen Sie, wenn Sie eine neue Veranstaltung erstellen möchten."
+  "Confirm Event Alert": "Bitte bestätigen Sie, wenn Sie eine neue Veranstaltung erstellen möchten.",
+  "polling-alert-msg": "New alerts are received. Please refresh the list."
 }

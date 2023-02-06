@@ -7,7 +7,6 @@
   "dataLayerType": "Tipo de capa",
   "requestTitle": "Solicitar un título",
   "mapSelection": "Selección de mapa",
-  "ignitionArea": "Área de ignición",
   "startDate": "Fecha de inicio",
   "endDate": "Fecha de finalización",
   "request": "Solicitud",
@@ -19,7 +18,6 @@
   "simulationTitle": "Título de la simulación",
   "probabilityRange": "Rango de probabilidades",
   "simulationTimeLimit": "Tiempo límite de la simulación",
-  "hoursOfProjection": "Tiempo de simulación",
   "ignitionDateTime": "Fecha y hora de ignición",
   "simulationFireSpotting": "Simulación de focos secundarios",
   "boundaryConditions": "Condiciones de contorno",
@@ -47,5 +45,9 @@
   "field-err-wind-speed-between": "La velocidad del viento debe estar entre 0 y 300 km/h",
   "field-err-fuel-moisture": "La humedad del combustible debe estar entre 0% y 100%",
   "field-err-date-min": "La fecha debe ser al menos {{datemin}}",
-  "field-err-date-above": "La fecha debe ser superior a {{datemin}}"
+  "field-err-date-above": "La fecha debe ser superior a {{datemin}}",
+  "hoursOfProjection": "Tiempo de simulación",
+  "ignitionArea": "Área de ignición",
+  "Date fire ended": "Fecha de finalización del incendio",
+  "Date fire started": "Fecha de inicio del incendio"
 }

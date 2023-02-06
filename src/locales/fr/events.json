@@ -1,7 +1,9 @@
 {
+  "Events": "Events",
   "Ongoing": "En cours",
   "Closed": "Fermée",
   "Important Info": "Informations importantes",
+  "Location": "Location",
   "Date of Event": "Date de l'évènement",
   "Damages": "Dégâts",
   "People Affected": "Personnes affectées",
@@ -9,4 +11,3 @@
   "estimated-damage": "Evaluation des dommages",
   "search-input-txt": "Rechercher un événement"
 }
-
