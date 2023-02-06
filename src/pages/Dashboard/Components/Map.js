@@ -21,20 +21,15 @@ const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
   const iconLayer = useMemo(
-    () => getEventIconLayer(eventList, MAP_TYPES.ALERTS, 'fire'),
+    () =>
+      getEventIconLayer('events-layer', eventList, MAP_TYPES.ALERTS, 'fire'),
     [eventList],
   );
-
-  console.log('Counts: ', {
-    Events: eventList?.length,
-    People: orgPplList?.length,
-    Reports: orgReportList?.length,
-    Comms: commsList?.length,
-  });
 
   const peopleLayer = useMemo(
     () =>
       getEventIconLayer(
+        'people-layer',
         orgPplList.filter(item => item.geometry.coordinates.length > 0),
         MAP_TYPES.PEOPLE,
         'people',
@@ -45,6 +40,7 @@ const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
   const reportLayer = useMemo(
     () =>
       getEventIconLayer(
+        'report-layer',
         orgReportList.filter(item => item.geometry.coordinates.length > 0),
         MAP_TYPES.REPORTS,
         'report',
@@ -55,6 +51,7 @@ const MapComponent = ({ eventList, orgPplList, orgReportList, commsList }) => {
   const commsLayer = useMemo(
     () =>
       getEventIconLayer(
+        'comms-layer',
         commsList.filter(item => item.geometry.coordinates.length > 0),
         MAP_TYPES.COMMUNICATIONS,
         'flag',

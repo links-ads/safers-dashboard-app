@@ -65,7 +65,6 @@ const NewDashboard = () => {
 
   useEffect(() => {
     const statusCounts = getStatusCountsForItems(orgPplList);
-    // console.log('UPDATING PEOPLE COUNTS: ', statusCounts);
     setPeopleStatusCounts(statusCounts);
   }, [orgPplList, filteredPeople]);
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,7 +11,7 @@ import { setEventParams, getAllEventAlerts } from '../../../store/appAction';
 const AOIBar = ({ orgPplList, orgReportList, commsList }) => {
   const dispatch = useDispatch();
 
-  // const [eventList, setEventList] = useState([]);
+  const [eventList, setEventList] = useState([]);
   const { dateRange } = useSelector(state => state.common);
 
   // start with filtered alerts, looks better starting with none and showing
@@ -43,13 +43,9 @@ const AOIBar = ({ orgPplList, orgReportList, commsList }) => {
     updateEventList();
   }, [dateRange, updateEventList]);
 
-  // useEffect(() => {
-  //   updateEventList();
-  // }, [dateRange, updateEventList]);
-
-  // useEffect(() => {
-  //   setEventList(events);
-  // }, [events]);
+  useEffect(() => {
+    setEventList(events);
+  }, [events]);
 
   return (
     <Container fluid="true">

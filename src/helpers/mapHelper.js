@@ -128,7 +128,6 @@ export const getAlertIconColorFromContext = (
 
 export const getAsGeoJSON = data => {
   return data.map(datum => {
-    // console.log('datum', datum);
     const { geometry, ...properties } = datum;
     return {
       type: 'Feature',
@@ -138,39 +137,9 @@ export const getAsGeoJSON = data => {
   });
 };
 
-// export const getEventIconLayer = alerts => {
-//   // fetch Event icon layer for Dashboard
-//   console.log('getEventIconLayer', alerts);
-//   const data = alerts?.map(alert => {
-//     const { geometry, ...properties } = alert;
-//     return {
-//       type: 'Feature',
-//       properties,
-//       geometry: geometry.features[0].geometry, // this seems wrong but it's how its shaped
-//       //geometry: geometry,
-//     };
-//   });
-
-//   return new GeoJsonPinLayer({
-//     data,
-//     getPosition: feature => feature.geometry.coordinates,
-//     getPinColor: feature =>
-//       getAlertIconColorFromContext(MAP_TYPES.EVENTS, feature),
-//     icon: 'flag',
-//     iconColor: '#ffffff',
-//     clusterIconSize: 35,
-//     getPinSize: () => 35,
-//     pixelOffset: [-18, -18],
-//     pinSize: 25,
-//     onGroupClick: true,
-//     onPointClick: true,
-//   });
-// };
-
-export const getEventIconLayer = (alerts, mapType, marker) => {
+export const getEventIconLayer = (id, alerts, mapType, marker) => {
   // fetch pin layer for dashboard
   // caters for two slightly different data shapes, which is confusing
-  // console.log('getEventIconLayer', alerts);
   const data = alerts?.map(alert => {
     let { geometry, ...properties } = alert;
     // there are two possible shapes. No idea why
@@ -183,8 +152,8 @@ export const getEventIconLayer = (alerts, mapType, marker) => {
       geometry: geometry,
     };
   });
-  // console.log('massaged data', data);
   return new GeoJsonPinLayer({
+    id,
     data,
     getPosition: feature => feature.geometry.coordinates,
     getPinColor: feature => getAlertIconColorFromContext(mapType, feature),
@@ -207,11 +176,9 @@ export const getIconLayer = (
   setViewState,
   selectedItem = {},
 ) => {
-  // console.log('alerts', alerts);
   const data = getAsGeoJSON(alerts);
   return new GeoJsonPinLayer({
     data,
-    // dispatch,
     setViewState,
     getPosition: feature => feature.geometry.coordinates,
     getPinColor: feature =>
