@@ -28,7 +28,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   const { teamList } = useSelector(state => state.common);
 
   const [orgName, setorgName] = useState('--');
-  const [teamId, setTeamId] = useState();
+  const [selectedTeam, setSelectedTeam] = useState(null);
   const [chatbotUserId, setChatbotUserId] = useState();
   const [title, setTitle] = useState(null);
   const [dateRange, setDateRange] = useState(null);
@@ -128,7 +128,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         end: dateRange[1] ?? null,
         source: 'Chatbot',
         geometry: coordinates ? getWKTfromFeature(coordinates) : null,
-        coordinatorTeamId: teamId ? parseInt(teamId) : null,
+        coordinatorTeamId: selectedTeam?.id,
         coordinatorPersonId: chatbotUserId ? parseInt(chatbotUserId) : null,
       };
       dispatch(createMission(payload));
@@ -207,10 +207,10 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
               name="team"
               type="select"
               onChange={e => {
-                setTeamId(e.target.value);
-                if (!e.target.value) {
-                  setChatbotUserId('');
-                }
+                const selectedTeam = teamList?.find(
+                  team => team.id === Number(e.target.value),
+                );
+                setSelectedTeam(selectedTeam);
               }}
               value={teamId}
             >
@@ -230,7 +230,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
               className="btn-sm sort-select-input"
               name="chatbotUser"
               type="select"
-              disabled={!teamId}
+              disabled={!selectedTeam?.id}
               onChange={e => {
                 setChatbotUserId(e.target.value);
                 validate();
@@ -238,15 +238,11 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
               value={chatbotUserId}
             >
               <option value={''}>--{t('chatbot-user')}--</option>
-              {teamList
-                ?.find(team => team.id === teamId)
-                ?.members.map(member => {
-                  return (
-                    <option key={member.id} value={member.id}>
-                      {member.name}
-                    </option>
-                  );
-                })}
+              {selectedTeam?.members.map(member => (
+                <option key={member.id} value={member.id}>
+                  {member.name}
+                </option>
+              ))}
             </Input>
           </Col>
         </Row>
