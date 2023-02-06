@@ -33,8 +33,15 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   const [title, setTitle] = useState(null);
   const [dateRange, setDateRange] = useState(null);
   const [desc, setDesc] = useState(null);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({
+    coordinates: '',
+    dateRange: '',
+    desc: '',
+    title: '',
+  });
   const [validCoords, isValidCoordFormat] = useState(false);
+
+  const isSubmitDisabled = !!Object.keys(errors).length;
 
   useEffect(() => {
     dispatch(getTeamList());
@@ -273,7 +280,12 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         <Button type="button" onClick={onCancel}>
           {t('cancel')}
         </Button>
-        <Button type="button" className="mx-3" onClick={submitMsg}>
+        <Button
+          type="button"
+          className="mx-3"
+          onClick={submitMsg}
+          disabled={isSubmitDisabled}
+        >
           {t('send')}
         </Button>
       </div>
