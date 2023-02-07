@@ -287,7 +287,9 @@ const DataLayerInformationComponent = ({
                       <div>
                         <strong>Highest Value: </strong>{' '}
                         {chartValues?.length > 0
-                          ? Math.max(...chartValues.map(data => +data.y))
+                          ? Math.max(
+                              ...chartValues.map(data => +data.y),
+                            ).toFixed(2)
                           : 0}
                       </div>
                       <div>
@@ -303,7 +305,9 @@ const DataLayerInformationComponent = ({
                       <div>
                         <strong>Lowest Value: </strong>{' '}
                         {chartValues?.length > 0
-                          ? Math.min(...chartValues.map(data => +data.y))
+                          ? Math.min(
+                              ...chartValues.map(data => +data.y),
+                            ).toFixed(2)
                           : 0}
                       </div>
                       <div>
