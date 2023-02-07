@@ -249,6 +249,7 @@ const DataLayerDashboard = ({ t }) => {
   };
 
   const getBitmapLayer = url => {
+    console.log('BITMAP URL: ', url);
     /*
      extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
      if this is an on-demand layer, it will have been hard-coded by the backend

@@ -4,7 +4,6 @@ import { FlyToInterpolator } from 'deck.gl';
 import wkt from 'wkt';
 
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
-import { MAP_TYPES } from '../constants/common';
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
@@ -86,33 +85,6 @@ export const getViewState = (
   };
 };
 
-export const getEventIconLayer = alerts => {
-  // fetch Event icon layer for Dashboard
-  const data = alerts?.map(alert => {
-    const { geometry, ...properties } = alert;
-    return {
-      type: 'Feature',
-      properties: properties,
-      geometry: geometry.features[0].geometry, // this seems wrong but it's how its shaped
-    };
-  });
-
-  return new GeoJsonPinLayer({
-    data,
-    getPosition: feature => feature.geometry.coordinates,
-    getPinColor: feature =>
-      getAlertIconColorFromContext(MAP_TYPES.EVENTS, feature),
-    icon: 'flag',
-    iconColor: '#ffffff',
-    clusterIconSize: 35,
-    getPinSize: () => 35,
-    pixelOffset: [-18, -18],
-    pinSize: 25,
-    onGroupClick: true,
-    onPointClick: true,
-  });
-};
-
 export const getPolygonLayer = aoi => {
   const coordinates = aoi.features[0].geometry.coordinates;
   return new PolygonLayer({
@@ -164,6 +136,44 @@ export const getAsGeoJSON = data => {
   });
 };
 
+export const getEventIconLayer = (
+  id,
+  alerts,
+  mapType,
+  marker,
+  isVisible = false,
+) => {
+  // fetch pin layer for dashboard
+  // caters for two slightly different data shapes, which is confusing
+  const data = alerts?.map(alert => {
+    let { geometry, ...properties } = alert;
+    // there are two possible shapes. No idea why
+    if (geometry?.features) {
+      geometry = geometry.features[0]?.geometry;
+    }
+    return {
+      type: 'Feature',
+      properties,
+      geometry: geometry,
+    };
+  });
+  return new GeoJsonPinLayer({
+    id,
+    data,
+    getPosition: feature => feature.geometry.coordinates,
+    getPinColor: feature => getAlertIconColorFromContext(mapType, feature),
+    icon: marker,
+    iconColor: '#ffffff',
+    clusterIconSize: 35,
+    getPinSize: () => 35,
+    pixelOffset: [-18, -18],
+    pinSize: 25,
+    onGroupClick: true,
+    onPointClick: true,
+    visible: isVisible,
+  });
+};
+
 export const getIconLayer = (
   alerts,
   mapType,
@@ -175,7 +185,6 @@ export const getIconLayer = (
   const data = getAsGeoJSON(alerts);
   return new GeoJsonPinLayer({
     data,
-    dispatch,
     setViewState,
     getPosition: feature => feature.geometry.coordinates,
     getPinColor: feature =>

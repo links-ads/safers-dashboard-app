@@ -116,9 +116,9 @@ const OnDemandTreeView = ({
       const tooltipDisplay = tooltipInfo || node.info;
       const isOwner = node?.user && node.user === user?.id;
       const item = (
-        <Fragment key={id}>
+        <Fragment key={node.key}>
           <ListGroupItem
-            key={node}
+            // key={node.key}
             className={`dl-item ${
               isParentOfSelected(node.key) ? `alert-card-active selected` : ''
             } mb-2`}
