@@ -160,10 +160,8 @@ const DataLayerDashboard = ({ t }) => {
   useEffect(() => {
     setSliderValue(0);
     setIsPlaying(false);
-    console.log('CURRENT LAYER: ', currentLayer);
     if (currentLayer && currentLayer.urls) {
       const urls = getUrls();
-      console.log('URLS: ', urls);
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue]);
       const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);

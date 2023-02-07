@@ -113,12 +113,8 @@ const OnDemandTreeView = ({
       node.text = nodeTextByLevel[lvl];
 
       const id = node.id ?? node.key;
-      // console.log('NODE ID: ', id);
       const tooltipDisplay = tooltipInfo || node.info;
       const isOwner = node?.user && node.user === user?.id;
-      // console.log('SELECTED LAYER: ', selectedLayer);
-      // console.log('NODE: ', node);
-      // console.log('ITEM STATE: ', itemState);
       const item = (
         <Fragment key={node.key}>
           <ListGroupItem
