@@ -17,7 +17,7 @@ const PhotoBar = ({ t }) => {
   const NUMBER_OF_PHOTOS = 8;
 
   const allPhotos = useSelector(state => {
-    return state?.inSituAlerts?.filteredAlerts;
+    return state?.inSituAlerts?.allAlerts;
   });
 
   const dispatch = useDispatch();
@@ -60,24 +60,30 @@ const PhotoBar = ({ t }) => {
           </Link>
         </Row>
         <Row xs={1} sm={2} md={3} lg={4}>
-          {!photoList || photoList.length === 0 ? (
+          {photoList && photoList.length === 0 ? (
             <div className="card noshadow mx-5">{t('No photos in AOI')}</div>
           ) : null}
-          {photoList.slice(0, NUMBER_OF_PHOTOS).map(photo => {
-            return (
-              <div key={`photie_${photo.id}`} className="p-3 my-3">
-                {/* This is a custom component which handles fallbacks */}
-                <Img
-                  decode={true}
-                  unloader={<Placeholder width="100%" height="120px" />}
-                  src={[`${photo.url}`]}
-                  width="100%"
-                  height="120px"
-                  alt="Image is missing"
-                />
-              </div>
-            );
-          })}
+          {photoList && photoList.length > 0 ? (
+            photoList?.slice(0, NUMBER_OF_PHOTOS).map(photo => {
+              return (
+                <div key={`photie_${photo.id}`} className="p-3 my-3">
+                  {/* This is a custom component which handles fallbacks */}
+                  <Img
+                    decode={true}
+                    unloader={<Placeholder width="100%" height="120px" />}
+                    src={[`${photo.url}`]}
+                    width="100%"
+                    height="120px"
+                    alt="Image is missing"
+                  />
+                </div>
+              );
+            })
+          ) : (
+            <div className="card noshadow w-100 mx-4 px-3">
+              <h3>Looking for photos...</h3>
+            </div>
+          )}
         </Row>
       </Card>
     </Container>
