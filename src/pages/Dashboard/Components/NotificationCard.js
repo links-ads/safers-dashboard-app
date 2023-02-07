@@ -29,14 +29,14 @@ const NotificationCard = ({
                 <ReactTooltip
                   aria-haspopup="true"
                   place="right"
-                  id="showhideicon"
+                  id={`showhideicon-${cardName}`}
                   class="alert-tooltip data-layers-alert-tooltip"
                 >
                   {isVisible ? t('Turn layer off') : t('Turn layer on')}
                 </ReactTooltip>
                 <i
                   data-tip
-                  data-for="showhideicon"
+                  data-for={`showhideicon-${cardName}`}
                   onClick={toggleLayer}
                   className={isVisible ? 'fa fa-eye' : 'fa fa-eye-slash'}
                 ></i>
