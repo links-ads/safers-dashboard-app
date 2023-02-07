@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react';
 
-//import { compact } from 'lodash';
-import { compact } from 'lodash';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
