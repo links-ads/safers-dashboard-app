@@ -36,7 +36,7 @@ const displayFeature = properties => {
         <div key={key} className="featureRow">
           <div className="featureCell">
             <span className="featureKey">{key}:</span>
-            {properties[key] === 'number' ? (
+            {typeof properties[key] === 'number' ? (
               <span className="featureValue">{properties[key].toFixed(2)}</span>
             ) : (
               <span className="featureValue">{properties[key]}</span>
