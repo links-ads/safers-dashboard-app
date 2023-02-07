@@ -136,7 +136,13 @@ export const getAsGeoJSON = data => {
   });
 };
 
-export const getEventIconLayer = (id, alerts, mapType, marker) => {
+export const getEventIconLayer = (
+  id,
+  alerts,
+  mapType,
+  marker,
+  isVisible = false,
+) => {
   // fetch pin layer for dashboard
   // caters for two slightly different data shapes, which is confusing
   const data = alerts?.map(alert => {
@@ -164,6 +170,7 @@ export const getEventIconLayer = (id, alerts, mapType, marker) => {
     pinSize: 25,
     onGroupClick: true,
     onPointClick: true,
+    visible: isVisible,
   });
 };
 

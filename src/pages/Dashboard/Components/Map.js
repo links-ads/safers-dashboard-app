@@ -23,15 +23,21 @@ const MapComponent = ({
   commsList = [],
   missionsList = [],
   alertsList = [],
-  visibleLayers = [],
+  visibleLayers = {},
 }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
   const iconLayer = useMemo(
     () =>
-      getEventIconLayer('events-layer', eventList, MAP_TYPES.ALERTS, 'flag'),
-    [eventList],
+      getEventIconLayer(
+        'events-layer',
+        eventList,
+        MAP_TYPES.ALERTS,
+        'flag',
+        visibleLayers.events,
+      ),
+    [eventList, visibleLayers.events],
   );
 
   const missionsLayer = useMemo(
@@ -41,8 +47,9 @@ const MapComponent = ({
         missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.MISSIONS,
         'target',
+        visibleLayers.missions,
       ),
-    [missionsList],
+    [missionsList, visibleLayers.missions],
   );
 
   const alertsLayer = useMemo(
@@ -50,10 +57,11 @@ const MapComponent = ({
       getEventIconLayer(
         'alerts-layer',
         alertsList.filter(item => item?.geometry?.coordinates?.length > 0),
-        MAP_TYPES.MISSIONS,
+        MAP_TYPES.ALERTS,
         'fire',
+        visibleLayers.alerts,
       ),
-    [alertsList],
+    [alertsList, visibleLayers.alerts],
   );
 
   const peopleLayer = useMemo(
@@ -63,8 +71,9 @@ const MapComponent = ({
         orgPplList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.PEOPLE,
         'people',
+        visibleLayers.people,
       ),
-    [orgPplList],
+    [orgPplList, visibleLayers.people],
   );
 
   const reportLayer = useMemo(
@@ -74,8 +83,9 @@ const MapComponent = ({
         orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.REPORTS,
         'report',
+        visibleLayers.reports,
       ),
-    [orgReportList],
+    [orgReportList, visibleLayers.reports],
   );
 
   const commsLayer = useMemo(
@@ -85,8 +95,9 @@ const MapComponent = ({
         commsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.COMMUNICATIONS,
         'communications',
+        visibleLayers.communications,
       ),
-    [commsList],
+    [commsList, visibleLayers.communications],
   );
 
   const viewState = useMemo(() => {
@@ -97,19 +108,21 @@ const MapComponent = ({
     );
   }, [objAoi]);
 
+  const allLayers = [
+    polygonLayer,
+    iconLayer,
+    alertsLayer,
+    missionsLayer,
+    peopleLayer,
+    reportLayer,
+    commsLayer,
+  ];
+
   return (
     <Card className="map-card">
       <Row style={{ height: 550 }} className="mx-auto">
         <BaseMap
-          layers={compact([
-            polygonLayer,
-            visibleLayers.events ? iconLayer : null,
-            visibleLayers.alerts ? alertsLayer : null,
-            visibleLayers.missions ? missionsLayer : null,
-            visibleLayers.people ? peopleLayer : null,
-            visibleLayers.reports ? reportLayer : null,
-            visibleLayers.communications ? commsLayer : null,
-          ])}
+          layers={allLayers}
           setViewState={setViewState}
           initialViewState={viewState}
           screenControlPosition="top-right"
