@@ -13,7 +13,7 @@ import MapSection from '../Components/Map';
 
 //i18n
 
-const NO_AVAILABLE_DATA = 'no-available-data';
+const NO_AVAILABLE_DATA = 'no-data-available';
 
 const SummaryContainer = ({ reportDetail, t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
