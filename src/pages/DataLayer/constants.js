@@ -9,7 +9,7 @@ export const DATA_LAYERS_PANELS = {
 };
 
 // increase the bbox used to view Wildfire layers by 20 kms
-export const DEFAULT_WILDFIRE_GEOMETRY_BUFFER = 20;
+export const DEFAULT_WILDFIRE_GEOMETRY_BUFFER = 5;
 
 export const SIMULATION_TIME_LIMIT = 72;
 
