@@ -31,7 +31,6 @@ const MapInput = ({
   const onChange = val => {
     const isValid = isWKTValid(val);
     setWktStr(val);
-    // isValid ? setCoordinates(val) : setCoordinates('');
     isValid ? setCoordinates(getGeoFeatures(val)) : setCoordinates([]);
     setShowError(!isValid);
     isValidFormat(isValid);
