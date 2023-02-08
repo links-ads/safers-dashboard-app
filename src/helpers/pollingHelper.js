@@ -76,7 +76,6 @@ const PollingHelper = props => {
       getAllNotifications({ ...notificationParams, ...dateRangeParams }),
     );
     dispatch(getAllMapRequests({ ...mapRequestParams, ...dateRangeParams }));
-    dispatch(getAllPeople({ ...dateRangeParams }, {}));
   };
 
   useEffect(() => {
