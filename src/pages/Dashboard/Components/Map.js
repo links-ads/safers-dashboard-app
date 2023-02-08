@@ -54,7 +54,10 @@ const MapComponent = ({
     () =>
       getEventIconLayer(
         'alerts-layer',
-        alertsList.filter(item => item?.geometry?.coordinates?.length > 0),
+        alertsList.filter(
+          item =>
+            item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
+        ),
         MAP_TYPES.ALERTS,
         'fire',
         visibleLayers.alerts,
