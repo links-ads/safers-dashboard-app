@@ -5,18 +5,14 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { ZOOM_LEVEL } from 'pages/Chatbot/constants';
+
 import People from './People';
 import PaginationWrapper from '../../../../components/Pagination';
 import { MAP_TYPES } from '../../../../constants/common';
 import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
 
-const PeopleList = ({
-  peopleId,
-  currentZoomLevel,
-  setViewState,
-  setPeopleId,
-  setIconLayer,
-}) => {
+const PeopleList = ({ peopleId, setViewState, setPeopleId, setIconLayer }) => {
   const { allPeople: OrgPeopleList, filteredPeople } = useSelector(state => {
     return state.people;
   });
@@ -41,7 +37,7 @@ const PeopleList = ({
           selectedPeople,
         ),
       );
-      setViewState(getViewState(selectedPeople.location, currentZoomLevel));
+      setViewState(getViewState(selectedPeople.location, ZOOM_LEVEL));
     } else {
       setPeopleId(undefined);
       setIconLayer(

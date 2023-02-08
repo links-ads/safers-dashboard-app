@@ -161,7 +161,6 @@ const Reports = ({ pollingFrequency }) => {
             <Col xl={12} className="px-3">
               <ReportList
                 reportId={reportId}
-                currentZoomLevel={currentZoomLevel}
                 setViewState={setViewState}
                 setReportId={setReportId}
                 setIconLayer={setIconLayer}

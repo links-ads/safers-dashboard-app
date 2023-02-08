@@ -5,6 +5,8 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { ZOOM_LEVEL } from 'pages/Chatbot/constants';
+
 import Mission from './Mission';
 import PaginationWrapper from '../../../../components/Pagination';
 import { MAP_TYPES } from '../../../../constants/common';
@@ -13,7 +15,6 @@ import { setFavorite } from '../../../../store/missions/action';
 
 const MissionList = ({
   missionId,
-  currentZoomLevel,
   setViewState,
   setMissionId,
   setIconLayer,
@@ -48,7 +49,7 @@ const MissionList = ({
           selectedMission,
         ),
       );
-      setViewState(getViewState(selectedMission.location, currentZoomLevel));
+      setViewState(getViewState(selectedMission.location, ZOOM_LEVEL));
     } else {
       setMissionId(undefined);
       setIconLayer(

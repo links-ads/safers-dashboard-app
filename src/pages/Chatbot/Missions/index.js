@@ -191,7 +191,6 @@ const Missions = ({ pollingFrequency }) => {
               <Col xl={12} className="px-3">
                 <MissionList
                   missionId={missionId}
-                  currentZoomLevel={currentZoomLevel}
                   setViewState={setViewState}
                   setMissionId={setMissionId}
                   setIconLayer={setIconLayer}

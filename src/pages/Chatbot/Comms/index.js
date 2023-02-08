@@ -183,7 +183,6 @@ const Comms = ({ pollingFrequency }) => {
               <Col xl={12} className="px-3">
                 <CommsList
                   commID={commID}
-                  currentZoomLevel={currentZoomLevel}
                   setViewState={setViewState}
                   setCommID={setCommID}
                   setIconLayer={setIconLayer}

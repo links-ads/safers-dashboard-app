@@ -188,7 +188,6 @@ const People = ({ pollingFrequency }) => {
             <Col xl={12} className="px-3">
               <PeopleList
                 peopleId={peopleId}
-                currentZoomLevel={currentZoomLevel}
                 setViewState={setViewState}
                 setPeopleId={setPeopleId}
                 setIconLayer={setIconLayer}

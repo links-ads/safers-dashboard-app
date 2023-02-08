@@ -5,19 +5,15 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { ZOOM_LEVEL } from 'pages/Chatbot/constants';
+
 import Report from './Report';
 import PaginationWrapper from '../../../../components/Pagination';
 import { MAP_TYPES } from '../../../../constants/common';
 import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
 import { setFavorite } from '../../../../store/reports/action';
 
-const ReportList = ({
-  reportId,
-  currentZoomLevel,
-  setViewState,
-  setReportId,
-  setIconLayer,
-}) => {
+const ReportList = ({ reportId, setViewState, setReportId, setIconLayer }) => {
   const { filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
 
@@ -47,7 +43,7 @@ const ReportList = ({
           selectedReport,
         ),
       );
-      setViewState(getViewState(selectedReport.location, currentZoomLevel));
+      setViewState(getViewState(selectedReport.location, ZOOM_LEVEL));
     } else {
       setReportId(undefined);
       setIconLayer(

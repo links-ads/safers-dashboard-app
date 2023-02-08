@@ -5,18 +5,14 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { ZOOM_LEVEL } from 'pages/Chatbot/constants';
+
 import Comm from './Comm';
 import PaginationWrapper from '../../../../components/Pagination';
 import { MAP_TYPES } from '../../../../constants/common';
 import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
 
-const CommsList = ({
-  commID,
-  currentZoomLevel,
-  setViewState,
-  setCommID,
-  setIconLayer,
-}) => {
+const CommsList = ({ commID, setViewState, setCommID, setIconLayer }) => {
   const { allComms, filteredComms } = useSelector(state => state.comms);
   const [pageData, setPageData] = useState([]);
   const dispatch = useDispatch();
@@ -39,7 +35,7 @@ const CommsList = ({
           selectedComm,
         ),
       );
-      setViewState(getViewState(selectedComm.location, currentZoomLevel));
+      setViewState(getViewState(selectedComm.location, ZOOM_LEVEL));
     } else {
       setCommID(undefined);
       setIconLayer(
