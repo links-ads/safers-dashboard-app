@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Input, Modal, ModalHeader, ModalBody } from 'reactstrap';
 
+import { getGeoFeatures } from 'store/utility';
+
 import { isWKTValid } from '../../helpers/mapHelper';
 
 const MapInput = ({
@@ -29,7 +31,7 @@ const MapInput = ({
   const onChange = val => {
     const isValid = isWKTValid(val);
     setWktStr(val);
-    isValid ? setCoordinates(val) : setCoordinates('');
+    isValid ? setCoordinates(getGeoFeatures(val)) : setCoordinates([]);
     setShowError(!isValid);
     isValidFormat(isValid);
   };
