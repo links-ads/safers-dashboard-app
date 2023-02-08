@@ -1,4 +1,5 @@
 import * as actionTypes from './types';
+import { getFilteredRec } from '../../pages/Chatbot/filter';
 import { updateObject } from '../utility';
 
 const initialState = {
@@ -63,7 +64,14 @@ const getReportsSuccess = (state, action) => {
       error: false,
     };
   } else {
+    const { sortOrder, category } = state;
+    const filteredReports = getFilteredRec(
+      action.payload.reports,
+      { category },
+      { sortOrder },
+    );
     updatedState = {
+      filteredReports,
       allReports: action.payload.reports,
       error: false,
     };
