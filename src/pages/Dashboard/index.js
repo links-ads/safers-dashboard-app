@@ -79,7 +79,7 @@ const NewDashboard = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    const statusCounts = getStatusCountsForItems([{ status: 'null' }]);
+    const statusCounts = getStatusCountsForItems(alerts);
     setActivityStatusCounts(statusCounts);
   }, [filteredAlerts, alerts]);
 
