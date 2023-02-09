@@ -14,12 +14,32 @@ import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
 import { setFavorite } from '../../../../store/reports/action';
 
 const ReportList = ({ reportId, setViewState, setReportId, setIconLayer }) => {
+  // console.log('REPORTS IDENTIFIER: ', reportId);
   const { filteredReports } = useSelector(state => state.reports);
   const [pageData, setPageData] = useState([]);
-
+  // console.log('PAGE DATA: ', pageData);
   const dispatch = useDispatch();
 
   const allReports = filteredReports ?? [];
+  const noOfPages = Math.ceil(allReports.length / 4);
+  // Create array based on number of pages
+  const groupedData = new Array(noOfPages)
+    // Make sure each element isn't empty
+    .fill('')
+    // For each page, grab the right `slice` of the input array
+    .map((_, i) => allReports.slice(i * 4, (i + 1) * 4));
+  // console.log('GROUPED ARRAY: ', groupedData);
+
+  // Find the page that contains the selected report
+  let pageNo = null;
+  groupedData.forEach((group, index) => {
+    const result = group.find(rep => rep.report_id === reportId);
+
+    if (result) {
+      pageNo = index + 1;
+    }
+  });
+  // console.log('PAGE: ', pageNo);
 
   const setFavoriteFlag = id => {
     let selectedReport = _.find(pageData, { id });
@@ -82,6 +102,7 @@ const ReportList = ({ reportId, setViewState, setReportId, setIconLayer }) => {
       </Row>
       <Row className="text-center">
         <PaginationWrapper
+          page={pageNo}
           pageSize={4}
           list={allReports}
           setPageData={updatePage}

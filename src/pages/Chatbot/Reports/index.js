@@ -44,6 +44,7 @@ const Reports = ({ pollingFrequency }) => {
       );
 
   const [reportId, setReportId] = useState(undefined);
+  console.log('REPORT ID: ', reportId);
   const [viewState, setViewState] = useState(currentViewState);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(gBbox);
@@ -137,7 +138,10 @@ const Reports = ({ pollingFrequency }) => {
   }, [defaultAoi.features]);
 
   const handleClick = info => {
+    // console.log('CLICKED INFO: ', info);
     const { id } = info?.object?.properties ?? {};
+    // console.log('HANDLE CLICK: ', reportId, id);
+    // setReportId(id);
     setReportId(reportId === id ? undefined : id);
   };
 

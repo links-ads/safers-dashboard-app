@@ -22,6 +22,7 @@ const Report = ({ card, reportId, setSelectedReport /*, setFavorite*/ }) => {
   const navigate = useNavigate();
 
   const isSelected = card.report_id === reportId;
+  console.log('IS SELECTED: ', card.report_id, reportId, isSelected);
 
   const getBadge = category => {
     let iconStatus = '';
