@@ -149,11 +149,12 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       ...valCoordinates,
     };
     setErrors(tempErrors);
+    return tempErrors;
   };
 
   const submitMsg = () => {
-    validate();
-    if (Object.keys(errors).length === 0) {
+    const localErrors = validate();
+    if (Object.keys(localErrors).length === 0) {
       const payload = {
         message: desc,
         start: dateRange[0] ? dateRange[0] : null,
