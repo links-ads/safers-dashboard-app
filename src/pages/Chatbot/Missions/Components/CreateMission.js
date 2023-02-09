@@ -8,16 +8,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Input, Button, Row, Col, Label, FormGroup } from 'reactstrap';
 import toastr from 'toastr';
 
+import { getTeamList } from 'store/appAction';
+
 import MapInput from '../../../../components/BaseMap/MapInput';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import { getError } from '../../../../helpers/errorHelper';
-import { getTeamList } from '../../../../store/appAction';
 import {
   createMission,
   resetMissionResponseState,
 } from '../../../../store/missions/action';
 import 'toastr/build/toastr.min.css';
-import { getWKTfromFeature } from '../../../../store/utility';
+import { getGeoFeatures, getWKTfromFeature } from '../../../../store/utility';
 
 const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   const dispatch = useDispatch();
@@ -189,7 +190,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
           placeholder={t('Map Selection', { ns: 'chatBot' })}
           rows="10"
           coordinates={getWKTfromFeature(coordinates)}
-          setCoordinates={setCoordinates}
+          setCoordinates={wkt => setCoordinates(getGeoFeatures(wkt))}
           isValidFormat={isValidCoordFormat}
           onBlur={() => {
             validateCoord();
