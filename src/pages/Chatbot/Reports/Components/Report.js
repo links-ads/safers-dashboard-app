@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
@@ -43,12 +43,12 @@ const Report = ({ card, reportId, setSelectedReport /*, setFavorite*/ }) => {
     }
 
     return (
-      <>
+      <Fragment key={category}>
         <Badge className="me-1 rounded-pill alert-badge event-alert-badge py-0 px-2 pb-0 mb-0">
           <i className={`fa ${t(iconStatus)} text-danger me-1`}></i>
           <span className="text-capitalize">{t(category)}</span>
         </Badge>
-      </>
+      </Fragment>
     );
   };
 
