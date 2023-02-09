@@ -70,9 +70,6 @@ const ReportList = ({
   const updatePage = data => {
     if (JSON.stringify(data) !== JSON.stringify(pageData)) {
       setReportId(undefined);
-      setIconLayer(
-        getIconLayer(data, MAP_TYPES.REPORTS, 'report', dispatch, setViewState),
-      );
       setPageData(data);
     }
   };
