@@ -6,7 +6,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { Input, Button, Label, Row, Col, FormGroup } from 'reactstrap';
+import { Input, Button, Label, Row, Col, FormGroup, Form } from 'reactstrap';
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
@@ -28,8 +28,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const { t } = useTranslation();
 
   const messageSchema = Yup.object().shape({
-    scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    //scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     description: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    //description: Yup.string().required('I am error'),
   });
 
   const { orgList = [] } = useSelector(state => state.common);
@@ -162,28 +163,28 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     return tempErrors;
   };
 
-  const submitMsg = () => {
-    debugger;
-    const localErrors = validate();
-    if (Object.keys(localErrors).length === 0) {
-      const payload = {
-        message: desc,
-        start: dateRange[0] ? dateRange[0] : null,
-        end: dateRange[1] ? dateRange[1] : null,
-        scope,
-        restriction,
-        geometry: coordinates ? getWKTfromFeature(coordinates) : null,
-      };
-      dispatch(createMsg(payload));
-    }
+  const submitMsg = ({ description }) => {
+    // console.log('values', values);
+    // const localErrors = validate();
+    // if (Object.keys(localErrors).length === 0) {
+    const payload = {
+      message: description,
+      // start: dateRange[0] ? dateRange[0] : null,
+      // end: dateRange[1] ? dateRange[1] : null,
+      // scope,
+      // restriction,
+      // geometry: coordinates ? getWKTfromFeature(coordinates) : null,
+    };
+    dispatch(createMsg(payload));
+    // }
   };
 
   return (
     <Formik
       initialValues={{
-        dateRange: '',
-        coordinates: '',
-        scope: '',
+        // dateRange: '',
+        // coordinates: '',
+        // scope: '',
         description: '',
       }}
       validationSchema={messageSchema}
@@ -201,8 +202,8 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
         isSubmitting,
       }) => {
         return (
-          <>
-            <FormGroup className="form-group mt-3">
+          <Form onSubmit={handleSubmit} noValidate>
+            {/* <FormGroup className="form-group mt-3">
               <DateRangePicker
                 type="text"
                 placeholder={`${t('Start', { ns: 'common' })} ${t('Date', {
@@ -298,38 +299,36 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                   {getError('restriction', errors, errors, false)}
                 </Col>
               )}
-            </Row>
+            </Row> */}
             <FormGroup className="form-group mt-3">
               <Input
-                id="message-description-input"
+                id="description"
                 className={`${getError('desc', errors, errors)}`}
                 type="textarea"
-                name="message-description"
+                name="description"
                 placeholder={t('msg-desc', { ns: 'chatBot' })}
-                onChange={e => {
-                  setDesc(e.target.value);
-                }}
-                onBlur={e => {
-                  validateField('desc', e.target.value);
-                }}
+                onChange={handleChange}
+                // onChange={e => {
+                //   setDesc(e.target.value);
+                // }}
+                // onBlur={e => {
+                //   validateField('desc', e.target.value);
+                // }}
+                onBlur={handleBlur}
                 rows="10"
+                value={values.description}
               />
-              {getError('desc', errors, errors, false)}
+              {getError('description', errors, touched, false)}
             </FormGroup>
             <div className="mt-3">
-              <Button type="button" onClick={onCancel}>
+              {/* <Button type="button" onClick={onCancel}>
                 {t('cancel', { ns: 'common' })}
-              </Button>
-              <Button
-                type="button"
-                className="mx-3"
-                onClick={submitMsg}
-                disabled={isSubmitDisabled}
-              >
+              </Button> */}
+              <button type="submit" className="mx-3">
                 {t('send', { ns: 'common' })}
-              </Button>
+              </button>
             </div>
-          </>
+          </Form>
         );
       }}
     </Formik>
