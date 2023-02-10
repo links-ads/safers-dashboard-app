@@ -1,4 +1,4 @@
-export const SLIDER_SPEED = 800;
+export const SLIDER_SPEED = 1300;
 
 export const DATA_LAYERS_PANELS = {
   mapLayers: 0,

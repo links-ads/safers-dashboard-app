@@ -1,13 +1,12 @@
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 
 import { area as getFeatureArea, bbox, bboxPolygon } from '@turf/turf';
-import { FlyToInterpolator } from 'deck.gl';
+import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import Slider from 'react-rangeslider';
 import { useDispatch, useSelector } from 'react-redux';
-//import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
 import {
   Nav,
   Row,
@@ -19,7 +18,7 @@ import {
 } from 'reactstrap';
 import wkt from 'wkt';
 
-import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
+import { SLIDER_SPEED, DATA_LAYERS_PANELS } from './constants';
 import DataLayer from './DataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
 import OnDemandDataLayer from './OnDemandDataLayer';
@@ -42,11 +41,7 @@ const DataLayerDashboard = ({ t }) => {
   const dispatch = useDispatch();
   const timer = useRef(null);
 
-  const config = useSelector(state => state.common.config);
   const defaultAoi = useSelector(state => state.user?.defaultAoi);
-  const dataLayerBoundingBox = config?.restrict_data_to_aoi
-    ? defaultAoi.features[0].bbox
-    : EUROPEAN_BBOX;
 
   const {
     dataLayers,
@@ -68,7 +63,7 @@ const DataLayerDashboard = ({ t }) => {
   const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [bitmapLayer, setBitmapLayer] = useState(undefined);
+  const [tileLayer, setTileLayer] = useState(undefined);
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
   const [timestamp, setTimestamp] = useState('');
@@ -77,7 +72,7 @@ const DataLayerDashboard = ({ t }) => {
 
   const resetMap = () => {
     setCurrentLayer(undefined);
-    setBitmapLayer(undefined);
+    setTileLayer(undefined);
   };
 
   //fetch data to populate and 'Domain' selects
@@ -106,7 +101,7 @@ const DataLayerDashboard = ({ t }) => {
     setSliderValue(0);
     setIsPlaying(false);
     setTimestamp('');
-    setBitmapLayer(undefined);
+    setTileLayer(undefined);
     setSliderRangeLimit(0);
     setCurrentLayer(undefined);
   }, [activeTab]);
@@ -164,8 +159,9 @@ const DataLayerDashboard = ({ t }) => {
       const urls = getUrls();
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue]);
-      const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
-      setBitmapLayer(getBitmapLayer(imageUrl));
+
+      setTileLayer(getTileLayer(urls[0]));
+
       setSliderRangeLimit(urls.length - 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -173,16 +169,6 @@ const DataLayerDashboard = ({ t }) => {
 
   useEffect(() => {
     if (currentLayer?.urls) {
-      if (sliderChangeComplete) {
-        const urls = getUrls();
-        if (urls[sliderValue]) {
-          const imageUrl = urls[sliderValue].replace(
-            '{bbox}',
-            dataLayerBoundingBox,
-          );
-          setBitmapLayer(getBitmapLayer(imageUrl));
-        }
-      }
       const timestamps = getTimestamps();
       if (timestamps[sliderValue]) {
         setTimestamp(timestamps[sliderValue]);
@@ -190,6 +176,12 @@ const DataLayerDashboard = ({ t }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sliderValue, sliderChangeComplete]);
+
+  useEffect(() => {
+    if (currentLayer?.urls) {
+      setTileLayer(() => getTileLayer(currentLayer.urls[timestamp]));
+    }
+  }, [currentLayer, timestamp]);
 
   useEffect(() => {
     let nextValue = sliderValue;
@@ -248,24 +240,26 @@ const DataLayerDashboard = ({ t }) => {
     return Object.keys(currentLayer?.urls);
   };
 
-  const getBitmapLayer = url => {
-    console.log('BITMAP URL: ', url);
-    /*
-     extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
-     if this is an on-demand layer, it will have been hard-coded by the backend
-    */
-    const urlSearchParams = new URLSearchParams(url);
-    const urlParams = Object.fromEntries(urlSearchParams.entries());
-    const bounds = urlParams?.bbox
-      ? urlParams.bbox.split(',').map(Number)
-      : dataLayerBoundingBox;
-
+  const getTileLayer = url => {
     return {
-      id: 'bitmap-layer',
-      bounds: bounds,
-      image: url,
-      //_imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-      opacity: 0.5,
+      data: url,
+      minZoom: 0,
+      maxZoom: 20,
+      tileSize: 256,
+      updateTriggers: {
+        getTileData: { url },
+      },
+      renderSubLayers: props => {
+        const {
+          bbox: { west, south, east, north },
+        } = props.tile;
+
+        return new BitmapLayer(props, {
+          data: null,
+          image: props.data,
+          bounds: [west, south, east, north],
+        });
+      },
     };
   };
 
@@ -390,7 +384,7 @@ const DataLayerDashboard = ({ t }) => {
     setSortByDate,
     getSlider,
     getLegend,
-    bitmapLayer,
+    tileLayer,
     setViewState,
     viewState,
     handleResetAOI,

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { BitmapLayer } from 'deck.gl';
+import { TileLayer } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -38,7 +38,7 @@ const DataLayer = ({
   setCurrentLayer,
   getSlider,
   getLegend,
-  bitmapLayer,
+  tileLayer,
   viewState,
   timestamp,
   showLegend,
@@ -48,6 +48,7 @@ const DataLayer = ({
   sliderChangeComplete,
   resetMap,
 }) => {
+  // console.log('TILE LAYER DATA: ', tileLayer);
   const [searchedDataLayers, setSearchedDataLayers] = useState(null);
 
   const [tempLayerData, setTempLayerData] = useState(null);
@@ -99,9 +100,7 @@ const DataLayer = ({
       );
     }
 
-    const layers = bitmapLayer
-      ? [new BitmapLayer(bitmapLayer), tempLayerData]
-      : [];
+    const layers = tileLayer ? [new TileLayer(tileLayer)] : [];
 
     return (
       <Card className="map-card mb-0" style={{ height: 670 }}>
@@ -254,7 +253,7 @@ DataLayer.propTypes = {
   setCurrentLayer: PropTypes.any,
   getSlider: PropTypes.any,
   getLegend: PropTypes.any,
-  bitmapLayer: PropTypes.any,
+  tileLayer: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
   showLegend: PropTypes.bool,
