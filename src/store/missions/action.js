@@ -3,13 +3,14 @@ import * as api from '../../api/base';
 import { endpoints } from '../../api/endpoints';
 
 export const createMission = payload => async dispatch => {
-  const response = await api.post(
-    endpoints.chatbot.missions.createMission,
-    payload,
-  );
-  if (response.status === 200) {
-    return dispatch(createMissionSuccess(response.data));
-  } else return dispatch(createMissionsFail(response.error));
+  console.log('payload: ', payload);
+  // const response = await api.post(
+  //   endpoints.chatbot.missions.createMission,
+  //   payload,
+  // );
+  // if (response.status === 200) {
+  //   return dispatch(createMissionSuccess(response.data));
+  // } else return dispatch(createMissionsFail(response.error));
 };
 const createMissionSuccess = data => {
   return {
