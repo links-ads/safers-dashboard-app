@@ -140,8 +140,8 @@ const SignUp = () => {
             <Form onSubmit={handleSubmit} noValidate>
               {config?.allow_signup ? (
                 <>
-                  <Row form="true">
-                    <Col>
+                  <Col form="true">
+                    <Row>
                       <FormGroup className="form-group">
                         <Label for="userEmail">EMAIL ADDRESS:</Label>
                         <Input
@@ -158,8 +158,8 @@ const SignUp = () => {
                         />
                         {getError('email', errors, touched, false)}
                       </FormGroup>
-                    </Col>
-                    <Col>
+                    </Row>
+                    <Row>
                       <FormGroup className="form-group">
                         <Label for="first_name">FIRST NAME:</Label>
                         <Input
@@ -176,8 +176,8 @@ const SignUp = () => {
                         />
                         {getError('first_name', errors, touched, false)}
                       </FormGroup>
-                    </Col>
-                    <Col>
+                    </Row>
+                    <Row>
                       <FormGroup className="form-group">
                         <Label for="last_name">LAST NAME:</Label>
                         <Input
@@ -194,8 +194,8 @@ const SignUp = () => {
                         />
                         {getError('last_name', errors, touched, false)}
                       </FormGroup>
-                    </Col>
-                    <Col>
+                    </Row>
+                    <Row>
                       <FormGroup className="form-group">
                         <Label for="userPassword">PASSWORD:</Label>
                         <InputGroup>
@@ -228,8 +228,8 @@ const SignUp = () => {
                         )}
                         {getError('password', errors, touched, false)}
                       </FormGroup>
-                    </Col>
-                    <Col>
+                    </Row>
+                    <Row>
                       <FormGroup className="form-group">
                         <Label for="role">SELECT YOUR ROLE:</Label>
                         <Input
@@ -254,8 +254,8 @@ const SignUp = () => {
                         </Input>
                         {getError('role', errors, touched, false)}
                       </FormGroup>
-                    </Col>
-                    <Col>
+                    </Row>
+                    <Row>
                       <FormGroup className="form-group">
                         <Label for="organization">
                           SELECT YOUR ORGANISATION:
@@ -285,8 +285,8 @@ const SignUp = () => {
                         </Input>
                         {getError('organization', errors, touched, false)}
                       </FormGroup>
-                    </Col>
-                    <Col>
+                    </Row>
+                    <Row>
                       <FormGroup className="form-group" check>
                         <Input
                           id="accepted_terms"
@@ -315,8 +315,8 @@ const SignUp = () => {
                         </Label>
                         {getError('accepted_terms', errors, touched, false)}
                       </FormGroup>
-                    </Col>
-                  </Row>
+                    </Row>
+                  </Col>
                   <div className="center-sign-in">
                     <Button
                       className="my-4 sign-in-btn"
