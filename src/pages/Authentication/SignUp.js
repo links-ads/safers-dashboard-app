@@ -140,7 +140,7 @@ const SignUp = () => {
             <Form onSubmit={handleSubmit} noValidate>
               {config?.allow_signup ? (
                 <>
-                  <Row form="true">
+                  <Col form="true">
                     <Col>
                       <FormGroup className="form-group">
                         <Label for="userEmail">EMAIL ADDRESS:</Label>
@@ -316,7 +316,7 @@ const SignUp = () => {
                         {getError('accepted_terms', errors, touched, false)}
                       </FormGroup>
                     </Col>
-                  </Row>
+                  </Col>
                   <div className="center-sign-in">
                     <Button
                       className="my-4 sign-in-btn"
