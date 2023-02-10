@@ -10,6 +10,8 @@ import { Input, Button, Label, Row, Col, FormGroup, Form } from 'reactstrap';
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import { getWKTfromFeature, getGeoFeatures } from 'store/utility';
+
 import MapInput from '../../../../components/BaseMap/MapInput';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import { getError } from '../../../../helpers/errorHelper';
@@ -18,7 +20,6 @@ import {
   resetCommsResponseState,
 } from '../../../../store/comms/action';
 import 'toastr/build/toastr.min.css';
-import { getGeoFeatures, getWKTfromFeature } from '../../../../store/utility';
 
 import { Formik } from 'formik';
 
