@@ -28,9 +28,17 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const { t } = useTranslation();
 
   const messageSchema = Yup.object().shape({
-    dateRange: Yup.array().of(Yup.date()),
+    dateRange: Yup.array()
+      .of(Yup.date())
+      .required(t('field-empty-err', { ns: 'common' })),
     coordinates: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    restriction: Yup.string().when('scope', {
+      is: 'Restricted',
+      then: Yup.string().required(
+        t('Restriction needed if scope is restricted', { ns: 'common' }),
+      ),
+    }),
     description: Yup.string().required(t('field-empty-err', { ns: 'common' })),
   });
 
@@ -47,7 +55,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     dateRange: '',
     desc: '',
     scope: '',
-    restrictions: '',
+    restriction: '',
   });
   const [restriction, setRestriction] = useState(undefined);
   const [validCoords, isValidCoordFormat] = useState(false);
@@ -176,7 +184,8 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       // restriction,
       // geometry: coordinates ? getWKTfromFeature(coordinates) : null,
     };
-    dispatch(createMsg(payload));
+    console.log('Submit payload', payload);
+    //dispatch(createMsg(payload));
     // }
   };
 
@@ -274,9 +283,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                     {t('restricted', { ns: 'common' })}
                   </option>
                 </Input>
-                {getError('scope', errors, errors, false)}
+                {getError('scope', errors, touched, false)}
               </Col>
-              {scope === 'Restricted' && (
+              {values.scope === 'Restricted' ? (
                 <Col xl={5}>
                   <Input
                     id="restriction"
@@ -296,9 +305,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                     <option value="Professional">{t('Professional')}</option>
                     <option value="Organization">{t('Organisation')}</option>
                   </Input>
-                  {getError('restriction', errors, errors, false)}
+                  {getError('restriction', errors, touched, false)}
                 </Col>
-              )}
+              ) : null}
             </Row>
             <FormGroup className="form-group mt-3">
               <Input
