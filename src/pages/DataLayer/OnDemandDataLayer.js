@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { BitmapLayer } from 'deck.gl';
+import { BitmapLayer, TileLayer } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -35,7 +35,6 @@ const OnDemandDataLayer = ({
   handleResetAOI,
   getSlider,
   getLegend,
-  bitmapLayer,
   timestamp,
   currentLayer,
   showLegend,
@@ -103,8 +102,30 @@ const OnDemandDataLayer = ({
   };
 
   let layers = [...bboxLayers];
-  if (bitmapLayer) {
-    layers.push(new BitmapLayer(bitmapLayer));
+  if (currentLayer) {
+    const data = currentLayer?.urls[timestamp];
+    layers.push(
+      new TileLayer({
+        data,
+        minZoom: 0,
+        maxZoom: 20,
+        tileSize: 256,
+        updateTriggers: {
+          getTileData: { data },
+        },
+        renderSubLayers: props => {
+          const {
+            bbox: { west, south, east, north },
+          } = props.tile;
+
+          return new BitmapLayer(props, {
+            data: null,
+            image: props.data,
+            bounds: [west, south, east, north],
+          });
+        },
+      }),
+    );
     layers.push(tempLayerData);
   }
 
@@ -296,7 +317,6 @@ OnDemandDataLayer.propTypes = {
   setSortByDate: PropTypes.any,
   getSlider: PropTypes.any,
   getLegend: PropTypes.any,
-  bitmapLayer: PropTypes.any,
   setViewState: PropTypes.func,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
