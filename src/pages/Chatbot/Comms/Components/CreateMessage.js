@@ -32,7 +32,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     dateRange: Yup.array()
       .of(Yup.date())
       .required(t('field-empty-err', { ns: 'common' })),
-    coordinates: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    coordinates: Yup.array()
+      .of(Yup.object())
+      .required(t('field-empty-err', { ns: 'common' })),
     scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     restriction: Yup.string().when('scope', {
       is: 'Restricted',
@@ -87,13 +89,13 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [msgCreated]);
 
-  useEffect(() => {
-    console.log('coordinates', coordinates);
-    if (coordinates) {
-      validateCoord();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coordinates, validCoords]);
+  // useEffect(() => {
+  //   console.log('coordinates', coordinates);
+  //   if (coordinates) {
+  //     validateCoord();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [coordinates, validCoords]);
 
   //Clear success states on component unmount
   useEffect(() => {
@@ -201,7 +203,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     <Formik
       initialValues={{
         dateRange: '',
-        coordinates: '',
+        coordinates: [],
         scope: '',
         restriction: '',
         description: '',
