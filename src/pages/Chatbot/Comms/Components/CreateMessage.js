@@ -28,9 +28,10 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const { t } = useTranslation();
 
   const messageSchema = Yup.object().shape({
-    //scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    dateRange: Yup.array().of(Yup.date()),
+    coordinates: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     description: Yup.string().required(t('field-empty-err', { ns: 'common' })),
-    //description: Yup.string().required('I am error'),
   });
 
   const { orgList = [] } = useSelector(state => state.common);
@@ -46,6 +47,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     dateRange: '',
     desc: '',
     scope: '',
+    restrictions: '',
   });
   const [restriction, setRestriction] = useState(undefined);
   const [validCoords, isValidCoordFormat] = useState(false);
@@ -94,22 +96,22 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     setDateRange(dates.map(date => moment(date).format('YYYY-MM-DD')));
   };
 
-  const validateRestriction = (returnErr = false) => {
-    const tempError = { ...errors };
-    if (
-      scope &&
-      scope === 'Restricted' &&
-      (!restriction || restriction === '')
-    ) {
-      tempError['restriction'] = t('field-empty-err', { ns: 'common' });
-    } else {
-      delete tempError['restriction'];
-    }
-    if (returnErr) {
-      return tempError;
-    }
-    setErrors(tempError);
-  };
+  // const validateRestriction = (returnErr = false) => {
+  //   const tempError = { ...errors };
+  //   if (
+  //     scope &&
+  //     scope === 'Restricted' &&
+  //     (!restriction || restriction === '')
+  //   ) {
+  //     tempError['restriction'] = t('field-empty-err', { ns: 'common' });
+  //   } else {
+  //     delete tempError['restriction'];
+  //   }
+  //   if (returnErr) {
+  //     return tempError;
+  //   }
+  //   setErrors(tempError);
+  // };
 
   const validateCoord = (returnErr = false) => {
     const tempError = { ...errors };
@@ -129,42 +131,41 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     setErrors(tempError);
   };
 
-  const validateField = (attrib, val, returnErr = false) => {
-    const tempError = { ...errors };
-    if (!val || val === '') {
-      tempError[attrib] =
-        attrib === 'dateRange'
-          ? t('field-err-valid-date', { ns: 'common' })
-          : t('field-empty-err', { ns: 'common' });
-    } else {
-      delete tempError[attrib];
-    }
+  // const validateField = (attrib, val, returnErr = false) => {
+  //   const tempError = { ...errors };
+  //   if (!val || val === '') {
+  //     tempError[attrib] =
+  //       attrib === 'dateRange'
+  //         ? t('field-err-valid-date', { ns: 'common' })
+  //         : t('field-empty-err', { ns: 'common' });
+  //   } else {
+  //     delete tempError[attrib];
+  //   }
 
-    if (returnErr) {
-      return tempError;
-    }
-    setErrors(tempError);
-  };
+  //   if (returnErr) {
+  //     return tempError;
+  //   }
+  //   setErrors(tempError);
+  // };
 
-  const validate = () => {
-    const valDateRange = validateField('dateRange', dateRange, true);
-    const valDesc = validateField('desc', desc, true);
-    const valScope = validateField('scope', scope, true);
-    const valRestriction = validateRestriction(true);
-    const valCoordinates = validateCoord(true);
-    const tempErrors = {
-      ...valDateRange,
-      ...valDesc,
-      ...valScope,
-      ...valRestriction,
-      ...valCoordinates,
-    };
-    setErrors(tempErrors);
-    return tempErrors;
-  };
+  // const validate = () => {
+  //   const valDateRange = validateField('dateRange', dateRange, true);
+  //   const valDesc = validateField('desc', desc, true);
+  //   const valScope = validateField('scope', scope, true);
+  //   const valRestriction = validateRestriction(true);
+  //   const valCoordinates = validateCoord(true);
+  //   const tempErrors = {
+  //     ...valDateRange,
+  //     ...valDesc,
+  //     ...valScope,
+  //     ...valRestriction,
+  //     ...valCoordinates,
+  //   };
+  //   setErrors(tempErrors);
+  //   return tempErrors;
+  // };
 
   const submitMsg = ({ description }) => {
-    // console.log('values', values);
     // const localErrors = validate();
     // if (Object.keys(localErrors).length === 0) {
     const payload = {
@@ -182,9 +183,10 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   return (
     <Formik
       initialValues={{
-        // dateRange: '',
-        // coordinates: '',
-        // scope: '',
+        dateRange: '',
+        coordinates: '',
+        scope: '',
+        restriction: '',
         description: '',
       }}
       validationSchema={messageSchema}
@@ -201,10 +203,13 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
         setFieldValue,
         isSubmitting,
       }) => {
+        console.log('values', values);
+        console.log('errors', errors);
         return (
           <Form onSubmit={handleSubmit} noValidate>
-            {/* <FormGroup className="form-group mt-3">
+            <FormGroup className="form-group mt-3">
               <DateRangePicker
+                name="dateRange"
                 type="text"
                 placeholder={`${t('Start', { ns: 'common' })} ${t('Date', {
                   ns: 'common',
@@ -215,26 +220,26 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 setDates={handleDateRangePicker}
                 isTooltipInput={true}
                 showIcons={true}
-                onChange={dates => {
-                  validateField('dateRange', dates);
-                }}
+                onBlur={handleBlur}
+                onChange={value => setFieldValue('dateRange', value)}
+                value={values.dateRange}
               />
               {getError('dateRange', errors, errors, false)}
             </FormGroup>
             <FormGroup className="form-group mt-3">
               <MapInput
-                id="coordinates-input"
+                id="coordinates"
                 className={`${getError('coordinates', errors, errors)}`}
                 type="textarea"
-                name="coordinates-value"
+                name="coordinates"
                 placeholder={t('Map Selection', { ns: 'chatBot' })}
                 rows="10"
                 coordinates={getWKTfromFeature(coordinates)}
                 setCoordinates={setCoordinates}
                 isValidFormat={isValidCoordFormat}
-                onBlur={() => {
-                  validateCoord();
-                }}
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.coordinates}
               />
               {getError('coordinates', errors, errors, false)}
             </FormGroup>
@@ -257,12 +262,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                   )}`}
                   name="scope"
                   type="select"
-                  onChange={e => {
-                    setScope(e.target.value);
-                  }}
-                  onBlur={e => {
-                    validateField('scope', e.target.value);
-                  }}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  value={values.scope}
                 >
                   <option value="">--{t('scope', { ns: 'common' })}--</option>
                   <option value="Public">
@@ -285,11 +287,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                     )}`}
                     name="restriction"
                     type="select"
-                    onChange={e => {
-                      setRestriction(e.target.value);
-                    }}
-                    onBlur={validateRestriction}
-                    value={restriction}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    value={values.restriction}
                   >
                     <option value="">--{t('Restrictions')}--</option>
                     <option value="Citizen">{t('Citizen')}</option>
@@ -299,7 +299,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                   {getError('restriction', errors, errors, false)}
                 </Col>
               )}
-            </Row> */}
+            </Row>
             <FormGroup className="form-group mt-3">
               <Input
                 id="description"
@@ -308,12 +308,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 name="description"
                 placeholder={t('msg-desc', { ns: 'chatBot' })}
                 onChange={handleChange}
-                // onChange={e => {
-                //   setDesc(e.target.value);
-                // }}
-                // onBlur={e => {
-                //   validateField('desc', e.target.value);
-                // }}
                 onBlur={handleBlur}
                 rows="10"
                 value={values.description}
