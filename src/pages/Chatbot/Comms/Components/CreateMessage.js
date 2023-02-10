@@ -50,24 +50,18 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const { msgCreated } = useSelector(state => state.comms);
 
   const [orgName, setorgName] = useState('');
-  const [scope, setScope] = useState('');
-  const [dateRange, setDateRange] = useState(null);
-  const [desc, setDesc] = useState(null);
-  const [errors, setErrors] = useState({
-    coordinates: '',
-    dateRange: '',
-    desc: '',
-    scope: '',
-    restriction: '',
-  });
-  const [restriction, setRestriction] = useState(undefined);
-  const [validCoords, isValidCoordFormat] = useState(false);
+  const [, setScope] = useState('');
+  const [, setDateRange] = useState(null);
+  const [, setDesc] = useState(null);
+  const [, setRestriction] = useState(undefined);
+  const [, isValidCoordFormat] = useState(false);
 
-  const isSubmitDisabled = !!Object.keys(errors).length;
+  //const isSubmitDisabled = !!Object.keys(errors).length;
 
   const resetState = () => {
     setScope('');
     setDateRange(null);
+    setCoordinates([]);
     setScope('');
     setDesc(null);
     setRestriction(undefined);
@@ -89,14 +83,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [msgCreated]);
 
-  // useEffect(() => {
-  //   console.log('coordinates', coordinates);
-  //   if (coordinates) {
-  //     validateCoord();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [coordinates, validCoords]);
-
   //Clear success states on component unmount
   useEffect(() => {
     return () => {
@@ -108,75 +94,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     setDateRange(dates.map(date => moment(date).format('YYYY-MM-DD')));
   };
 
-  // const validateRestriction = (returnErr = false) => {
-  //   const tempError = { ...errors };
-  //   if (
-  //     scope &&
-  //     scope === 'Restricted' &&
-  //     (!restriction || restriction === '')
-  //   ) {
-  //     tempError['restriction'] = t('field-empty-err', { ns: 'common' });
-  //   } else {
-  //     delete tempError['restriction'];
-  //   }
-  //   if (returnErr) {
-  //     return tempError;
-  //   }
-  //   setErrors(tempError);
-  // };
-
-  const validateCoord = (returnErr = false) => {
-    const tempError = { ...errors };
-    if (!coordinates || coordinates === '') {
-      tempError['coordinates'] = t('field-err-select-area', { ns: 'chatBot' });
-    } else if (!validCoords) {
-      tempError['coordinates'] = t('field-err-correct-coord', {
-        ns: 'chatBot',
-      });
-    } else {
-      delete tempError['coordinates'];
-    }
-
-    if (returnErr) {
-      return tempError;
-    }
-    setErrors(tempError);
-  };
-
-  // const validateField = (attrib, val, returnErr = false) => {
-  //   const tempError = { ...errors };
-  //   if (!val || val === '') {
-  //     tempError[attrib] =
-  //       attrib === 'dateRange'
-  //         ? t('field-err-valid-date', { ns: 'common' })
-  //         : t('field-empty-err', { ns: 'common' });
-  //   } else {
-  //     delete tempError[attrib];
-  //   }
-
-  //   if (returnErr) {
-  //     return tempError;
-  //   }
-  //   setErrors(tempError);
-  // };
-
-  // const validate = () => {
-  //   const valDateRange = validateField('dateRange', dateRange, true);
-  //   const valDesc = validateField('desc', desc, true);
-  //   const valScope = validateField('scope', scope, true);
-  //   const valRestriction = validateRestriction(true);
-  //   const valCoordinates = validateCoord(true);
-  //   const tempErrors = {
-  //     ...valDateRange,
-  //     ...valDesc,
-  //     ...valScope,
-  //     ...valRestriction,
-  //     ...valCoordinates,
-  //   };
-  //   setErrors(tempErrors);
-  //   return tempErrors;
-  // };
-
   const submitMsg = ({
     description,
     dateRange,
@@ -184,8 +101,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     restriction,
     coordinates,
   }) => {
-    // const localErrors = validate();
-    // if (Object.keys(localErrors).length === 0) {
     const payload = {
       message: description,
       start: dateRange[0] ? dateRange[0] : null,
@@ -195,8 +110,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       geometry: coordinates ? getWKTfromFeature(coordinates) : null,
     };
     console.log('Submit payload', payload);
-    //dispatch(createMsg(payload));
-    // }
+    dispatch(createMsg(payload));
   };
 
   return (
@@ -222,8 +136,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
         setFieldValue,
         isSubmitting,
       }) => {
-        console.log('values', values);
-        console.log('errors', errors);
         return (
           <Form onSubmit={handleSubmit} noValidate>
             <FormGroup className="form-group mt-3">
@@ -256,8 +168,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 coordinates={getWKTfromFeature(coordinates)}
                 setCoordinates={wkt => {
                   const geojson = getGeoFeatures(wkt);
-                  console.log('wkt', wkt);
-                  console.log('geojson', geojson);
                   setFieldValue('coordinates', geojson);
                   setCoordinates(geojson);
                 }}
@@ -343,13 +253,14 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
               <Button type="button" onClick={onCancel}>
                 {t('cancel', { ns: 'common' })}
               </Button>
-              <button
+              <Button
                 type="submit"
                 onClick={() => submitMsg(values)}
                 className="mx-3"
+                disabled={Object.keys(errors).length > 0}
               >
                 {t('send', { ns: 'common' })}
-              </button>
+              </Button>
             </div>
           </Form>
         );

@@ -43,7 +43,6 @@ export const getError = (
   errStyle = true,
   validateOnChange,
 ) => {
-  console.log('getError', errors);
   if (errors[key] && (touched[key] || validateOnChange)) {
     return errStyle ? (
       'is-invalid'

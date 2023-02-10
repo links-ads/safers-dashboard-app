@@ -86,7 +86,6 @@ export const getWKTfromFeature = feature => {
 };
 
 export const getGeoFeatures = wktString => {
-  console.log('getGeoFeatures', wktString);
   const tempGeoJSON = wkt.parse(wktString);
   const tempFeatures = [];
   if (tempGeoJSON) {
