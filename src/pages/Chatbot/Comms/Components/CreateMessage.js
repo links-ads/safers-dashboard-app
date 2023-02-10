@@ -18,7 +18,7 @@ import {
   resetCommsResponseState,
 } from '../../../../store/comms/action';
 import 'toastr/build/toastr.min.css';
-import { getWKTfromFeature } from '../../../../store/utility';
+import { getGeoFeatures, getWKTfromFeature } from '../../../../store/utility';
 
 import { Formik } from 'formik';
 
@@ -87,6 +87,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   }, [msgCreated]);
 
   useEffect(() => {
+    console.log('coordinates', coordinates);
     if (coordinates) {
       validateCoord();
     }
@@ -173,16 +174,22 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   //   return tempErrors;
   // };
 
-  const submitMsg = ({ description }) => {
+  const submitMsg = ({
+    description,
+    dateRange,
+    scope,
+    restriction,
+    coordinates,
+  }) => {
     // const localErrors = validate();
     // if (Object.keys(localErrors).length === 0) {
     const payload = {
       message: description,
-      // start: dateRange[0] ? dateRange[0] : null,
-      // end: dateRange[1] ? dateRange[1] : null,
-      // scope,
-      // restriction,
-      // geometry: coordinates ? getWKTfromFeature(coordinates) : null,
+      start: dateRange[0] ? dateRange[0] : null,
+      end: dateRange[1] ? dateRange[1] : null,
+      scope,
+      restriction,
+      geometry: coordinates ? getWKTfromFeature(coordinates) : null,
     };
     console.log('Submit payload', payload);
     //dispatch(createMsg(payload));
@@ -244,13 +251,19 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 placeholder={t('Map Selection', { ns: 'chatBot' })}
                 rows="10"
                 coordinates={getWKTfromFeature(coordinates)}
-                setCoordinates={setCoordinates}
+                setCoordinates={wkt => {
+                  const geojson = getGeoFeatures(wkt);
+                  console.log('wkt', wkt);
+                  console.log('geojson', geojson);
+                  setFieldValue('coordinates', geojson);
+                  setCoordinates(geojson);
+                }}
                 isValidFormat={isValidCoordFormat}
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.coordinates}
               />
-              {getError('coordinates', errors, errors, false)}
+              {getError('coordinates', errors, touched, false)}
             </FormGroup>
             <Label className="form-label mt-3 mb-0">
               {t('organisation', { ns: 'common' })}: {orgName}
@@ -324,10 +337,14 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
               {getError('description', errors, touched, false)}
             </FormGroup>
             <div className="mt-3">
-              {/* <Button type="button" onClick={onCancel}>
+              <Button type="button" onClick={onCancel}>
                 {t('cancel', { ns: 'common' })}
-              </Button> */}
-              <button type="submit" className="mx-3">
+              </Button>
+              <button
+                type="submit"
+                onClick={() => submitMsg(values)}
+                className="mx-3"
+              >
                 {t('send', { ns: 'common' })}
               </button>
             </div>
