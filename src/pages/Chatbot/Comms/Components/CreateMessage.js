@@ -32,9 +32,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     dateRange: Yup.array()
       .of(Yup.date())
       .required(t('field-empty-err', { ns: 'common' })),
-    coordinates: Yup.array()
-      .of(Yup.object())
-      .required(t('field-empty-err', { ns: 'common' })),
+    coordinates: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     restriction: Yup.string().when('scope', {
       is: 'Restricted',
@@ -55,8 +53,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const [, setDesc] = useState(null);
   const [, setRestriction] = useState(undefined);
   const [, isValidCoordFormat] = useState(false);
-
-  //const isSubmitDisabled = !!Object.keys(errors).length;
 
   const resetState = () => {
     setScope('');
@@ -107,9 +103,8 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       end: dateRange[1] ? dateRange[1] : null,
       scope,
       restriction,
-      geometry: coordinates ? getWKTfromFeature(coordinates) : null,
+      geometry: coordinates,
     };
-    console.log('Submit payload', payload);
     dispatch(createMsg(payload));
   };
 
@@ -173,7 +168,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 }}
                 isValidFormat={isValidCoordFormat}
                 onBlur={handleBlur}
-                onChange={handleChange}
+                handleChange={handleChange}
                 value={values.coordinates}
               />
               {getError('coordinates', errors, touched, false)}
@@ -242,7 +237,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 type="textarea"
                 name="description"
                 placeholder={t('msg-desc', { ns: 'chatBot' })}
-                onChange={handleChange}
+                onChange={e => {
+                  handleChange(e);
+                }}
                 onBlur={handleBlur}
                 rows="10"
                 value={values.description}

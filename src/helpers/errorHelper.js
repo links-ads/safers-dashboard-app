@@ -5,8 +5,6 @@ import { Card, CardBody, CardTitle, List } from 'reactstrap';
 export const getGeneralErrors = errors => {
   if (!errors) return '';
   const errArr = Object.keys(errors);
-  console.log('ERRORS: ', errors);
-
   const getErrContainer = error => {
     if (Array.isArray(errors[error])) {
       return errors[error].map(errorElem => {
