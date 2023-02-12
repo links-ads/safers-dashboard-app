@@ -5,11 +5,16 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import {
+  setMissionFavorite,
+  allMissionsSelector,
+  filteredMissionsSelector,
+} from 'store/missions/missions.slice';
+
 import Mission from './Mission';
 import PaginationWrapper from '../../../../components/Pagination';
 import { MAP_TYPES } from '../../../../constants/common';
 import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
-import { setFavorite } from '../../../../store/missions/action';
 
 const MissionList = ({
   missionId,
@@ -18,9 +23,8 @@ const MissionList = ({
   setMissionId,
   setIconLayer,
 }) => {
-  const { allMissions: OrgMissionList, filteredMissions } = useSelector(
-    state => state.missions,
-  );
+  const OrgMissionList = useSelector(allMissionsSelector);
+  const filteredMissions = useSelector(filteredMissionsSelector);
   const [pageData, setPageData] = useState([]);
   const dispatch = useDispatch();
 
@@ -29,7 +33,9 @@ const MissionList = ({
   const setFavoriteFlag = id => {
     let selectedMission = _.find(pageData, { id });
     selectedMission.isFavorite = !selectedMission.isFavorite;
-    dispatch(setFavorite(id, selectedMission.isFavorite));
+    dispatch(
+      setMissionFavorite({ id, isFavorite: selectedMission.isFavorite }),
+    );
   };
 
   const setSelectedMission = mission_id => {
