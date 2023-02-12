@@ -4,16 +4,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Container, Row } from 'reactstrap';
 
+import {
+  fetchReportDetail,
+  reportDetailSelector,
+} from 'store/reports/reports.slice';
+
 import MediaContainer from './Containers/MediaContainer';
 import SummaryContainer from './Containers/SummaryContainer';
-import { getReportDetail } from '../../../../store/reports/action';
 
 const ReportsDashboard = () => {
   const dispatch = useDispatch();
-  const { reportDetail } = useSelector(state => state.reports);
+  const reportDetail = useSelector(reportDetailSelector);
   const { id } = useParams();
   useEffect(() => {
-    dispatch(getReportDetail(id));
+    dispatch(fetchReportDetail(id));
   }, [dispatch, id]);
 
   return (

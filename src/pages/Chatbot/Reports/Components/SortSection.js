@@ -6,25 +6,31 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Input, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import {
+  setFilteredReports,
+  refreshReports,
+  allReportsSelector,
+  filteredReportsSelector,
+  reportsSortOrderSelector,
+  reportsCategorySelector,
+  reportsMissionIdSelector,
+  reportsPollingDataSelector,
+} from 'store/reports/reports.slice';
+
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
 import { fetchEndpoint } from '../../../../helpers/apiHelper';
-import {
-  setFilterdReports,
-  refreshReports,
-} from '../../../../store/reports/action';
 import { getFilteredRec } from '../../filter';
 
 //i18N
 
 const SortSection = ({ t, boundingBox, mapFilter }) => {
-  const {
-    allReports: OrgReportList,
-    filteredReports = [],
-    sortOrder,
-    category,
-    missionId,
-    pollingData,
-  } = useSelector(state => state.reports);
+  const OrgReportList = useSelector(allReportsSelector);
+  const filteredReports = useSelector(filteredReportsSelector);
+  const sortOrder = useSelector(reportsSortOrderSelector);
+  const category = useSelector(reportsCategorySelector);
+  const missionId = useSelector(reportsMissionIdSelector);
+  const pollingData = useSelector(reportsPollingDataSelector);
+
   const [selectOptions, setSelectOptions] = useState([]);
   const [numberOfUpdates, setNumberOfUpdates] = useState(undefined);
   const dispatch = useDispatch();
@@ -45,7 +51,7 @@ const SortSection = ({ t, boundingBox, mapFilter }) => {
     const sort = { fieldName: 'timestamp', order: sortOrder };
     const actFiltered = getFilteredRec(OrgReportList, filters, sort);
     dispatch(
-      setFilterdReports({
+      setFilteredReports({
         data: actFiltered,
         filterParams: {
           missionId,

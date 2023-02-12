@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'reactstrap';
 
-import { getAllComms, getAllFireAlerts } from 'store/appAction';
+import { getAllFireAlerts } from 'store/appAction';
+import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
 import { getAllEventAlerts } from 'store/events/action';
 import { getAllMissions } from 'store/missions/action';
 import { getAllPeople } from 'store/people/action';
-import { getAllReports } from 'store/reports/action';
+import { fetchReports, allReportsSelector } from 'store/reports/reports.slice';
 
 import AOIBar from './Components/AOIBar';
 import NotificationsBar from './Components/Notifications';
@@ -40,12 +41,13 @@ const NewDashboard = () => {
     state => state.people,
   );
 
-  const { allReports: OrgReportList } = useSelector(state => state?.reports);
+  const OrgReportList = useSelector(allReportsSelector);
+
   const { allAlerts: alerts, filteredAlerts } = useSelector(
     state => state?.alerts,
   );
   const allMissions = useSelector(state => state?.missions?.allMissions || []);
-  const allCommunications = useSelector(state => state.comms.allComms || []);
+  const allCommunications = useSelector(allCommsSelector);
 
   const layerVisibilities = {
     events: true,
@@ -73,7 +75,7 @@ const NewDashboard = () => {
     dispatch(getAllEventAlerts(params, {}));
     dispatch(getAllPeople(params, {}));
     dispatch(getAllReports(params));
-    dispatch(getAllComms(params, {}));
+    dispatch(fetchComms({ options: params, feFilters: {} }));
     dispatch(getAllMissions(params, {}));
     dispatch(getAllFireAlerts(params));
   }, [dispatch]);

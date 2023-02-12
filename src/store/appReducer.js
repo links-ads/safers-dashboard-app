@@ -14,7 +14,7 @@ import mapReducer from './map/map.slice';
 import missionReducer from './missions/reducer';
 import notificationsReducer from './notifications/reducer';
 import peopleReducer from './people/reducer';
-import reportReducer from './reports/reducer';
+import reportReducer from './reports/reports.slice';
 import userReducer from './user/reducer';
 
 const appReducer = combineReducers({
