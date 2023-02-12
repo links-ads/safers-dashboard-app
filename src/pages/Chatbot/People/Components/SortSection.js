@@ -7,8 +7,15 @@ import { Row, Col, Input, Button } from 'reactstrap';
 //i18N
 import toastr from 'toastr';
 
+import {
+  setFilteredPeople,
+  refreshPeople,
+  allPeopleSelector,
+  filteredPeopleSelector,
+  peoplePollingDataSelector,
+} from 'store/people/people.slice';
+
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
-import { setFilters, refreshPeople } from '../../../../store/people/action';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({
@@ -21,9 +28,9 @@ const SortSection = ({
   setSortOrder,
   activitiesOptions,
 }) => {
-  const { allPeople, filteredPeople, pollingData } = useSelector(
-    state => state.people,
-  );
+  const allPeople = useSelector(allPeopleSelector);
+  const filteredPeople = useSelector(filteredPeopleSelector);
+  const pollingData = useSelector(peoplePollingDataSelector);
   const dispatch = useDispatch();
   const [numberOfUpdates, setNumberOfUpdates] = useState(undefined);
 
@@ -32,7 +39,7 @@ const SortSection = ({
       const filters = { activity, status };
       const sort = { fieldName: 'timestamp', order: sortOrder };
       const actFiltered = getFilteredRec(allPeople, filters, sort);
-      dispatch(setFilters(actFiltered));
+      dispatch(setFilteredPeople(actFiltered));
     }
   }, [activity, allPeople, dispatch, sortOrder, status]);
 

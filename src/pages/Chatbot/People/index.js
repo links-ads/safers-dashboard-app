@@ -10,6 +10,14 @@ import { useMap } from 'components/BaseMap/MapContext';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import {
+  fetchPeople,
+  resetPeopleResponseState,
+  allPeopleSelector,
+  filteredPeopleSelector,
+  peopleSuccessSelector,
+} from 'store/people/people.slice';
+
 import MapSection from './Components/Map';
 import PeopleList from './Components/PeopleList';
 import SortSection from './Components/SortSection';
@@ -21,19 +29,13 @@ import {
   getViewState,
   getIconLayer,
 } from '../../../helpers/mapHelper';
-import {
-  getAllPeople,
-  resetPeopleResponseState,
-} from '../../../store/people/action';
 
 const People = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const {
-    allPeople: orgPplList,
-    filteredPeople,
-    success,
-  } = useSelector(state => state.people);
+  const orgPplList = useSelector(allPeopleSelector);
+  const filteredPeople = useSelector(filteredPeopleSelector);
+  const success = useSelector(peopleSuccessSelector);
   const { dateRange } = useSelector(state => state.common);
 
   let allPeople = filteredPeople || orgPplList;
@@ -84,7 +86,7 @@ const People = ({ pollingFrequency }) => {
         status,
         sortOrder,
       };
-      dispatch(getAllPeople(params, feFilters));
+      dispatch(fetchPeople({ options: params, feFilters }));
       return params;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -115,15 +117,15 @@ const People = ({ pollingFrequency }) => {
   useInterval(
     () => {
       dispatch(
-        getAllPeople(
-          peopleParams,
-          {
+        fetchPeople({
+          options: peopleParams,
+          feFilters: {
             activity,
             status,
             sortOrder,
           },
-          true,
-        ),
+          isPolling: true,
+        }),
       );
     },
     pollingFrequency,

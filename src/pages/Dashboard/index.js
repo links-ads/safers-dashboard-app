@@ -7,7 +7,11 @@ import { getAllFireAlerts } from 'store/appAction';
 import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
 import { getAllEventAlerts } from 'store/events/action';
 import { fetchMissions } from 'store/missions/missions.slice';
-import { getAllPeople } from 'store/people/action';
+import {
+  fetchPeople,
+  allPeopleSelector,
+  filteredPeopleSelector,
+} from 'store/people/people.slice';
 import { fetchReports, allReportsSelector } from 'store/reports/reports.slice';
 
 import AOIBar from './Components/AOIBar';
@@ -37,9 +41,8 @@ const NewDashboard = () => {
   const [communicationStatusCounts, setCommunicationStatusCounts] = useState(
     {},
   );
-  const { allPeople: orgPplList, filteredPeople } = useSelector(
-    state => state.people,
-  );
+  const orgPplList = useSelector(allPeopleSelector);
+  const filteredPeople = useSelector(filteredPeopleSelector);
 
   const OrgReportList = useSelector(allReportsSelector);
 
@@ -73,8 +76,8 @@ const NewDashboard = () => {
       default_bbox: true, // user AOI only
     };
     dispatch(getAllEventAlerts(params, {}));
-    dispatch(getAllPeople(params, {}));
-    dispatch(fetchReports(params));
+    dispatch(fetchPeople({ options: params, feFilters: {} }));
+    dispatch(fetchReports({ options: params }));
     dispatch(fetchComms({ options: params, feFilters: {} }));
     dispatch(fetchMissions({ options: params, feFilters: {} }));
     dispatch(getAllFireAlerts(params));
