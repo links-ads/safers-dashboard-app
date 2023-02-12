@@ -7,8 +7,15 @@ import { Row, Col, Input, Button } from 'reactstrap';
 //i18N
 import toastr from 'toastr';
 
+import {
+  refreshData,
+  setFilteredComms,
+  allCommsSelector,
+  commsPollingDataSelector,
+  filteredCommsSelector,
+} from 'store/comms/comms.slice';
+
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
-import { setFilterdComms, refreshData } from '../../../../store/comms/action';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({
@@ -21,9 +28,10 @@ const SortSection = ({
   setTarget,
   setTogglePolygonMap,
 }) => {
-  const { allComms, filteredComms, pollingData } = useSelector(
-    state => state.comms,
-  );
+  const allComms = useSelector(allCommsSelector);
+  const pollingData = useSelector(commsPollingDataSelector);
+  const filteredComms = useSelector(filteredCommsSelector);
+
   const [numberOfUpdates, setNumberOfUpdates] = useState(undefined);
   const dispatch = useDispatch();
 
@@ -32,7 +40,7 @@ const SortSection = ({
       const filters = { target, status: commStatus };
       const sort = { fieldName: 'start', order: sortOrder };
       const actFiltered = getFilteredRec(allComms, filters, sort);
-      dispatch(setFilterdComms(actFiltered));
+      dispatch(setFilteredComms(actFiltered));
     }
   }, [target, sortOrder, commStatus, allComms, dispatch]);
 

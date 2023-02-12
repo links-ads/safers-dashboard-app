@@ -9,15 +9,12 @@ import { Input, Button, Label, Row, Col, FormGroup, Form } from 'reactstrap';
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import { createComms, resetCommsResponseState } from 'store/comms/comms.slice';
 import { getWKTfromFeature, getGeoFeatures } from 'store/utility';
 
 import MapInput from '../../../../components/BaseMap/MapInput';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import { getError } from '../../../../helpers/errorHelper';
-import {
-  createMsg,
-  resetCommsResponseState,
-} from '../../../../store/comms/action';
 import 'toastr/build/toastr.min.css';
 
 const INITIAL_FORM_VALUES = {
@@ -92,7 +89,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     if (scope !== 'Public') {
       payload.restriction = restriction;
     }
-    dispatch(createMsg(payload));
+    dispatch(createComms(payload));
   };
 
   return (
