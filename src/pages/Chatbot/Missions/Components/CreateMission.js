@@ -22,6 +22,15 @@ import {
 import 'toastr/build/toastr.min.css';
 import { getWKTfromFeature, getGeoFeatures } from '../../../../store/utility';
 
+const FORM_INITIAL_STATE = {
+  coordinates: '',
+  dateRange: [],
+  teamId: '',
+  personId: '',
+  desc: '',
+  title: '',
+};
+
 const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   const dispatch = useDispatch();
 
@@ -32,11 +41,6 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   const [orgName, setorgName] = useState('--');
   const [selectedTeam, setSelectedTeam] = useState(null);
-  const [chatbotUserId, setChatbotUserId] = useState();
-
-  const [dateRange, setDateRange] = useState(null);
-  const [desc, setDesc] = useState(null);
-  const [validCoords, isValidCoordFormat] = useState(false);
 
   useEffect(() => {
     dispatch(getTeamList());
@@ -65,27 +69,40 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   }, [dispatch]);
 
   const createMissionSchema = Yup.object().shape({
-    coordinates: Yup.array().required(),
-    dateRange: Yup.array().of(Yup.string()).required(),
-    desc: Yup.string().required(),
-    title: Yup.string().required(),
+    coordinates: Yup.string().required('Coordinates are required'),
+    dateRange: Yup.array()
+      .min(2, 'Start and end dates are required')
+      .required(),
+    teamId: Yup.string().required('Team is required'),
+    personId: Yup.string()
+      .ensure()
+      .when('teamId', {
+        is: '1' || '19',
+        then: Yup.string().required('User is required'),
+      }),
+    desc: Yup.string().required('Description is required'),
+    title: Yup.string().required('Title is required'),
   });
 
-  const onSubmit = ({ title }) => {
-    console.log('SUBMISSION: ', title);
-
-    // TODO: this needed? Check other forms
-    // dates.map(date => moment(date).toISOString());
+  const onSubmit = ({
+    coordinates,
+    dateRange,
+    desc,
+    personId,
+    teamId,
+    title,
+  }) => {
+    const dates = dateRange.map(date => moment(date).toISOString());
 
     const payload = {
       title,
       description: desc,
-      start: dateRange[0] ?? null,
-      end: dateRange[1] ?? null,
+      start: dates[0] ?? null,
+      end: dates[1] ?? null,
       source: 'Chatbot',
-      geometry: coordinates ? getWKTfromFeature(coordinates) : null,
-      coordinatorTeamId: selectedTeam?.id,
-      coordinatorPersonId: chatbotUserId ? parseInt(chatbotUserId) : null,
+      geometry: coordinates,
+      coordinatorTeamId: teamId,
+      coordinatorPersonId: personId ? parseInt(personId) : null,
     };
 
     dispatch(createMission(payload));
@@ -93,12 +110,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   return (
     <Formik
-      initialValues={{
-        coordinates: [],
-        dateRange: [],
-        desc: '',
-        title: '',
-      }}
+      initialValues={FORM_INITIAL_STATE}
       validationSchema={createMissionSchema}
       onSubmit={onSubmit}
     >
@@ -110,143 +122,134 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
         handleBlur,
         handleSubmit,
         setFieldValue,
-        isSubmitting,
-      }) => {
-        console.log('VALUES: ', values);
-        const isSubmitDisabled = !!Object.keys(errors).length;
-        return (
-          <Form onSubmit={handleSubmit} noValidate>
-            <FormGroup className="form-group">
-              <Input
-                id="title"
-                name="title"
-                placeholder={t('mission-title', { ns: 'chatBot' })}
-                type="text"
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.title ?? ''}
-              />
-              {getError('title', errors, errors, false)}
-            </FormGroup>
+      }) => (
+        <Form onSubmit={handleSubmit} noValidate>
+          <FormGroup className="form-group">
+            <Input
+              id="title"
+              name="title"
+              placeholder={t('mission-title', { ns: 'chatBot' })}
+              type="text"
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.title ?? ''}
+            />
+            {getError('title', errors, touched, false)}
+          </FormGroup>
 
-            <FormGroup className="form-group mt-3">
-              <DateRangePicker
-                placeholder={`${t('Start', { ns: 'common' })} ${t('Date', {
-                  ns: 'common',
-                })} | ${t('End', { ns: 'common' })} ${t('Date', {
-                  ns: 'common',
-                })}`}
-                defaultDateRange={dateRange}
-                isTimeEnabled={true}
-                onChange={dateRange => setFieldValue('dateRange', dateRange)}
-              />
-              {getError('dateRange', errors, errors, false)}
-            </FormGroup>
+          <FormGroup className="form-group mt-3">
+            <DateRangePicker
+              placeholder={`${t('Start', { ns: 'common' })} ${t('Date', {
+                ns: 'common',
+              })} | ${t('End', { ns: 'common' })} ${t('Date', {
+                ns: 'common',
+              })}`}
+              isTimeEnabled={true}
+              onChange={dateRange => setFieldValue('dateRange', dateRange)}
+            />
+            {getError('dateRange', errors, touched, false)}
+          </FormGroup>
 
-            <FormGroup className="form-group mt-3">
-              <MapInput
-                id="coordinates"
-                name="coordinates"
-                className={`${getError('coordinates', errors, errors)}`}
-                type="textarea"
-                placeholder={t('Map Selection', { ns: 'chatBot' })}
-                rows="10"
-                coordinates={getWKTfromFeature(coordinates)}
-                setCoordinates={wkt => {
-                  const geojson = getGeoFeatures(wkt);
-                  setFieldValue('coordinates', geojson);
-                  setCoordinates(geojson);
-                }}
-                isValidFormat={isValidCoordFormat}
-                onBlur={handleBlur}
-              />
-              {getError('coordinates', errors, errors, false)}
-            </FormGroup>
+          <FormGroup className="form-group mt-3">
+            <MapInput
+              id="coordinates"
+              name="coordinates"
+              className={`${getError('coordinates', errors, errors)}`}
+              type="textarea"
+              placeholder={t('Map Selection', { ns: 'chatBot' })}
+              rows="10"
+              coordinates={getWKTfromFeature(coordinates)}
+              setCoordinates={wkt => setCoordinates(getGeoFeatures(wkt))}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {getError('coordinates', errors, touched, false)}
+          </FormGroup>
 
-            <div className="mt-3">
-              <Label className="fw-bold" htmlFor="target">
-                {t('assign-to')}:{' '}
-              </Label>
-              <Row>
-                <Col>
-                  <Label className="form-label mt-3 mb-0">
-                    {t('organisation')}: {orgName}
-                  </Label>
-                </Col>
-                <Col>
-                  <Input
-                    id="team"
-                    className="btn-sm sort-select-input"
-                    name="team"
-                    type="select"
-                    onChange={e => {
-                      const selectedTeam = teamList?.find(
-                        team => team.id === Number(e.target.value),
-                      );
-                      setSelectedTeam(selectedTeam);
-                    }}
-                    value={selectedTeam?.id ?? ''}
-                  >
-                    <option value={''}>--{t('team')}--</option>
-                    {teamList?.map(team => {
-                      return (
-                        <option key={team.id} value={team.id}>
-                          {team.name}
-                        </option>
-                      );
-                    })}
-                  </Input>
-                </Col>
-                <Col>
-                  <Input
-                    id="chatbotUser"
-                    className="btn-sm sort-select-input"
-                    name="chatbotUser"
-                    type="select"
-                    disabled={!selectedTeam?.id}
-                    onChange={handleChange}
-                    value={chatbotUserId}
-                  >
-                    <option value={''}>--{t('chatbot-user')}--</option>
-                    {selectedTeam?.members.map(member => (
-                      <option key={member.id} value={member.id}>
-                        {member.name}
+          <div className="mt-3">
+            <Label className="fw-bold" htmlFor="target">
+              {t('assign-to')}:{' '}
+            </Label>
+            <Row>
+              <Col>
+                <Label className="form-label mt-3 mb-0">
+                  {t('organisation')}: {orgName}
+                </Label>
+              </Col>
+              <Col>
+                <Input
+                  id="teamId"
+                  className="btn-sm sort-select-input"
+                  name="teamId"
+                  type="select"
+                  onChange={({ target: { value } }) => {
+                    const selectedTeam = teamList?.find(
+                      team => team.id === Number(value),
+                    );
+                    setFieldValue('teamId', value);
+                    setSelectedTeam(selectedTeam);
+                  }}
+                  value={values.teamId}
+                >
+                  <option value={''}>--{t('team')}--</option>
+                  {teamList?.map(team => {
+                    return (
+                      <option key={team.id} value={team.id}>
+                        {team.name}
                       </option>
-                    ))}
-                  </Input>
-                </Col>
-              </Row>
-            </div>
+                    );
+                  })}
+                </Input>
+                {getError('teamId', errors, touched, false)}
+              </Col>
+              <Col>
+                <Input
+                  id="chatbotUser"
+                  className="btn-sm sort-select-input"
+                  name="chatbotUser"
+                  type="select"
+                  disabled={!selectedTeam?.id}
+                  onChange={({ target: { value } }) =>
+                    setFieldValue('personId', value)
+                  }
+                  value={values.personId}
+                >
+                  <option value={''}>--{t('chatbot-user')}--</option>
+                  {selectedTeam?.members.map(member => (
+                    <option key={member.id} value={member.id}>
+                      {member.name}
+                    </option>
+                  ))}
+                </Input>
+              </Col>
+              {getError('personId', errors, touched, false)}
+            </Row>
+          </div>
 
-            <FormGroup className="form-group mt-3">
-              <Input
-                id="desc"
-                type="textarea"
-                name="desc"
-                placeholder={t('mission-desc', { ns: 'chatBot' })}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                value={values.desc ?? ''}
-                rows="10"
-              />
-              {getError('desc', errors, errors, false)}
-            </FormGroup>
+          <FormGroup className="form-group mt-3">
+            <Input
+              id="desc"
+              type="textarea"
+              name="desc"
+              placeholder={t('mission-desc', { ns: 'chatBot' })}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              value={values.desc ?? ''}
+              rows="10"
+            />
+            {getError('desc', errors, touched, false)}
+          </FormGroup>
 
-            <div className="mt-3">
-              <Button type="button" onClick={onCancel}>
-                {t('cancel')}
-              </Button>
-              <Button
-                type="submit"
-                className="mx-3"
-                disabled={isSubmitDisabled}
-              >
-                {t('send')}
-              </Button>
-            </div>
-          </Form>
-        );
-      }}
+          <div className="mt-3">
+            <Button type="button" onClick={onCancel}>
+              {t('cancel')}
+            </Button>
+            <Button type="submit" className="mx-3">
+              {t('send')}
+            </Button>
+          </div>
+        </Form>
+      )}
     </Formik>
   );
 };
