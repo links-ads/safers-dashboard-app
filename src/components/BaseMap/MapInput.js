@@ -15,17 +15,8 @@ const MapInput = ({
   ...rest
 }) => {
   const [showError, setShowError] = useState(false);
-  //const [, setWktStr] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
-
-  useEffect(() => {
-    if (coordinates || (!showError && coordinates === '')) {
-      //setWktStr(coordinates);
-      isValidFormat(true);
-      setShowError(false);
-    }
-  }, [coordinates, showError, isValidFormat, setShowError]);
 
   useEffect(() => {
     if (handleChange) {
@@ -37,7 +28,6 @@ const MapInput = ({
 
   const onChange = val => {
     const isValid = isWKTValid(val);
-    //setWktStr(val);
     isValid ? setCoordinates(val) : setCoordinates('');
     setShowError(!isValid);
     isValidFormat(isValid);
