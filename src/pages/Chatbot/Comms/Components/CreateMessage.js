@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 
 import { Formik } from 'formik';
 import _ from 'lodash';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,20 +47,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const { msgCreated } = useSelector(state => state.comms);
 
   const [orgName, setorgName] = useState('');
-  const [, setScope] = useState('');
-  const [, setDateRange] = useState(null);
-  const [, setDesc] = useState(null);
-  const [, setRestriction] = useState(undefined);
   const [, isValidCoordFormat] = useState(false);
-
-  const resetState = () => {
-    setScope('');
-    setDateRange(null);
-    setCoordinates([]);
-    setScope('');
-    setDesc(null);
-    setRestriction(undefined);
-  };
 
   useEffect(() => {
     if (orgList.length && user?.organization) {
@@ -73,11 +59,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   useEffect(() => {
     if (msgCreated) {
       toastr.success(msgCreated.msg, '');
-      resetState();
       onCancel();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [msgCreated]);
+  }, [msgCreated, onCancel]);
 
   //Clear success states on component unmount
   useEffect(() => {
@@ -85,10 +69,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       dispatch(resetCommsResponseState());
     };
   }, [dispatch]);
-
-  const handleDateRangePicker = dates => {
-    setDateRange(dates.map(date => moment(date).format('YYYY-MM-DD')));
-  };
 
   const submitMsg = ({
     description,
@@ -111,7 +91,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   return (
     <Formik
       initialValues={{
-        dateRange: [],
+        dateRange: '',
         coordinates: [],
         scope: '',
         restriction: '',
@@ -142,7 +122,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                   ns: 'common',
                 })}`}
                 className={`${getError('dateRange', errors, errors)}`}
-                setDates={handleDateRangePicker}
+                setDates={() => {}}
                 isTooltipInput={true}
                 showIcons={true}
                 onBlur={handleBlur}

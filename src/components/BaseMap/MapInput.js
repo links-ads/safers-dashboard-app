@@ -15,7 +15,7 @@ const MapInput = ({
   ...rest
 }) => {
   const [showError, setShowError] = useState(false);
-  const [wktStr, setWktStr] = useState('');
+  const [, setWktStr] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
