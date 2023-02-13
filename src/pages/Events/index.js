@@ -9,6 +9,8 @@ import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { useMap } from 'components/BaseMap/MapContext';
+
 import EventList from './Components/EventList';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
@@ -36,6 +38,7 @@ import {
 //i18n
 
 const EventAlerts = ({ t }) => {
+  const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const { allAlerts: alerts, filteredAlerts } = useSelector(
     state => state.eventAlerts,
@@ -44,7 +47,6 @@ const EventAlerts = ({ t }) => {
   const error = useSelector(state => state.eventAlerts.error);
   const dateRange = useSelector(state => state.common.dateRange);
 
-  const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);

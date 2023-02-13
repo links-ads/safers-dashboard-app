@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { MapView } from '@deck.gl/core';
 import MapGL, {
@@ -14,25 +14,20 @@ import {
   EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { useMap } from './MapContext';
+import { MapStyleSwitcher } from './MapStyleSwitcher';
 import { MAPBOX_TOKEN } from '../../config';
+import { useLocalStorage } from '../../customHooks/useLocalStorage';
 import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
+import {
+  mapStylesSelector,
+  selectedMapStyleSelector,
+  setSelectedMapStyle,
+} from '../../store/map/map.slice';
 import { getWKTfromFeature } from '../../store/utility';
 
-const INITIAL_VIEW_STATE = {
-  longitude: 9.56005296,
-  latitude: 43.02777403,
-  zoom: 4,
-  bearing: 0,
-  pitch: 0,
-};
-const MAP_STYLE = {
-  mb_streets: 'mapbox://styles/mapbox/streets-v11',
-  mb_satellite: 'mapbox://styles/mapbox/satellite-v9',
-  mb_lite: 'mapbox://styles/mapbox/light-v10',
-  mb_nav: 'mapbox://styles/mapbox/navigation-day-v1',
-};
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
 const POLYGON_LINE_DASH = '10,2';
@@ -42,7 +37,6 @@ const POINT_RADIUS = 8;
 
 const PolygonMap = ({
   layers = null,
-  initialViewState = INITIAL_VIEW_STATE,
   hoverInfo = null,
   renderTooltip = () => {},
   onClick = () => {},
@@ -50,20 +44,23 @@ const PolygonMap = ({
   onViewportLoad = () => {},
   setWidth = () => {},
   setHeight = () => {},
-  // widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
-  mapStyle = 'mb_streets',
   setCoordinates,
   coordinates,
   handleAreaValidation,
   singlePolygonOnly = false,
 }) => {
+  const { mapRef, viewState, setViewState } = useMap();
+  const [mapStyle, setMapStyle] = useLocalStorage('safers-map-style');
+  const dispatch = useDispatch();
+
   const selectedFireBreak = useSelector(
     state => state.dataLayer.selectedFireBreak,
   );
+  const mapStyles = useSelector(mapStylesSelector);
+  const selectedMapStyle = useSelector(selectedMapStyleSelector);
 
-  const mapRef = useRef();
   const finalLayerSet = [...(layers ? layers : null)];
 
   const MODES = [
@@ -76,7 +73,6 @@ const PolygonMap = ({
     },
   ];
 
-  const [viewport, setViewport] = useState(initialViewState);
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
   const [features, setFeatures] = useState([]);
@@ -118,9 +114,7 @@ const PolygonMap = ({
     }
   };
 
-  const _updateViewport = tempViewport => {
-    setViewport(tempViewport);
-  };
+  const _updateViewport = tempViewport => setViewState(tempViewport);
 
   const editToggle = mode => {
     if (mode === 'drawLineString') {
@@ -211,6 +205,16 @@ const PolygonMap = ({
     }
   };
 
+  const handleSelectMapStyle = mapStyle => {
+    dispatch(setSelectedMapStyle(mapStyle));
+    setMapStyle(mapStyle);
+  };
+
+  const handleViewStateChange = ({ viewState: { width, height, ...rest } }) => {
+    onViewStateChange({ viewState: { width, height, ...rest } });
+    setViewState(rest);
+  };
+
   useEffect(() => {
     if (coordinates) {
       setFeatures(coordinates);
@@ -222,20 +226,18 @@ const PolygonMap = ({
   return (
     <>
       <MapGL
-        {...viewport}
+        {...viewState}
         width="100%"
         height="100%"
         mapboxApiAccessToken={MAPBOX_TOKEN}
-        mapStyle={MAP_STYLE[mapStyle]}
+        mapStyle={mapStyle ? mapStyle.uri : selectedMapStyle.uri}
         onViewportChange={_updateViewport}
         ContextProvider={MapContext.Provider}
         onClick={onClick}
-        onViewStateChange={onViewStateChange}
+        onViewStateChange={handleViewStateChange}
         onViewportLoad={onViewportLoad}
         layers={finalLayerSet}
         views={new MapView({ repeat: true })}
-        // ref={mapRef}
-        // controller={true}
       >
         <Editor
           clickRadius={12}
@@ -268,6 +270,11 @@ const PolygonMap = ({
           }}
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
+        <MapStyleSwitcher
+          mapStyles={mapStyles}
+          selectedMapStyle={selectedMapStyle}
+          selectMapStyle={handleSelectMapStyle}
+        />
         <NavigationControl
           style={getPosition(navControlPosition)}
           showCompass={false}

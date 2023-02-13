@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import { useMap } from 'components/BaseMap/MapContext';
+
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import MapSection from './Components/Map';
@@ -25,6 +27,7 @@ import {
 } from '../../../store/people/action';
 
 const People = ({ pollingFrequency }) => {
+  const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const {
     allPeople: orgPplList,
@@ -38,19 +41,11 @@ const People = ({ pollingFrequency }) => {
   const { t } = useTranslation();
 
   const [peopleId, setPeopleId] = useState(undefined);
-  const [viewState, setViewState] = useState(
-    getViewState(
-      defaultAoi.features[0].properties.midPoint,
-      defaultAoi.features[0].properties.zoomLevel,
-    ),
-  );
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
   const [status, setStatus] = useState('');
   const [activity, setActivity] = useState('');
-  const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [activitiesOptions, setActivitiesOptions] = useState([]);
@@ -110,7 +105,7 @@ const People = ({ pollingFrequency }) => {
           MAP_TYPES.PEOPLE,
           'people',
           dispatch,
-          setViewState,
+          // setViewState,
           { id: peopleId },
         ),
       );
@@ -137,15 +132,13 @@ const People = ({ pollingFrequency }) => {
 
   const getPeopleByArea = () => {
     setBoundingBox(
-      getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight),
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        newWidth,
+        newHeight,
+      ),
     );
-  };
-
-  const handleViewStateChange = e => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
-    }
   };
 
   const handleResetAOI = useCallback(() => {
@@ -188,8 +181,7 @@ const People = ({ pollingFrequency }) => {
             <Col xl={12} className="px-3">
               <PeopleList
                 peopleId={peopleId}
-                currentZoomLevel={currentZoomLevel}
-                setViewState={setViewState}
+                currentZoomLevel={viewState.zoom}
                 setPeopleId={setPeopleId}
                 setIconLayer={setIconLayer}
               />
@@ -198,11 +190,8 @@ const People = ({ pollingFrequency }) => {
         </Col>
         <Col xl={7} className="mx-auto">
           <MapSection
-            viewState={viewState}
             iconLayer={iconLayer}
             getPeopleByArea={getPeopleByArea}
-            setViewState={setViewState}
-            handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
             onClick={onClick}
