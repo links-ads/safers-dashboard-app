@@ -14,10 +14,17 @@ import {
   EditingMode,
   RENDER_STATE,
 } from 'react-map-gl-draw';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
+import { MapStyleSwitcher } from './MapStyleSwitcher';
 import { MAPBOX_TOKEN } from '../../config';
+import { useLocalStorage } from '../../customHooks/useLocalStorage';
 import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
+import {
+  mapStylesSelector,
+  selectedMapStyleSelector,
+  setSelectedMapStyle,
+} from '../../store/map/map.slice';
 import { getWKTfromFeature } from '../../store/utility';
 
 const INITIAL_VIEW_STATE = {
@@ -53,16 +60,20 @@ const PolygonMap = ({
   // widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
-  mapStyle = 'mb_streets',
   setCoordinates,
   coordinates,
   handleAreaValidation,
   singlePolygonOnly = false,
 }) => {
+  const [mapStyle, setMapStyle] = useLocalStorage('safers-map-style');
+  const dispatch = useDispatch();
+
   const selectedFireBreak = useSelector(
     state => state.dataLayer.selectedFireBreak,
   );
 
+  const mapStyles = useSelector(mapStylesSelector);
+  const selectedMapStyle = useSelector(selectedMapStyleSelector);
   const mapRef = useRef();
   const finalLayerSet = [...(layers ? layers : null)];
 
@@ -211,6 +222,11 @@ const PolygonMap = ({
     }
   };
 
+  const handleSelectMapStyle = mapStyle => {
+    dispatch(setSelectedMapStyle(mapStyle));
+    setMapStyle(mapStyle);
+  };
+
   useEffect(() => {
     if (coordinates) {
       setFeatures(coordinates);
@@ -226,7 +242,7 @@ const PolygonMap = ({
         width="100%"
         height="100%"
         mapboxApiAccessToken={MAPBOX_TOKEN}
-        mapStyle={MAP_STYLE[mapStyle]}
+        mapStyle={mapStyle ? mapStyle.uri : selectedMapStyle.uri}
         onViewportChange={_updateViewport}
         ContextProvider={MapContext.Provider}
         onClick={onClick}
@@ -268,6 +284,11 @@ const PolygonMap = ({
           }}
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />
+        <MapStyleSwitcher
+          mapStyles={mapStyles}
+          selectedMapStyle={selectedMapStyle}
+          selectMapStyle={handleSelectMapStyle}
+        />
         <NavigationControl
           style={getPosition(navControlPosition)}
           showCompass={false}
