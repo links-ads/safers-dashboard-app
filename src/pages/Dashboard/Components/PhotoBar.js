@@ -7,8 +7,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Container, Card, Row } from 'reactstrap';
 
+import {
+  fetchCameraAlerts,
+  allInSituAlertsSelector,
+} from 'store/insitu/insitu.slice';
+
 import { ReactComponent as Placeholder } from './placeholder.svg';
-import { getAllInSituAlerts } from '../../../store/insitu/action';
 
 const PhotoBar = ({ t }) => {
   const [photoList, setPhotoList] = useState([]);
@@ -16,15 +20,13 @@ const PhotoBar = ({ t }) => {
 
   const NUMBER_OF_PHOTOS = 8;
 
-  const allPhotos = useSelector(state => {
-    return state?.inSituAlerts?.allAlerts;
-  });
+  const allPhotos = useSelector(allInSituAlertsSelector);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(
-      getAllInSituAlerts({
+      fetchCameraAlerts({
         type: undefined,
         order: '-date',
         camera_id: undefined,
