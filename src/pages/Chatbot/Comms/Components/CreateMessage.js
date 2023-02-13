@@ -29,6 +29,8 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const messageSchema = Yup.object().shape({
     dateRange: Yup.array()
       .of(Yup.date())
+      .min(0)
+      .max(2)
       .required(t('field-empty-err', { ns: 'common' })),
     coordinates: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
@@ -109,7 +111,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   return (
     <Formik
       initialValues={{
-        dateRange: '',
+        dateRange: [],
         coordinates: [],
         scope: '',
         restriction: '',
