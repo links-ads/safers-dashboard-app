@@ -55,7 +55,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const { msgCreated } = useSelector(state => state.comms);
 
   const [orgName, setorgName] = useState('');
-  const [, isValidCoordFormat] = useState(false);
 
   useEffect(() => {
     if (orgList.length && user?.organization) {
@@ -103,7 +102,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       initialValues={INITIAL_FORM_VALUES}
       validationSchema={messageSchema}
       onSubmit={submitMsg}
-      id="messageForm"
     >
       {({
         values,
@@ -126,14 +124,13 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                   ns: 'common',
                 })}`}
                 className={`${getError('dateRange', errors, errors)}`}
-                setDates={() => {}}
                 isTooltipInput={true}
                 showIcons={true}
                 onBlur={handleBlur}
                 onChange={value => setFieldValue('dateRange', value)}
                 value={values.dateRange}
               />
-              {getError('dateRange', errors, errors, false)}
+              {getError('dateRange', errors, touched, false)}
             </FormGroup>
             <FormGroup className="form-group mt-3">
               <MapInput
@@ -145,7 +142,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 rows="10"
                 coordinates={getWKTfromFeature(coordinates)}
                 setCoordinates={wkt => setCoordinates(getGeoFeatures(wkt))}
-                isValidFormat={isValidCoordFormat}
                 onBlur={handleBlur}
                 handleChange={handleChange}
                 value={values.coordinates}
