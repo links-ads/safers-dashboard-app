@@ -11,7 +11,7 @@ const MapInput = ({
   setCoordinates,
   coordinates,
   t,
-  handleChange = () => {},
+  handleChange,
   ...rest
 }) => {
   const [showError, setShowError] = useState(false);
@@ -28,9 +28,11 @@ const MapInput = ({
   }, [coordinates, showError, setWktStr, isValidFormat, setShowError]);
 
   useEffect(() => {
-    handleChange({
-      target: { value: coordinates, id: rest.id, name: rest.name },
-    });
+    if (handleChange) {
+      handleChange({
+        target: { value: coordinates, id: rest.id, name: rest.name },
+      });
+    }
   }, [coordinates, handleChange, rest.id, rest.name]);
 
   const onChange = val => {

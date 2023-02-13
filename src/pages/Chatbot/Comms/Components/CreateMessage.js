@@ -230,7 +230,9 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
               </Button>
               <Button
                 type="submit"
-                onClick={() => submitMsg(values)}
+                onClick={() =>
+                  Object.keys(errors).length === 0 ? submitMsg(values) : null
+                }
                 className="mx-3"
               >
                 {t('send', { ns: 'common' })}
