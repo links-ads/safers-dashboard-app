@@ -160,7 +160,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
               rows="10"
               coordinates={getWKTfromFeature(coordinates)}
               setCoordinates={wkt => setCoordinates(getGeoFeatures(wkt))}
-              onChange={handleChange}
+              handleChange={handleChange}
               onBlur={handleBlur}
             />
             {getError('coordinates', errors, touched, false)}
