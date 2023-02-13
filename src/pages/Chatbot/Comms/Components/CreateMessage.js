@@ -20,6 +20,14 @@ import {
 } from '../../../../store/comms/action';
 import 'toastr/build/toastr.min.css';
 
+const INITIAL_FORM_VALUES = {
+  dateRange: '',
+  coordinates: [],
+  scope: '',
+  restriction: '',
+  description: '',
+};
+
 const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const dispatch = useDispatch();
 
@@ -82,21 +90,17 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       start: dateRange[0] ? dateRange[0] : null,
       end: dateRange[1] ? dateRange[1] : null,
       scope,
-      restriction,
       geometry: coordinates,
     };
+    if (scope !== 'Public') {
+      payload.restriction = restriction;
+    }
     dispatch(createMsg(payload));
   };
 
   return (
     <Formik
-      initialValues={{
-        dateRange: '',
-        coordinates: [],
-        scope: '',
-        restriction: '',
-        description: '',
-      }}
+      initialValues={INITIAL_FORM_VALUES}
       validationSchema={messageSchema}
       onSubmit={submitMsg}
       id="messageForm"
@@ -140,10 +144,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 placeholder={t('Map Selection', { ns: 'chatBot' })}
                 rows="10"
                 coordinates={getWKTfromFeature(coordinates)}
-                setCoordinates={wkt => {
-                  const geojson = getGeoFeatures(wkt);
-                  setCoordinates(geojson);
-                }}
+                setCoordinates={wkt => setCoordinates(getGeoFeatures(wkt))}
                 isValidFormat={isValidCoordFormat}
                 onBlur={handleBlur}
                 handleChange={handleChange}
@@ -228,13 +229,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
               <Button type="button" onClick={onCancel}>
                 {t('cancel', { ns: 'common' })}
               </Button>
-              <Button
-                type="submit"
-                onClick={() =>
-                  Object.keys(errors).length === 0 ? submitMsg(values) : null
-                }
-                className="mx-3"
-              >
+              <Button type="submit" className="mx-3">
                 {t('send', { ns: 'common' })}
               </Button>
             </div>
