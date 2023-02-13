@@ -1,6 +1,6 @@
-/* eslint-disable import/order */
 import React, { useEffect, useState } from 'react';
 
+import { Formik } from 'formik';
 import _ from 'lodash';
 import moment from 'moment';
 import PropTypes from 'prop-types';
@@ -20,8 +20,6 @@ import {
   resetCommsResponseState,
 } from '../../../../store/comms/action';
 import 'toastr/build/toastr.min.css';
-
-import { Formik } from 'formik';
 
 const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const dispatch = useDispatch();
@@ -129,7 +127,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
         handleBlur,
         handleSubmit,
         setFieldValue,
-        isSubmitting,
       }) => {
         return (
           <Form onSubmit={handleSubmit} noValidate>
@@ -163,7 +160,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
                 coordinates={getWKTfromFeature(coordinates)}
                 setCoordinates={wkt => {
                   const geojson = getGeoFeatures(wkt);
-                  setFieldValue('coordinates', geojson);
                   setCoordinates(geojson);
                 }}
                 isValidFormat={isValidCoordFormat}

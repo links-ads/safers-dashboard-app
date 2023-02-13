@@ -3,11 +3,10 @@ import * as api from '../../api/base';
 import { endpoints } from '../../api/endpoints';
 
 export const createMsg = payload => async dispatch => {
-  console.log('createMsg', payload);
-  // const response = await api.post(endpoints.chatbot.comms.createMsg, payload);
-  // if (response.status === 200) {
-  //   return dispatch(createMsgSuccess(response.data));
-  // } else return dispatch(createMsgFail(response.error));
+  const response = await api.post(endpoints.chatbot.comms.createMsg, payload);
+  if (response.status === 200) {
+    return dispatch(createMsgSuccess(response.data));
+  } else return dispatch(createMsgFail(response.error));
 };
 
 const createMsgSuccess = data => {
