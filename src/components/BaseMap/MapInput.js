@@ -11,24 +11,23 @@ const MapInput = ({
   setCoordinates,
   coordinates,
   t,
+  handleChange,
   ...rest
 }) => {
   const [showError, setShowError] = useState(false);
-  const [wktStr, setWktStr] = useState('');
   const [isOpen, setIsOpen] = useState(false);
   const toggle = () => setIsOpen(!isOpen);
 
   useEffect(() => {
-    if (coordinates || (!showError && coordinates === '')) {
-      setWktStr(coordinates);
-      isValidFormat(true);
-      setShowError(false);
+    if (handleChange) {
+      handleChange({
+        target: { value: coordinates, id: rest.id, name: rest.name },
+      });
     }
-  }, [coordinates, showError, setWktStr, isValidFormat, setShowError]);
+  }, [coordinates, handleChange, rest.id, rest.name]);
 
   const onChange = val => {
     const isValid = isWKTValid(val);
-    setWktStr(val);
     isValid ? setCoordinates(val) : setCoordinates('');
     setShowError(!isValid);
     isValidFormat(isValid);
@@ -46,7 +45,7 @@ const MapInput = ({
           rows={rest.rows ? rest.rows : undefined}
           type={rest.type ? rest.type : undefined}
           onChange={e => onChange(e.target.value)}
-          value={wktStr}
+          value={coordinates}
         />
         <i
           onClick={() => setIsOpen(true)}
