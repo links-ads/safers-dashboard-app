@@ -105,12 +105,12 @@ const People = ({ pollingFrequency }) => {
           MAP_TYPES.PEOPLE,
           'people',
           dispatch,
-          // setViewState,
+          setViewState,
           { id: peopleId },
         ),
       );
     }
-  }, [allPeople, dispatch, peopleId]);
+  }, [allPeople, dispatch, peopleId, setViewState]);
 
   useInterval(
     () => {

@@ -94,12 +94,19 @@ const Reports = ({ pollingFrequency }) => {
       });
 
       setIconLayer(
-        getIconLayer(reshapedReports, MAP_TYPES.REPORTS, 'report', dispatch, {
-          id: reportId,
-        }),
+        getIconLayer(
+          reshapedReports,
+          MAP_TYPES.REPORTS,
+          'report',
+          dispatch,
+          setViewState,
+          {
+            id: reportId,
+          },
+        ),
       );
     }
-  }, [allReports, dispatch, reportId]);
+  }, [allReports, dispatch, reportId, setViewState]);
 
   const getReportsByArea = () => {
     setBoundingBox(

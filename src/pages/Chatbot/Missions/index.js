@@ -106,12 +106,12 @@ const Missions = ({ pollingFrequency }) => {
           MAP_TYPES.MISSIONS,
           'target',
           dispatch,
-          // setViewState,
+          setViewState,
           { id: missionId },
         ),
       );
     }
-  }, [allMissions, dispatch, missionId]);
+  }, [allMissions, dispatch, missionId, setViewState]);
 
   useInterval(
     () => {

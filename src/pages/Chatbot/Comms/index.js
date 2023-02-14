@@ -106,6 +106,7 @@ const Comms = ({ pollingFrequency }) => {
           MAP_TYPES.COMMUNICATIONS,
           'communications',
           dispatch,
+          setViewState,
           { id: commID },
         ),
       );
