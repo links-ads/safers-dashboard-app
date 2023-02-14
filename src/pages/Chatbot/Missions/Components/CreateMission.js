@@ -70,19 +70,19 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   }, [dispatch]);
 
   const createMissionSchema = Yup.object().shape({
-    coordinates: Yup.string().required('Coordinates are required'),
+    coordinates: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     dateRange: Yup.array()
-      .min(2, 'Start and end dates are required')
-      .required(),
-    teamId: Yup.string().required('Team is required'),
+      .of(Yup.date())
+      .min(2, 'Start and end dates are required'),
+    teamId: Yup.string().optional(),
     personId: Yup.string()
       .ensure()
       .when('teamId', {
-        is: '1' || '19',
-        then: Yup.string().required('User is required'),
+        is: teamId => teamId === '1' || teamId === '19',
+        then: Yup.string().required(t('field-empty-err', { ns: 'common' })),
       }),
-    desc: Yup.string().required('Description is required'),
-    title: Yup.string().required('Title is required'),
+    desc: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    title: Yup.string().required(t('field-empty-err', { ns: 'common' })),
   });
 
   const onSubmit = ({
@@ -222,8 +222,8 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
                     </option>
                   ))}
                 </Input>
+                {getError('personId', errors, touched, false)}
               </Col>
-              {getError('personId', errors, touched, false)}
             </Row>
           </div>
 
