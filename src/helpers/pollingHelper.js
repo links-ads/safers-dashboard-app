@@ -2,17 +2,22 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
+import {
+  fetchNotifications,
+  setNewNotificationState,
+  allNotificationsSelector,
+  notificationParamsSelector,
+  notificationIsPageActiveSelector,
+} from 'store/notifications/notifications.slice';
+
 import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 import {
   getAllFireAlerts,
   setNewAlertState,
   getAllEventAlerts,
   setNewEventState,
-  getAllNotifications,
-  setNewNotificationState,
   getAllMapRequests,
   setNewMapRequestState,
-  getAllPeople,
 } from '../store/appAction';
 
 const MILLISECONDS = 1000;
@@ -44,11 +49,11 @@ const PollingHelper = props => {
   } = useSelector(state => state.eventAlerts);
 
   // Notifications
-  const {
-    allNotifications,
-    params: notificationParams,
-    isPageActive: isNotificationPageActive,
-  } = useSelector(state => state.notifications);
+  const allNotifications = useSelector(allNotificationsSelector);
+  const notificationParams = useSelector(notificationParamsSelector);
+  const isNotificationPageActive = useSelector(
+    notificationIsPageActiveSelector,
+  );
 
   const { config, dateRange } = useSelector(state => state.common);
   const pollingFrequency = config ? config.polling_frequency : undefined;
@@ -61,20 +66,27 @@ const PollingHelper = props => {
   let dateRangeParams = {};
 
   if (dateRange) {
-    delete alertParams.default_date;
-    delete eventParams.default_date;
-    delete notificationParams.default_date;
     dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {};
   }
 
   const callAPIs = () => {
-    dispatch(getAllFireAlerts({ ...alertParams, ...dateRangeParams }));
-    dispatch(getAllEventAlerts({ ...eventParams, ...dateRangeParams }));
-    dispatch(
-      getAllNotifications({ ...notificationParams, ...dateRangeParams }),
-    );
+    let alParams = null;
+    let evParams = null;
+    let ntParams = null;
+    if (dateRange) {
+      const { default_date: alertDate, ...restAlerts } = alertParams;
+      alParams = { ...restAlerts };
+      const { default_date: eventDate, ...restEvents } = eventParams;
+      evParams = { ...restEvents };
+      const { default_date: notificationDate, ...restNotifications } =
+        notificationParams;
+      ntParams = { ...restNotifications };
+    }
+    dispatch(getAllFireAlerts({ ...alParams, ...dateRangeParams }));
+    dispatch(getAllEventAlerts({ ...evParams, ...dateRangeParams }));
+    dispatch(fetchNotifications({ ...ntParams, ...dateRangeParams }));
     dispatch(getAllMapRequests({ ...mapRequestParams, ...dateRangeParams }));
   };
 
@@ -124,7 +136,13 @@ const PollingHelper = props => {
     ) {
       let difference = newNotificationsCount - currentNotificationCount;
       if (!isNotificationPageActive)
-        dispatch(setNewNotificationState(true, false, difference));
+        dispatch(
+          setNewNotificationState({
+            isNewNotification: true,
+            isPageActive: false,
+            newItemsCount: difference,
+          }),
+        );
     }
     setCurrentNotificationCount(newNotificationsCount);
     // eslint-disable-next-line react-hooks/exhaustive-deps

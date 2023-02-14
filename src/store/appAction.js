@@ -67,11 +67,3 @@ export {
   getWeatherStats,
   getWeatherVariables,
 } from './dashboard/action';
-export {
-  getAllNotifications,
-  getAllNotificationSources,
-  getAllNotificationScopesRestrictions,
-  setNotificationParams,
-  resetNotificationApiParams,
-  setNewNotificationState,
-} from './notifications/action';
