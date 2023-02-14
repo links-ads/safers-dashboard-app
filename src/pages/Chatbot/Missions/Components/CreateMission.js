@@ -73,14 +73,9 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
     coordinates: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     dateRange: Yup.array()
       .of(Yup.date())
-      .min(2, 'Start and end dates are required'),
+      .min(2, t('field-empty-err', { ns: 'common' })),
     teamId: Yup.string().optional(),
-    personId: Yup.string()
-      .ensure()
-      .when('teamId', {
-        is: teamId => teamId === '1' || teamId === '19',
-        then: Yup.string().required(t('field-empty-err', { ns: 'common' })),
-      }),
+    personId: Yup.string().optional(),
     desc: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     title: Yup.string().required(t('field-empty-err', { ns: 'common' })),
   });
