@@ -28,7 +28,7 @@ const NotificationsList = ({
     <>
       <Row>
         {paginatedNotifications.map(alert => (
-          <NotificatonCard key={alert} card={alert} />
+          <NotificatonCard key={alert.id} card={alert} />
         ))}
       </Row>
 
