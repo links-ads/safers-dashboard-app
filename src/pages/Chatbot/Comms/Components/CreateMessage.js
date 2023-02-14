@@ -21,7 +21,7 @@ import {
 import 'toastr/build/toastr.min.css';
 
 const INITIAL_FORM_VALUES = {
-  dateRange: '',
+  dateRange: [],
   coordinates: [],
   scope: '',
   restriction: '',
@@ -36,8 +36,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   const messageSchema = Yup.object().shape({
     dateRange: Yup.array()
       .of(Yup.date())
-      .min(2)
-      .required(t('field-empty-err', { ns: 'common' })),
+      .min(2, t('field-empty-err', { ns: 'common' })),
     coordinates: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     restriction: Yup.string().when('scope', {
