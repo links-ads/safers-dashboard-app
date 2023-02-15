@@ -98,7 +98,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
       source: 'Chatbot',
       geometry: coordinates,
       coordinatorTeamId: teamId ? parseInt(teamId) : null,
-      coordinatorPersonId: personId ? parseInt(personId) : null,
+      coordinatorPersonId: teamId && personId ? parseInt(personId) : null,
     };
 
     dispatch(createMission(payload));

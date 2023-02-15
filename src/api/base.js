@@ -12,6 +12,8 @@ const axiosApi = axios.create({
   baseURL: `${BASE_URL}/${API_PREFIX}`,
 });
 
+console.log('AXIOS: ', `${BASE_URL}/${API_PREFIX}`);
+
 const whitelistedUrls = [
   endpoints.notifications.getAll,
   endpoints.eventAlerts.getAll,

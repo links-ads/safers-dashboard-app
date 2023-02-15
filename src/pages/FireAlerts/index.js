@@ -116,7 +116,7 @@ const FireAlerts = ({ t }) => {
             selectedAlert,
           ),
         icon: 'fire',
-        iconColor: '#ffffff',
+        iconColor: [255, 255, 255],
         clusterIconSize: 35,
         getPinSize: () => 35,
         pixelOffset: [-18, -18],
@@ -127,6 +127,7 @@ const FireAlerts = ({ t }) => {
   );
 
   useEffect(() => {
+    console.log('ABOUT TO FETCH SOURCES');
     dispatch(getSource());
     dispatch(setNewAlertState(false, true));
     return () => {
@@ -135,41 +136,41 @@ const FireAlerts = ({ t }) => {
     };
   }, [dispatch]);
 
-  useEffect(() => {
-    getAlerts();
-  }, [sortByDate, alertSource, dateRange, boundingBox, getAlerts]);
+  // useEffect(() => {
+  //   getAlerts();
+  // }, [sortByDate, alertSource, dateRange, boundingBox, getAlerts]);
 
-  useEffect(() => {
-    if (success) toastr.success(success, '');
-    else if (error) toastr.error(error, '');
+  // useEffect(() => {
+  //   if (success) toastr.success(success, '');
+  //   else if (error) toastr.error(error, '');
 
-    setIsEdit(false);
-    dispatch(resetAlertsResponseState());
-  }, [success, error, dispatch]);
+  //   setIsEdit(false);
+  //   dispatch(resetAlertsResponseState());
+  // }, [success, error, dispatch]);
 
-  useEffect(() => {
-    if (alerts.length > filteredAlerts.length) {
-      toastr.success(t('polling-alert-msg', { ns: 'fireAlerts' }), '', {
-        preventDuplicates: true,
-      });
-    }
-  }, [alerts, filteredAlerts.length, t]);
+  // useEffect(() => {
+  //   if (alerts.length > filteredAlerts.length) {
+  //     toastr.success(t('polling-alert-msg', { ns: 'fireAlerts' }), '', {
+  //       preventDuplicates: true,
+  //     });
+  //   }
+  // }, [alerts, filteredAlerts.length, t]);
 
-  useEffect(() => {
-    setAlertId(undefined);
-    setIconLayer(getFireAlertLayer(filteredAlerts));
-    if (!viewState) {
-      setViewState(
-        getViewState(
-          defaultAoi.features[0].properties.midPoint,
-          defaultAoi.features[0].properties.zoomLevel,
-        ),
-      );
-    }
-    setCurrentPage(1);
-    hideTooltip();
-    setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)));
-  }, [defaultAoi.features, filteredAlerts, getFireAlertLayer, viewState]);
+  // useEffect(() => {
+  //   setAlertId(undefined);
+  //   setIconLayer(getFireAlertLayer(filteredAlerts));
+  //   if (!viewState) {
+  //     setViewState(
+  //       getViewState(
+  //         defaultAoi.features[0].properties.midPoint,
+  //         defaultAoi.features[0].properties.zoomLevel,
+  //       ),
+  //     );
+  //   }
+  //   setCurrentPage(1);
+  //   hideTooltip();
+  //   setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)));
+  // }, [defaultAoi.features, filteredAlerts, getFireAlertLayer, viewState]);
 
   const getAlertsByArea = () => {
     setBoundingBox(

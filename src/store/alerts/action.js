@@ -6,7 +6,9 @@ import { endpoints } from '../../api/endpoints';
 import { InProgress } from '../authentication/action';
 
 export const getSource = () => async dispatch => {
+  console.log('FETCHING: ', endpoints.fireAlerts.source);
   const response = await api.get(endpoints.fireAlerts.source);
+  console.log('RES: ', response.data);
   if (response.status === 200) {
     return dispatch(getSourceSuccess(response.data));
   } else return dispatch(getSourceFail(response.data));
