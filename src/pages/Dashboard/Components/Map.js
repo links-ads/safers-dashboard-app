@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 
+import { BitmapLayer } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
@@ -14,7 +15,27 @@ import {
   getEventIconLayer,
 } from '../../../helpers/mapHelper';
 
+const getBitmapLayer = selectedLayerNode => {
+  /*
+     extract bounds from url, this is passed in as an object with timestamps
+     as the keys and urls as the values. Only going to show first one for now
+    */
+  const firstURL = Object.values(selectedLayerNode.urls)[0];
+  const urlSearchParams = new URLSearchParams(firstURL);
+  const urlParams = Object.fromEntries(urlSearchParams.entries());
+  const bounds = urlParams?.bbox
+    ? urlParams.bbox.split(',').map(Number)
+    : selectedLayerNode.bbox;
+  return new BitmapLayer({
+    id: 'bitmap-layer',
+    bounds: bounds,
+    image: firstURL,
+    opacity: 0.5,
+  });
+};
+
 const MapComponent = ({
+  selectedLayer = null, // raster layer
   eventList = [],
   orgPplList = [],
   orgReportList = [],
@@ -25,6 +46,13 @@ const MapComponent = ({
 }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
+
+  console.log('MapComponent sees', selectedLayer);
+
+  const rasterLayer = useMemo(() => {
+    console.log('in useMemo', selectedLayer);
+    return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
+  }, [selectedLayer]);
 
   const iconLayer = useMemo(
     () =>
@@ -117,7 +145,10 @@ const MapComponent = ({
     peopleLayer,
     reportLayer,
     commsLayer,
+    rasterLayer,
   ];
+
+  console.log('allLayers', allLayers);
 
   return (
     <Card className="map-card">
