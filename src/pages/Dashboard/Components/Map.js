@@ -47,10 +47,7 @@ const MapComponent = ({
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
-  console.log('MapComponent sees', selectedLayer);
-
-  const rasterLayer = useMemo(() => {
-    console.log('in useMemo', selectedLayer);
+  const mapRequestLayer = useMemo(() => {
     return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
   }, [selectedLayer]);
 
@@ -130,12 +127,19 @@ const MapComponent = ({
   );
 
   const viewState = useMemo(() => {
+    if (mapRequestLayer) {
+      // zoom to raster
+      const [minX, minY, maxX, maxY] = mapRequestLayer.props.bounds;
+      const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
+      const zoom = 10;
+      return getViewState(midpoint, zoom);
+    }
     return getViewState(
-      //memoized this to prevent map snapping back to AOI after polling
+      // zoom to user AOI
       objAoi.features[0].properties.midPoint,
       objAoi.features[0].properties.zoomLevel,
     );
-  }, [objAoi]);
+  }, [mapRequestLayer, objAoi.features]);
 
   const allLayers = [
     polygonLayer,
@@ -145,10 +149,8 @@ const MapComponent = ({
     peopleLayer,
     reportLayer,
     commsLayer,
-    rasterLayer,
+    mapRequestLayer,
   ];
-
-  console.log('allLayers', allLayers);
 
   return (
     <Card className="map-card">

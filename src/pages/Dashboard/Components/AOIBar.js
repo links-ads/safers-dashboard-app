@@ -159,14 +159,8 @@ const AOIBar = ({
     setEventList(events);
   }, [events]);
 
-  useEffect(() => {
-    console.log('selectedLayer now', selectedLayer);
-  }, [selectedLayer]);
-
   const updateRasterLayer = newLayerId => {
     const selectedNode = mapRequests.find(layer => layer.key === newLayerId);
-    console.log('New layer ID', newLayerId);
-    console.log('Selected node', selectedNode);
     setSelectedLayer(selectedNode);
     setSelectedLayerId(newLayerId);
     if (selectedNode) {
