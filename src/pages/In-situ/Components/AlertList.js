@@ -40,13 +40,6 @@ const AlertList = ({
   setIsViewStateChanged,
   hideTooltip,
 }) => {
-  // const {
-  //   paginatedAlerts,
-  //   currentPage,
-  //   filteredAlerts,
-  //   cameraList,
-  //   cameraInfo,
-  // } = useSelector(state => state.inSituAlerts);
   const filteredAlerts = useSelector(filteredCameraAlertsSelector);
   const paginatedAlerts = useSelector(paginatedCameraAlertsSelector);
   const cameraList = useSelector(cameraListSelector);
