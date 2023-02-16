@@ -182,6 +182,7 @@ const People = ({ pollingFrequency }) => {
               <PeopleList
                 peopleId={peopleId}
                 currentZoomLevel={viewState.zoom}
+                setViewState={setViewState}
                 setPeopleId={setPeopleId}
                 setIconLayer={setIconLayer}
               />
