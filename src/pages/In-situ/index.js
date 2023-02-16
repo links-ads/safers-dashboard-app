@@ -148,7 +148,7 @@ const InSituAlerts = () => {
       );
     }
     dispatch(setFilteredCameraAlerts(alerts));
-  }, [alerts, defaultAoi.features, dispatch, viewState]);
+  }, [alerts, defaultAoi.features, dispatch, setViewState, viewState]);
 
   useEffect(() => {
     if (!viewState) {
@@ -164,7 +164,7 @@ const InSituAlerts = () => {
     dispatch(
       setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))),
     );
-  }, [defaultAoi.features, dispatch, filteredAlerts, viewState]);
+  }, [defaultAoi.features, dispatch, filteredAlerts, setViewState, viewState]);
 
   const handleResetAOI = useCallback(() => {
     setViewState(
@@ -173,7 +173,7 @@ const InSituAlerts = () => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, [defaultAoi.features]);
+  }, [defaultAoi.features, setViewState]);
 
   const showTooltip = info => {
     if (info) {
@@ -236,7 +236,7 @@ const InSituAlerts = () => {
                   setIconLayer={setIconLayer}
                   setHoverInfo={setHoverInfo}
                   hideTooltip={hideTooltip}
-                  setViewState={useCallback(() => setViewState, [])}
+                  setViewState={useCallback(() => setViewState, [setViewState])}
                   setIsViewStateChanged={setIsViewStateChanged}
                 />
               </Col>
