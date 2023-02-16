@@ -5,11 +5,15 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import {
+  setReportFavorite,
+  filteredReportsSelector,
+} from 'store/reports/reports.slice';
+
 import Report from './Report';
 import PaginationWrapper from '../../../../components/Pagination';
 import { MAP_TYPES } from '../../../../constants/common';
 import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
-import { setFavorite } from '../../../../store/reports/action';
 
 const ReportList = ({
   reportId,
@@ -18,7 +22,7 @@ const ReportList = ({
   setReportId,
   setIconLayer,
 }) => {
-  const { filteredReports } = useSelector(state => state.reports);
+  const filteredReports = useSelector(filteredReportsSelector);
   const [pageData, setPageData] = useState([]);
 
   const dispatch = useDispatch();
@@ -28,7 +32,9 @@ const ReportList = ({
   const setFavoriteFlag = id => {
     let selectedReport = _.find(pageData, { id });
     selectedReport.isFavorite = !selectedReport.isFavorite;
-    dispatch(setFavorite(id, selectedReport.isFavorite));
+    dispatch(
+      setReportFavorite({ alertId: id, isFavorite: selectedReport.isFavorite }),
+    );
   };
 
   const setSelectedReport = report_id => {

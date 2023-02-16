@@ -8,7 +8,7 @@ import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
 import { getAllEventAlerts } from 'store/events/action';
 import { getAllMissions } from 'store/missions/action';
 import { getAllPeople } from 'store/people/action';
-import { getAllReports } from 'store/reports/action';
+import { fetchReports, allReportsSelector } from 'store/reports/reports.slice';
 
 import AOIBar from './Components/AOIBar';
 import NotificationsBar from './Components/Notifications';
@@ -41,7 +41,8 @@ const NewDashboard = () => {
     state => state.people,
   );
 
-  const { allReports: OrgReportList } = useSelector(state => state?.reports);
+  const OrgReportList = useSelector(allReportsSelector);
+
   const { allAlerts: alerts, filteredAlerts } = useSelector(
     state => state?.alerts,
   );

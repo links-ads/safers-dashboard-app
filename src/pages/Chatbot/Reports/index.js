@@ -10,6 +10,16 @@ import { useMap } from 'components/BaseMap/MapContext';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import {
+  fetchReports,
+  resetReportResponseState,
+  allReportsSelector,
+  filteredReportsSelector,
+  reportsSuccessSelector,
+  reportsBoundingBoxSelector,
+  reportsMapFilterSelector,
+} from 'store/reports/reports.slice';
+
 import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
 import SortSection from './Components/SortSection';
@@ -20,21 +30,16 @@ import {
   getViewState,
   getIconLayer,
 } from '../../../helpers/mapHelper';
-import {
-  getAllReports,
-  resetReportResponseState,
-} from '../../../store/reports/action';
 
 const Reports = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const {
-    allReports: OrgReportList,
-    success,
-    filteredReports,
-    boundingBox: gBbox,
-    mapFilter,
-  } = useSelector(state => state.reports);
+  const orgReportList = useSelector(allReportsSelector);
+  const filteredReports = useSelector(filteredReportsSelector);
+  const success = useSelector(reportsSuccessSelector);
+  const gBbox = useSelector(reportsBoundingBoxSelector);
+  const mapFilter = useSelector(reportsMapFilterSelector);
+
   const dateRange = useSelector(state => state.common.dateRange);
 
   const { t } = useTranslation();
@@ -48,7 +53,7 @@ const Reports = ({ pollingFrequency }) => {
 
   const dispatch = useDispatch();
 
-  const allReports = filteredReports || OrgReportList;
+  const allReports = filteredReports || orgReportList;
 
   useEffect(() => {
     setReportId(undefined);
@@ -66,14 +71,14 @@ const Reports = ({ pollingFrequency }) => {
             }
           : {}),
       };
-      dispatch(getAllReports(params));
+      dispatch(fetchReports({ options: params }));
       return params;
     });
   }, [dispatch, boundingBox, setReportParams, dateRange]);
 
   useInterval(
     () => {
-      dispatch(getAllReports(reportParams, true));
+      dispatch(fetchReports({ options: reportParams, isPoling: true }));
     },
     pollingFrequency,
     [reportParams],
