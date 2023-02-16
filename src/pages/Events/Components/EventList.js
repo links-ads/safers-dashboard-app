@@ -9,7 +9,7 @@ import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 import PaginationWrapper from '../../../components/Pagination';
 import { MAP_TYPES } from '../../../constants/common';
 import { getAlertIconColorFromContext } from '../../../helpers/mapHelper';
-import { PAGE_SIZE } from '../../../store/events/types';
+import { PAGE_SIZE } from '../constants';
 
 const EventList = ({
   alertId,

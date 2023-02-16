@@ -7,7 +7,7 @@ import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
 import { useMap } from 'components/BaseMap/MapContext';
-
+import { PAGE_SIZE } from 'pages/Events/constants';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import {
@@ -35,7 +35,6 @@ import {
   getViewState,
   getAlertIconColorFromContext,
 } from '../../helpers/mapHelper';
-import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
 

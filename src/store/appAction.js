@@ -30,16 +30,6 @@ export {
   setDateRangeDisabled,
 } from './common/action';
 export {
-  getAllEventAlerts,
-  setEventParams,
-  setNewEventState,
-  resetEventAlertsResponseState,
-  getEventInfo,
-  editEventAlertInfo,
-  setFilteredEventAlerts,
-  setEventFavoriteAlert,
-} from './events/action';
-export {
   getSource,
   getAllFireAlerts,
   setFilteredAlerts,

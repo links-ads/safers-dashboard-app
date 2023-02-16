@@ -5,14 +5,18 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Card, Row, Col } from 'reactstrap';
 
+import { eventInSituMediaSelector } from 'store/events/events.slice';
+
 import MediaComponent from '../../../../components/MediaComponent';
 import PaginationWrapper from '../../../../components/Pagination';
 
 //i18n
 
 const InSituContainer = ({ t }) => {
-  const inSituMedia = useSelector(state => state.eventAlerts.inSituMedia);
+  const inSituMedia = useSelector(eventInSituMediaSelector);
+
   const [pageData, setPageData] = useState([]);
+
   return (
     <Row role="in-situ-container">
       <Col md={12} className="d-flex">

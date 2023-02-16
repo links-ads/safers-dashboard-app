@@ -5,14 +5,12 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Card } from 'reactstrap';
 
+import { editEventInfo, validateEvent } from 'store/events/events.slice';
+
 import ToolTip from './Tooltip';
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import SearchButton from '../../../components/SearchButton';
-import {
-  editEventAlertInfo,
-  validateEventAlert,
-} from '../../../store/events/action';
-import { PAGE_SIZE } from '../../../store/events/types';
+import { PAGE_SIZE } from '../constants';
 
 const MapSection = ({
   currentPage,
@@ -44,17 +42,17 @@ const MapSection = ({
           isEdit={isEdit}
           setIsEdit={setIsEdit}
           setFavorite={setFavorite}
-          validateEvent={validateEvent}
+          validateEvent={validate}
           editInfo={editInfo}
         />
       );
     }
   };
 
-  const validateEvent = id => {
+  const validate = id => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.status = 'VALIDATED';
-    dispatch(validateEventAlert(id));
+    dispatch(validateEvent(id));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
@@ -63,7 +61,7 @@ const MapSection = ({
   const editInfo = (id, desc) => {
     let selectedAlert = _.find(filteredAlerts, { id });
     selectedAlert.description = desc;
-    dispatch(editEventAlertInfo(id, desc));
+    dispatch(editEventInfo({ eventId: id, editInfo: desc }));
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));

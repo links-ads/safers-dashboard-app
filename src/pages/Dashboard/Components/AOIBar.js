@@ -4,9 +4,14 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Card } from 'reactstrap';
 
+import {
+  fetchEvents,
+  setEventParams,
+  filteredEventsSelector,
+} from 'store/events/events.slice';
+
 import EventsPanel from './EventsPanel';
 import MapComponent from './Map';
-import { setEventParams, getAllEventAlerts } from '../../../store/appAction';
 
 const AOIBar = ({
   orgPplList,
@@ -24,7 +29,7 @@ const AOIBar = ({
   // start with filtered alerts, looks better starting with none and showing
   // the right number in a few seconds, than starting with lots and then
   // shortening the list
-  const { filteredAlerts: events } = useSelector(state => state.eventAlerts);
+  const filteredEvents = useSelector(filteredEventsSelector);
 
   const updateEventList = useCallback(() => {
     // default to last 3 days, else use date range selector
@@ -43,7 +48,9 @@ const AOIBar = ({
       ...dateRangeParams,
     };
     dispatch(setEventParams(eventParams));
-    dispatch(getAllEventAlerts(eventParams, true, false));
+    dispatch(
+      fetchEvents({ options: eventParams, fromPage: true, isLoading: false }),
+    );
   }, [dateRange, dispatch]);
 
   useEffect(() => {
@@ -51,8 +58,8 @@ const AOIBar = ({
   }, [dateRange, updateEventList]);
 
   useEffect(() => {
-    setEventList(events);
-  }, [events]);
+    setEventList(filteredEvents);
+  }, [filteredEvents]);
 
   return (
     <Container fluid="true">
@@ -71,7 +78,7 @@ const AOIBar = ({
           </Card>
           <Container className="px-4 container">
             <Row>
-              <EventsPanel eventList={events} />
+              <EventsPanel eventList={filteredEvents} />
             </Row>
             <Row>
               <Card
