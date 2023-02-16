@@ -8,6 +8,8 @@ import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { useMap } from 'components/BaseMap/MapContext';
+
 import CreateMission from './Components/CreateMission';
 import MapSection from './Components/Map';
 import MissionList from './Components/MissionList';
@@ -25,6 +27,7 @@ import {
 } from '../../../store/missions/action';
 
 const Missions = ({ pollingFrequency }) => {
+  const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const {
     allMissions: OrgMissionList,
@@ -36,18 +39,10 @@ const Missions = ({ pollingFrequency }) => {
   const { t } = useTranslation();
 
   const [missionId, setMissionId] = useState(undefined);
-  const [viewState, setViewState] = useState(
-    getViewState(
-      defaultAoi.features[0].properties.midPoint,
-      defaultAoi.features[0].properties.zoomLevel,
-    ),
-  );
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
   const [missionStatus, setMissionStatus] = useState('');
-  const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState(null);
@@ -116,7 +111,7 @@ const Missions = ({ pollingFrequency }) => {
         ),
       );
     }
-  }, [allMissions, dispatch, missionId]);
+  }, [allMissions, dispatch, missionId, setViewState]);
 
   useInterval(
     () => {
@@ -137,15 +132,13 @@ const Missions = ({ pollingFrequency }) => {
 
   const getMissionsByArea = () => {
     setBoundingBox(
-      getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight),
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        newWidth,
+        newHeight,
+      ),
     );
-  };
-
-  const handleViewStateChange = e => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
-    }
   };
 
   const handleResetAOI = useCallback(() => {
@@ -191,7 +184,7 @@ const Missions = ({ pollingFrequency }) => {
               <Col xl={12} className="px-3">
                 <MissionList
                   missionId={missionId}
-                  currentZoomLevel={currentZoomLevel}
+                  currentZoomLevel={viewState.zoom}
                   setViewState={setViewState}
                   setMissionId={setMissionId}
                   setIconLayer={setIconLayer}
@@ -212,11 +205,8 @@ const Missions = ({ pollingFrequency }) => {
         )}
         <Col xl={7} className="mx-auto">
           <MapSection
-            viewState={viewState}
             iconLayer={iconLayer}
-            setViewState={setViewState}
             getMissionsByArea={getMissionsByArea}
-            handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
