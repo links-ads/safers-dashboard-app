@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import { useMap } from 'components/BaseMap/MapContext';
+
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import MapSection from './Components/Map';
@@ -24,6 +26,7 @@ import {
 } from '../../../store/reports/action';
 
 const Reports = ({ pollingFrequency }) => {
+  const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const {
     allReports: OrgReportList,
@@ -36,19 +39,9 @@ const Reports = ({ pollingFrequency }) => {
 
   const { t } = useTranslation();
 
-  const currentViewState = gBbox
-    ? getViewState(mapFilter.midPoint, mapFilter.currentZoomLevel)
-    : getViewState(
-        defaultAoi.features[0].properties.midPoint,
-        defaultAoi.features[0].properties.zoomLevel,
-      );
-
   const [reportId, setReportId] = useState(undefined);
-  const [viewState, setViewState] = useState(currentViewState);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(gBbox);
-  const [midPoint, setMidPoint] = useState([]);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [reportParams, setReportParams] = useState({});
@@ -107,23 +100,23 @@ const Reports = ({ pollingFrequency }) => {
           'report',
           dispatch,
           setViewState,
-          { id: reportId },
+          {
+            id: reportId,
+          },
         ),
       );
     }
-  }, [allReports, dispatch, reportId]);
+  }, [allReports, dispatch, reportId, setViewState]);
 
   const getReportsByArea = () => {
     setBoundingBox(
-      getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight),
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        newWidth,
+        newHeight,
+      ),
     );
-  };
-
-  const handleViewStateChange = e => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
-    }
   };
 
   const handleResetAOI = useCallback(() => {
@@ -134,7 +127,7 @@ const Reports = ({ pollingFrequency }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, [defaultAoi.features]);
+  }, [defaultAoi.features, setViewState]);
 
   const handleClick = info => {
     const { id } = info?.object?.properties ?? {};
@@ -155,13 +148,16 @@ const Reports = ({ pollingFrequency }) => {
           <SortSection
             t={t}
             boundingBox={boundingBox}
-            mapFilter={{ midPoint, currentZoomLevel }}
+            mapFilter={{
+              midPoint: [viewState.longitude, viewState.latitude],
+              currentZoomLevel: viewState.zoom,
+            }}
           />
           <Row>
             <Col xl={12} className="px-3">
               <ReportList
                 reportId={reportId}
-                currentZoomLevel={currentZoomLevel}
+                currentZoomLevel={viewState.zoom}
                 setViewState={setViewState}
                 setReportId={setReportId}
                 setIconLayer={setIconLayer}
@@ -171,11 +167,8 @@ const Reports = ({ pollingFrequency }) => {
         </Col>
         <Col xl={7} className="mx-auto">
           <MapSection
-            viewState={viewState}
             iconLayer={iconLayer}
-            setViewState={setViewState}
             getReportsByArea={getReportsByArea}
-            handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
             onClick={handleClick}

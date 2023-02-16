@@ -8,10 +8,8 @@ import PolygonMap from '../../components/BaseMap/PolygonMap';
 import SearchButton from '../../components/SearchButton';
 
 const MapSection = ({
-  viewState,
   iconLayer,
   getReportsByArea,
-  handleViewStateChange,
   setNewWidth,
   setNewHeight,
   setCoordinates,
@@ -28,9 +26,7 @@ const MapSection = ({
       {!togglePolygonMap ? (
         <BaseMap
           layers={[iconLayer]}
-          initialViewState={viewState}
           widgets={[getSearchButton]}
-          onViewStateChange={handleViewStateChange}
           setWidth={setNewWidth}
           setHeight={setNewHeight}
           screenControlPosition="top-right"
@@ -42,9 +38,7 @@ const MapSection = ({
       {togglePolygonMap ? (
         <PolygonMap
           layers={[iconLayer]}
-          initialViewState={viewState}
           widgets={[getSearchButton]}
-          onViewStateChange={handleViewStateChange}
           setWidth={setNewWidth}
           setHeight={setNewHeight}
           screenControlPosition="top-right"
@@ -61,10 +55,8 @@ const MapSection = ({
 };
 
 MapSection.propTypes = {
-  viewState: PropTypes.any,
   iconLayer: PropTypes.any,
   getReportsByArea: PropTypes.func,
-  handleViewStateChange: PropTypes.func,
   setNewWidth: PropTypes.func,
   setNewHeight: PropTypes.func,
   setCoordinates: PropTypes.func,

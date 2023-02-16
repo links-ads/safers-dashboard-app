@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import { useMap } from 'components/BaseMap/MapContext';
+
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import {
@@ -29,6 +31,7 @@ import {
 } from '../../../helpers/mapHelper';
 
 const Comms = ({ pollingFrequency }) => {
+  const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const allComms = useSelector(allCommsSelector);
   const success = useSelector(commsSuccessSelector);
@@ -38,19 +41,11 @@ const Comms = ({ pollingFrequency }) => {
   const { t } = useTranslation();
 
   const [commID, setCommID] = useState(undefined);
-  const [viewState, setViewState] = useState(
-    getViewState(
-      defaultAoi.features[0].properties.midPoint,
-      defaultAoi.features[0].properties.zoomLevel,
-    ),
-  );
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
   const [commStatus, setcommStatus] = useState('');
   const [target, setTarget] = useState('');
-  const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [newWidth, setNewWidth] = useState(600);
   const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState(null);
@@ -130,15 +125,13 @@ const Comms = ({ pollingFrequency }) => {
 
   const getReportsByArea = () => {
     setBoundingBox(
-      getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight),
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        newWidth,
+        newHeight,
+      ),
     );
-  };
-
-  const handleViewStateChange = e => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
-    }
   };
 
   const handleResetAOI = useCallback(() => {
@@ -192,7 +185,7 @@ const Comms = ({ pollingFrequency }) => {
               <Col xl={12} className="px-3">
                 <CommsList
                   commID={commID}
-                  currentZoomLevel={currentZoomLevel}
+                  currentZoomLevel={viewState.zoom}
                   setViewState={setViewState}
                   setCommID={setCommID}
                   setIconLayer={setIconLayer}
@@ -212,11 +205,8 @@ const Comms = ({ pollingFrequency }) => {
         )}
         <Col xl={7} className="mx-auto">
           <MapSection
-            viewState={viewState}
             iconLayer={iconLayer}
-            setViewState={setViewState}
             getReportsByArea={getReportsByArea}
-            handleViewStateChange={handleViewStateChange}
             setNewWidth={setNewWidth}
             setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}

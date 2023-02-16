@@ -1,4 +1,18 @@
-import React, { createContext, useContext, useRef } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useRef,
+  useState,
+} from 'react';
+
+export const INITIAL_VIEW_STATE = {
+  longitude: 9.56005296,
+  latitude: 43.02777403,
+  zoom: 4,
+  bearing: 0,
+  pitch: 0,
+};
 
 export const MapContext = createContext(undefined);
 MapContext.displayName = 'MapContext';
@@ -17,12 +31,25 @@ MapContext.displayName = 'MapContext';
 export const MapProvider = ({ value, ...rest }) => {
   const mapRef = useRef(null);
   const deckRef = useRef(null);
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+
+  const updateViewState = useCallback(
+    newViewState =>
+      setViewState(currentViewState => ({
+        ...currentViewState,
+        ...newViewState,
+      })),
+    [],
+  );
 
   return (
     <MapContext.Provider
       value={{
         mapRef,
         deckRef,
+        viewState,
+        setViewState,
+        updateViewState,
         ...value,
       }}
       {...rest}
