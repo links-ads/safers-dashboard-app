@@ -78,7 +78,6 @@ const notificationsSlice = createSlice({
       state.params = initialState.params;
     },
     setNotificationParams: (state, { payload }) => {
-      console.log('PAYLOAD: ', payload);
       state.params = payload ? payload : initialState.params;
     },
     setNewNotificationState: (state, { payload }) => {
