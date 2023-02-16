@@ -168,13 +168,23 @@ const FireAlerts = ({ t }) => {
       );
     }
     setCurrentPage(1);
-    hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)));
-  }, [defaultAoi.features, filteredAlerts, getFireAlertLayer, viewState]);
+  }, [
+    defaultAoi.features,
+    filteredAlerts,
+    getFireAlertLayer,
+    setViewState,
+    viewState,
+  ]);
 
   const getAlertsByArea = () => {
     setBoundingBox(
-      getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight),
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        newWidth,
+        newHeight,
+      ),
     );
   };
 
@@ -245,17 +255,16 @@ const FireAlerts = ({ t }) => {
         coordinate: selectedAlert.center,
       };
       setIsEdit(isEdit);
-      !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged
-        ? setViewState(
-            getViewState(
-              selectedAlert.center,
-              currentZoomLevel,
-              selectedAlert,
-              setHoverInfo,
-              setIsViewStateChanged,
-            ),
-          )
-        : setHoverInfo(pickedInfo);
+      setHoverInfo(pickedInfo);
+      setViewState(
+        getViewState(
+          selectedAlert.center,
+          viewState.zoom,
+          selectedAlert,
+          undefined,
+          setIsViewStateChanged,
+        ),
+      );
       setIconLayer(getFireAlertLayer(clonedAlerts, selectedAlert));
     } else {
       setAlertId(undefined);
@@ -271,7 +280,7 @@ const FireAlerts = ({ t }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, [defaultAoi.features]);
+  }, [defaultAoi.features, setViewState]);
 
   const hideTooltip = e => {
     if (e && e.viewState) {
