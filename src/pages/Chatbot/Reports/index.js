@@ -34,7 +34,7 @@ import {
 const Reports = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const OrgReportList = useSelector(allReportsSelector);
+  const orgReportList = useSelector(allReportsSelector);
   const filteredReports = useSelector(filteredReportsSelector);
   const success = useSelector(reportsSuccessSelector);
   const gBbox = useSelector(reportsBoundingBoxSelector);
@@ -53,7 +53,7 @@ const Reports = ({ pollingFrequency }) => {
 
   const dispatch = useDispatch();
 
-  const allReports = filteredReports || OrgReportList;
+  const allReports = filteredReports || orgReportList;
 
   useEffect(() => {
     setReportId(undefined);
