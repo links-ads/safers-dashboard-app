@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import { useMap } from 'components/BaseMap/MapContext';
+
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import AlertList from './Components/AlertList';
@@ -32,6 +34,7 @@ import { PAGE_SIZE } from '../../store/events/types';
 //i18n
 
 const InSituAlerts = () => {
+  const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const {
     filteredAlerts,
@@ -42,7 +45,6 @@ const InSituAlerts = () => {
   } = useSelector(state => state.inSituAlerts);
   const dateRange = useSelector(state => state.common.dateRange);
 
-  const [viewState, setViewState] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
   const [inSituSource, setInSituSource] = useState(undefined);
@@ -64,7 +66,6 @@ const InSituAlerts = () => {
       return new GeoJsonPinLayer({
         data: alerts,
         dispatch,
-        setViewState,
         getPosition: feature => feature.geometry.coordinates,
         getPinColor: feature =>
           getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature),

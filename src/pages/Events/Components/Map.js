@@ -16,7 +16,6 @@ import { PAGE_SIZE } from '../../../store/events/types';
 
 const MapSection = ({
   currentPage,
-  viewState,
   hoverInfo,
   iconLayer,
   isEdit,
@@ -77,7 +76,6 @@ const MapSection = ({
     <Card className="map-card mb-0" style={{ height: 730 }}>
       <BaseMap
         layers={[iconLayer]}
-        initialViewState={viewState}
         hoverInfo={hoverInfo}
         renderTooltip={renderTooltip}
         onClick={showTooltip}
@@ -93,8 +91,6 @@ const MapSection = ({
 };
 
 MapSection.propTypes = {
-  viewState: PropTypes.any,
-  setViewState: PropTypes.any,
   iconLayer: PropTypes.any,
   setAlertId: PropTypes.func,
   currentPage: PropTypes.number,

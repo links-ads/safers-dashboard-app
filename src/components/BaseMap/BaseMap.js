@@ -21,23 +21,13 @@ import {
   setSelectedMapStyle,
 } from '../../store/map/map.slice';
 
-export const INITIAL_VIEW_STATE = {
-  longitude: 9.56005296,
-  latitude: 43.02777403,
-  zoom: 4,
-  bearing: 0,
-  pitch: 0,
-};
-
 const MAX_ZOOM = 20;
 
 const easeInOutCubic = x =>
   x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 
 const BaseMap = ({
-  setViewState,
   layers = null,
-  initialViewState = INITIAL_VIEW_STATE,
   hoverInfo = null,
   renderTooltip = () => {},
   onClick = () => {},
@@ -49,7 +39,7 @@ const BaseMap = ({
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
 }) => {
-  const { mapRef, deckRef } = useMap();
+  const { mapRef, deckRef, viewState, setViewState } = useMap();
   const dispatch = useDispatch();
   const mapStyles = useSelector(mapStylesSelector);
   const selectedMapStyle = useSelector(selectedMapStyleSelector);
@@ -93,6 +83,11 @@ const BaseMap = ({
     }
   };
 
+  const handleViewStateChange = ({ viewState: { width, height, ...rest } }) => {
+    onViewStateChange({ viewState: { width, height, ...rest } });
+    setViewState(rest);
+  };
+
   const getPosition = position => {
     const props = position.split('-');
     return {
@@ -108,16 +103,15 @@ const BaseMap = ({
         ref={deckRef}
         views={new MapView({ repeat: true })}
         onClick={handleClick}
-        onViewStateChange={onViewStateChange}
+        onViewStateChange={handleViewStateChange}
         onViewportLoad={onViewportLoad}
-        initialViewState={initialViewState}
+        viewState={viewState}
         controller={true}
         layers={finalLayerSet}
         ContextProvider={MapContext.Provider}
       >
         <StaticMap
           mapboxApiAccessToken={MAPBOX_TOKEN}
-          initialViewState={initialViewState}
           mapStyle={mapStyle ? mapStyle.uri : selectedMapStyle.uri}
           ref={mapRef}
         />
