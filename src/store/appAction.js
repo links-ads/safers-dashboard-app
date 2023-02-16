@@ -86,9 +86,3 @@ export {
   resetNotificationApiParams,
   setNewNotificationState,
 } from './notifications/action';
-export {
-  getAllPeople,
-  setFilters,
-  resetPeopleResponseState,
-  refreshPeople,
-} from './people/action';

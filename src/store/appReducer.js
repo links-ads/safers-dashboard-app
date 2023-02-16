@@ -13,7 +13,7 @@ import inSituAlertReducer from './insitu/reducer';
 import mapReducer from './map/map.slice';
 import missionReducer from './missions/missions.slice';
 import notificationsReducer from './notifications/reducer';
-import peopleReducer from './people/reducer';
+import peopleReducer from './people/people.slice';
 import reportReducer from './reports/reports.slice';
 import userReducer from './user/reducer';
 
