@@ -23,12 +23,12 @@ const MissionList = ({
   setMissionId,
   setIconLayer,
 }) => {
-  const OrgMissionList = useSelector(allMissionsSelector);
+  const orgMissionList = useSelector(allMissionsSelector);
   const filteredMissions = useSelector(filteredMissionsSelector);
   const [pageData, setPageData] = useState([]);
   const dispatch = useDispatch();
 
-  const allMissions = filteredMissions || OrgMissionList;
+  const allMissions = filteredMissions || orgMissionList;
 
   const setFavoriteFlag = id => {
     let selectedMission = _.find(pageData, { id });

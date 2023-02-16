@@ -3,7 +3,6 @@ import {
   createSlice,
   createSelector,
 } from '@reduxjs/toolkit';
-// import toastr from 'toastr';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
@@ -60,7 +59,6 @@ export const createMission = createAsyncThunk(
     );
 
     if (response.status === 200) {
-      // toastr.success(response.data.msg, '');
       return response.data;
     } else {
       return rejectWithValue({ error: true });

@@ -37,7 +37,6 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   const { orgList = [] } = useSelector(state => state.common);
   const { info: user } = useSelector(state => state.user);
-  // const { missionCreated } = useSelector(state => state.missions);
   const missionCreated = useSelector(missionCreatedSelector);
   const { teamList } = useSelector(state => state.common);
 
