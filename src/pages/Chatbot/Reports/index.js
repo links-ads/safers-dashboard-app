@@ -127,7 +127,7 @@ const Reports = ({ pollingFrequency }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, [defaultAoi.features]);
+  }, [defaultAoi.features, setViewState]);
 
   const handleClick = info => {
     const { id } = info?.object?.properties ?? {};
