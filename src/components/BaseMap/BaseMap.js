@@ -67,7 +67,9 @@ const BaseMap = ({
 
   useEffect(() => {
     // needed to allow basemap to be zoomed to a specific feature
-    setViewState(initialViewState);
+    if (Object.keys(initialViewState).length > 0) {
+      setViewState(initialViewState);
+    }
   }, [initialViewState, setViewState]);
 
   const handleClick = (info, event) => {
