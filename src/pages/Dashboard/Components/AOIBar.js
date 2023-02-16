@@ -110,7 +110,6 @@ const AOIBar = ({
   const [eventList, setEventList] = useState([]);
   const [selectedLayerId, setSelectedLayerId] = useState('');
   const [selectedLayer, setSelectedLayer] = useState({});
-  const [viewMode, setViewMode] = useState('userAOI');
 
   const { dateRange } = useSelector(state => state.common);
   const { defaultAoi } = useSelector(state => state.user);
@@ -163,12 +162,6 @@ const AOIBar = ({
     const selectedNode = mapRequests.find(layer => layer.key === newLayerId);
     setSelectedLayer(selectedNode);
     setSelectedLayerId(newLayerId);
-    if (selectedNode) {
-      setViewMode('featureAOI');
-    } else {
-      // undefined, user chose 'choose a layer', reset to user AOI
-      setViewMode('userAOI');
-    }
   };
 
   return (

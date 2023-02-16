@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
 import { MAP_TYPES } from 'constants/common';
-import { setViewState } from 'store/common/action';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import {
