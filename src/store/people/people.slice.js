@@ -3,7 +3,6 @@ import {
   createSlice,
   createSelector,
 } from '@reduxjs/toolkit';
-// import toastr from 'toastr';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
