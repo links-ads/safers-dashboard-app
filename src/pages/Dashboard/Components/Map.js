@@ -132,7 +132,8 @@ const MapComponent = ({
       const [minX, minY, maxX, maxY] = mapRequestLayer.props.bounds;
       const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
       const zoom = 10;
-      return getViewState(midpoint, zoom);
+      const newViewState = getViewState(midpoint, zoom);
+      return newViewState;
     }
     return getViewState(
       // zoom to user AOI
@@ -157,7 +158,6 @@ const MapComponent = ({
       <Row style={{ height: 550 }} className="mx-auto">
         <BaseMap
           layers={allLayers}
-          setViewState={setViewState}
           initialViewState={viewState}
           screenControlPosition="top-right"
           navControlPosition="bottom-right"
