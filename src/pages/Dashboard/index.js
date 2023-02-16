@@ -74,7 +74,7 @@ const NewDashboard = () => {
     };
     dispatch(getAllEventAlerts(params, {}));
     dispatch(getAllPeople(params, {}));
-    dispatch(getAllReports(params));
+    dispatch(fetchReports(params));
     dispatch(fetchComms({ options: params, feFilters: {} }));
     dispatch(fetchMissions({ options: params, feFilters: {} }));
     dispatch(getAllFireAlerts(params));
