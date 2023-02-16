@@ -11,6 +11,8 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 
+import { useMap } from 'components/BaseMap/MapContext';
+
 import Alert from './Alert';
 import Tooltip from './Tooltip';
 import BaseMap from '../../components/BaseMap/BaseMap';
@@ -38,6 +40,7 @@ import {
 const PAGE_SIZE = 4;
 
 const FireAlerts = ({ t }) => {
+  const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const { allAlerts: alerts, filteredAlerts } = useSelector(
     state => state.alerts,
@@ -48,7 +51,6 @@ const FireAlerts = ({ t }) => {
   const dateRange = useSelector(state => state.common.dateRange);
 
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
   const [midPoint, setMidPoint] = useState([]);
@@ -107,7 +109,6 @@ const FireAlerts = ({ t }) => {
       return new GeoJsonPinLayer({
         data,
         dispatch,
-        setViewState,
         getPosition: feature => feature.geometry.coordinates,
         getPinColor: feature =>
           getAlertIconColorFromContext(
@@ -167,13 +168,23 @@ const FireAlerts = ({ t }) => {
       );
     }
     setCurrentPage(1);
-    hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)));
-  }, [defaultAoi.features, filteredAlerts, getFireAlertLayer, viewState]);
+  }, [
+    defaultAoi.features,
+    filteredAlerts,
+    getFireAlertLayer,
+    setViewState,
+    viewState,
+  ]);
 
   const getAlertsByArea = () => {
     setBoundingBox(
-      getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight),
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        newWidth,
+        newHeight,
+      ),
     );
   };
 
@@ -244,17 +255,16 @@ const FireAlerts = ({ t }) => {
         coordinate: selectedAlert.center,
       };
       setIsEdit(isEdit);
-      !_.isEqual(viewState.midPoint, selectedAlert.center) || isViewStateChanged
-        ? setViewState(
-            getViewState(
-              selectedAlert.center,
-              currentZoomLevel,
-              selectedAlert,
-              setHoverInfo,
-              setIsViewStateChanged,
-            ),
-          )
-        : setHoverInfo(pickedInfo);
+      setHoverInfo(pickedInfo);
+      setViewState(
+        getViewState(
+          selectedAlert.center,
+          viewState.zoom,
+          selectedAlert,
+          undefined,
+          setIsViewStateChanged,
+        ),
+      );
       setIconLayer(getFireAlertLayer(clonedAlerts, selectedAlert));
     } else {
       setAlertId(undefined);
@@ -270,7 +280,7 @@ const FireAlerts = ({ t }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, [defaultAoi.features]);
+  }, [defaultAoi.features, setViewState]);
 
   const hideTooltip = e => {
     if (e && e.viewState) {
@@ -433,12 +443,9 @@ const FireAlerts = ({ t }) => {
             <Card className="map-card mb-0" style={{ height: 670 }}>
               <BaseMap
                 layers={[iconLayer]}
-                initialViewState={viewState}
                 hoverInfo={hoverInfo}
                 renderTooltip={renderTooltip}
                 onClick={showTooltip}
-                onViewStateChange={hideTooltip}
-                setViewState={setViewState}
                 widgets={[getSearchButton]}
                 setWidth={setNewWidth}
                 setHeight={setNewHeight}

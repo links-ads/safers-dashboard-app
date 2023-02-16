@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import Slider from 'react-rangeslider';
 import { useDispatch, useSelector } from 'react-redux';
-//import { FlyToInterpolator, COORDINATE_SYSTEM } from 'deck.gl';
 import {
   Nav,
   Row,
@@ -18,6 +17,8 @@ import {
   TabContent,
 } from 'reactstrap';
 import wkt from 'wkt';
+
+import { useMap } from 'components/BaseMap/MapContext';
 
 import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
 import DataLayer from './DataLayer';
@@ -39,6 +40,7 @@ import { getAllMapRequests } from '../../store/datalayer/action';
 import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
 
 const DataLayerDashboard = ({ t }) => {
+  const { viewState, setViewState } = useMap();
   const dispatch = useDispatch();
   const timer = useRef(null);
 
@@ -58,7 +60,6 @@ const DataLayerDashboard = ({ t }) => {
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests } = useSelector(state => state?.dataLayer);
 
-  const [viewState, setViewState] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);
   const [selectOptions, setSelectOptions] = useState({});
@@ -135,22 +136,9 @@ const DataLayerDashboard = ({ t }) => {
   }, [dataLayers]);
 
   useEffect(() => {
-    // Remove comments if it's required to send date-time range and bbox value for filter
-    // const dateRangeParams = dateRange
-    //   ? { start: dateRange[0], end: dateRange[1] }
-    //   : {};
-
     const options = {
       order: sortByDate,
       domain: dataDomain ? dataDomain : undefined,
-
-      // Remove comments if it's required to send date-time range and bbox value for filter
-      // start: dateRange[0],
-      // end: dateRange[1],
-      // default_start: false,
-      // default_end: false,
-      // default_bbox: false,
-      // ...dateRangeParams,
     };
 
     dispatch(getAllDataLayers(options));

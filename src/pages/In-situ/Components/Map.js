@@ -8,7 +8,6 @@ import BaseMap from '../../../components/BaseMap/BaseMap';
 import SearchButton from '../../../components/SearchButton';
 
 const MapSection = ({
-  viewState,
   iconLayer,
   hoverInfo,
   showTooltip,
@@ -31,7 +30,6 @@ const MapSection = ({
     <Card className="map-card mb-0" style={{ height: 730 }}>
       <BaseMap
         layers={[iconLayer]}
-        initialViewState={viewState}
         hoverInfo={hoverInfo}
         renderTooltip={renderTooltip}
         onClick={showTooltip}
@@ -47,7 +45,6 @@ const MapSection = ({
 };
 
 MapSection.propTypes = {
-  viewState: PropTypes.any,
   iconLayer: PropTypes.any,
   hoverInfo: PropTypes.any,
   showTooltip: PropTypes.func,
