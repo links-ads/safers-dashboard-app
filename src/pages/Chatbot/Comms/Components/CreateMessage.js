@@ -6,7 +6,6 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Button, Label, Row, Col, FormGroup, Form } from 'reactstrap';
-import toastr from 'toastr';
 import * as Yup from 'yup';
 
 import { createComms, resetCommsResponseState } from 'store/comms/comms.slice';
@@ -47,7 +46,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
 
   const { orgList = [] } = useSelector(state => state.common);
   const { info: user } = useSelector(state => state.user);
-  const { msgCreated } = useSelector(state => state.comms);
 
   const [orgName, setorgName] = useState('');
 
@@ -57,13 +55,6 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       setorgName(organization.name.split('-')[0]);
     }
   }, [orgList, user]);
-
-  useEffect(() => {
-    if (msgCreated) {
-      toastr.success(msgCreated.msg, '');
-      onCancel();
-    }
-  }, [msgCreated, onCancel]);
 
   //Clear success states on component unmount
   useEffect(() => {
@@ -90,6 +81,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
       payload.restriction = restriction;
     }
     dispatch(createComms(payload));
+    onCancel();
   };
 
   return (
