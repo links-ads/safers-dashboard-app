@@ -6,6 +6,11 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Row, Col, Input } from 'reactstrap';
 
+import {
+  notificationSourcesSelector,
+  notificationScopeRestrictionsSelector,
+} from 'store/notifications/notifications.slice';
+
 const SortSection = ({
   filteredNotifications,
   notificationSource,
@@ -16,9 +21,9 @@ const SortSection = ({
   setSortOrder,
   t,
 }) => {
-  const notificationSources = useSelector(state => state.notifications.sources);
+  const notificationSources = useSelector(notificationSourcesSelector);
   const notificationScopesRestrictions = useSelector(
-    state => state.notifications.scopesRestrictions,
+    notificationScopeRestrictionsSelector,
   );
 
   return (
