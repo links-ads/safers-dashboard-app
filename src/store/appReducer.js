@@ -11,7 +11,7 @@ import dataLayerReducer from './datalayer/reducer';
 import eventAlertReducer from './events/reducer';
 import inSituAlertReducer from './insitu/reducer';
 import mapReducer from './map/map.slice';
-import missionReducer from './missions/reducer';
+import missionReducer from './missions/missions.slice';
 import notificationsReducer from './notifications/reducer';
 import peopleReducer from './people/reducer';
 import reportReducer from './reports/reports.slice';

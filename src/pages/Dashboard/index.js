@@ -6,7 +6,7 @@ import { Container } from 'reactstrap';
 import { getAllFireAlerts } from 'store/appAction';
 import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
 import { getAllEventAlerts } from 'store/events/action';
-import { getAllMissions } from 'store/missions/action';
+import { fetchMissions } from 'store/missions/missions.slice';
 import { getAllPeople } from 'store/people/action';
 import { fetchReports, allReportsSelector } from 'store/reports/reports.slice';
 
@@ -74,9 +74,9 @@ const NewDashboard = () => {
     };
     dispatch(getAllEventAlerts(params, {}));
     dispatch(getAllPeople(params, {}));
-    dispatch(getAllReports(params));
+    dispatch(fetchReports(params));
     dispatch(fetchComms({ options: params, feFilters: {} }));
-    dispatch(getAllMissions(params, {}));
+    dispatch(fetchMissions({ options: params, feFilters: {} }));
     dispatch(getAllFireAlerts(params));
   }, [dispatch]);
 

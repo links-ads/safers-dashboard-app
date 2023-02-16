@@ -6,13 +6,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Input, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import {
+  setFilteredMissions,
+  refreshMissions,
+  allMissionsSelector,
+  filteredMissionsSelector,
+  missionsPollingDataSelector,
+} from 'store/missions/missions.slice';
 //i18N
 
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
-import {
-  setFilterdMissions,
-  refreshMissions,
-} from '../../../../store/missions/action';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({
@@ -23,9 +26,9 @@ const SortSection = ({
   setSortOrder,
   setTogglePolygonMap,
 }) => {
-  const { allMissions, filteredMissions, pollingData } = useSelector(
-    state => state.missions,
-  );
+  const allMissions = useSelector(allMissionsSelector);
+  const filteredMissions = useSelector(filteredMissionsSelector);
+  const pollingData = useSelector(missionsPollingDataSelector);
   const [numberOfUpdates, setNumberOfUpdates] = useState(undefined);
   const dispatch = useDispatch();
 
@@ -34,7 +37,7 @@ const SortSection = ({
       const filters = { status: missionStatus };
       const sort = { fieldName: 'start', order: sortOrder };
       const actFiltered = getFilteredRec(allMissions, filters, sort);
-      dispatch(setFilterdMissions(actFiltered));
+      dispatch(setFilteredMissions(actFiltered));
     }
   }, [sortOrder, missionStatus, allMissions, dispatch]);
 

@@ -9,6 +9,13 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
+import {
+  fetchMissions,
+  resetMissionResponseState,
+  allMissionsSelector,
+  filteredMissionsSelector,
+  missionsSuccessSelector,
+} from 'store/missions/missions.slice';
 
 import CreateMission from './Components/CreateMission';
 import MapSection from './Components/Map';
@@ -21,19 +28,13 @@ import {
   getViewState,
   getIconLayer,
 } from '../../../helpers/mapHelper';
-import {
-  getAllMissions,
-  resetMissionResponseState,
-} from '../../../store/missions/action';
 
 const Missions = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const {
-    allMissions: OrgMissionList,
-    success,
-    filteredMissions,
-  } = useSelector(state => state.missions);
+  const orgMissionList = useSelector(allMissionsSelector);
+  const filteredMissions = useSelector(filteredMissionsSelector);
+  const success = useSelector(missionsSuccessSelector);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const { t } = useTranslation();
@@ -52,7 +53,7 @@ const Missions = ({ pollingFrequency }) => {
 
   const dispatch = useDispatch();
 
-  const allMissions = filteredMissions || OrgMissionList;
+  const allMissions = filteredMissions || orgMissionList;
 
   const loadAllMissions = () => {
     setMissionId(undefined);
@@ -76,7 +77,7 @@ const Missions = ({ pollingFrequency }) => {
       status: missionStatus,
     };
 
-    dispatch(getAllMissions(params, feFilters));
+    dispatch(fetchMissions({ options: params, feFilters }));
   };
 
   const onCancel = () => {
@@ -116,14 +117,14 @@ const Missions = ({ pollingFrequency }) => {
   useInterval(
     () => {
       dispatch(
-        getAllMissions(
-          missionParams,
-          {
+        fetchMissions({
+          options: missionParams,
+          feFilters: {
             order: sortOrder,
             status: missionStatus,
           },
-          true,
-        ),
+          isPolling: true,
+        }),
       );
     },
     pollingFrequency,

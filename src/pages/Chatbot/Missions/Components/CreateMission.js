@@ -11,17 +11,17 @@ import toastr from 'toastr';
 import * as Yup from 'yup';
 
 import { getTeamList } from 'store/appAction';
-import { getWKTfromFeature, getGeoFeatures } from 'store/utility';
+import {
+  createMission,
+  resetMissionResponseState,
+  missionCreatedSelector,
+} from 'store/missions/missions.slice';
 
 import MapInput from '../../../../components/BaseMap/MapInput';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
 import { getError } from '../../../../helpers/errorHelper';
-import {
-  createMission,
-  resetMissionResponseState,
-} from '../../../../store/missions/action';
-
 import 'toastr/build/toastr.min.css';
+import { getGeoFeatures, getWKTfromFeature } from '../../../../store/utility';
 
 const FORM_INITIAL_STATE = {
   coordinates: '',
@@ -37,7 +37,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
 
   const { orgList = [] } = useSelector(state => state.common);
   const { info: user } = useSelector(state => state.user);
-  const { missionCreated } = useSelector(state => state.missions);
+  const missionCreated = useSelector(missionCreatedSelector);
   const { teamList } = useSelector(state => state.common);
 
   const [orgName, setorgName] = useState('--');
