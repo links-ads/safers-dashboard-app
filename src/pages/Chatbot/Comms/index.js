@@ -10,6 +10,14 @@ import { useMap } from 'components/BaseMap/MapContext';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import {
+  fetchComms,
+  resetCommsResponseState,
+  allCommsSelector,
+  commsSuccessSelector,
+  filteredCommsSelector,
+} from 'store/comms/comms.slice';
+
 import CommsList from './Components/CommsList';
 import CreateMessage from './Components/CreateMessage';
 import MapSection from './Components/Map';
@@ -21,17 +29,13 @@ import {
   getViewState,
   getIconLayer,
 } from '../../../helpers/mapHelper';
-import {
-  getAllComms,
-  resetCommsResponseState,
-} from '../../../store/comms/action';
 
 const Comms = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allComms, success, filteredComms } = useSelector(
-    state => state.comms,
-  );
+  const allComms = useSelector(allCommsSelector);
+  const success = useSelector(commsSuccessSelector);
+  const filteredComms = useSelector(filteredCommsSelector);
   const { dateRange } = useSelector(state => state.common);
 
   const { t } = useTranslation();
@@ -69,17 +73,22 @@ const Comms = ({ pollingFrequency }) => {
     };
 
     setCommsParams(params);
-    dispatch(getAllComms(params, { sortOrder, status: commStatus, target }));
+    dispatch(
+      fetchComms({
+        options: params,
+        feFilters: { sortOrder, status: commStatus, target },
+      }),
+    );
   };
 
   useInterval(
     () => {
       dispatch(
-        getAllComms(
-          commsParams,
-          { sortOrder, status: commStatus, target },
-          true,
-        ),
+        fetchComms({
+          options: commsParams,
+          feFilters: { sortOrder, status: commStatus, target },
+          isPolling: true,
+        }),
       );
     },
     pollingFrequency,
@@ -89,7 +98,7 @@ const Comms = ({ pollingFrequency }) => {
   useEffect(() => {
     loadComms();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, boundingBox, dateRange]);
+  }, [dateRange, boundingBox]);
 
   useEffect(() => {
     if (success?.detail) {
