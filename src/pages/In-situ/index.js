@@ -10,6 +10,21 @@ import { useMap } from 'components/BaseMap/MapContext';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import {
+  fetchCameras,
+  fetchCameraSources,
+  fetchCameraAlerts,
+  resetCameraAlertsResponseState,
+  setFilteredCameraAlerts,
+  setCurrentPage,
+  setPaginatedAlerts,
+  allInSituAlertsSelector,
+  filteredCameraAlertsSelector,
+  cameraListSelector,
+  cameraAlertsSuccessSelector,
+  cameraAlertsErrorSelector,
+} from 'store/insitu/insitu.slice';
+
 import AlertList from './Components/AlertList';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
@@ -20,15 +35,6 @@ import {
   getViewState,
   getAlertIconColorFromContext,
 } from '../../helpers/mapHelper';
-import {
-  getAllInSituAlerts,
-  resetInSituAlertsResponseState,
-  setCurrentPage,
-  setFilteredInSituAlerts,
-  setPaginatedAlerts,
-  getCameraList,
-  getCameraSources,
-} from '../../store/appAction';
 import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
@@ -36,13 +42,11 @@ import { PAGE_SIZE } from '../../store/events/types';
 const InSituAlerts = () => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const {
-    filteredAlerts,
-    allAlerts: alerts,
-    success,
-    error,
-    cameraList,
-  } = useSelector(state => state.inSituAlerts);
+  const alerts = useSelector(allInSituAlertsSelector);
+  const filteredAlerts = useSelector(filteredCameraAlertsSelector);
+  const cameraList = useSelector(cameraListSelector);
+  const success = useSelector(cameraAlertsSuccessSelector);
+  const error = useSelector(cameraAlertsErrorSelector);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const [iconLayer, setIconLayer] = useState(undefined);
@@ -83,12 +87,12 @@ const InSituAlerts = () => {
   );
 
   useEffect(() => {
-    dispatch(getCameraSources());
+    dispatch(fetchCameraSources());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(
-      getCameraList({
+      fetchCameras({
         camera_id: inSituSource,
         bbox: boundingBox ? boundingBox.toString() : undefined,
         default_bbox: !boundingBox,
@@ -103,7 +107,7 @@ const InSituAlerts = () => {
 
     setAlertId(undefined);
     dispatch(
-      getAllInSituAlerts({
+      fetchCameraAlerts({
         type: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
         order: sortOrder ? sortOrder : '-date',
         camera_id: inSituSource,
@@ -128,7 +132,7 @@ const InSituAlerts = () => {
     } else if (error) {
       toastr.error(error, '');
     }
-    dispatch(resetInSituAlertsResponseState());
+    dispatch(resetCameraAlertsResponseState());
   }, [success, error, dispatch]);
 
   useEffect(() => {
@@ -144,7 +148,7 @@ const InSituAlerts = () => {
         ),
       );
     }
-    dispatch(setFilteredInSituAlerts(alerts));
+    dispatch(setFilteredCameraAlerts(alerts));
   }, [alerts, defaultAoi.features, dispatch, viewState]);
 
   useEffect(() => {

@@ -61,17 +61,6 @@ export {
   getDataLayerTimeSeriesData,
 } from './datalayer/action';
 export {
-  getAllInSituAlerts,
-  resetInSituAlertsResponseState,
-  setCurrentPage,
-  setFilteredInSituAlerts,
-  setPaginatedAlerts,
-  getCameraList,
-  getCameraSources,
-  getCamera,
-  setInSituFavoriteAlert,
-} from './insitu/action';
-export {
   getInSituMedia,
   getStats,
   getTweets,
