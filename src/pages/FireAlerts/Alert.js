@@ -27,6 +27,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
 
   return (
     <Card
+      role="card"
       onClick={() => setSelectedAlert(card.id)}
       className={
         'alerts-card mb-2 ' + (card.id === alertId ? 'alert-card-active' : '')
