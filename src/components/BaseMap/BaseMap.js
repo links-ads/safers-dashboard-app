@@ -38,7 +38,6 @@ const BaseMap = ({
   widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
-  initialViewState = {}, // optional override, used by dashboard
 }) => {
   const { mapRef, deckRef, viewState, setViewState } = useMap();
   const dispatch = useDispatch();
@@ -64,13 +63,6 @@ const BaseMap = ({
   useEffect(() => {
     window.addEventListener('resize', getMapSize);
   }, [getMapSize]);
-
-  useEffect(() => {
-    // needed to allow basemap to be zoomed to a specific feature
-    if (Object.keys(initialViewState).length > 0) {
-      setViewState(initialViewState);
-    }
-  }, [initialViewState, setViewState]);
 
   const handleClick = (info, event) => {
     if (info?.object?.properties?.cluster) {

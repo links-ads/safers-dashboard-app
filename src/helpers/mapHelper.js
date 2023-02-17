@@ -1,6 +1,6 @@
 import { PolygonLayer } from '@deck.gl/layers';
 import { fitBounds } from '@math.gl/web-mercator';
-import { FlyToInterpolator } from 'deck.gl';
+import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import wkt from 'wkt';
 
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
@@ -289,10 +289,8 @@ export const isWKTValid = str => {
 export const getPolygonLayerFromGeometry = geometry => {
   // fetch polygon for arbitrary polygonal geometry
   // e.g. AOI for a data layer
-  const coordinates = geometry.coordinates;
   return new PolygonLayer({
-    id: 'polygon-layer',
-    data: coordinates,
+    data: geometry.coordinates,
     pickable: true,
     stroked: true,
     filled: true,
@@ -301,9 +299,27 @@ export const getPolygonLayerFromGeometry = geometry => {
     lineWidthMinPixels: 1,
     opacity: 0.25,
     getPolygon: d => d,
-    // getElevation: () => 10,
     getFillColor: [192, 105, 25],
     getLineColor: [0, 0, 0],
     getLineWidth: 100,
+  });
+};
+
+export const getBitmapLayer = selectedLayerNode => {
+  /*
+     extract bounds from url, this is passed in as an object with timestamps
+     as the keys and urls as the values. Only going to show first one for now
+    */
+  const firstURL = Object.values(selectedLayerNode.urls)[0];
+  const urlSearchParams = new URLSearchParams(firstURL);
+  const urlParams = Object.fromEntries(urlSearchParams.entries());
+  const bounds = urlParams?.bbox
+    ? urlParams.bbox.split(',').map(Number)
+    : selectedLayerNode.bbox;
+  return new BitmapLayer({
+    id: 'bitmap-layer',
+    bounds: bounds,
+    image: firstURL,
+    opacity: 0.5,
   });
 };

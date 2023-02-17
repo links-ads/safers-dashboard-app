@@ -19,7 +19,7 @@ const bboxToPolygon = bbox => {
   const minimumY = bbox[1];
   const maximumX = bbox[2];
   const maximumY = bbox[3];
-  const ring = [
+  const boundingBox = [
     [
       [minimumX, minimumY],
       [minimumX, maximumY],
@@ -28,7 +28,7 @@ const bboxToPolygon = bbox => {
       [minimumX, minimumY],
     ],
   ];
-  return ring;
+  return boundingBox;
 };
 
 const doesItOverlapAoi = (node, userAoi, showAll = false) => {
@@ -51,8 +51,7 @@ const doesItOverlapAoi = (node, userAoi, showAll = false) => {
     );
     return false;
   }
-  const intersects = intersect(aoiPolygon, featureGeometry);
-  return intersects != null;
+  return !!intersect(aoiPolygon, featureGeometry);
 };
 
 const nodeVisitor = (node, userAoi, parentInfo = {}) => {
@@ -108,7 +107,6 @@ const AOIBar = ({
   const dispatch = useDispatch();
 
   const [eventList, setEventList] = useState([]);
-  const [selectedLayerId, setSelectedLayerId] = useState('');
   const [selectedLayer, setSelectedLayer] = useState({});
 
   const { dateRange } = useSelector(state => state.common);
@@ -161,7 +159,6 @@ const AOIBar = ({
   const updateRasterLayer = newLayerId => {
     const selectedNode = mapRequests.find(layer => layer.key === newLayerId);
     setSelectedLayer(selectedNode);
-    setSelectedLayerId(newLayerId);
   };
 
   return (
@@ -169,7 +166,7 @@ const AOIBar = ({
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
           <Card className="gx-2">
-            {mapRequests ? (
+            {
               <Input
                 id="sortByDate"
                 className="btn-sm sort-select-input"
@@ -179,24 +176,23 @@ const AOIBar = ({
                 onChange={e => {
                   updateRasterLayer(e.target.value);
                 }}
-                value={selectedLayerId}
+                value={selectedLayer.key}
               >
-                {mapRequests && mapRequests.length !== 0 ? (
-                  <option value={''}>--{t('Select a layer')}--</option>
-                ) : null}
-                {mapRequests && mapRequests.length === 0 ? (
+                {mapRequests?.length === 0 ? (
                   <option value={''}>--{t('No layers in this AOI')}--</option>
-                ) : null}
-                {mapRequests && mapRequests.length !== 0
+                ) : (
+                  <option value={''}>--{t('Select a layer')}--</option>
+                )}
+                {mapRequests
                   ? mapRequests.map(request => (
                       <option
-                        key={`item_${request.key}`}
-                        value={`${request.key}`}
+                        key={request.key}
+                        value={request.key}
                       >{`${request.parentTitle} - ${request.title} (${request.datatype_id})`}</option>
                     ))
                   : null}
               </Input>
-            ) : null}
+            }
             <MapComponent
               selectedLayer={selectedLayer}
               eventList={eventList}

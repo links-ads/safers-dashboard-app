@@ -12,29 +12,11 @@ import {
   getPolygonLayer,
   getViewState,
   getEventIconLayer,
+  getBitmapLayer,
 } from '../../../helpers/mapHelper';
 
-const getBitmapLayer = selectedLayerNode => {
-  /*
-     extract bounds from url, this is passed in as an object with timestamps
-     as the keys and urls as the values. Only going to show first one for now
-    */
-  const firstURL = Object.values(selectedLayerNode.urls)[0];
-  const urlSearchParams = new URLSearchParams(firstURL);
-  const urlParams = Object.fromEntries(urlSearchParams.entries());
-  const bounds = urlParams?.bbox
-    ? urlParams.bbox.split(',').map(Number)
-    : selectedLayerNode.bbox;
-  return new BitmapLayer({
-    id: 'bitmap-layer',
-    bounds: bounds,
-    image: firstURL,
-    opacity: 0.5,
-  });
-};
-
 const MapComponent = ({
-  selectedLayer = null, // raster layer
+  selectedLayer, // raster layer
   eventList = [],
   orgPplList = [],
   orgReportList = [],
