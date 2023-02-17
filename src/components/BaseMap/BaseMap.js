@@ -65,12 +65,15 @@ const BaseMap = ({
     window.addEventListener('resize', getMapSize);
   }, [getMapSize]);
 
-  useEffect(() => {
-    // needed to allow basemap to be zoomed to a specific feature
-    if (Object.keys(initialViewState).length > 0) {
-      setViewState(initialViewState);
-    }
-  }, [initialViewState, setViewState]);
+  // useEffect(() => {
+  //   // needed to allow basemap to be zoomed to a specific feature
+  //   if (Object.keys(initialViewState).length > 0) {
+  //     setViewState(initialViewState);
+  //   }
+  // }, [initialViewState, setViewState]);
+
+  const correctViewState =
+    Object.keys(initialViewState).length > 0 ? initialViewState : viewState;
 
   const handleClick = (info, event) => {
     if (info?.object?.properties?.cluster) {
@@ -113,7 +116,7 @@ const BaseMap = ({
         onClick={handleClick}
         onViewStateChange={handleViewStateChange}
         onViewportLoad={onViewportLoad}
-        viewState={viewState}
+        viewState={correctViewState}
         controller={true}
         layers={finalLayerSet}
         ContextProvider={MapContext.Provider}

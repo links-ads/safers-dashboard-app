@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
+import { useMap } from 'components/BaseMap/MapContext';
 import { MAP_TYPES } from 'constants/common';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
@@ -45,10 +46,27 @@ const MapComponent = ({
 }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
+  const { viewState, setViewState } = useMap();
 
-  const mapRequestLayer = useMemo(() => {
-    return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
-  }, [selectedLayer]);
+  // code to override map extent when user has selected a layer in dashboard
+  const mapRequestLayer = selectedLayer?.geometry
+    ? getBitmapLayer(selectedLayer)
+    : null;
+
+  const getRasterViewState = requestLayer => {
+    if (!requestLayer || Object.keys(requestLayer).length === 0)
+      return viewState;
+    const [minX, minY, maxX, maxY] = requestLayer.props.bounds;
+    const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
+    const zoom = 10;
+    const newViewState = getViewState(midpoint, zoom);
+    console.log('new View state', newViewState);
+    return { ...viewState, ...newViewState };
+  };
+
+  // const actualViewState = mapRequestLayer
+  //   ? getRasterViewState(mapRequestLayer)
+  //   : viewState;
 
   const iconLayer = useMemo(
     () =>
@@ -125,22 +143,6 @@ const MapComponent = ({
     [commsList, visibleLayers.communications],
   );
 
-  const viewState = useMemo(() => {
-    if (mapRequestLayer) {
-      // zoom to raster
-      const [minX, minY, maxX, maxY] = mapRequestLayer.props.bounds;
-      const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
-      const zoom = 10;
-      const newViewState = getViewState(midpoint, zoom);
-      return newViewState;
-    }
-    return getViewState(
-      // zoom to user AOI
-      objAoi.features[0].properties.midPoint,
-      objAoi.features[0].properties.zoomLevel,
-    );
-  }, [mapRequestLayer, objAoi.features]);
-
   const allLayers = [
     polygonLayer,
     iconLayer,
@@ -157,7 +159,7 @@ const MapComponent = ({
       <Row style={{ height: 550 }} className="mx-auto">
         <BaseMap
           layers={allLayers}
-          initialViewState={viewState}
+          initialViewState={getRasterViewState(mapRequestLayer)}
           screenControlPosition="top-right"
           navControlPosition="bottom-right"
         />
