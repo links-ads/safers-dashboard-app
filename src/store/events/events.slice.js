@@ -193,9 +193,9 @@ const eventsSlice = createSlice({
     builder
       .addCase(fetchEvents.fulfilled, (state, { payload }) => {
         if (payload.fromPage) {
-          state.filteredAlerts = payload.data;
+          state.filteredEvents = payload.data;
         } else {
-          state.allAlerts = payload.data;
+          state.allEvents = payload.data;
           state.error = false;
         }
       })
