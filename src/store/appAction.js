@@ -30,17 +30,6 @@ export {
   setDateRangeDisabled,
 } from './common/action';
 export {
-  getSource,
-  getAllFireAlerts,
-  setFilteredAlerts,
-  setFavoriteAlert,
-  validateAlert,
-  editAlertInfo,
-  setAlertApiParams,
-  setNewAlertState,
-  resetAlertsResponseState,
-} from './alerts/action';
-export {
   getMetaData,
   resetMetaData,
   getAllDataLayers,

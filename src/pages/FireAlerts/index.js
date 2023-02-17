@@ -12,6 +12,22 @@ import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import {
+  fetchAlerts,
+  fetchAlertSource,
+  setAlertFavorite,
+  validateAlert,
+  editAlertInfo,
+  setAlertApiParams,
+  setNewAlertState,
+  setFilteredAlerts,
+  resetAlertResponseState,
+  allAlertsSelector,
+  filteredAlertsSelector,
+  alertSourcesSelector,
+  alertSuccessSelector,
+  alertErrorSelector,
+} from 'store/alerts/alerts.slice';
 
 import Alert from './Alert';
 import Tooltip from './Tooltip';
@@ -24,30 +40,17 @@ import {
   getViewState,
   getAlertIconColorFromContext,
 } from '../../helpers/mapHelper';
-import { SET_FAV_ALERT_SUCCESS } from '../../store/alerts/types';
-import {
-  getAllFireAlerts,
-  setFavoriteAlert,
-  validateAlert,
-  editAlertInfo,
-  setAlertApiParams,
-  resetAlertsResponseState,
-  setNewAlertState,
-  getSource,
-  setFilteredAlerts,
-} from '../../store/appAction';
 
 const PAGE_SIZE = 4;
 
 const FireAlerts = ({ t }) => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allAlerts: alerts, filteredAlerts } = useSelector(
-    state => state.alerts,
-  );
-  const sources = useSelector(state => state.alerts.sources);
-  const success = useSelector(state => state.alerts.success);
-  const error = useSelector(state => state.alerts.error);
+  const alerts = useSelector(allAlertsSelector);
+  const filteredAlerts = useSelector(filteredAlertsSelector);
+  const sources = useSelector(alertSourcesSelector);
+  const success = useSelector(alertSuccessSelector);
+  const error = useSelector(alertErrorSelector);
   const dateRange = useSelector(state => state.common.dateRange);
 
   const [iconLayer, setIconLayer] = useState(undefined);
@@ -84,7 +87,9 @@ const FireAlerts = ({ t }) => {
       };
 
       dispatch(setAlertApiParams(alertParams));
-      dispatch(getAllFireAlerts(alertParams, true, isLoading));
+      dispatch(
+        fetchAlerts({ options: alertParams, fromPage: true, isLoading }),
+      );
     },
     [alertSource, boundingBox, dateRange, dispatch, sortByDate],
   );
@@ -128,11 +133,11 @@ const FireAlerts = ({ t }) => {
   );
 
   useEffect(() => {
-    dispatch(getSource());
-    dispatch(setNewAlertState(false, true));
+    dispatch(fetchAlertSource());
+    dispatch(setNewAlertState({ isNewAlert: false, isPageActive: true }));
     return () => {
       dispatch(setAlertApiParams(undefined));
-      dispatch(setNewAlertState(false, false));
+      dispatch(setNewAlertState({ isNewAlert: false, isPageActive: false }));
     };
   }, [dispatch]);
 
@@ -145,7 +150,7 @@ const FireAlerts = ({ t }) => {
     else if (error) toastr.error(error, '');
 
     setIsEdit(false);
-    dispatch(resetAlertsResponseState());
+    dispatch(resetAlertResponseState());
   }, [success, error, dispatch]);
 
   useEffect(() => {
@@ -157,7 +162,6 @@ const FireAlerts = ({ t }) => {
   }, [alerts, filteredAlerts.length, t]);
 
   useEffect(() => {
-    setAlertId(undefined);
     setIconLayer(getFireAlertLayer(filteredAlerts));
     if (!viewState) {
       setViewState(
@@ -189,30 +193,38 @@ const FireAlerts = ({ t }) => {
   };
 
   const setFavorite = id => {
-    const selectedAlert = _.find(filteredAlerts, { id });
-    dispatch(setFavoriteAlert(id, !selectedAlert.favorite))
-      .then(result => {
-        if (result.type === SET_FAV_ALERT_SUCCESS) {
-          selectedAlert.favorite = !selectedAlert.favorite;
-          hoverInfo?.object &&
-            setHoverInfo({
-              object: {
-                properties: selectedAlert,
-              },
-              coordinate: selectedAlert.center,
-            });
-          const to = PAGE_SIZE * currentPage;
-          const from = to - PAGE_SIZE;
-          setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
-        }
+    const alerts = _.cloneDeep(filteredAlerts);
+    const selectedAlert = alerts.find(alert => alert.id === id);
+    selectedAlert.favorite = !selectedAlert.favorite;
+    const updatedAlerts = alerts.map(alert =>
+      alert.id === id ? selectedAlert : alert,
+    );
+
+    dispatch(setFilteredAlerts(updatedAlerts));
+
+    dispatch(
+      setAlertFavorite({ alertId: id, isFavorite: selectedAlert.favorite }),
+    )
+      .then(() => {
+        hoverInfo?.object &&
+          setHoverInfo({
+            object: {
+              properties: selectedAlert,
+            },
+            coordinate: selectedAlert.center,
+          });
+
+        const to = PAGE_SIZE * currentPage;
+        const from = to - PAGE_SIZE;
+        setPaginatedAlerts(updatedAlerts.slice(from, to));
 
         return;
       })
-      .catch(error => console.error(error));
+      .catch(error => console.log(error));
   };
 
   const validateEvent = id => {
-    let selectedAlert = _.find(filteredAlerts, { id });
+    let selectedAlert = { ..._.find(filteredAlerts, { id }) };
     selectedAlert.type = 'VALIDATED';
     dispatch(validateAlert(id));
     hideTooltip();
@@ -223,9 +235,7 @@ const FireAlerts = ({ t }) => {
   };
 
   const editInfo = (id, desc) => {
-    let selectedAlert = _.find(filteredAlerts, { id });
-    selectedAlert.information = desc;
-    dispatch(editAlertInfo(id, desc));
+    dispatch(editAlertInfo({ alertId: id, editInfo: desc }));
 
     const to = PAGE_SIZE * currentPage;
     const from = to - PAGE_SIZE;
@@ -325,10 +335,10 @@ const FireAlerts = ({ t }) => {
     }
   };
 
-  const getCard = (card, index) => {
+  const getCard = card => {
     return (
       <Alert
-        key={index}
+        key={card.id}
         card={card}
         setSelectedAlert={setSelectedAlert}
         setFavorite={setFavorite}
@@ -425,9 +435,7 @@ const FireAlerts = ({ t }) => {
             </Row>
             <Row>
               <Col xl={12} className="p-3">
-                <Row>
-                  {paginatedAlerts.map((alert, index) => getCard(alert, index))}
-                </Row>
+                <Row>{paginatedAlerts.map(alert => getCard(alert))}</Row>
                 <Row className="text-center">
                   <Pagination
                     pageSize={PAGE_SIZE}

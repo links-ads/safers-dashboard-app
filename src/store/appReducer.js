@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage/session'; //or session
 
-import alertReducer from './alerts/reducer';
+import alertReducer from './alerts/alerts.slice';
 import authReducer from './authentication/reducer';
 import * as actionTypes from './authentication/types';
 import commonReducer from './common/reducer';
