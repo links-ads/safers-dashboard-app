@@ -95,7 +95,7 @@ const EventAlerts = ({ t }) => {
             selectedAlert,
           ),
         icon: 'flag',
-        iconColor: '#ffffff',
+        iconColor: [255, 255, 255],
         clusterIconSize: 35,
         getPinSize: () => 35,
         pixelOffset: [-18, -18],
