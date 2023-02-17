@@ -60,7 +60,7 @@ const AlertList = ({
         getPinColor: feature =>
           getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature),
         icon: 'camera',
-        iconColor: '#ffffff',
+        iconColor: [255, 255, 255],
         clusterIconSize: 35,
         getPinSize: () => 35,
         pixelOffset: [-18, -18],
