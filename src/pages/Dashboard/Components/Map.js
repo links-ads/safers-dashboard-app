@@ -46,7 +46,7 @@ const MapComponent = ({
 }) => {
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
-  const { viewState, setViewState } = useMap();
+  //const { viewState, setViewState } = useMap();
 
   // code to override map extent when user has selected a layer in dashboard
   const mapRequestLayer = selectedLayer?.geometry
@@ -54,19 +54,13 @@ const MapComponent = ({
     : null;
 
   const getRasterViewState = requestLayer => {
-    if (!requestLayer || Object.keys(requestLayer).length === 0)
-      return viewState;
+    if (!requestLayer || Object.keys(requestLayer).length === 0) return {};
     const [minX, minY, maxX, maxY] = requestLayer.props.bounds;
     const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
     const zoom = 10;
     const newViewState = getViewState(midpoint, zoom);
-    console.log('new View state', newViewState);
-    return { ...viewState, ...newViewState };
+    return newViewState;
   };
-
-  // const actualViewState = mapRequestLayer
-  //   ? getRasterViewState(mapRequestLayer)
-  //   : viewState;
 
   const iconLayer = useMemo(
     () =>
