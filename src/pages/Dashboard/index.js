@@ -51,7 +51,7 @@ const NewDashboard = () => {
   const orgPplList = useSelector(allPeopleSelector);
   const filteredPeople = useSelector(filteredPeopleSelector);
 
-  const OrgReportList = useSelector(allReportsSelector);
+  const orgReportList = useSelector(allReportsSelector);
 
   const alerts = useSelector(allAlertsSelector);
   const filteredAlerts = useSelector(filteredAlertsSelector);
@@ -101,9 +101,9 @@ const NewDashboard = () => {
   }, [orgPplList, filteredPeople]);
 
   useEffect(() => {
-    const statusCounts = getStatusCountsForItems(OrgReportList);
+    const statusCounts = getStatusCountsForItems(orgReportList);
     setReportStatusCounts(statusCounts);
-  }, [OrgReportList]);
+  }, [orgReportList]);
 
   useEffect(() => {
     const statusCounts = getStatusCountsForItems(allMissions);
@@ -129,7 +129,7 @@ const NewDashboard = () => {
         />
         <AOIBar
           orgPplList={orgPplList}
-          orgReportList={OrgReportList}
+          orgReportList={orgReportList}
           commsList={allCommunications}
           missionsList={allMissions}
           alertsList={alerts}
