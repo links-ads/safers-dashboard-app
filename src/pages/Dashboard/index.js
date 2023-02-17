@@ -5,7 +5,7 @@ import { Container } from 'reactstrap';
 
 import { getAllFireAlerts } from 'store/appAction';
 import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
-import { getAllEventAlerts } from 'store/events/action';
+import { fetchEvents } from 'store/events/events.slice';
 import { fetchMissions } from 'store/missions/missions.slice';
 import {
   fetchPeople,
@@ -75,7 +75,7 @@ const NewDashboard = () => {
       default_date: false,
       default_bbox: true, // user AOI only
     };
-    dispatch(getAllEventAlerts(params, {}));
+    dispatch(fetchEvents({ options: params, feFilters: {} }));
     dispatch(fetchPeople({ options: params, feFilters: {} }));
     dispatch(fetchReports({ options: params }));
     dispatch(fetchComms({ options: params, feFilters: {} }));

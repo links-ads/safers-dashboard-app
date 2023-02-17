@@ -7,6 +7,8 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle } from 'reactstrap';
 
+import { allEventsSelector } from 'store/events/events.slice';
+
 import { formatDate } from '../../../../store/utility';
 import MapComponent from '../Components/Map';
 
@@ -14,8 +16,10 @@ import MapComponent from '../Components/Map';
 
 const InfoContainer = ({ t }) => {
   const weatherStats = useSelector(state => state.dashboard.weatherStats);
+  const allAlerts = useSelector(allEventsSelector);
+
   const { id } = useParams();
-  const { allAlerts } = useSelector(state => state.eventAlerts);
+
   const [event, setEvent] = useState(null);
 
   useEffect(() => {

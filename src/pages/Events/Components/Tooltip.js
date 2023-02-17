@@ -17,9 +17,14 @@ import {
   Row,
 } from 'reactstrap';
 
+import {
+  editEventInfo,
+  eventsUpdateErrorSelector,
+  eventSelector,
+} from 'store/events/events.slice';
+
 import DatePicker from '../../../components/DateRangePicker/DatePicker';
 import { getGeneralErrors } from '../../../helpers/errorHelper';
-import { editEventAlertInfo } from '../../../store/events/action';
 import { formatDate } from '../../../store/utility';
 
 const Tooltip = ({
@@ -30,9 +35,9 @@ const Tooltip = ({
   setFavorite,
   t,
 }) => {
-  const { updateError: genError, event } = useSelector(
-    state => state.eventAlerts,
-  );
+  const genError = useSelector(eventsUpdateErrorSelector);
+  const event = useSelector(eventSelector);
+
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState('');
 
@@ -72,7 +77,7 @@ const Tooltip = ({
       causalties: casualties,
       estimated_damage: damage,
     };
-    dispatch(editEventAlertInfo(id, payload));
+    dispatch(editEventInfo({ eventId: id, editInfo: payload }));
   };
 
   return (

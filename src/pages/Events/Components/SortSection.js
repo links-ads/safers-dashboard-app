@@ -7,7 +7,10 @@ import { useDispatch, useSelector } from 'react-redux';
 //i18n
 import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 
-import { setFilteredEventAlerts } from '../../../store/appAction';
+import {
+  setFilteredEvents,
+  allEventsSelector,
+} from 'store/events/events.slice';
 
 const SortSection = ({
   t,
@@ -18,7 +21,8 @@ const SortSection = ({
   setAlertId,
   setSortOrder,
 }) => {
-  const alerts = useSelector(state => state.eventAlerts.allAlerts);
+  const alerts = useSelector(allEventsSelector);
+
   const ongoing = alerts.filter(alert => alert.status === 'ONGOING').length;
   const closed = alerts.filter(alert => alert.status === 'CLOSED').length;
   const dispatch = useDispatch();
@@ -37,10 +41,10 @@ const SortSection = ({
 
   const filterBySearchText = query => {
     setAlertId(undefined);
-    if (query === '') dispatch(setFilteredEventAlerts(alerts));
+    if (query === '') dispatch(setFilteredEvents(alerts));
     else
       dispatch(
-        setFilteredEventAlerts(
+        setFilteredEvents(
           _.filter(alerts, o =>
             o.title.toLowerCase().includes(query.toLowerCase()),
           ),

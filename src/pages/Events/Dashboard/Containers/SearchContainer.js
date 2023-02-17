@@ -5,6 +5,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Col, Button, Row } from 'reactstrap';
 
+import {
+  fetchEventCameraMedia,
+  fetchEventTweets,
+} from 'store/events/events.slice';
+
 import DateComponent from '../../../../components/DateRangePicker/DateRange';
 import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
 import { getAllAreas } from '../../../../store/appAction';
@@ -14,7 +19,6 @@ import {
   getWeatherStats,
   getWeatherVariables,
 } from '../../../../store/dashboard/action';
-import { getInSituMedia, getTweets } from '../../../../store/events/action';
 
 const SearchContainer = () => {
   const dispatch = useDispatch();
@@ -45,8 +49,8 @@ const SearchContainer = () => {
     dispatch(getStats(params));
     dispatch(getWeatherStats(params));
     dispatch(getWeatherVariables(params));
-    dispatch(getInSituMedia(params));
-    dispatch(getTweets(params));
+    dispatch(fetchEventCameraMedia(params));
+    dispatch(fetchEventTweets(params));
   };
 
   useEffect(() => {
