@@ -10,7 +10,10 @@ import {
 } from 'store/alerts/alerts.slice';
 import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
 import { fetchEvents } from 'store/events/events.slice';
-import { fetchMissions } from 'store/missions/missions.slice';
+import {
+  fetchMissions,
+  allMissionsSelector,
+} from 'store/missions/missions.slice';
 import {
   fetchPeople,
   allPeopleSelector,
@@ -50,10 +53,10 @@ const NewDashboard = () => {
 
   const OrgReportList = useSelector(allReportsSelector);
 
-  const allMissions = useSelector(state => state?.missions?.allMissions || []);
   const alerts = useSelector(allAlertsSelector);
   const filteredAlerts = useSelector(filteredAlertsSelector);
 
+  const allMissions = useSelector(allMissionsSelector);
   const allCommunications = useSelector(allCommsSelector);
 
   const layerVisibilities = {
