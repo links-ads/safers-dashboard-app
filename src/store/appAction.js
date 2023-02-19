@@ -50,10 +50,3 @@ export {
   setNewMapRequestState,
   getDataLayerTimeSeriesData,
 } from './datalayer/action';
-export {
-  getInSituMedia,
-  getStats,
-  getTweets,
-  getWeatherStats,
-  getWeatherVariables,
-} from './dashboard/action';
