@@ -41,16 +41,6 @@ export {
   resetAlertsResponseState,
 } from './alerts/action';
 export {
-  getMetaData,
-  resetMetaData,
-  getAllDataLayers,
-  resetDataLayersResponseState,
-  postMapRequest,
-  getAllMapRequests,
-  setNewMapRequestState,
-  getDataLayerTimeSeriesData,
-} from './datalayer/action';
-export {
   getInSituMedia,
   getStats,
   getTweets,

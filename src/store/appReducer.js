@@ -7,7 +7,7 @@ import * as actionTypes from './authentication/types';
 import commonReducer from './common/reducer';
 import commsReducer from './comms/comms.slice';
 import dashboardReducer from './dashboard/reducer';
-import dataLayerReducer from './datalayer/reducer';
+import dataLayerReducer from './datalayer/datalayer.slice';
 import eventReducer from './events/events.slice';
 import inSituAlertReducer from './insitu/insitu.slice';
 import mapReducer from './map/map.slice';

@@ -19,6 +19,16 @@ import {
 import wkt from 'wkt';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import {
+  fetchDataLayers,
+  fetchMapRequests,
+  setNewMapRequestState,
+  dataLayersSelector,
+  metaDataSelector,
+  isMetaDataLoadingSelector,
+  timeSeriesInfoSelector,
+  featureInfoSelector,
+} from 'store/datalayer/datalayer.slice';
 
 import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
 import DataLayer from './DataLayer';
@@ -30,13 +40,7 @@ import { MAP } from '../../constants/common';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { getBoundingBox, isWKTValid } from '../../helpers/mapHelper';
 import { setFilteredAlerts } from '../../store/alerts/action';
-import {
-  getAllDataLayers,
-  setNewMapRequestState,
-  setAlertApiParams,
-  setDateRangeDisabled,
-} from '../../store/appAction';
-import { getAllMapRequests } from '../../store/datalayer/action';
+import { setAlertApiParams, setDateRangeDisabled } from '../../store/appAction';
 import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
 
 const DataLayerDashboard = ({ t }) => {
@@ -50,13 +54,12 @@ const DataLayerDashboard = ({ t }) => {
     ? defaultAoi.features[0].bbox
     : EUROPEAN_BBOX;
 
-  const {
-    dataLayers,
-    metaData,
-    isMetaDataLoading,
-    timeSeries: timeSeriesData,
-    featureInfo: featureInfoData,
-  } = useSelector(state => state.dataLayer);
+  const dataLayers = useSelector(dataLayersSelector);
+  const metaData = useSelector(metaDataSelector);
+  const isMetaDataLoading = useSelector(isMetaDataLoadingSelector);
+  const timeSeriesData = useSelector(timeSeriesInfoSelector);
+  const featureInfoData = useSelector(featureInfoSelector);
+
   const dateRange = useSelector(state => state.common.dateRange);
   const { allMapRequests } = useSelector(state => state?.dataLayer);
 
@@ -141,8 +144,8 @@ const DataLayerDashboard = ({ t }) => {
       domain: dataDomain ? dataDomain : undefined,
     };
 
-    dispatch(getAllDataLayers(options));
-    dispatch(getAllMapRequests(options, true));
+    dispatch(fetchDataLayers(options));
+    dispatch(fetchMapRequests(options));
   }, [dataDomain, sortByDate, dateRange, boundingBox, dispatch]);
 
   useEffect(() => {

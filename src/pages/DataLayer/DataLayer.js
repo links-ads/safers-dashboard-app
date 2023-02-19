@@ -14,11 +14,12 @@ import {
 } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
+import { resetMetaData } from 'store/datalayer/datalayer.slice';
+
 import DataLayerInformation from './DataLayerInformation';
 import TreeView from './TreeView';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import JsonFormatter from '../../components/JsonFormatter';
-import { resetMetaData } from '../../store/appAction';
 import { formatDate } from '../../store/utility';
 
 import 'react-rangeslider/lib/index.css';
