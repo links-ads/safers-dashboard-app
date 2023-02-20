@@ -6,6 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { Col, Button, Row } from 'reactstrap';
 
 import {
+  fetchStats,
+  fetchWeatherStats,
+  fetchWeatherVariables,
+} from 'store/dashboard/dashboard.slice';
+import {
   fetchEventCameraMedia,
   fetchEventTweets,
 } from 'store/events/events.slice';
@@ -14,11 +19,6 @@ import DateComponent from '../../../../components/DateRangePicker/DateRange';
 import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
 import { getAllAreas } from '../../../../store/appAction';
 import { setPolygonLayer, setViewState } from '../../../../store/common/action';
-import {
-  getStats,
-  getWeatherStats,
-  getWeatherVariables,
-} from '../../../../store/dashboard/action';
 
 const SearchContainer = () => {
   const dispatch = useDispatch();
@@ -46,9 +46,9 @@ const SearchContainer = () => {
     if (searchAoi) {
       params.aoi = searchAoi;
     }
-    dispatch(getStats(params));
-    dispatch(getWeatherStats(params));
-    dispatch(getWeatherVariables(params));
+    dispatch(fetchStats(params));
+    dispatch(fetchWeatherStats(params));
+    dispatch(fetchWeatherVariables(params));
     dispatch(fetchEventCameraMedia(params));
     dispatch(fetchEventTweets(params));
   };

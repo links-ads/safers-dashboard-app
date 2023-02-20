@@ -6,7 +6,7 @@ import authReducer from './authentication/reducer';
 import * as actionTypes from './authentication/types';
 import commonReducer from './common/reducer';
 import commsReducer from './comms/comms.slice';
-import dashboardReducer from './dashboard/reducer';
+import dashboardReducer from './dashboard/dashboard.slice';
 import dataLayerReducer from './datalayer/reducer';
 import eventReducer from './events/events.slice';
 import inSituAlertReducer from './insitu/insitu.slice';
