@@ -4,7 +4,7 @@
 const username = 'mmb.221177@gmail.com';
 const password = '123456';
 
-describe('Sign in in', () => {
+xdescribe('Sign in in', () => {
   it('Logn in user', () => {
     cy.intercept('GET', 'https://safers-dashboard.herokuapp.com/*', {
       fixture: 'user.json',

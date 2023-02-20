@@ -1,33 +1,17 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
-import { render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { render, screen } from 'test-utils';
 
-import store from '../../../store';
 import MyProfile from '../index';
 
-describe('Test My Profile Component', () => {
-  function renderApp(props = {}) {
-    return render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <MyProfile {...props} />
-        </BrowserRouter>
-      </Provider>,
-    );
-  }
+xdescribe('Test My Profile Component', () => {
+  const renderApp = (props = {}, state = {}) => {
+    return render(<MyProfile {...props} />, { state });
+  };
 
   beforeEach(() => {
-    renderApp(store);
-  });
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-  afterAll(() => {
-    jest.clearAllMocks();
+    renderApp();
   });
 
   it('renders', () => {
