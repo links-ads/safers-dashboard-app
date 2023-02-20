@@ -20,6 +20,7 @@ import {
   fetchEventCameraMedia,
   fetchEventTweets,
 } from 'store/events/events.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import DateComponent from '../../../../components/DateRangePicker/DateRange';
 import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
@@ -28,7 +29,7 @@ const SearchContainer = () => {
   const { setViewState } = useMap();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const selectedAoi = useSelector(selectedAoiSelector);
 
   const [dateRange, setDateRange] = useState([]);

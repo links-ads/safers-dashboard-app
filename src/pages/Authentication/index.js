@@ -19,6 +19,11 @@ import {
   aoisSelector,
   isLoadingSelector,
 } from 'store/common/common.slice';
+import {
+  setDefaultAoi,
+  setUserInfo,
+  defaultAoiSelector,
+} from 'store/user/user.slice';
 
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
@@ -30,11 +35,7 @@ import logodark from '../../assets/images/background-light-logo.png';
 import logolight from '../../assets/images/background-light-logo.png';
 import PreLoader from '../../components/PreLoader';
 import { SIGNIN_REDIRECT } from '../../config';
-import {
-  isRemembered,
-  setAoiSuccess,
-  setUserInfo,
-} from '../../store/appAction';
+import { isRemembered } from '../../store/appAction';
 
 const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';
@@ -44,7 +45,7 @@ const Authentication = () => {
   const { isLoggedIn, user } = useSelector(state => state.auth);
   const allAoi = useSelector(aoisSelector);
   const isLoading = useSelector(isLoadingSelector);
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
 
   useEffect(() => {
     if (!currentPage) {
@@ -62,7 +63,7 @@ const Authentication = () => {
         const objAoi = _.find(allAoi, {
           features: [{ properties: { id: user.default_aoi } }],
         });
-        dispatch(setAoiSuccess(objAoi));
+        dispatch(setDefaultAoi(objAoi));
       } else {
         navigate('/user/select-aoi');
       }

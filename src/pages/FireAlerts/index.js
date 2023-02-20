@@ -29,6 +29,7 @@ import {
   alertErrorSelector,
 } from 'store/alerts/alerts.slice';
 import { dateRangeSelector } from 'store/common/common.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import Alert from './Alert';
 import Tooltip from './Tooltip';
@@ -46,7 +47,7 @@ const PAGE_SIZE = 4;
 
 const FireAlerts = ({ t }) => {
   const { viewState, setViewState } = useMap();
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const alerts = useSelector(allAlertsSelector);
   const filteredAlerts = useSelector(filteredAlertsSelector);
   const sources = useSelector(alertSourcesSelector);

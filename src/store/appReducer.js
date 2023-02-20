@@ -15,7 +15,7 @@ import missionReducer from './missions/missions.slice';
 import notificationsReducer from './notifications/notifications.slice';
 import peopleReducer from './people/people.slice';
 import reportReducer from './reports/reports.slice';
-import userReducer from './user/reducer';
+import userReducer from './user/user.slice';
 
 const appReducer = combineReducers({
   auth: authReducer,

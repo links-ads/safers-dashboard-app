@@ -14,6 +14,7 @@ import {
 } from 'reactstrap';
 
 import { configSelector } from 'store/common/common.slice';
+import { userInfoSelector } from 'store/user/user.slice';
 
 import Comms from './Comms';
 import Missions from './Missions';
@@ -24,9 +25,8 @@ import { GENERAL } from '../../constants/common';
 const Chatbot = () => {
   const [customActiveTab, setCustomActiveTab] = useState();
   const config = useSelector(configSelector);
-  const isProfessionalUser = useSelector(
-    state => state.user.info.is_professional,
-  );
+  const user = useSelector(userInfoSelector);
+  const isProfessionalUser = user.is_professional;
   const pollingFrequency =
     config?.polling_frequency * GENERAL.MILLISEC_TO_SECOND ?? 0;
   const { t } = useTranslation();

@@ -24,6 +24,7 @@ import {
   eventsSuccessSelector,
   eventsErrorSelector,
 } from 'store/events/events.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import EventList from './Components/EventList';
 import MapSection from './Components/Map';
@@ -40,7 +41,7 @@ import {
 
 const EventAlerts = ({ t }) => {
   const { viewState, setViewState } = useMap();
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
 
   const alerts = useSelector(allEventsSelector);
   const filteredAlerts = useSelector(filteredEventsSelector);

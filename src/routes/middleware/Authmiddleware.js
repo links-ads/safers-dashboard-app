@@ -4,11 +4,13 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
+import { defaultAoiSelector } from 'store/user/user.slice';
+
 import Layout from '../../layout';
 
 const Authmiddleware = ({ component: Component, isAuthProtected, ...rest }) => {
   const { isLoggedIn } = useSelector(state => state.auth);
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
 
   if (isAuthProtected && !isLoggedIn) {
     return <Navigate state={{ from: rest.location }} to="/auth/sign-in" />;

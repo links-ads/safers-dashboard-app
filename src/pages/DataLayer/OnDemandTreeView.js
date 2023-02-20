@@ -12,6 +12,7 @@ import {
   deleteMapRequest,
   fetchMapRequests,
 } from 'store/datalayer/datalayer.slice';
+import { userInfoSelector } from 'store/user/user.slice';
 
 import { useMap } from '../../components/BaseMap/MapContext';
 import JsonFormatter from '../../components/JsonFormatter';
@@ -50,7 +51,7 @@ const OnDemandTreeView = ({
   const [mapRequestToDelete, setMapRequestToDelete] = useState(null);
   const [selectedNode, setSelectedNode] = useState({});
 
-  const user = useSelector(state => state.user?.info);
+  const user = useSelector(userInfoSelector);
 
   useEffect(() => {
     setCurrentLayer(() => {

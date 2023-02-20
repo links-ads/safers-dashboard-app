@@ -25,6 +25,7 @@ const PhotoBar = ({ t }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log('FETCHING CAMERAS');
     dispatch(
       fetchCameraAlerts({
         type: undefined,

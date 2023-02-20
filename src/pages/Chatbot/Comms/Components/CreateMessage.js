@@ -10,6 +10,7 @@ import * as Yup from 'yup';
 
 import { organisationsSelector } from 'store/common/common.slice';
 import { createComms, resetCommsResponseState } from 'store/comms/comms.slice';
+import { userInfoSelector } from 'store/user/user.slice';
 import { getWKTfromFeature, getGeoFeatures } from 'store/utility';
 
 import MapInput from '../../../../components/BaseMap/MapInput';
@@ -46,7 +47,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
   });
 
   const orgList = useSelector(organisationsSelector);
-  const { info: user } = useSelector(state => state.user);
+  const user = useSelector(userInfoSelector);
 
   const [orgName, setorgName] = useState('');
 

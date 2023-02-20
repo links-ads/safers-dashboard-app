@@ -23,6 +23,7 @@ import {
   resetMissionResponseState,
   missionCreatedSelector,
 } from 'store/missions/missions.slice';
+import { userInfoSelector } from 'store/user/user.slice';
 import 'toastr/build/toastr.min.css';
 import { getGeoFeatures, getWKTfromFeature } from 'store/utility';
 
@@ -39,7 +40,7 @@ const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   const dispatch = useDispatch();
 
   const orgList = useSelector(organisationsSelector);
-  const { info: user } = useSelector(state => state.user);
+  const user = useSelector(userInfoSelector);
   const missionCreated = useSelector(missionCreatedSelector);
   const teamList = useSelector(teamsSelector);
 
