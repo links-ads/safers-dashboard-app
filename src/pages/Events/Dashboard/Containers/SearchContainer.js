@@ -5,6 +5,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Col, Button, Row } from 'reactstrap';
 
+import { useMap } from 'components/BaseMap/MapContext';
+import {
+  fetchAois,
+  setPolygonLayer,
+  selectedAoiSelector,
+} from 'store/common/common.slice';
 import {
   fetchStats,
   fetchWeatherStats,
@@ -17,19 +23,18 @@ import {
 
 import DateComponent from '../../../../components/DateRangePicker/DateRange';
 import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
-import { getAllAreas } from '../../../../store/appAction';
-import { setPolygonLayer, setViewState } from '../../../../store/common/action';
 
 const SearchContainer = () => {
+  const { setViewState } = useMap();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const selectedAoi = useSelector(state => state.common.selectedAoi);
+  const selectedAoi = useSelector(selectedAoiSelector);
 
   const [dateRange, setDateRange] = useState([]);
 
   useEffect(() => {
-    dispatch(getAllAreas());
+    dispatch(fetchAois());
     setMapLayers(defaultAoi);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -10,15 +10,20 @@ import { Input, Button, Row, Col, Label, FormGroup, Form } from 'reactstrap';
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
-import MapInput from 'components/BaseMap/MapInput';
-import DateRangePicker from 'components/DateRangePicker/DateRange';
-import { getError } from 'helpers/errorHelper';
-import { getTeamList } from 'store/appAction';
+import {
+  fetchTeams,
+  organisationsSelector,
+  teamsSelector,
+} from 'store/common/common.slice';
 import {
   createMission,
   resetMissionResponseState,
   missionCreatedSelector,
 } from 'store/missions/missions.slice';
+
+import MapInput from '../../../../components/BaseMap/MapInput';
+import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
+import { getError } from '../../../../helpers/errorHelper';
 import 'toastr/build/toastr.min.css';
 import { getGeoFeatures, getWKTfromFeature } from 'store/utility';
 
@@ -34,16 +39,16 @@ const FORM_INITIAL_STATE = {
 const CreateMission = ({ t, onCancel, coordinates, setCoordinates }) => {
   const dispatch = useDispatch();
 
-  const { orgList = [] } = useSelector(state => state.common);
+  const orgList = useSelector(organisationsSelector);
   const { info: user } = useSelector(state => state.user);
   const missionCreated = useSelector(missionCreatedSelector);
-  const { teamList } = useSelector(state => state.common);
+  const teamList = useSelector(teamsSelector);
 
   const [orgName, setorgName] = useState('--');
   const [selectedTeam, setSelectedTeam] = useState(null);
 
   useEffect(() => {
-    dispatch(getTeamList());
+    dispatch(fetchTeams());
   }, [dispatch]);
 
   useEffect(() => {

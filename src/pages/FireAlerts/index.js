@@ -28,6 +28,7 @@ import {
   alertSuccessSelector,
   alertErrorSelector,
 } from 'store/alerts/alerts.slice';
+import { dateRangeSelector } from 'store/common/common.slice';
 
 import Alert from './Alert';
 import Tooltip from './Tooltip';
@@ -51,7 +52,7 @@ const FireAlerts = ({ t }) => {
   const sources = useSelector(alertSourcesSelector);
   const success = useSelector(alertSuccessSelector);
   const error = useSelector(alertErrorSelector);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const dateRange = useSelector(dateRangeSelector);
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
@@ -220,7 +221,7 @@ const FireAlerts = ({ t }) => {
 
         return;
       })
-      .catch(error => console.log(error));
+      .catch(error => console.error(error));
   };
 
   const validateEvent = id => {

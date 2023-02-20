@@ -4,6 +4,7 @@ import moment from 'moment';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Card } from 'reactstrap';
 
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchEvents,
   setEventParams,
@@ -24,7 +25,7 @@ const AOIBar = ({
   const dispatch = useDispatch();
 
   const [eventList, setEventList] = useState([]);
-  const { dateRange } = useSelector(state => state.common);
+  const dateRange = useSelector(dateRangeSelector);
 
   // start with filtered alerts, looks better starting with none and showing
   // the right number in a few seconds, than starting with lots and then

@@ -18,6 +18,14 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import {
+  fetchOrganisations,
+  fetchRoles,
+  configSelector,
+  organisationsSelector,
+  rolesSelector,
+} from 'store/common/common.slice';
+
 import { endpoints } from '../../api/endpoints';
 import { BASE_URL } from '../../config';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
@@ -26,18 +34,14 @@ import {
   pwdRegEx,
   pwdValidationTxt,
 } from '../../helpers/passwordHelper';
-import {
-  signUpOauth2 as registration,
-  getOrgList,
-  getRoleList,
-} from '../../store/appAction';
+import { signUpOauth2 as registration } from '../../store/appAction';
 
 const SignUp = () => {
   const navigate = useNavigate();
 
   const [passwordToggle, setPasswordToggle] = useState(false);
-  const orgList = useSelector(state => state.common.orgList);
-  const roles = useSelector(state => state.common.roleList);
+  const orgList = useSelector(organisationsSelector);
+  const roles = useSelector(rolesSelector);
   const error = useSelector(state => state.auth.error);
   const [citizenId, setcitizenId] = useState('');
   const docTNM = BASE_URL + endpoints.common.termsNconditions;
@@ -45,7 +49,7 @@ const SignUp = () => {
   const signUpOauth2Success = useSelector(
     state => state.auth.signUpOauth2Success,
   );
-  const config = useSelector(state => state.common.config);
+  const config = useSelector(configSelector);
 
   if (error) {
     window.scrollTo(0, 0);
@@ -54,8 +58,8 @@ const SignUp = () => {
   // const navigate = useNavigate();
   const dispatch = useDispatch();
   useEffect(() => {
-    if (roles.length === 0) dispatch(getOrgList());
-    if (orgList.length === 0) dispatch(getRoleList());
+    if (roles.length === 0) dispatch(fetchOrganisations());
+    if (orgList.length === 0) dispatch(fetchRoles());
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

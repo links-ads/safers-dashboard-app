@@ -5,10 +5,14 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Import menuDropdown
+import {
+  setDateRange,
+  isDateRangeDisabledSelector,
+} from 'store/common/common.slice';
+
 import ProfileMenu from './TopbarDropdown/ProfileMenu';
 import DateRangePicker from '../components/DateRangePicker/DateRange';
 import LanguageDropdown from '../components/LanguageDropdown';
-import { setDateRange } from '../store/common/action';
 import { getDefaultDateRange } from '../store/utility';
 
 const Header = () => {
@@ -16,9 +20,7 @@ const Header = () => {
   const defaultDate = getDefaultDateRange();
 
   // const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
-  const isDateRangeDisabled = useSelector(
-    state => state.common.isDateRangeDisabled,
-  );
+  const isDateRangeDisabled = useSelector(isDateRangeDisabledSelector);
 
   const clearDates = () => {
     dispatch(setDateRange(null));

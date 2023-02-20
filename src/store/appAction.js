@@ -20,12 +20,4 @@ export {
   setUserInfo,
   resetStatus,
 } from './user/action';
-export {
-  getOrgList,
-  getRoleList,
-  getTeamList,
-  getAllAreas,
-  generalInProgress,
-  getConfig,
-  setDateRangeDisabled,
-} from './common/action';
+

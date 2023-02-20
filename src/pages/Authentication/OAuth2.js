@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
+import { generalInProgress } from 'store/common/common.slice';
+
 import {
   AUTH_BASE_URL,
   CLIENT_BASE_URL,
@@ -11,8 +13,7 @@ import {
   AUTH_TENANT_ID,
   REDIRECT_URL,
 } from '../../config';
-import { generalInProgress, signInOauth2 } from '../../store/appAction';
-
+import { signInOauth2 } from '../../store/appAction';
 /* 
 The `authorize` fn gets the authorization_code from the Authentication Server
 which redirects back to this page w/ that code.  It is run when the SSO button

@@ -7,9 +7,9 @@ import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
 import { useMap } from 'components/BaseMap/MapContext';
-
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchComms,
   resetCommsResponseState,
@@ -36,7 +36,7 @@ const Comms = ({ pollingFrequency }) => {
   const allComms = useSelector(allCommsSelector);
   const success = useSelector(commsSuccessSelector);
   const filteredComms = useSelector(filteredCommsSelector);
-  const { dateRange } = useSelector(state => state.common);
+  const dateRange = useSelector(dateRangeSelector);
 
   const { t } = useTranslation();
 

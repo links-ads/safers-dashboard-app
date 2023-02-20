@@ -10,6 +10,7 @@ import { useMap } from 'components/BaseMap/MapContext';
 import { PAGE_SIZE } from 'pages/Events/constants';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchCameras,
   fetchCameraSources,
@@ -46,7 +47,7 @@ const InSituAlerts = () => {
   const cameraList = useSelector(cameraListSelector);
   const success = useSelector(cameraAlertsSuccessSelector);
   const error = useSelector(cameraAlertsErrorSelector);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const dateRange = useSelector(dateRangeSelector);
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);

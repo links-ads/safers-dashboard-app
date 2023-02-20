@@ -13,6 +13,8 @@ import {
   Container,
 } from 'reactstrap';
 
+import { configSelector } from 'store/common/common.slice';
+
 import Comms from './Comms';
 import Missions from './Missions';
 import People from './People';
@@ -21,7 +23,7 @@ import { GENERAL } from '../../constants/common';
 
 const Chatbot = () => {
   const [customActiveTab, setCustomActiveTab] = useState();
-  const { config } = useSelector(state => state.common);
+  const config = useSelector(configSelector);
   const isProfessionalUser = useSelector(
     state => state.user.info.is_professional,
   );

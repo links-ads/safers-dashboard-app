@@ -9,6 +9,7 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchMissions,
   resetMissionResponseState,
@@ -35,7 +36,7 @@ const Missions = ({ pollingFrequency }) => {
   const orgMissionList = useSelector(allMissionsSelector);
   const filteredMissions = useSelector(filteredMissionsSelector);
   const success = useSelector(missionsSuccessSelector);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const dateRange = useSelector(dateRangeSelector);
 
   const { t } = useTranslation();
 

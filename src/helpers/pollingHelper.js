@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
+import { configSelector, dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchAlerts,
   setNewAlertState,
@@ -64,7 +65,8 @@ const PollingHelper = props => {
     notificationIsPageActiveSelector,
   );
 
-  const { config, dateRange } = useSelector(state => state.common);
+  const config = useSelector(configSelector);
+  const dateRange = useSelector(dateRangeSelector);
   const pollingFrequency = config ? config.polling_frequency : undefined;
 
   const [currentNotificationCount, setCurrentNotificationCount] =

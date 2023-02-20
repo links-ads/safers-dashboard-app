@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Input, Button, Label, Row, Col, FormGroup, Form } from 'reactstrap';
 import * as Yup from 'yup';
 
+import { organisationsSelector } from 'store/common/common.slice';
 import { createComms, resetCommsResponseState } from 'store/comms/comms.slice';
 import { getWKTfromFeature, getGeoFeatures } from 'store/utility';
 
@@ -44,7 +45,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     description: Yup.string().required(t('field-empty-err', { ns: 'common' })),
   });
 
-  const { orgList = [] } = useSelector(state => state.common);
+  const orgList = useSelector(organisationsSelector);
   const { info: user } = useSelector(state => state.user);
 
   const [orgName, setorgName] = useState('');

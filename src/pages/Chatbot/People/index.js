@@ -7,9 +7,9 @@ import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
 import { useMap } from 'components/BaseMap/MapContext';
-
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchPeople,
   resetPeopleResponseState,
@@ -36,7 +36,7 @@ const People = ({ pollingFrequency }) => {
   const orgPplList = useSelector(allPeopleSelector);
   const filteredPeople = useSelector(filteredPeopleSelector);
   const success = useSelector(peopleSuccessSelector);
-  const { dateRange } = useSelector(state => state.common);
+  const dateRange = useSelector(dateRangeSelector);
 
   let allPeople = filteredPeople || orgPplList;
 

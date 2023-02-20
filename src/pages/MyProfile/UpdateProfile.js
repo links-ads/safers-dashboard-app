@@ -21,14 +21,19 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import {
+  fetchOrganisations,
+  fetchRoles,
+  organisationsSelector,
+  rolesSelector,
+} from 'store/common/common.slice';
+
 import avatar from '../../assets/images/users/profile.png';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import {
   getInfo,
   updateInfo,
   uploadProfImg,
-  getRoleList,
-  getOrgList,
   deleteAccount,
   signOut,
   resetStatus,
@@ -53,9 +58,9 @@ const UpdateProfile = ({ t }) => {
     info: user,
     defaultAoi,
   } = useSelector(state => state.user);
-  const { orgList = [], roleList: roles = [] } = useSelector(
-    state => state.common,
-  );
+  const orgList = useSelector(organisationsSelector);
+  const roles = useSelector(rolesSelector);
+
   const [modal_backdrop, setmodal_backdrop] = useState(false);
   const [orgName, setorgName] = useState('');
   const [citizenId, setcitizenId] = useState('');
@@ -78,8 +83,8 @@ const UpdateProfile = ({ t }) => {
 
   useEffect(() => {
     dispatch(getInfo(id));
-    if (roles.length === 0) dispatch(getRoleList());
-    if (orgList.length === 0) dispatch(getOrgList());
+    if (roles.length === 0) dispatch(fetchRoles());
+    if (orgList.length === 0) dispatch(fetchOrganisations());
   }, [dispatch, id, orgList.length, roles.length]);
 
   if (uploadFileSuccessRes?.detail) {

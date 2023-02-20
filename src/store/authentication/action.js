@@ -15,11 +15,10 @@ import {
   deleteSession,
   getSession,
 } from '../../helpers/authHelper';
-import { CM_WIP } from '../common/types';
 
 export const InProgress = (status, msg = '') => {
   return {
-    type: CM_WIP,
+    type: actionTypes.CM_WIP,
     payload: msg,
     isLoading: status,
   };
