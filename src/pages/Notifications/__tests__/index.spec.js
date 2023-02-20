@@ -1,10 +1,10 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
+import { NOTIFICATION_DATA } from '__mocks__/notifications';
 import { render, screen, waitFor } from 'test-utils';
 
-import { NOTIFICATION_DATA } from '../../../../__mocks__/notifications';
-import Notifications from '../index';
+import Notifications from '..';
 
 xdescribe('Test Events Screen', () => {
   const renderApp = (props = {}) => {

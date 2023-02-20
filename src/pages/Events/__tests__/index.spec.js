@@ -1,10 +1,10 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
+import { EVENT_ALERTS } from '__mocks__/event-alerts';
 import { act, fireEvent, render, screen, waitFor, userEvent } from 'test-utils';
 
-import { EVENT_ALERTS } from '../../../../__mocks__/event-alerts';
-import EventAlerts from '../index';
+import EventAlerts from '..';
 
 xdescribe('Test Events Screen', () => {
   const renderApp = (props = {}, state = {}) => {

@@ -1,10 +1,10 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
+import { REPORTS } from '__mocks__/reports';
 import { render, screen, waitFor } from 'test-utils';
 
-import { REPORTS } from '../../../../../__mocks__/reports';
-import Reports from '../index';
+import Reports from '..';
 
 xdescribe('Test Events Screen', () => {
   const renderApp = (props = {}, state = {}) => {

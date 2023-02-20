@@ -1,10 +1,10 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
+import { USERS } from '__mocks__/auth';
+import store from 'store';
 import { act, fireEvent, render, screen, waitFor, userEvent } from 'test-utils';
 
-import { USERS } from '../../../../__mocks__/auth';
-import store from '../../../store';
 import SignUp from '../SignUp';
 
 xdescribe('Sign Up Component', () => {

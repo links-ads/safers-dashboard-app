@@ -1,12 +1,12 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
+import { inSituMedia } from '__mocks__/dashboard';
+import { EVENT_ALERTS, TWEETS } from '__mocks__/event-alerts';
+import store from 'store';
 import { cleanup, render, screen } from 'test-utils';
 
 import Dashboard from '..';
-import { inSituMedia } from '../../../../../__mocks__/dashboard';
-import { EVENT_ALERTS, TWEETS } from '../../../../../__mocks__/event-alerts';
-import store from '../../../../store';
 
 afterEach(cleanup);
 

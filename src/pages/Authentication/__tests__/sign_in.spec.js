@@ -1,9 +1,9 @@
 /* eslint-disable no-unused-vars */
 import React from 'react';
 
+import { USERS } from '__mocks__/auth';
 import { act, fireEvent, render, screen, waitFor } from 'test-utils';
 
-import { USERS } from '../../../../__mocks__/auth';
 import SignIn from '../SignIn';
 
 xdescribe('Sign In Component', () => {

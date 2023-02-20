@@ -3,10 +3,10 @@ import React from 'react';
 
 import _ from 'lodash';
 
+import { ROLES } from '__mocks__/common';
+import { UPDATED_USER_INFO, USERS } from '__mocks__/user';
 import { act, fireEvent, render, screen, waitFor } from 'test-utils';
 
-import { ROLES } from '../../../../__mocks__/common';
-import { UPDATED_USER_INFO, USERS } from '../../../../__mocks__/user';
 import UpdateProfile from '../UpdateProfile';
 
 xdescribe('Test Update Profile Component', () => {
