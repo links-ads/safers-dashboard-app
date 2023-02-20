@@ -15,7 +15,7 @@ const state = {
   },
 };
 
-xdescribe('CreateMission', () => {
+describe('CreateMission', () => {
   it('renders', () => {
     server.use(
       rest.get('*/teams', async (req, res, ctx) => {
@@ -23,8 +23,6 @@ xdescribe('CreateMission', () => {
       }),
     );
     render(<CreateMission />, { state });
-    expect(
-      screen.getByRole('button', { name: /submit/i }),
-    ).toBeInTheDocumentOfDocument();
+    expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument();
   });
 });
