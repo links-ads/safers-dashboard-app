@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 
+import { isLoggedInSelector } from 'store/authentication/authentication.slice';
 import { setAoiSuccessMessageSelector } from 'store/user/user.slice';
 
 // eslint-disable-next-line import/no-duplicates
@@ -15,7 +16,7 @@ import AoiHelper from '../../helpers/aoiHelper';
 
 const SelectArea = () => {
   const navigate = useNavigate();
-  const { isLoggedIn } = useSelector(state => state.auth);
+  const isLoggedIn = useSelector(isLoggedInSelector);
   const aoiSetSuccess = useSelector(setAoiSuccessMessageSelector);
 
   useEffect(() => {

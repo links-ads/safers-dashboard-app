@@ -2,8 +2,7 @@ import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage/session'; //or session
 
 import alertReducer from './alerts/alerts.slice';
-import authReducer from './authentication/reducer';
-import * as actionTypes from './authentication/types';
+import authReducer from './authentication/authentication.slice';
 import commonReducer from './common/common.slice';
 import commsReducer from './comms/comms.slice';
 import dashboardReducer from './dashboard/dashboard.slice';
@@ -35,7 +34,7 @@ const appReducer = combineReducers({
 });
 
 const rootReducer = (state, action) => {
-  if (action.type === actionTypes.SIGN_OUT) {
+  if (action.type === 'auth/signOut/fulfilled') {
     storage.removeItem('persist:root');
 
     return appReducer(undefined, action);

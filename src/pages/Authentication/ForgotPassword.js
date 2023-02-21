@@ -15,11 +15,14 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
-import { reqResetPsw } from '../../store/appAction';
+import {
+  resetForgottenUserPasswordRequest,
+  forgotPasswordResponseSelector,
+} from 'store/authentication/authentication.slice';
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();
-  const forgotPswresponse = useSelector(state => state.auth.forgotPswresponse);
+  const forgotPswresponse = useSelector(forgotPasswordResponseSelector);
   const navigate = useNavigate();
 
   const signUpSchema = Yup.object().shape({
@@ -45,7 +48,7 @@ const ForgotPassword = () => {
       }}
       validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
-        dispatch(reqResetPsw(values));
+        dispatch(resetForgottenUserPasswordRequest(values.email));
         setSubmitting(false);
       }}
     >

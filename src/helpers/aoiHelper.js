@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import toastr from 'toastr';
 
+import { userSelector } from 'store/authentication/authentication.slice';
 import { fetchAois, aoisSelector } from 'store/common/common.slice';
 import {
   setUserDefaultAoi,
@@ -26,7 +27,8 @@ const AoiHelper = ({ t }) => {
   toastr.options = {
     preventDuplicates: true,
   };
-  const { id: uid } = useSelector(state => state.auth.user);
+  const user = useSelector(userSelector);
+  const uid = user?.id;
   const allAoi = useSelector(aoisSelector);
   const aoiSetSuccess = useSelector(setAoiSuccessMessageSelector);
   const defaultAoi = useSelector(defaultAoiSelector);

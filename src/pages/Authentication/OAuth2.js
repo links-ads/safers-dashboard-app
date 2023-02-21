@@ -4,6 +4,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
+import {
+  signInOauth2,
+  isLoggedInSelector,
+} from 'store/authentication/authentication.slice';
 import { setLoading } from 'store/common/common.slice';
 
 import {
@@ -13,7 +17,6 @@ import {
   AUTH_TENANT_ID,
   REDIRECT_URL,
 } from '../../config';
-import { signInOauth2 } from '../../store/appAction';
 /* 
 The `authorize` fn gets the authorization_code from the Authentication Server
 which redirects back to this page w/ that code.  It is run when the SSO button
@@ -24,7 +27,7 @@ which tries to exchange that code for a token from the API.
 */
 
 const OAuth2 = () => {
-  const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+  const isLoggedIn = useSelector(isLoggedInSelector);
   const dispatch = useDispatch();
 
   const authorize = () => {
@@ -64,7 +67,7 @@ const OAuth2 = () => {
           message: 'You have successfully signed in. Please wait.',
         }),
       );
-      dispatch(signInOauth2({ authCode }));
+      dispatch(signInOauth2(authCode));
     }
   }, [authCode, dispatch, isLoggedIn]);
 

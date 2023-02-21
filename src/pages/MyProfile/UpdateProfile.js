@@ -21,6 +21,7 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import { signOut } from 'store/authentication/authentication.slice';
 import {
   fetchOrganisations,
   fetchRoles,
@@ -44,8 +45,6 @@ import {
 
 import avatar from '../../assets/images/users/profile.png';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
-import { signOut } from '../../store/appAction';
-
 import 'toastr/build/toastr.min.css';
 
 //i18n

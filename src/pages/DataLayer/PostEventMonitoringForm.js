@@ -18,6 +18,7 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
+import { errorSelector } from 'store/authentication/authentication.slice';
 import {
   postMapRequest,
   fetchMapRequests,
@@ -48,7 +49,7 @@ const PostEventMonitoring = ({
   mapInputOnChange,
 }) => {
   const dispatch = useDispatch();
-  const error = useSelector(state => state.auth.error);
+  const error = useSelector(errorSelector);
 
   const postEventMonitoringSchema = Yup.object().shape({
     dataLayerType: Yup.array().required(t('field-empty-err', { ns: 'common' })),

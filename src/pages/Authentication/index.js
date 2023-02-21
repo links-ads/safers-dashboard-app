@@ -15,6 +15,11 @@ import {
 } from 'reactstrap';
 
 import {
+  isUserRembembered,
+  userSelector,
+  isLoggedInSelector,
+} from 'store/authentication/authentication.slice';
+import {
   fetchAois,
   aoisSelector,
   isLoadingSelector,
@@ -35,14 +40,14 @@ import logodark from '../../assets/images/background-light-logo.png';
 import logolight from '../../assets/images/background-light-logo.png';
 import PreLoader from '../../components/PreLoader';
 import { SIGNIN_REDIRECT } from '../../config';
-import { isRemembered } from '../../store/appAction';
 
 const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';
   const { currentPage } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isLoggedIn, user } = useSelector(state => state.auth);
+  const isLoggedIn = useSelector(isLoggedInSelector);
+  const user = useSelector(userSelector);
   const allAoi = useSelector(aoisSelector);
   const isLoading = useSelector(isLoadingSelector);
   const defaultAoi = useSelector(defaultAoiSelector);
@@ -59,7 +64,7 @@ const Authentication = () => {
   useEffect(() => {
     if (isLoggedIn) {
       dispatch(setUserInfo(user));
-      if (user.default_aoi) {
+      if (user?.default_aoi) {
         const objAoi = _.find(allAoi, {
           features: [{ properties: { id: user.default_aoi } }],
         });
@@ -68,7 +73,7 @@ const Authentication = () => {
         navigate('/user/select-aoi');
       }
     } else {
-      dispatch(isRemembered());
+      dispatch(isUserRembembered());
     }
   }, [allAoi, dispatch, isLoggedIn, navigate, user]);
 
