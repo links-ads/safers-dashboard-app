@@ -17,7 +17,7 @@ import {
   missionsSuccessSelector,
 } from 'store/missions/missions.slice';
 
-import CreateMission from './Components/CreateMission';
+import CreateMission from './Components/create-mission/CreateMission';
 import MapSection from './Components/Map';
 import MissionList from './Components/MissionList';
 import SortSection from './Components/SortSection';

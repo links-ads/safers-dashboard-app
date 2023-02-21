@@ -3,10 +3,10 @@ import React from 'react';
 
 import userEvent from '@testing-library/user-event';
 
+import { ALL_ALERTS } from 'mockData/alerts';
 import { server, rest } from 'mocks/server';
 import { act, render, screen, waitFor, within } from 'test-utils';
 
-import { ALL_ALERTS } from './test-constants';
 import FireAlerts from '../index';
 
 const DEFAULT_STATE = {

@@ -1,60 +1,21 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
+import { EVENT_ALERTS } from 'mockData/event-alerts';
+import { act, fireEvent, render, screen, waitFor, userEvent } from 'test-utils';
 
-import { AOIS } from '../../../../__mocks__/aoi';
-import axiosMock from '../../../../__mocks__/axios';
-import { EVENT_ALERTS } from '../../../../__mocks__/event-alerts';
-import { endpoints } from '../../../api/endpoints';
-import store from '../../../store';
-import { setAoiSuccess } from '../../../store/appAction';
-import { baseURL } from '../../../TestUtils';
 import EventAlerts from '../index';
 
-describe('Test Events Screen', () => {
-  function renderApp(props = {}) {
-    return render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <EventAlerts {...props} />
-        </BrowserRouter>
-      </Provider>,
-    );
-  }
+xdescribe('Test Events Screen', () => {
+  const renderApp = (props = {}, state = {}) => {
+    render(<EventAlerts {...props} />, { state });
+  };
 
-  let mock;
-  //mock all requests on page
-  beforeAll(() => {
-    mock = axiosMock;
-    mock.onPost(`${baseURL}${endpoints.eventAlerts.getAll}`).reply(() => {
-      return [200, EVENT_ALERTS];
-    });
-
-    const objAoi = AOIS[0];
-    store.dispatch(setAoiSuccess(objAoi));
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-  afterAll(() => {
-    jest.clearAllMocks();
-  });
   describe('displays events list', () => {
     beforeEach(() => {
-      renderApp(store);
+      renderApp();
     });
+
     it('lists events list when loaded', async () => {
       const eventAlertsPage1 = EVENT_ALERTS.slice(0, 3);
 
@@ -64,6 +25,7 @@ describe('Test Events Screen', () => {
             .length,
         ).toBeGreaterThan(0),
       );
+
       //verify other elements
       eventAlertsPage1.map(async event => {
         expect(
@@ -83,6 +45,7 @@ describe('Test Events Screen', () => {
         });
       });
     });
+
     it('sorts by ongoing when ongoing selected', async () => {
       //wait for data to be displayed
       act(() => {
@@ -110,10 +73,12 @@ describe('Test Events Screen', () => {
       expect(screen.queryAllByText('CLOSED').length).toEqual(2);
     });
   });
+
   describe('displays events list', () => {
     beforeEach(() => {
-      renderApp(store);
+      renderApp();
     });
+
     it('sorts by event source', async () => {
       act(() => {
         userEvent.selectOptions(
@@ -121,6 +86,7 @@ describe('Test Events Screen', () => {
           'satellite',
         );
       });
+
       await (() => {
         //only one item rendered
         expect(

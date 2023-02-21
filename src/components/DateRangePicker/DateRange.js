@@ -31,7 +31,7 @@ const DateComponent = ({
 
   useEffect(() => {
     let lang = null;
-    switch (i18n.language) {
+    switch (i18n?.language) {
       case 'fr':
         lang = French;
         break;
@@ -48,7 +48,7 @@ const DateComponent = ({
         lang = undefined;
     }
     setTrsnalation(lang);
-  }, [i18n.language]);
+  }, [i18n?.language]);
 
   const defaultDate =
     defaultDateRange?.map(date => moment(date).format('DD/MM/YY')) ?? [];
@@ -86,7 +86,7 @@ const DateComponent = ({
             mode: 'range',
             dateFormat: isTimeEnabled ? 'd/m/y h:i K' : 'd/m/y',
             defaultDate,
-            locale: trsnalation,
+            locale: trsnalation ?? null,
           }}
         />
 
