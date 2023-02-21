@@ -285,7 +285,7 @@ export const eventInSituMediaSelector = createSelector(
 
 export const isEventPageActiveSelector = createSelector(
   baseSelector,
-  events => events?.isEventPageActive,
+  events => events?.isPageActive,
 );
 
 export const newEventCountSelector = createSelector(

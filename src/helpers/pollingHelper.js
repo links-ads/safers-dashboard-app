@@ -3,6 +3,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
+  fetchAlerts,
+  setNewAlertState,
+  allAlertsSelector,
+  filteredAlertsSelector,
+  alertParamsSelector,
+  isAlertPageActiveSelector,
+} from 'store/alerts/alerts.slice';
+import {
   fetchMapRequests,
   setNewMapRequestState,
   dataLayerParamsSelector,
@@ -26,7 +34,6 @@ import {
 } from 'store/notifications/notifications.slice';
 
 import useSetNewAlerts from '../customHooks/useSetNewAlerts';
-import { getAllFireAlerts, setNewAlertState } from '../store/appAction';
 
 const MILLISECONDS = 1000;
 const PollingHelper = props => {
@@ -39,12 +46,10 @@ const PollingHelper = props => {
   const isMapRequestPageActive = useSelector(dataLayerIsPageActiveSelector);
 
   // Alerts
-  const {
-    allAlerts,
-    filteredAlerts,
-    params: alertParams,
-    isPageActive: isAlertPageActive,
-  } = useSelector(state => state.alerts);
+  const allAlerts = useSelector(allAlertsSelector);
+  const filteredAlerts = useSelector(filteredAlertsSelector);
+  const alertParams = useSelector(alertParamsSelector);
+  const isAlertPageActive = useSelector(isAlertPageActiveSelector);
 
   // Events
   const allEvents = useSelector(allEventsSelector);
@@ -89,7 +94,7 @@ const PollingHelper = props => {
       ntParams = { ...restNotifications };
     }
 
-    dispatch(getAllFireAlerts({ ...alParams, ...dateRangeParams }));
+    dispatch(fetchAlerts({ options: { ...alParams, ...dateRangeParams } }));
     dispatch(fetchEvents({ options: { ...evParams, ...dateRangeParams } }));
     dispatch(fetchNotifications({ ...ntParams, ...dateRangeParams }));
     dispatch(fetchMapRequests({ ...mapRequestParams, ...dateRangeParams }));
@@ -114,7 +119,13 @@ const PollingHelper = props => {
   useSetNewAlerts(
     noOfMessages => {
       if (!isAlertPageActive) {
-        dispatch(setNewAlertState(true, false, noOfMessages));
+        dispatch(
+          setNewAlertState({
+            isNewAlert: true,
+            isPageActive: false,
+            newItemsCount: noOfMessages,
+          }),
+        );
       }
     },
     allAlerts,

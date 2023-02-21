@@ -20,6 +20,10 @@ import wkt from 'wkt';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import {
+  setFilteredAlerts,
+  setAlertApiParams,
+} from 'store/alerts/alerts.slice';
+import {
   fetchDataLayers,
   fetchMapRequests,
   setNewMapRequestState,
@@ -39,8 +43,7 @@ import WildfireSimulation from './WildfireSimulation';
 import { MAP } from '../../constants/common';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { getBoundingBox, isWKTValid } from '../../helpers/mapHelper';
-import { setFilteredAlerts } from '../../store/alerts/action';
-import { setAlertApiParams, setDateRangeDisabled } from '../../store/appAction';
+import { setDateRangeDisabled } from '../../store/appAction';
 import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
 
 const DataLayerDashboard = ({ t }) => {

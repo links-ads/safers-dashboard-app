@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useLocation, Link } from 'react-router-dom';
 import SimpleBar from 'simplebar-react';
 
+import { newItemsCountAlertSelector } from 'store/alerts/alerts.slice';
 import {
   dataLayerNewItemsCountSelector,
   dataLayerIsNewAlertSelector,
@@ -28,7 +29,7 @@ import { SIGNIN_REDIRECT } from '../config';
 // import { withRouter } from 'react-router-dom'
 
 const SidebarContent = props => {
-  const newAlertsCount = useSelector(state => state.alerts.newItemsCount);
+  const newAlertsCount = useSelector(newItemsCountAlertSelector);
   const newEventsCount = useSelector(newEventCountSelector);
   const isNewNotification = useSelector(isNewNotificationSelector);
   const newNotificationsCount = useSelector(newItemsCountNotificationSelector);

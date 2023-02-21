@@ -29,21 +29,3 @@ export {
   getConfig,
   setDateRangeDisabled,
 } from './common/action';
-export {
-  getSource,
-  getAllFireAlerts,
-  setFilteredAlerts,
-  setFavoriteAlert,
-  validateAlert,
-  editAlertInfo,
-  setAlertApiParams,
-  setNewAlertState,
-  resetAlertsResponseState,
-} from './alerts/action';
-export {
-  getInSituMedia,
-  getStats,
-  getTweets,
-  getWeatherStats,
-  getWeatherVariables,
-} from './dashboard/action';

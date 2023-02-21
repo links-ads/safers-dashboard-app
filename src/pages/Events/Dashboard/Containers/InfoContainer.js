@@ -15,7 +15,6 @@ import MapComponent from '../Components/Map';
 //i18n
 
 const InfoContainer = ({ t }) => {
-  const weatherStats = useSelector(state => state.dashboard.weatherStats);
   const allAlerts = useSelector(allEventsSelector);
 
   const { id } = useParams();
@@ -35,7 +34,7 @@ const InfoContainer = ({ t }) => {
       </Col>
 
       <Col md={7}>
-        <MapComponent weatherStats={weatherStats} />
+        <MapComponent />
       </Col>
       <Col md={5} sm={12} xs={12}>
         <Card className="card-weather px-0">

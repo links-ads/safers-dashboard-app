@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage/session'; //or session
 
-import alertReducer from './alerts/reducer';
+import alertReducer from './alerts/alerts.slice';
 import authReducer from './authentication/reducer';
 import * as actionTypes from './authentication/types';
 import commonReducer from './common/reducer';
 import commsReducer from './comms/comms.slice';
-import dashboardReducer from './dashboard/reducer';
+import dashboardReducer from './dashboard/dashboard.slice';
 import dataLayerReducer from './datalayer/datalayer.slice';
 import eventReducer from './events/events.slice';
 import inSituAlertReducer from './insitu/insitu.slice';

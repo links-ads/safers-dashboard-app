@@ -3,10 +3,17 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'reactstrap';
 
-import { getAllFireAlerts } from 'store/appAction';
+import {
+  fetchAlerts,
+  allAlertsSelector,
+  filteredAlertsSelector,
+} from 'store/alerts/alerts.slice';
 import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
 import { fetchEvents } from 'store/events/events.slice';
-import { fetchMissions } from 'store/missions/missions.slice';
+import {
+  fetchMissions,
+  allMissionsSelector,
+} from 'store/missions/missions.slice';
 import {
   fetchPeople,
   allPeopleSelector,
@@ -44,12 +51,12 @@ const NewDashboard = () => {
   const orgPplList = useSelector(allPeopleSelector);
   const filteredPeople = useSelector(filteredPeopleSelector);
 
-  const OrgReportList = useSelector(allReportsSelector);
+  const orgReportList = useSelector(allReportsSelector);
 
-  const { allAlerts: alerts, filteredAlerts } = useSelector(
-    state => state?.alerts,
-  );
-  const allMissions = useSelector(state => state?.missions?.allMissions || []);
+  const alerts = useSelector(allAlertsSelector);
+  const filteredAlerts = useSelector(filteredAlertsSelector);
+
+  const allMissions = useSelector(allMissionsSelector);
   const allCommunications = useSelector(allCommsSelector);
 
   const layerVisibilities = {
@@ -80,7 +87,7 @@ const NewDashboard = () => {
     dispatch(fetchReports({ options: params }));
     dispatch(fetchComms({ options: params, feFilters: {} }));
     dispatch(fetchMissions({ options: params, feFilters: {} }));
-    dispatch(getAllFireAlerts(params));
+    dispatch(fetchAlerts({ options: params }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -94,9 +101,9 @@ const NewDashboard = () => {
   }, [orgPplList, filteredPeople]);
 
   useEffect(() => {
-    const statusCounts = getStatusCountsForItems(OrgReportList);
+    const statusCounts = getStatusCountsForItems(orgReportList);
     setReportStatusCounts(statusCounts);
-  }, [OrgReportList]);
+  }, [orgReportList]);
 
   useEffect(() => {
     const statusCounts = getStatusCountsForItems(allMissions);
@@ -122,7 +129,7 @@ const NewDashboard = () => {
         />
         <AOIBar
           orgPplList={orgPplList}
-          orgReportList={OrgReportList}
+          orgReportList={orgReportList}
           commsList={allCommunications}
           missionsList={allMissions}
           alertsList={alerts}
