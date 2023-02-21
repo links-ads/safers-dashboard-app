@@ -6,10 +6,14 @@ import { BrowserRouter } from 'react-router-dom';
 import './index.scss';
 import { PersistGate } from 'redux-persist/integration/react';
 
+import { setupInterceptors } from 'api/base';
+
 import App from './App';
 import { MapProvider } from './components/BaseMap/MapContext';
 import reportWebVitals from './reportWebVitals';
 import store, { persistor } from './store';
+
+setupInterceptors(store);
 
 ReactDOM.render(
   <Provider store={store}>

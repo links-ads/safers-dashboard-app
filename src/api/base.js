@@ -1,11 +1,11 @@
 import axios from 'axios';
 
+import { signOutSuccess } from 'store/authentication/action';
+import { setLoading } from 'store/common/common.slice';
+
 import { endpoints } from './endpoints';
 import { BASE_URL } from '../config';
 import { authHeader, deleteSession } from '../helpers/authHelper';
-import store from '../store';
-// eslint-disable-next-line no-unused-vars
-import { InProgress, signOutSuccess } from '../store/authentication/action';
 export const API_PREFIX = 'api';
 
 const axiosApi = axios.create({
@@ -24,29 +24,31 @@ const whitelistedUrls = [
   endpoints.chatbot.reports.getReports,
 ];
 
-axiosApi.interceptors.request.use(
-  async config => {
-    const isPermitted = isWhitelisted(config.url);
-    if (!isPermitted || (isPermitted && config.method === 'post')) {
-      store.dispatch(InProgress(true, 'Please wait..'));
-    }
-    return config;
-  },
-  error => {
-    return Promise.reject(error);
-  },
-);
+export const setupInterceptors = store => {
+  axiosApi.interceptors.request.use(
+    async config => {
+      const isPermitted = isWhitelisted(config.url);
+      if (!isPermitted || (isPermitted && config.method === 'post')) {
+        store.dispatch(setLoading({ status: true, message: 'Please wait..' }));
+      }
+      return config;
+    },
+    error => {
+      return Promise.reject(error);
+    },
+  );
 
-axiosApi.interceptors.response.use(
-  response => {
-    store.dispatch(InProgress(false));
-    return response;
-  },
-  error => {
-    store.dispatch(InProgress(false));
-    return handleError(error);
-  },
-);
+  axiosApi.interceptors.response.use(
+    response => {
+      store.dispatch(setLoading({ status: false }));
+      return response;
+    },
+    error => {
+      store.dispatch(setLoading({ status: false }));
+      return handleError(error, store);
+    },
+  );
+};
 
 export const axiosInstance = axiosApi;
 
@@ -90,7 +92,7 @@ export async function del(url, config = {}) {
     .then(response => response);
 }
 
-const handleError = error => {
+const handleError = (error, store) => {
   if (error.response) {
     switch (error.response.status) {
       case 401:
