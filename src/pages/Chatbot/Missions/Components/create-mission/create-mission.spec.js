@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { server, rest } from 'mocks/server';
-import { screen, render } from 'test-utils';
+import { screen, render, waitFor } from 'test-utils';
 
 import CreateMission from './CreateMission';
 
@@ -16,13 +16,16 @@ const state = {
 };
 
 describe('CreateMission', () => {
-  it('renders', () => {
+  it('renders', async () => {
     server.use(
       rest.get('*/teams', async (req, res, ctx) => {
         return res(ctx.status(200), ctx.json([]));
       }),
     );
-    render(<CreateMission />, { state });
-    expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument();
+    render(<CreateMission t={str => str} />, { state });
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /send/i })).toBeInTheDocument();
+    });
   });
 });
