@@ -19,6 +19,8 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import { configSelector } from 'store/common/common.slice';
+
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import {
   passwordHelper,
@@ -35,7 +37,7 @@ const ResetPsw = ({ t }) => {
     state => state.user.resetPswSuccessRes,
   );
   const error = useSelector(state => state.user.resetPswFailRes);
-  const config = useSelector(state => state.common.config);
+  const config = useSelector(configSelector);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const dispatch = useDispatch();
 

@@ -4,6 +4,8 @@ import _ from 'lodash';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
+import { aoisSelector } from 'store/common/common.slice';
+
 import BaseMap from '../../../../components/BaseMap/BaseMap';
 import MapCards from '../../../../components/BaseMap/MapCards';
 import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
@@ -12,7 +14,7 @@ const MapComponent = () => {
   const [viewState, setViewState] = useState(undefined);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const allAoi = useSelector(state => state.common.aois);
+  const allAoi = useSelector(aoisSelector);
 
   useEffect(() => {
     selectAoi(defaultAoi.features[0].properties.id);

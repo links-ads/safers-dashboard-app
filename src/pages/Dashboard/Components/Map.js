@@ -4,8 +4,8 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
+import { useMap } from 'components/BaseMap/MapContext';
 import { MAP_TYPES } from 'constants/common';
-import { setViewState } from 'store/common/action';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import {
@@ -23,6 +23,7 @@ const MapComponent = ({
   alertsList = [],
   visibleLayers = {},
 }) => {
+  const { setViewState } = useMap();
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 

@@ -7,6 +7,7 @@ import { Row, Col } from 'reactstrap';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchNotifications,
   fetchNotificationSources,
@@ -26,7 +27,7 @@ const Notifications = () => {
 
   const notifications = useSelector(allNotificationsSelector);
   const notificationParams = useSelector(notificationParamsSelector);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const dateRange = useSelector(dateRangeSelector);
 
   const [filteredNotifications, setFilterdNotifications] = useState([]);
   const [paginatedNotifications, setPaginatedNotifications] = useState([]);

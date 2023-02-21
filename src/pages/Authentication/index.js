@@ -14,6 +14,12 @@ import {
   Col,
 } from 'reactstrap';
 
+import {
+  fetchAois,
+  aoisSelector,
+  isLoadingSelector,
+} from 'store/common/common.slice';
+
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
 import SignIn from './SignIn';
@@ -27,7 +33,6 @@ import { SIGNIN_REDIRECT } from '../../config';
 import {
   isRemembered,
   setAoiSuccess,
-  getAllAreas,
   setUserInfo,
 } from '../../store/appAction';
 
@@ -37,14 +42,15 @@ const Authentication = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isLoggedIn, user } = useSelector(state => state.auth);
-  const { aois: allAoi, isLoading } = useSelector(state => state.common);
+  const allAoi = useSelector(aoisSelector);
+  const isLoading = useSelector(isLoadingSelector);
   const defaultAoi = useSelector(state => state.user.defaultAoi);
 
   useEffect(() => {
     if (!currentPage) {
       navigate(`/auth/${DEFAULT_PAGE}`);
     }
-    dispatch(getAllAreas());
+    dispatch(fetchAois());
   }, [currentPage, dispatch, navigate]);
 
   // AOI ID is filetered and complete object is stored in user store.

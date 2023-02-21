@@ -6,6 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
 
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchStats,
   fetchTweets,
@@ -27,7 +28,7 @@ const MOCK_DATA =
 const SocialMonitoring = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
   const stats = useSelector(statsSelector);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const dateRange = useSelector(dateRangeSelector);
 
   const tweetsTrend = 23; //hard coded text until API available
   const socialStats = MOCK_DATA;

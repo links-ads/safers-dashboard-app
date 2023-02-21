@@ -7,9 +7,9 @@ import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
 import { useMap } from 'components/BaseMap/MapContext';
-
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchReports,
   resetReportResponseState,
@@ -40,7 +40,7 @@ const Reports = ({ pollingFrequency }) => {
   const gBbox = useSelector(reportsBoundingBoxSelector);
   const mapFilter = useSelector(reportsMapFilterSelector);
 
-  const dateRange = useSelector(state => state.common.dateRange);
+  const dateRange = useSelector(dateRangeSelector);
 
   const { t } = useTranslation();
 

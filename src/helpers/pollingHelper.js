@@ -10,6 +10,7 @@ import {
   alertParamsSelector,
   isAlertPageActiveSelector,
 } from 'store/alerts/alerts.slice';
+import { configSelector, dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchMapRequests,
   setNewMapRequestState,
@@ -64,7 +65,8 @@ const PollingHelper = props => {
     notificationIsPageActiveSelector,
   );
 
-  const { config, dateRange } = useSelector(state => state.common);
+  const config = useSelector(configSelector);
+  const dateRange = useSelector(dateRangeSelector);
   const pollingFrequency = config ? config.polling_frequency : undefined;
 
   const [currentNotificationCount, setCurrentNotificationCount] =

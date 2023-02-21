@@ -10,6 +10,7 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchEvents,
   fetchEventDetail,
@@ -35,7 +36,6 @@ import {
   getViewState,
   getAlertIconColorFromContext,
 } from '../../helpers/mapHelper';
-
 //i18n
 
 const EventAlerts = ({ t }) => {
@@ -47,7 +47,7 @@ const EventAlerts = ({ t }) => {
   const success = useSelector(eventsSuccessSelector);
   const error = useSelector(eventsErrorSelector);
 
-  const dateRange = useSelector(state => state.common.dateRange);
+  const dateRange = useSelector(dateRangeSelector);
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
