@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
-import { generalInProgress } from 'store/common/common.slice';
+import { setLoading } from 'store/common/common.slice';
 
 import {
   AUTH_BASE_URL,
@@ -29,9 +29,11 @@ const OAuth2 = () => {
 
   const authorize = () => {
     dispatch(
-      generalInProgress(
-        'Please wait. You are being redirected to sign in page for SSO.',
-      ),
+      setLoading({
+        status: true,
+        message:
+          'Please wait. You are being redirected to sign in page for SSO.',
+      }),
     );
 
     const params = {
@@ -57,7 +59,10 @@ const OAuth2 = () => {
     if (!isLoggedIn && authCode) {
       console.log(authCode);
       dispatch(
-        generalInProgress('You have successfully signed in. Please wait.'),
+        setLoading({
+          status: true,
+          message: 'You have successfully signed in. Please wait.',
+        }),
       );
       dispatch(signInOauth2({ authCode }));
     }

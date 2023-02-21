@@ -109,9 +109,9 @@ const commonSlice = createSlice({
   name,
   initialState,
   reducers: {
-    generalInProgress: (state, { payload }) => {
-      state.loadingMsg = payload;
-      state.isLoading = true;
+    setLoading: (state, { payload }) => {
+      state.loadingMsg = payload.message;
+      state.isLoading = payload.status;
     },
     setSelectedAoi: (state, { payload }) => {
       state.selectedAoi = payload;
@@ -174,7 +174,7 @@ const commonSlice = createSlice({
 });
 
 export const {
-  generalInProgress,
+  setLoading,
   setSelectedAoi,
   setPolygonLayer,
   setDateRange,

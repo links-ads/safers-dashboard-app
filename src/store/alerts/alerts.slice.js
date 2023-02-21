@@ -7,8 +7,7 @@ import queryString from 'query-string';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-
-import { InProgress } from '../authentication/action';
+import { setLoading } from 'store/common/common.slice';
 
 const name = 'alerts';
 
@@ -19,7 +18,7 @@ export const fetchAlerts = createAsyncThunk(
     { dispatch, rejectWithValue },
   ) => {
     if (isLoading) {
-      dispatch(InProgress(true, 'Loading..'));
+      dispatch(setLoading({ status: true, message: 'Loading..' }));
     }
 
     const response = await api.get(
@@ -27,7 +26,7 @@ export const fetchAlerts = createAsyncThunk(
     );
 
     if (isLoading) {
-      dispatch(InProgress(false));
+      dispatch(setLoading({ status: false }));
     }
 
     if (response.status === 200) {

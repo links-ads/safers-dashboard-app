@@ -7,8 +7,7 @@ import queryString from 'query-string';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-
-import { InProgress } from '../authentication/action';
+import { setLoading } from 'store/common/common.slice';
 
 const name = 'events';
 
@@ -19,7 +18,7 @@ export const fetchEvents = createAsyncThunk(
     { dispatch, rejectWithValue },
   ) => {
     if (isLoading) {
-      dispatch(InProgress(true, 'Loading..'));
+      dispatch(setLoading({ status: true, message: 'Loading..' }));
     }
 
     const response = await api.get(
@@ -27,7 +26,7 @@ export const fetchEvents = createAsyncThunk(
     );
 
     if (isLoading) {
-      dispatch(InProgress(false));
+      dispatch(setLoading({ status: false }));
     }
 
     if (response.status === 200) {
@@ -44,13 +43,13 @@ export const fetchEvents = createAsyncThunk(
 export const fetchEventDetail = createAsyncThunk(
   `${name}/fetchEventDetail`,
   async (id, { dispatch, rejectWithValue }) => {
-    dispatch(InProgress(true, 'Loading..'));
+    dispatch(setLoading({ status: true, message: 'Loading..' }));
 
     const response = await api.get(
       endpoints.eventAlerts.getEvent.replace(':event_id', id),
     );
 
-    dispatch(InProgress(false, 'Loading..'));
+    dispatch(setLoading({ status: false }));
 
     if (response.status === 200) {
       return response.data;
@@ -124,14 +123,14 @@ export const validateEvent = createAsyncThunk(
 export const editEventInfo = createAsyncThunk(
   `${name}/editEventInfo`,
   async ({ eventId, editInfo }, { dispatch, rejectWithValue }) => {
-    dispatch(InProgress(true, 'Loading..'));
+    dispatch(setLoading({ status: true, message: 'Loading..' }));
 
     const response = await api.patch(
       endpoints.eventAlerts.edit.replace(':event_id', eventId),
       editInfo,
     );
 
-    dispatch(InProgress(false, 'Loading..'));
+    dispatch(setLoading({ status: false }));
 
     if (response.status === 200) {
       return response.data;
