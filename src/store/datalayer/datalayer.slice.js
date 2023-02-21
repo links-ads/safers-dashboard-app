@@ -260,7 +260,7 @@ const reportsSlice = createSlice({
         state.error = true;
       })
       .addCase(postMapRequest.fulfilled, (state, { payload }) => {
-        state.timeSeries = payload;
+        state.mapRequest = payload;
         state.error = false;
       })
       .addCase(postMapRequest.rejected, state => {
