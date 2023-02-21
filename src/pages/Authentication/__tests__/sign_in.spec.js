@@ -55,10 +55,10 @@ xdescribe('Sign In Component', () => {
   });
 
   describe('Test Sign In', () => {
-    let store = null;
+    let mockStore = null;
     beforeEach(() => {
-      const utils = renderApp();
-      store = utils.store;
+      const { store } = renderApp();
+      mockStore = store;
     });
 
     it('rejects empty values validation', async () => {
@@ -94,8 +94,8 @@ xdescribe('Sign In Component', () => {
 
       //check store sign in
       await waitFor(async () => {
-        expect(store.getState().auth.user).toEqual(USERS.user);
-        expect(store.getState().auth.isLoggedIn).toEqual(true);
+        expect(mockStore.getState().auth.user).toEqual(USERS.user);
+        expect(mockStore.getState().auth.isLoggedIn).toEqual(true);
       });
     });
   });

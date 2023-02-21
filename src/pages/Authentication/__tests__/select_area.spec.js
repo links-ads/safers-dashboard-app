@@ -11,14 +11,15 @@ import { mockedNavigator } from 'TestUtils';
 import SelectArea from '../SelectArea';
 
 xdescribe('Select Area Component', () => {
-  let utils = null;
+  let mockStore = null;
 
   const renderApp = (props = {}, state = {}) => {
     return render(<SelectArea {...props} />, { state });
   };
 
   beforeEach(() => {
-    utils = renderApp();
+    const { store } = renderApp();
+    mockStore = store;
   });
 
   describe('redirect to sign in if not logged in', () => {
@@ -30,7 +31,7 @@ xdescribe('Select Area Component', () => {
   describe('Test Select Aoi Component', () => {
     beforeAll(() => {
       act(() => {
-        utils.store.dispatch(signInSuccess(USERS.user));
+        mockStore.dispatch(signInSuccess(USERS.user));
       });
     });
 
@@ -53,7 +54,7 @@ xdescribe('Select Area Component', () => {
       });
 
       await waitFor(() => {
-        expect(utils.store.getState().user.aoiSetSuccess).not.toEqual(null);
+        expect(mockStore.getState().user.aoiSetSuccess).not.toEqual(null);
       });
 
       //calls dashboard

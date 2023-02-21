@@ -3,8 +3,8 @@ import React from 'react';
 
 import _ from 'lodash';
 
-import { ROLES } from 'mock-data/common';
-import { UPDATED_USER_INFO, USERS } from 'mock-data/user';
+import { ROLES } from 'mockData/common';
+import { UPDATED_USER_INFO, USERS } from 'mockData/user';
 import { act, fireEvent, render, screen, waitFor } from 'test-utils';
 
 import UpdateProfile from '../UpdateProfile';

@@ -1,16 +1,14 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import { inSituMedia } from 'mock-data/dashboard';
-import { EVENT_ALERTS, TWEETS } from 'mock-data/event-alerts';
-import { cleanup, render, screen } from 'test-utils';
+import { inSituMedia } from 'mockData/dashboard';
+import { EVENT_ALERTS, TWEETS } from 'mockData/event-alerts';
+import { render, screen } from 'test-utils';
 
 import Dashboard from '../index';
 
-afterEach(cleanup);
-
 xdescribe('Test Dashboard Component', () => {
-  let utils = null;
+  let mockStore = null;
 
   const renderApp = (props = {}, state = {}) => {
     return render(<Dashboard {...props} />, { state });
@@ -18,7 +16,8 @@ xdescribe('Test Dashboard Component', () => {
 
   describe('Renders', () => {
     beforeEach(() => {
-      utils = renderApp();
+      const { store } = renderApp();
+      mockStore = store;
     });
 
     test('Should render correctly', () => {
@@ -47,7 +46,7 @@ xdescribe('Test Dashboard Component', () => {
     });
 
     it('gets tweets from the api', () => {
-      expect(utils.store.getState().dashboard.tweets).toEqual(TWEETS);
+      expect(mockStore.getState().dashboard.tweets).toEqual(TWEETS);
     });
   });
 });

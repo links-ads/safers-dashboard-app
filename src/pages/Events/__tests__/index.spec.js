@@ -1,7 +1,7 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import { EVENT_ALERTS } from 'mock-data/event-alerts';
+import { EVENT_ALERTS } from 'mockData/event-alerts';
 import { act, fireEvent, render, screen, waitFor, userEvent } from 'test-utils';
 
 import EventAlerts from '../index';

@@ -7,7 +7,7 @@ import { act, fireEvent, render, screen, waitFor, userEvent } from 'test-utils';
 import SignUp from '../SignUp';
 
 xdescribe('Sign Up Component', () => {
-  let utils = null;
+  let mockStore = null;
 
   const renderApp = (props = {}, state = {}) => {
     return render(<SignUp {...props} />, { state });
@@ -15,7 +15,8 @@ xdescribe('Sign Up Component', () => {
 
   describe('Form testing', () => {
     beforeEach(() => {
-      utils = renderApp();
+      const { store } = renderApp();
+      mockStore = store;
     });
 
     test('Should render correctly', () => {
@@ -95,8 +96,8 @@ xdescribe('Sign Up Component', () => {
 
       //assert
       await waitFor(async () => {
-        expect(utils.store.getState().auth.user).toEqual(USERS.user);
-        expect(utils.store.getState().auth.isLoggedIn).toEqual(true);
+        expect(mockStore.getState().auth.user).toEqual(USERS.user);
+        expect(mockStore.getState().auth.isLoggedIn).toEqual(true);
       });
     });
   });
