@@ -29,13 +29,3 @@ export {
   getConfig,
   setDateRangeDisabled,
 } from './common/action';
-export {
-  getMetaData,
-  resetMetaData,
-  getAllDataLayers,
-  resetDataLayersResponseState,
-  postMapRequest,
-  getAllMapRequests,
-  setNewMapRequestState,
-  getDataLayerTimeSeriesData,
-} from './datalayer/action';

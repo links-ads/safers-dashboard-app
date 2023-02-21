@@ -18,11 +18,15 @@ import {
 import wkt from 'wkt';
 import * as Yup from 'yup';
 
+import {
+  postMapRequest,
+  fetchMapRequests,
+} from 'store/datalayer/datalayer.slice';
+
 import MapSection from './Map';
 import MapInput from '../../components/BaseMap/MapInput';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import 'react-rangeslider/lib/index.css';
-import { postMapRequest, getAllMapRequests } from '../../store/appAction';
 import { getWKTfromFeature } from '../../store/utility';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
@@ -101,7 +105,7 @@ const FireAndBurnedArea = ({
     };
 
     dispatch(postMapRequest(payload));
-    dispatch(getAllMapRequests());
+    dispatch(fetchMapRequests());
     backToOnDemandPanel();
   };
 
@@ -120,7 +124,7 @@ const FireAndBurnedArea = ({
         <Row>
           <Formik
             initialValues={{
-              dataLayerType: '',
+              dataLayerType: [],
               requestTitle: '',
               mapSelection: null,
               isMapAreaValid: null,

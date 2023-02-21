@@ -18,10 +18,14 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
+import {
+  postMapRequest,
+  fetchMapRequests,
+} from 'store/datalayer/datalayer.slice';
+
 import MapSection from './Map';
 import MapInput from '../../components/BaseMap/MapInput';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
-import { postMapRequest, getAllMapRequests } from '../../store/appAction';
 import 'react-rangeslider/lib/index.css';
 import { getWKTfromFeature } from '../../store/utility';
 
@@ -97,7 +101,7 @@ const PostEventMonitoring = ({
     };
 
     dispatch(postMapRequest(payload));
-    dispatch(getAllMapRequests());
+    dispatch(fetchMapRequests());
     backToOnDemandPanel();
   };
 

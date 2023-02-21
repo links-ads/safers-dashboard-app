@@ -14,11 +14,12 @@ import {
 } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
+import { resetMetaData } from 'store/datalayer/datalayer.slice';
+
 import DataLayerInformation from './DataLayerInformation';
 import TreeView from './TreeView';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import JsonFormatter from '../../components/JsonFormatter';
-import { resetMetaData } from '../../store/appAction';
 import { formatDate } from '../../store/utility';
 
 import 'react-rangeslider/lib/index.css';
@@ -43,7 +44,6 @@ const DataLayer = ({
   timestamp,
   showLegend,
   legendUrl,
-  searchDataTree,
   dispatch,
   sliderChangeComplete,
   resetMap,
@@ -59,6 +59,25 @@ const DataLayer = ({
   useEffect(() => {
     setSearchedDataLayers(operationalMapLayers);
   }, [operationalMapLayers]);
+
+  const searchDataTree = (data, str) => {
+    const searchTerm = str.toLowerCase();
+    return data.reduce((acc, datum) => {
+      if (datum.text.toLowerCase().includes(searchTerm)) {
+        return [...acc, datum];
+      }
+
+      let children = [];
+      if (datum.children) {
+        const filteredChildren = searchDataTree(datum.children, searchTerm);
+        children = filteredChildren;
+      }
+
+      const hasChildren = !!children.length;
+
+      return hasChildren ? [...acc, { ...datum, children }] : acc;
+    }, []);
+  };
 
   const handleSearch = ({ target: { value } }) => {
     if (!value) setSearchedDataLayers(operationalMapLayers);

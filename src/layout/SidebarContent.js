@@ -8,6 +8,11 @@ import { useLocation, Link } from 'react-router-dom';
 import SimpleBar from 'simplebar-react';
 
 import { newItemsCountAlertSelector } from 'store/alerts/alerts.slice';
+import {
+  dataLayerNewItemsCountSelector,
+  dataLayerIsNewAlertSelector,
+  dataLayerIsPageActiveSelector,
+} from 'store/datalayer/datalayer.slice';
 import { newEventCountSelector } from 'store/events/events.slice';
 import {
   isNewNotificationSelector,
@@ -28,11 +33,9 @@ const SidebarContent = props => {
   const newEventsCount = useSelector(newEventCountSelector);
   const isNewNotification = useSelector(isNewNotificationSelector);
   const newNotificationsCount = useSelector(newItemsCountNotificationSelector);
-  const {
-    isNewAlert: isNewMapRequestAlert,
-    newItemsCount: newMapRequestCount,
-    isPageActive: isMapRequestPageActive,
-  } = useSelector(state => state.dataLayer);
+  const isNewMapRequestAlert = useSelector(dataLayerIsNewAlertSelector);
+  const newMapRequestCount = useSelector(dataLayerNewItemsCountSelector);
+  const isMapRequestPageActive = useSelector(dataLayerIsPageActiveSelector);
 
   const ref = useRef();
   const location = useLocation();

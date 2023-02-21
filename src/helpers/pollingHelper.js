@@ -11,6 +11,13 @@ import {
   isAlertPageActiveSelector,
 } from 'store/alerts/alerts.slice';
 import {
+  fetchMapRequests,
+  setNewMapRequestState,
+  dataLayerParamsSelector,
+  dataLayerMapRequestsSelector,
+  dataLayerIsPageActiveSelector,
+} from 'store/datalayer/datalayer.slice';
+import {
   fetchEvents,
   setNewEventState,
   allEventsSelector,
@@ -27,7 +34,6 @@ import {
 } from 'store/notifications/notifications.slice';
 
 import useSetNewAlerts from '../customHooks/useSetNewAlerts';
-import { getAllMapRequests, setNewMapRequestState } from '../store/appAction';
 
 const MILLISECONDS = 1000;
 const PollingHelper = props => {
@@ -35,11 +41,9 @@ const PollingHelper = props => {
   const timer = useRef(null);
 
   // Map Requests
-  const {
-    allMapRequests,
-    params: mapRequestParams,
-    isPageActive: isMapRequestPageActive,
-  } = useSelector(state => state.dataLayer);
+  const allMapRequests = useSelector(dataLayerMapRequestsSelector);
+  const mapRequestParams = useSelector(dataLayerParamsSelector);
+  const isMapRequestPageActive = useSelector(dataLayerIsPageActiveSelector);
 
   // Alerts
   const allAlerts = useSelector(allAlertsSelector);
@@ -93,7 +97,7 @@ const PollingHelper = props => {
     dispatch(fetchAlerts({ options: { ...alParams, ...dateRangeParams } }));
     dispatch(fetchEvents({ options: { ...evParams, ...dateRangeParams } }));
     dispatch(fetchNotifications({ ...ntParams, ...dateRangeParams }));
-    dispatch(getAllMapRequests({ ...mapRequestParams, ...dateRangeParams }));
+    dispatch(fetchMapRequests({ ...mapRequestParams, ...dateRangeParams }));
   };
 
   useEffect(() => {
@@ -173,7 +177,13 @@ const PollingHelper = props => {
 
     if (currentMapRequestCount && count) {
       let difference = newMapRequestCount - currentMapRequestCount;
-      dispatch(setNewMapRequestState(true, isMapRequestPageActive, difference));
+      dispatch(
+        setNewMapRequestState({
+          isNewAlert: true,
+          isPageActive: isMapRequestPageActive,
+          newItemsCount: difference,
+        }),
+      );
     }
     setCurrentMapRequestCount(newMapRequestCount);
     // eslint-disable-next-line react-hooks/exhaustive-deps

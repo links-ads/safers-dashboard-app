@@ -14,8 +14,14 @@ import {
   VictoryBrushContainer,
 } from 'victory';
 
+import {
+  fetchFeatureInfo,
+  fetchTimeSeriesInfo,
+  timeSeriesInfoSelector,
+  featureInfoSelector,
+} from 'store/datalayer/datalayer.slice';
+
 import { getIconLayer } from '../../helpers/mapHelper';
-import { getDataLayerTimeSeriesData } from '../../store/appAction';
 import { formatDate } from '../../store/utility';
 
 const displayFeature = properties => {
@@ -92,8 +98,9 @@ const DataLayerInformationComponent = ({
   currentViewState,
   dispatch,
 }) => {
-  const { timeSeries: timeSeriesData, featureInfo: featureInfoData } =
-    useSelector(state => state.dataLayer);
+  const timeSeriesData = useSelector(timeSeriesInfoSelector);
+  const featureInfoData = useSelector(featureInfoSelector);
+
   const [tempSelectedPixel, setTempSelectedPixel] = useState([]);
   const [selectedPixel, setSelectedPixel] = useState([]);
   const [layerData, setLayerData] = useState(null);
@@ -397,6 +404,8 @@ const DataLayerInformationComponent = ({
           },${tempSelectedPixel[1] + 0.0001}`,
         ),
       );
+
+      dispatch(fetchTimeSeriesInfo(tempUrl));
     } else if (requestType === 'GetFeatureInfo') {
       if (currentLayer?.pixel_url) {
         tempUrl = currentLayer.pixel_url.replace(
@@ -405,11 +414,9 @@ const DataLayerInformationComponent = ({
             tempSelectedPixel[0] + 0.0001
           },${tempSelectedPixel[1] + 0.0001}`,
         );
-      }
-    }
 
-    if (tempUrl) {
-      dispatch(getDataLayerTimeSeriesData(tempUrl, requestType));
+        dispatch(fetchFeatureInfo(tempUrl));
+      }
     }
   };
 

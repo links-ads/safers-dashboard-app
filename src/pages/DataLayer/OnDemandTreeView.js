@@ -8,14 +8,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 
+import {
+  deleteMapRequest,
+  fetchMapRequests,
+} from 'store/datalayer/datalayer.slice';
+
 import { useMap } from '../../components/BaseMap/MapContext';
 import JsonFormatter from '../../components/JsonFormatter';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { getBoundedViewState } from '../../helpers/mapHelper';
-import {
-  deleteMapRequest,
-  getAllMapRequests,
-} from '../../store/datalayer/action';
 
 const PropsPanel = node => {
   const node2 = node.node;
@@ -103,7 +104,8 @@ const OnDemandTreeView = ({
   };
 
   const mapper = (nodes, parentId, lvl) => {
-    return nodes?.map((node, index) => {
+    return nodes?.map((nd, index) => {
+      const node = { ...nd };
       // use tree level to define main text
       const nodeTextByLevel = [
         node.title,
@@ -368,7 +370,7 @@ const OnDemandTreeView = ({
             className="btn btn-primary"
             onClick={() => {
               dispatch(deleteMapRequest(mapRequestToDelete.id));
-              dispatch(getAllMapRequests());
+              dispatch(fetchMapRequests());
               setIsDeleteMapRequestDialogOpen(false);
             }}
           >
