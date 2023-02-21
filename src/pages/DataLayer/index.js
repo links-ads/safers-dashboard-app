@@ -207,28 +207,6 @@ const DataLayerDashboard = ({ t }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentLayer, metaData]);
 
-  // This takes an array of objects and recursively filters out sibling
-  // objects that do not match the search term. It retains the original data
-  // shape and all children of matching objects.
-  const searchDataTree = (data, str) => {
-    const searchTerm = str.toLowerCase();
-    return data.reduce((acc, datum) => {
-      if (datum.text.toLowerCase().includes(searchTerm)) {
-        return [...acc, datum];
-      }
-
-      let children = [];
-      if (datum.children) {
-        const filteredChildren = searchDataTree(datum.children, searchTerm);
-        children = filteredChildren;
-      }
-
-      const hasChildren = !!children.length;
-
-      return hasChildren ? [...acc, { ...datum, children }] : acc;
-    }, []);
-  };
-
   const backToOnDemandPanel = () => {
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
   };
@@ -240,7 +218,6 @@ const DataLayerDashboard = ({ t }) => {
   };
 
   const getBitmapLayer = url => {
-    console.log('BITMAP URL: ', url);
     /*
      extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
      if this is an on-demand layer, it will have been hard-coded by the backend
@@ -387,7 +364,6 @@ const DataLayerDashboard = ({ t }) => {
     handleResetAOI,
     timeSeriesData,
     featureInfoData,
-    searchDataTree,
     timestamp,
     showLegend,
     legendUrl: currentLayer?.legend_url,

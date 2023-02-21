@@ -44,7 +44,6 @@ const DataLayer = ({
   timestamp,
   showLegend,
   legendUrl,
-  searchDataTree,
   dispatch,
   sliderChangeComplete,
   resetMap,
@@ -60,6 +59,25 @@ const DataLayer = ({
   useEffect(() => {
     setSearchedDataLayers(operationalMapLayers);
   }, [operationalMapLayers]);
+
+  const searchDataTree = (data, str) => {
+    const searchTerm = str.toLowerCase();
+    return data.reduce((acc, datum) => {
+      if (datum.text.toLowerCase().includes(searchTerm)) {
+        return [...acc, datum];
+      }
+
+      let children = [];
+      if (datum.children) {
+        const filteredChildren = searchDataTree(datum.children, searchTerm);
+        children = filteredChildren;
+      }
+
+      const hasChildren = !!children.length;
+
+      return hasChildren ? [...acc, { ...datum, children }] : acc;
+    }, []);
+  };
 
   const handleSearch = ({ target: { value } }) => {
     if (!value) setSearchedDataLayers(operationalMapLayers);

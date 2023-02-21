@@ -43,7 +43,6 @@ const OnDemandDataLayer = ({
   getSlider,
   getLegend,
   bitmapLayer,
-  searchDataTree,
   setViewState,
   viewState,
   timestamp,
@@ -77,6 +76,25 @@ const OnDemandDataLayer = ({
 
   const isTimeseries =
     currentLayer?.urls && Object.keys(currentLayer?.urls).length > 1;
+
+  const searchDataTree = (data, str) => {
+    const searchTerm = str.toLowerCase();
+    return data.reduce((acc, datum) => {
+      if (datum.title.toLowerCase().includes(searchTerm)) {
+        return [...acc, datum];
+      }
+
+      let children = [];
+      if (datum.children) {
+        const filteredChildren = searchDataTree(datum.children, searchTerm);
+        children = filteredChildren;
+      }
+
+      const hasChildren = !!children.length;
+
+      return hasChildren ? [...acc, { ...datum, children }] : acc;
+    }, []);
+  };
 
   const getCurrentTimestamp = () => {
     if (isTimeseries) {
