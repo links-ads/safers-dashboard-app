@@ -20,4 +20,3 @@ export {
   setUserInfo,
   resetStatus,
 } from './user/action';
-

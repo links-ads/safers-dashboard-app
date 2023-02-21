@@ -24,6 +24,11 @@ import {
   setAlertApiParams,
 } from 'store/alerts/alerts.slice';
 import {
+  setDateRangeDisabled,
+  configSelector,
+  dateRangeSelector,
+} from 'store/common/common.slice';
+import {
   fetchDataLayers,
   fetchMapRequests,
   setNewMapRequestState,
@@ -33,11 +38,6 @@ import {
   timeSeriesInfoSelector,
   featureInfoSelector,
 } from 'store/datalayer/datalayer.slice';
-import {
-  setDateRangeDisabled,
-  configSelector,
-  dateRangeSelector,
-} from 'store/common/common.slice';
 
 import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
 import DataLayer from './DataLayer';

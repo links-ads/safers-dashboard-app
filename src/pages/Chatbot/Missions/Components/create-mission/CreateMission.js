@@ -10,6 +10,9 @@ import { Input, Button, Row, Col, Label, FormGroup, Form } from 'reactstrap';
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import MapInput from 'components/BaseMap/MapInput';
+import DateRangePicker from 'components/DateRangePicker/DateRange';
+import { getError } from 'helpers/errorHelper';
 import {
   fetchTeams,
   organisationsSelector,
@@ -20,10 +23,6 @@ import {
   resetMissionResponseState,
   missionCreatedSelector,
 } from 'store/missions/missions.slice';
-
-import MapInput from '../../../../components/BaseMap/MapInput';
-import DateRangePicker from '../../../../components/DateRangePicker/DateRange';
-import { getError } from '../../../../helpers/errorHelper';
 import 'toastr/build/toastr.min.css';
 import { getGeoFeatures, getWKTfromFeature } from 'store/utility';
 

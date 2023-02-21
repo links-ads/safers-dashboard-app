@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import { configSelector, dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchAlerts,
   setNewAlertState,
@@ -11,6 +10,7 @@ import {
   alertParamsSelector,
   isAlertPageActiveSelector,
 } from 'store/alerts/alerts.slice';
+import { configSelector, dateRangeSelector } from 'store/common/common.slice';
 import {
   fetchMapRequests,
   setNewMapRequestState,
