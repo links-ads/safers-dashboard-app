@@ -1,7 +1,7 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import { USERS } from '__mocks__/auth';
+import { USERS } from 'mockData/auth';
 import { act, fireEvent, render, screen, waitFor, userEvent } from 'test-utils';
 
 import SignUp from '../SignUp';

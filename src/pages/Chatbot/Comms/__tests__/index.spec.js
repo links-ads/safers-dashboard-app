@@ -1,7 +1,7 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import { REPORTS } from '__mocks__/reports';
+import { REPORTS } from 'mock-data/reports';
 import { render, screen, waitFor } from 'test-utils';
 
 import Reports from '../index';

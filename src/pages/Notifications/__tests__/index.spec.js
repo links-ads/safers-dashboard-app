@@ -1,7 +1,7 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import { NOTIFICATION_DATA } from '__mocks__/notifications';
+import { NOTIFICATION_DATA } from 'mock-data/notifications';
 import { render, screen, waitFor } from 'test-utils';
 
 import Notifications from '../index';

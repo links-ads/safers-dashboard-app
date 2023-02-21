@@ -1,8 +1,8 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import { inSituMedia } from '__mocks__/dashboard';
-import { EVENT_ALERTS, TWEETS } from '__mocks__/event-alerts';
+import { inSituMedia } from 'mock-data/dashboard';
+import { EVENT_ALERTS, TWEETS } from 'mock-data/event-alerts';
 import { cleanup, render, screen } from 'test-utils';
 
 import Dashboard from '../index';

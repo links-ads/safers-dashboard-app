@@ -3,7 +3,7 @@ import React from 'react';
 
 import '@testing-library/jest-dom/extend-expect';
 
-import { USERS } from '__mocks__/auth';
+import { USERS } from 'mockData/auth';
 import { signInSuccess } from 'store/authentication/action';
 import { act, fireEvent, render, screen, waitFor } from 'test-utils';
 import { mockedNavigator } from 'TestUtils';
