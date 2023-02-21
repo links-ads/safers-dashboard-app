@@ -3,21 +3,22 @@ import React from 'react';
 
 import { inSituMedia } from '__mocks__/dashboard';
 import { EVENT_ALERTS, TWEETS } from '__mocks__/event-alerts';
-import store from 'store';
 import { cleanup, render, screen } from 'test-utils';
 
-import Dashboard from '..';
+import Dashboard from '../index';
 
 afterEach(cleanup);
 
 xdescribe('Test Dashboard Component', () => {
+  let utils = null;
+
   const renderApp = (props = {}, state = {}) => {
-    render(<Dashboard {...props} />, { state });
+    return render(<Dashboard {...props} />, { state });
   };
 
   describe('Renders', () => {
     beforeEach(() => {
-      renderApp();
+      utils = renderApp();
     });
 
     test('Should render correctly', () => {
@@ -46,7 +47,7 @@ xdescribe('Test Dashboard Component', () => {
     });
 
     it('gets tweets from the api', () => {
-      expect(store.getState().dashboard.tweets).toEqual(TWEETS);
+      expect(utils.store.getState().dashboard.tweets).toEqual(TWEETS);
     });
   });
 });

@@ -4,7 +4,7 @@ import React from 'react';
 import { NOTIFICATION_DATA } from '__mocks__/notifications';
 import { render, screen, waitFor } from 'test-utils';
 
-import Notifications from '..';
+import Notifications from '../index';
 
 xdescribe('Test Events Screen', () => {
   const renderApp = (props = {}) => {

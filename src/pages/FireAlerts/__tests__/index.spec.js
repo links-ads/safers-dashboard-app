@@ -6,7 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { server, rest } from 'mocks/server';
 import { act, render, screen, waitFor, within } from 'test-utils';
 
-import FireAlerts from '..';
+import FireAlerts from '../index';
 import { ALL_ALERTS } from '../test-constants';
 
 const DEFAULT_STATE = {

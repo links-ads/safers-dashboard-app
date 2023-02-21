@@ -4,7 +4,6 @@ import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
 
 import { USERS } from '__mocks__/auth';
-import store from 'store';
 import { signInSuccess } from 'store/authentication/action';
 import { act, fireEvent, render, screen, waitFor } from 'test-utils';
 import { mockedNavigator } from 'TestUtils';
@@ -12,12 +11,14 @@ import { mockedNavigator } from 'TestUtils';
 import SelectArea from '../SelectArea';
 
 xdescribe('Select Area Component', () => {
-  function renderApp(props = {}, state = {}) {
-    render(<SelectArea {...props} />, { state });
-  }
+  let utils = null;
+
+  const renderApp = (props = {}, state = {}) => {
+    return render(<SelectArea {...props} />, { state });
+  };
 
   beforeEach(() => {
-    renderApp();
+    utils = renderApp();
   });
 
   describe('redirect to sign in if not logged in', () => {
@@ -29,7 +30,7 @@ xdescribe('Select Area Component', () => {
   describe('Test Select Aoi Component', () => {
     beforeAll(() => {
       act(() => {
-        store.dispatch(signInSuccess(USERS.user));
+        utils.store.dispatch(signInSuccess(USERS.user));
       });
     });
 
@@ -52,7 +53,7 @@ xdescribe('Select Area Component', () => {
       });
 
       await waitFor(() => {
-        expect(store.getState().user.aoiSetSuccess).not.toEqual(null);
+        expect(utils.store.getState().user.aoiSetSuccess).not.toEqual(null);
       });
 
       //calls dashboard

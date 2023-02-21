@@ -2,19 +2,20 @@
 import React from 'react';
 
 import { USERS } from '__mocks__/auth';
-import store from 'store';
 import { act, fireEvent, render, screen, waitFor, userEvent } from 'test-utils';
 
 import SignUp from '../SignUp';
 
 xdescribe('Sign Up Component', () => {
+  let utils = null;
+
   const renderApp = (props = {}, state = {}) => {
-    render(<SignUp {...props} />, { state });
+    return render(<SignUp {...props} />, { state });
   };
 
   describe('Form testing', () => {
     beforeEach(() => {
-      renderApp(store);
+      utils = renderApp();
     });
 
     test('Should render correctly', () => {
@@ -58,7 +59,7 @@ xdescribe('Sign Up Component', () => {
 
   describe('sign up action', () => {
     beforeEach(() => {
-      renderApp(store);
+      renderApp();
     });
 
     it('signs up user correctly', async () => {
@@ -94,8 +95,8 @@ xdescribe('Sign Up Component', () => {
 
       //assert
       await waitFor(async () => {
-        expect(store.getState().auth.user).toEqual(USERS.user);
-        expect(store.getState().auth.isLoggedIn).toEqual(true);
+        expect(utils.store.getState().auth.user).toEqual(USERS.user);
+        expect(utils.store.getState().auth.isLoggedIn).toEqual(true);
       });
     });
   });

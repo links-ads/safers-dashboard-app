@@ -4,7 +4,7 @@ import React from 'react';
 import { EVENT_ALERTS } from '__mocks__/event-alerts';
 import { act, fireEvent, render, screen, waitFor, userEvent } from 'test-utils';
 
-import EventAlerts from '..';
+import EventAlerts from '../index';
 
 xdescribe('Test Events Screen', () => {
   const renderApp = (props = {}, state = {}) => {

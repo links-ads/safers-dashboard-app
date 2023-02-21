@@ -4,7 +4,7 @@ import React from 'react';
 import { REPORTINFO } from '__mocks__/reports';
 import { render, screen, waitFor } from 'test-utils';
 
-import ReportsDashboard from '..';
+import ReportsDashboard from '../index';
 
 xdescribe('Test Events Screen', () => {
   const renderApp = (props = {}, state = {}) => {

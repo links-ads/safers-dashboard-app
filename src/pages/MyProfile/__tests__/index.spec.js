@@ -3,7 +3,7 @@ import React from 'react';
 
 import { render, screen } from 'test-utils';
 
-import MyProfile from '..';
+import MyProfile from '../index';
 
 xdescribe('Test My Profile Component', () => {
   const renderApp = (props = {}, state = {}) => {

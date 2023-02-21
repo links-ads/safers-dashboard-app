@@ -3,7 +3,7 @@ import React from 'react';
 
 import { render, screen } from 'test-utils';
 
-import Authentication from '..';
+import Authentication from '../index';
 
 xdescribe('Test Authentication Component', () => {
   const renderApp = (props = {}, state = {}) => {
