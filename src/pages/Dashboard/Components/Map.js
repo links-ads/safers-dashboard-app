@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 
-import { BitmapLayer } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
