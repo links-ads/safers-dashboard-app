@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-//import { intersect, polygon } from '@turf/turf';
 import { flattenDeep } from 'lodash';
 import moment from 'moment';
 import { withTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container, Row, Card, Input, Button } from 'reactstrap';
-//import wkt from 'wkt';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import { doesItOverlapAoi, getViewState } from 'helpers/mapHelper';
