@@ -54,7 +54,7 @@ export const ALL_ALERTS = [
     description:
       'This is another card with title and supporting text below.This card has some additional content to make it slightly taller overall.',
     source: 'camera',
-    status: 'UNVALIDATED',
+    type: 'UNVALIDATED',
     media: [
       'https://st3.depositphotos.com/3589679/34560/i/380/depositphotos_345604100-stock-photo-blaze-fire-flame-texture-background.jpg',
       'https://media.istockphoto.com/photos/ring-of-fire-bailey-colorado-rocky-mountain-forest-wildfire-picture-id157384116?b=1&k=20&m=157384116&s=170667a&w=0&h=Pw_yN0VDs32EtF72o_8eosnV7KUugM4BzFBgoGapZVs=',
@@ -78,7 +78,7 @@ export const ALL_ALERTS = [
     description:
       'This is another card with title and supporting text below.This card has some additional content to make it slightly taller overall.',
     source: 'satellite',
-    status: 'VALIDATED',
+    type: 'VALIDATED',
     media: [
       'https://st3.depositphotos.com/3589679/34560/i/380/depositphotos_345604100-stock-photo-blaze-fire-flame-texture-background.jpg',
       'https://media.istockphoto.com/photos/ring-of-fire-bailey-colorado-rocky-mountain-forest-wildfire-picture-id157384116?b=1&k=20&m=157384116&s=170667a&w=0&h=Pw_yN0VDs32EtF72o_8eosnV7KUugM4BzFBgoGapZVs=',
@@ -102,7 +102,7 @@ export const ALL_ALERTS = [
     description:
       'This is another card with title and supporting text below.This card has some additional content to make it slightly taller overall.',
     source: 'web',
-    status: 'POSSIBLE EVENT',
+    type: 'POSSIBLE EVENT',
     media: [
       'https://st3.depositphotos.com/3589679/34560/i/380/depositphotos_345604100-stock-photo-blaze-fire-flame-texture-background.jpg',
       'https://media.istockphoto.com/photos/ring-of-fire-bailey-colorado-rocky-mountain-forest-wildfire-picture-id157384116?b=1&k=20&m=157384116&s=170667a&w=0&h=Pw_yN0VDs32EtF72o_8eosnV7KUugM4BzFBgoGapZVs=',
@@ -126,7 +126,7 @@ export const ALL_ALERTS = [
     description:
       'This is another card with title and supporting text below.This card has some additional content to make it slightly taller overall.',
     source: 'web',
-    status: 'UNVALIDATED',
+    type: 'UNVALIDATED',
     media: [
       'https://st3.depositphotos.com/3589679/34560/i/380/depositphotos_345604100-stock-photo-blaze-fire-flame-texture-background.jpg',
       'https://media.istockphoto.com/photos/ring-of-fire-bailey-colorado-rocky-mountain-forest-wildfire-picture-id157384116?b=1&k=20&m=157384116&s=170667a&w=0&h=Pw_yN0VDs32EtF72o_8eosnV7KUugM4BzFBgoGapZVs=',
