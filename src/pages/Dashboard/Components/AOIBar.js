@@ -5,8 +5,11 @@ import { flattenDeep } from 'lodash';
 import moment from 'moment';
 import { withTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { Container, Row, Card, Input } from 'reactstrap';
+import { Container, Row, Card, Input, Button } from 'reactstrap';
 import wkt from 'wkt';
+
+import { useMap } from 'components/BaseMap/MapContext';
+import { getViewState } from 'helpers/mapHelper';
 
 import EventsPanel from './EventsPanel';
 import MapComponent from './Map';
@@ -104,6 +107,7 @@ const AOIBar = ({
   visibleLayers,
   t,
 }) => {
+  const { setViewState } = useMap();
   const dispatch = useDispatch();
 
   const [eventList, setEventList] = useState([]);
@@ -161,11 +165,29 @@ const AOIBar = ({
     setSelectedLayer(selectedNode);
   };
 
+  const handleResetAOI = useCallback(() => {
+    setViewState(
+      getViewState(
+        defaultAoi.features[0].properties.midPoint,
+        defaultAoi.features[0].properties.zoomLevel,
+      ),
+    );
+  }, [defaultAoi.features, setViewState]);
+
   return (
     <Container fluid="true">
       <Card className="px-3">
         <Row xs={1} sm={1} md={1} lg={2} xl={2} className="p-2 gx-2 row-cols-2">
           <Card className="gx-2">
+            <Row xs={4} className="d-flex justify-content-end">
+              <Button
+                color="link"
+                onClick={handleResetAOI}
+                className="align-self-baseline pe-0"
+              >
+                {t('default-aoi')}
+              </Button>
+            </Row>
             {
               <Input
                 id="sortByDate"
