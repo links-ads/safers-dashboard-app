@@ -37,6 +37,7 @@ import {
   isMetaDataLoadingSelector,
   timeSeriesInfoSelector,
   featureInfoSelector,
+  dataLayerMapRequestsSelector,
 } from 'store/datalayer/datalayer.slice';
 import { defaultAoiSelector } from 'store/user/user.slice';
 
@@ -69,7 +70,7 @@ const DataLayerDashboard = ({ t }) => {
   const featureInfoData = useSelector(featureInfoSelector);
 
   const dateRange = useSelector(dateRangeSelector);
-  const { allMapRequests } = useSelector(state => state?.dataLayer);
+  const allMapRequests = useSelector(dataLayerMapRequestsSelector);
 
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);

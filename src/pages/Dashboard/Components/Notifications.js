@@ -5,6 +5,8 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Container, Row } from 'reactstrap';
 
+import { defaultAoiSelector } from 'store/user/user.slice';
+
 import NotificationCard from './NotificationCard';
 
 const AreaCount = ({ t, noDataMessage, label, itemsCounts }) => {
@@ -40,7 +42,7 @@ const NotificationsBar = ({
   toggleLayerCallback,
   visibleLayers,
 }) => {
-  const defaultAOI = useSelector(state => state?.user?.defaultAoi);
+  const defaultAOI = useSelector(defaultAoiSelector);
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
 
   return (
