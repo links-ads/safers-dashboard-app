@@ -116,22 +116,6 @@ const MapComponent = ({
     [commsList, visibleLayers.communications],
   );
 
-  // const viewState = useMemo(() => {
-  //   if (mapRequestLayer) {
-  //     // zoom to raster
-  //     const [minX, minY, maxX, maxY] = mapRequestLayer.props.bounds;
-  //     const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
-  //     const zoom = 10;
-  //     const newViewState = getViewState(midpoint, zoom);
-  //     return newViewState;
-  //   }
-  //   return getViewState(
-  //     // zoom to user AOI
-  //     objAoi.features[0].properties.midPoint,
-  //     objAoi.features[0].properties.zoomLevel,
-  //   );
-  // }, [mapRequestLayer, objAoi.features]);
-
   const allLayers = [
     polygonLayer,
     iconLayer,
@@ -148,7 +132,6 @@ const MapComponent = ({
       <Row style={{ height: 550 }} className="mx-auto">
         <BaseMap
           layers={allLayers}
-          //initialViewState={viewState}
           screenControlPosition="top-right"
           navControlPosition="bottom-right"
         />
