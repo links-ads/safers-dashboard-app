@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
+import { useMap } from 'components/BaseMap/MapContext';
 import { MAP_TYPES } from 'constants/common';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
@@ -25,12 +26,20 @@ const MapComponent = ({
   alertsList = [],
   visibleLayers = {},
 }) => {
+  const { setViewState } = useMap();
+
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
   const mapRequestLayer = useMemo(() => {
+    if (Object.keys(selectedLayer).length === 0) return null;
+    const [minX, minY, maxX, maxY] = selectedLayer.bbox;
+    const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
+    const zoom = 10;
+    const newViewState = getViewState(midpoint, zoom);
+    setViewState(newViewState);
     return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
-  }, [selectedLayer]);
+  }, [selectedLayer, setViewState]);
 
   const iconLayer = useMemo(
     () =>
@@ -107,21 +116,21 @@ const MapComponent = ({
     [commsList, visibleLayers.communications],
   );
 
-  const viewState = useMemo(() => {
-    if (mapRequestLayer) {
-      // zoom to raster
-      const [minX, minY, maxX, maxY] = mapRequestLayer.props.bounds;
-      const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
-      const zoom = 10;
-      const newViewState = getViewState(midpoint, zoom);
-      return newViewState;
-    }
-    return getViewState(
-      // zoom to user AOI
-      objAoi.features[0].properties.midPoint,
-      objAoi.features[0].properties.zoomLevel,
-    );
-  }, [mapRequestLayer, objAoi.features]);
+  // const viewState = useMemo(() => {
+  //   if (mapRequestLayer) {
+  //     // zoom to raster
+  //     const [minX, minY, maxX, maxY] = mapRequestLayer.props.bounds;
+  //     const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
+  //     const zoom = 10;
+  //     const newViewState = getViewState(midpoint, zoom);
+  //     return newViewState;
+  //   }
+  //   return getViewState(
+  //     // zoom to user AOI
+  //     objAoi.features[0].properties.midPoint,
+  //     objAoi.features[0].properties.zoomLevel,
+  //   );
+  // }, [mapRequestLayer, objAoi.features]);
 
   const allLayers = [
     polygonLayer,
@@ -139,7 +148,7 @@ const MapComponent = ({
       <Row style={{ height: 550 }} className="mx-auto">
         <BaseMap
           layers={allLayers}
-          initialViewState={viewState}
+          //initialViewState={viewState}
           screenControlPosition="top-right"
           navControlPosition="bottom-right"
         />
