@@ -1,12 +1,6 @@
 import moment from 'moment';
 import wkt from 'wkt';
 
-export const updateObject = (oldObject, updatedProperties) => {
-  return {
-    ...oldObject,
-    ...updatedProperties,
-  };
-};
 export const formatNumber = number => {
   if (number > 1000) return Math.floor(number / 1000) + 'K';
   return number;

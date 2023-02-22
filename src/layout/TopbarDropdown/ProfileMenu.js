@@ -10,8 +10,10 @@ import {
   DropdownItem,
 } from 'reactstrap';
 
+import { signOut } from 'store/authentication/authentication.slice';
+import { userInfoSelector } from 'store/user/user.slice';
+
 import user1 from '../../assets/images/users/profile.png';
-import { signOut } from '../../store/appAction';
 
 //i18n
 
@@ -22,7 +24,7 @@ const ProfileMenu = props => {
   const [menu, setMenu] = useState(false);
 
   const dispatch = useDispatch();
-  const { username } = useSelector(state => state.user.info);
+  const { username } = useSelector(userInfoSelector);
 
   return (
     <React.Fragment>

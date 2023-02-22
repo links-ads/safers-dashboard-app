@@ -12,6 +12,7 @@ import {
   fetchTweets,
   statsSelector,
 } from 'store/dashboard/dashboard.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import IconClusterLayer from './IconClusterLayer';
 import TwitterContainer from './TwitterContainer';
@@ -26,7 +27,7 @@ const MOCK_DATA =
   'https://raw.githubusercontent.com/visgl/deck.gl-data/master/examples/icon/meteorites.json'; //using this mock data until the tweets API ready with coordinates.
 
 const SocialMonitoring = ({ t }) => {
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const stats = useSelector(statsSelector);
   const dateRange = useSelector(dateRangeSelector);
 

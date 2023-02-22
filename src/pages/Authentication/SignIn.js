@@ -16,14 +16,17 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
+import {
+  signIn,
+  errorSignInSelector,
+} from 'store/authentication/authentication.slice';
 import { configSelector } from 'store/common/common.slice';
 
 import OAuth2 from './OAuth2';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
-import { signIn } from '../../store/appAction';
 
 const SignIn = () => {
-  const { errorSignIn: genError } = useSelector(state => state.auth);
+  const genError = useSelector(errorSignInSelector);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const dispatch = useDispatch();
   const config = useSelector(configSelector);

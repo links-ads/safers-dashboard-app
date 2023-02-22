@@ -18,6 +18,7 @@ import {
 import wkt from 'wkt';
 import * as Yup from 'yup';
 
+import { errorSelector } from 'store/authentication/authentication.slice';
 import {
   postMapRequest,
   fetchMapRequests,
@@ -55,7 +56,7 @@ const FireAndBurnedArea = ({
   isRasterSizeWithinLimits,
 }) => {
   const dispatch = useDispatch();
-  const error = useSelector(state => state.auth.error);
+  const error = useSelector(errorSelector);
 
   const fireAndBurnedAreaSchema = Yup.object().shape({
     dataLayerType: Yup.array().required(t('field-empty-err', { ns: 'common' })),
@@ -124,7 +125,7 @@ const FireAndBurnedArea = ({
         <Row>
           <Formik
             initialValues={{
-              dataLayerType: [],
+              dataLayerType: '',
               requestTitle: '',
               mapSelection: null,
               isMapAreaValid: null,

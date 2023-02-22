@@ -25,6 +25,7 @@ import {
   cameraAlertsSuccessSelector,
   cameraAlertsErrorSelector,
 } from 'store/insitu/insitu.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import AlertList from './Components/AlertList';
 import MapSection from './Components/Map';
@@ -41,7 +42,7 @@ import {
 
 const InSituAlerts = () => {
   const { viewState, setViewState } = useMap();
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const alerts = useSelector(allInSituAlertsSelector);
   const filteredAlerts = useSelector(filteredCameraAlertsSelector);
   const cameraList = useSelector(cameraListSelector);

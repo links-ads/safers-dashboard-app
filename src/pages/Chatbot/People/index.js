@@ -17,6 +17,7 @@ import {
   filteredPeopleSelector,
   peopleSuccessSelector,
 } from 'store/people/people.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import MapSection from './Components/Map';
 import PeopleList from './Components/PeopleList';
@@ -32,7 +33,7 @@ import {
 
 const People = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const orgPplList = useSelector(allPeopleSelector);
   const filteredPeople = useSelector(filteredPeopleSelector);
   const success = useSelector(peopleSuccessSelector);

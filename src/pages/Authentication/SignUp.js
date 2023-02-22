@@ -19,6 +19,11 @@ import toastr from 'toastr';
 import * as Yup from 'yup';
 
 import {
+  signUpOauth2 as registration,
+  errorSelector,
+  signUpOauth2SuccessSelector,
+} from 'store/authentication/authentication.slice';
+import {
   fetchOrganisations,
   fetchRoles,
   configSelector,
@@ -34,7 +39,6 @@ import {
   pwdRegEx,
   pwdValidationTxt,
 } from '../../helpers/passwordHelper';
-import { signUpOauth2 as registration } from '../../store/appAction';
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -42,13 +46,11 @@ const SignUp = () => {
   const [passwordToggle, setPasswordToggle] = useState(false);
   const orgList = useSelector(organisationsSelector);
   const roles = useSelector(rolesSelector);
-  const error = useSelector(state => state.auth.error);
+  const error = useSelector(errorSelector);
   const [citizenId, setcitizenId] = useState('');
   const docTNM = BASE_URL + endpoints.common.termsNconditions;
   const docPP = BASE_URL + endpoints.common.privacyPolicy;
-  const signUpOauth2Success = useSelector(
-    state => state.auth.signUpOauth2Success,
-  );
+  const signUpOauth2Success = useSelector(signUpOauth2SuccessSelector);
   const config = useSelector(configSelector);
 
   if (error) {
