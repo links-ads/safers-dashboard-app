@@ -4,13 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Card, Row, Col } from 'reactstrap';
 
+import { tweetsSelector } from 'store/dashboard/dashboard.slice';
+
 import PaginationWrapper from '../../components/Pagination';
 import TweetComponent from '../../components/TweetComponent';
 
 //i18n
 
 const TwitterContainer = () => {
-  const tweets = useSelector(state => state.dashboard.tweets);
+  const tweets = useSelector(tweetsSelector);
+
   const [pageData, setPageData] = useState([]);
   const [localLang, setLocalLang] = useState('en');
   const { t, i18n } = useTranslation();

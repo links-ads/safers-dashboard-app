@@ -6,6 +6,20 @@ import Pagination from 'rc-pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { PAGE_SIZE } from 'store/insitu/constants';
+import {
+  setCurrentPage,
+  setCameraFavorite,
+  setPaginatedAlerts,
+  setFilteredCameraAlerts,
+  fetchCameras,
+  filteredCameraAlertsSelector,
+  paginatedCameraAlertsSelector,
+  cameraListSelector,
+  cameraInfoSelector,
+  cameraCurrentPageSelector,
+} from 'store/insitu/insitu.slice';
+
 import Alert from './Alert';
 import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
 import { MAP_TYPES } from '../../../constants/common';
@@ -13,16 +27,6 @@ import {
   getViewState,
   getAlertIconColorFromContext,
 } from '../../../helpers/mapHelper';
-import {
-  setCurrentPage,
-  setInSituFavoriteAlert,
-  setPaginatedAlerts,
-  getCamera,
-} from '../../../store/appAction';
-import {
-  PAGE_SIZE,
-  SET_FAV_INSITU_ALERT_SUCCESS,
-} from '../../../store/insitu/types';
 
 const AlertList = ({
   alertId,
@@ -36,13 +40,12 @@ const AlertList = ({
   setIsViewStateChanged,
   hideTooltip,
 }) => {
-  const {
-    paginatedAlerts,
-    currentPage,
-    filteredAlerts,
-    cameraList,
-    cameraInfo,
-  } = useSelector(state => state.inSituAlerts);
+  const filteredAlerts = useSelector(filteredCameraAlertsSelector);
+  const paginatedAlerts = useSelector(paginatedCameraAlertsSelector);
+  const cameraList = useSelector(cameraListSelector);
+  const cameraInfo = useSelector(cameraInfoSelector);
+  const currentPage = useSelector(cameraCurrentPageSelector);
+
   const [selCam, setsSelCam] = useState(undefined);
 
   const dispatch = useDispatch();
@@ -57,7 +60,7 @@ const AlertList = ({
         getPinColor: feature =>
           getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature),
         icon: 'camera',
-        iconColor: '#ffffff',
+        iconColor: [255, 255, 255],
         clusterIconSize: 35,
         getPinSize: () => 35,
         pixelOffset: [-18, -18],
@@ -103,17 +106,22 @@ const AlertList = ({
   ]);
 
   const setFavorite = id => {
-    const selectedAlert = _.find(filteredAlerts, { id });
-    dispatch(setInSituFavoriteAlert(id, !selectedAlert.favorite))
-      .then(result => {
-        if (result.type === SET_FAV_INSITU_ALERT_SUCCESS) {
-          selectedAlert.favorite = !selectedAlert.favorite;
-          const to = PAGE_SIZE * currentPage;
-          const from = to - PAGE_SIZE;
-          dispatch(
-            setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to))),
-          );
-        }
+    const alerts = _.cloneDeep(filteredAlerts);
+    const selectedAlert = alerts.find(alert => alert.id === id);
+    selectedAlert.favorite = !selectedAlert.favorite;
+    const updatedAlerts = alerts.map(alert =>
+      alert.id === id ? selectedAlert : alert,
+    );
+
+    dispatch(setFilteredCameraAlerts(updatedAlerts));
+
+    dispatch(
+      setCameraFavorite({ alertId: id, isFavorite: selectedAlert.favorite }),
+    )
+      .then(() => {
+        const to = PAGE_SIZE * currentPage;
+        const from = to - PAGE_SIZE;
+        dispatch(setPaginatedAlerts(updatedAlerts.slice(from, to)));
 
         return;
       })
@@ -128,10 +136,11 @@ const AlertList = ({
       let camera = _.find(cameraList.features, {
         properties: { id: selectedAlert.camera_id },
       });
+      const selectedCamera = { ...camera };
       selectedAlert.isSelected = true;
-      camera.isSelected = true;
-      setsSelCam(camera);
-      dispatch(getCamera(selectedAlert.camera_id));
+      selectedCamera.isSelected = true;
+      setsSelCam(selectedCamera);
+      dispatch(fetchCameras(selectedAlert.camera_id));
     } else {
       setAlertId(undefined);
       setIconLayer(getIconLayer(cameraList.features, MAP_TYPES.IN_SITU));

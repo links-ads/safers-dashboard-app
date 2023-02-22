@@ -3,19 +3,30 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 
+import {
+  fetchConfig,
+  isLoadingSelector,
+  loadingMessageSelector,
+  configSelector,
+} from 'store/common/common.slice';
+
 import PreLoader from './components/PreLoader';
 import { publicRoutes, privateRoutes } from './routes/allRoutes';
 import Authmiddleware from './routes/middleware/Authmiddleware';
+
 import './assets/scss/theme.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { getConfig } from './store/appAction';
 
 const App = () => {
-  const { isLoading, loadingMsg, config } = useSelector(state => state.common);
+  const isLoading = useSelector(isLoadingSelector);
+  const loadingMsg = useSelector(loadingMessageSelector);
+  const config = useSelector(configSelector);
+
   const dispatch = useDispatch();
+
   useEffect(() => {
     if (!config) {
-      dispatch(getConfig());
+      dispatch(fetchConfig());
     }
   }, [config, dispatch]);
 

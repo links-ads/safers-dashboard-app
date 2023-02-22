@@ -10,10 +10,25 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
+import { dateRangeSelector } from 'store/common/common.slice';
+import {
+  fetchEvents,
+  fetchEventDetail,
+  setNewEventState,
+  setEventFavorite,
+  setEventParams,
+  setFilteredEvents,
+  resetEventResponseState,
+  allEventsSelector,
+  filteredEventsSelector,
+  eventsSuccessSelector,
+  eventsErrorSelector,
+} from 'store/events/events.slice';
 
 import EventList from './Components/EventList';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
+import { PAGE_SIZE } from './constants';
 import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
 import { MAP_TYPES } from '../../constants/common';
 import {
@@ -21,31 +36,18 @@ import {
   getViewState,
   getAlertIconColorFromContext,
 } from '../../helpers/mapHelper';
-import {
-  getAllEventAlerts,
-  resetEventAlertsResponseState,
-  setNewEventState,
-  getEventInfo,
-  setEventParams,
-  setFilteredEventAlerts,
-  setEventFavoriteAlert,
-} from '../../store/appAction';
-import {
-  PAGE_SIZE,
-  SET_FAV_EVENT_ALERT_SUCCESS,
-} from '../../store/events/types';
-
 //i18n
 
 const EventAlerts = ({ t }) => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const { allAlerts: alerts, filteredAlerts } = useSelector(
-    state => state.eventAlerts,
-  );
-  const success = useSelector(state => state.eventAlerts.success);
-  const error = useSelector(state => state.eventAlerts.error);
-  const dateRange = useSelector(state => state.common.dateRange);
+
+  const alerts = useSelector(allEventsSelector);
+  const filteredAlerts = useSelector(filteredEventsSelector);
+  const success = useSelector(eventsSuccessSelector);
+  const error = useSelector(eventsErrorSelector);
+
+  const dateRange = useSelector(dateRangeSelector);
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
@@ -93,7 +95,7 @@ const EventAlerts = ({ t }) => {
             selectedAlert,
           ),
         icon: 'flag',
-        iconColor: '#ffffff',
+        iconColor: [255, 255, 255],
         clusterIconSize: 35,
         getPinSize: () => 35,
         pixelOffset: [-18, -18],
@@ -102,7 +104,7 @@ const EventAlerts = ({ t }) => {
         onPointClick: true,
       });
     },
-    [dispatch],
+    [dispatch, setViewState],
   );
 
   const getEvents = useCallback(
@@ -121,7 +123,9 @@ const EventAlerts = ({ t }) => {
       };
 
       dispatch(setEventParams(eventParams));
-      dispatch(getAllEventAlerts(eventParams, true, isLoading));
+      dispatch(
+        fetchEvents({ options: eventParams, fromPage: true, isLoading }),
+      );
     },
     [boundingBox, checkedStatus, dateRange, dispatch, sortOrder],
   );
@@ -142,7 +146,7 @@ const EventAlerts = ({ t }) => {
     if (success) toastr.success(success, '');
     else if (error) toastr.error(error, '');
     setIsEdit(false);
-    dispatch(resetEventAlertsResponseState());
+    dispatch(resetEventResponseState());
   }, [success, error, dispatch]);
 
   useEffect(() => {
@@ -166,7 +170,13 @@ const EventAlerts = ({ t }) => {
     setCurrentPage(1);
     hideTooltip();
     setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE)));
-  }, [defaultAoi.features, filteredAlerts, getIconLayer, viewState]);
+  }, [
+    defaultAoi.features,
+    filteredAlerts,
+    getIconLayer,
+    setViewState,
+    viewState,
+  ]);
 
   const getAlertsByArea = () => {
     setBoundingBox(
@@ -182,7 +192,7 @@ const EventAlerts = ({ t }) => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, [defaultAoi.features]);
+  }, [defaultAoi.features, setViewState]);
 
   const hideTooltip = e => {
     if (e && e.viewState) {
@@ -204,19 +214,19 @@ const EventAlerts = ({ t }) => {
 
   const setFavorite = id => {
     const selectedAlert = _.find(filteredAlerts, { id });
-    dispatch(setEventFavoriteAlert(id, !selectedAlert.favorite))
-      .then(result => {
-        if (result.type === SET_FAV_EVENT_ALERT_SUCCESS) {
-          selectedAlert.favorite = !selectedAlert.favorite;
-          hoverInfo.object &&
-            setHoverInfo({
-              object: selectedAlert,
-              coordinate: selectedAlert.center,
-            });
-          const to = PAGE_SIZE * currentPage;
-          const from = to - PAGE_SIZE;
-          setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
-        }
+    dispatch(
+      setEventFavorite({ eventId: id, isFavorite: !selectedAlert.favorite }),
+    )
+      .then(() => {
+        selectedAlert.favorite = !selectedAlert.favorite;
+        hoverInfo.object &&
+          setHoverInfo({
+            object: selectedAlert,
+            coordinate: selectedAlert.center,
+          });
+        const to = PAGE_SIZE * currentPage;
+        const from = to - PAGE_SIZE;
+        setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(from, to)));
 
         return;
       })
@@ -225,7 +235,7 @@ const EventAlerts = ({ t }) => {
 
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
-      dispatch(getEventInfo(id));
+      dispatch(fetchEventDetail(id));
       let clonedAlerts = _.cloneDeep(filteredAlerts);
       let selectedAlert = _.find(clonedAlerts, { id });
       selectedAlert.isSelected = true;
@@ -267,7 +277,7 @@ const EventAlerts = ({ t }) => {
                 className="btn float-end mt-1 py-0 px-1"
                 aria-label="refresh-events"
                 onClick={() => {
-                  dispatch(setFilteredEventAlerts(alerts));
+                  dispatch(setFilteredEvents(alerts));
                 }}
               >
                 <i className="mdi mdi-sync"></i>

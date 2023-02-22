@@ -4,6 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
+import { setLoading } from 'store/common/common.slice';
+
 import {
   AUTH_BASE_URL,
   CLIENT_BASE_URL,
@@ -11,8 +13,7 @@ import {
   AUTH_TENANT_ID,
   REDIRECT_URL,
 } from '../../config';
-import { generalInProgress, signInOauth2 } from '../../store/appAction';
-
+import { signInOauth2 } from '../../store/appAction';
 /* 
 The `authorize` fn gets the authorization_code from the Authentication Server
 which redirects back to this page w/ that code.  It is run when the SSO button
@@ -28,9 +29,11 @@ const OAuth2 = () => {
 
   const authorize = () => {
     dispatch(
-      generalInProgress(
-        'Please wait. You are being redirected to sign in page for SSO.',
-      ),
+      setLoading({
+        status: true,
+        message:
+          'Please wait. You are being redirected to sign in page for SSO.',
+      }),
     );
 
     const params = {
@@ -56,7 +59,10 @@ const OAuth2 = () => {
     if (!isLoggedIn && authCode) {
       console.log(authCode);
       dispatch(
-        generalInProgress('You have successfully signed in. Please wait.'),
+        setLoading({
+          status: true,
+          message: 'You have successfully signed in. Please wait.',
+        }),
       );
       dispatch(signInOauth2({ authCode }));
     }

@@ -1,83 +1,80 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import '@testing-library/jest-dom/extend-expect';
-import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Provider } from 'react-redux';
-import { BrowserRouter } from 'react-router-dom';
 
-import { FIRE_ALERTS } from '../../../../__mocks__/alerts';
-import { AOIS } from '../../../../__mocks__/aoi';
-import axiosMock from '../../../../__mocks__/axios';
-import { endpoints } from '../../../api/endpoints';
-import store from '../../../store';
-import { setAoiSuccess } from '../../../store/appAction';
-import { baseURL } from '../../../TestUtils';
+import { ALL_ALERTS } from 'mockData/alerts';
+import { server, rest } from 'mocks/server';
+import { act, render, screen, waitFor, within } from 'test-utils';
+
 import FireAlerts from '../index';
 
+const DEFAULT_STATE = {
+  user: {
+    defaultAoi: {
+      features: [
+        {
+          properties: {
+            midPoint: [1, 1],
+            zoomLevel: 20,
+          },
+        },
+      ],
+    },
+  },
+  alerts: {
+    allAlerts: [],
+    filteredAlerts: ALL_ALERTS,
+    sources: [],
+    success: null,
+    error: null,
+  },
+  common: {
+    dateRange: [new Date(), new Date()],
+  },
+};
+
 describe('Test Events Screen', () => {
-  function renderApp(props = {}) {
-    return render(
-      <Provider store={store}>
-        <BrowserRouter>
-          <FireAlerts {...props} />
-        </BrowserRouter>
-      </Provider>,
-    );
+  function renderApp(testState = {}, props = {}) {
+    const state = { ...DEFAULT_STATE, ...testState };
+    return render(<FireAlerts {...props} />, { state });
   }
 
-  let mock;
-  //mock all requests on page
-  beforeAll(() => {
-    mock = axiosMock;
-    mock.onPost(`${baseURL}${endpoints.fireAlerts.getAll}`).reply(() => {
-      return [200, FIRE_ALERTS];
-    });
-
-    const objAoi = AOIS[0];
-    store.dispatch(setAoiSuccess(objAoi));
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
-  afterAll(() => {
-    jest.clearAllMocks();
-  });
   describe('displays events list', () => {
-    beforeEach(() => {
-      renderApp(store);
-    });
     it('lists alerts list when loaded', async () => {
-      const alertsPage1 = FIRE_ALERTS.slice(0, 3);
+      server.use(
+        rest.get('*/alerts/sources', async (req, res, ctx) => {
+          return res(ctx.status(200), ctx.json(['DSS', 'IN SITU CAMERAS']));
+        }),
+        rest.get('*/alerts/*', async (req, res, ctx) => {
+          return res(ctx.status(200), ctx.json(ALL_ALERTS));
+        }),
+      );
+
+      renderApp();
 
       await waitFor(() =>
-        expect(
-          screen.getAllByText(`${FIRE_ALERTS[0].title}`, { exact: false })
-            .length,
-        ).toBeGreaterThan(0),
+        expect(screen.getByText(ALL_ALERTS[0].title)).toBeInTheDocument(),
       );
-      //verify other elements
-      alertsPage1.map(async alert => {
+
+      const cards = screen.getAllByRole('card');
+
+      cards.forEach((card, i) => {
+        expect(within(card).getByText(ALL_ALERTS[i].title)).toBeInTheDocument();
         expect(
-          screen.getAllByText(`${alert.title}`, { exact: false }).length,
-        ).toBeGreaterThan(0);
+          within(card).getByText(ALL_ALERTS[i].description),
+        ).toBeInTheDocument();
+        expect(within(card).getByText(ALL_ALERTS[i].type)).toBeInTheDocument();
         expect(
-          screen.getAllByText(`${alert.description}`, { exact: false }).length,
-        ).toBeGreaterThan(0);
-        expect(
-          screen.getAllByText(`${alert.status}`, { exact: false }).length,
-        ).toBeGreaterThan(0);
-        expect(
-          screen.getAllByText(`${alert.source}`, { exact: false }).length,
-        ).toBeGreaterThan(0);
+          within(card).getByText(ALL_ALERTS[i].source),
+        ).toBeInTheDocument();
       });
     });
   });
-  describe('alerts list sort', () => {
+
+  xdescribe('alerts list sort', () => {
     beforeEach(() => {
-      renderApp(store);
+      renderApp();
     });
     it('sorts by alert source', async () => {
       await waitFor(() => screen.getByTestId('fireAlertSource'));

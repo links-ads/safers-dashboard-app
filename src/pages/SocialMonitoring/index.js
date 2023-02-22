@@ -6,12 +6,18 @@ import { withTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
 
+import { dateRangeSelector } from 'store/common/common.slice';
+import {
+  fetchStats,
+  fetchTweets,
+  statsSelector,
+} from 'store/dashboard/dashboard.slice';
+
 import IconClusterLayer from './IconClusterLayer';
 import TwitterContainer from './TwitterContainer';
 import iconAtlas from '../../assets/images/location-icon-atlas.png';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import iconMapping from '../../constants/location-icon-mapping.json';
-import { getStats, getTweets } from '../../store/appAction';
 import { formatNumber } from '../../store/utility';
 
 //i18n
@@ -21,8 +27,8 @@ const MOCK_DATA =
 
 const SocialMonitoring = ({ t }) => {
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const stats = useSelector(state => state.dashboard.stats);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const stats = useSelector(statsSelector);
+  const dateRange = useSelector(dateRangeSelector);
 
   const tweetsTrend = 23; //hard coded text until API available
   const socialStats = MOCK_DATA;
@@ -39,8 +45,8 @@ const SocialMonitoring = ({ t }) => {
     if (defaultAoi) {
       params.aoi = defaultAoi;
     }
-    dispatch(getStats(params));
-    dispatch(getTweets(params));
+    dispatch(fetchStats(params));
+    dispatch(fetchTweets(params));
   }, [dateRange, defaultAoi, dispatch]);
 
   useEffect(() => {

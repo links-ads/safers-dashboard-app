@@ -6,6 +6,11 @@ import { useSelector } from 'react-redux';
 //i18n
 import { Row, Col, Input } from 'reactstrap';
 
+import {
+  filteredCameraAlertsSelector,
+  cameraSourcesSelector,
+} from 'store/insitu/insitu.slice';
+
 const SortSection = ({
   t,
   sortOrder,
@@ -13,9 +18,8 @@ const SortSection = ({
   setSortOrder,
   setInSituSource,
 }) => {
-  const { filteredAlerts, cameraSources } = useSelector(
-    state => state.inSituAlerts,
-  );
+  const filteredAlerts = useSelector(filteredCameraAlertsSelector);
+  const cameraSources = useSelector(cameraSourcesSelector);
 
   const filterByAlertSource = inSituSource => {
     setInSituSource(inSituSource);

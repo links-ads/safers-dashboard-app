@@ -8,10 +8,15 @@ import { Container, Row, Card, Input, Button } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import { doesItOverlapAoi, getViewState } from 'helpers/mapHelper';
+import { dateRangeSelector } from 'store/common/common.slice';
+import {
+  fetchEvents,
+  setEventParams,
+  filteredEventsSelector,
+} from 'store/events/events.slice';
 
 import EventsPanel from './EventsPanel';
 import MapComponent from './Map';
-import { setEventParams, getAllEventAlerts } from '../../../store/appAction';
 
 const nodeVisitor = (node, userAoi, parentInfo = {}) => {
   // node visitor. This is a recursive function called on each node
@@ -63,23 +68,25 @@ const AOIBar = ({
   visibleLayers,
   t,
 }) => {
+  // @ts-ignore
   const { setViewState } = useMap();
   const dispatch = useDispatch();
 
   const [eventList, setEventList] = useState([]);
   const [selectedLayer, setSelectedLayer] = useState({});
 
-  const { dateRange } = useSelector(state => state.common);
   const { defaultAoi } = useSelector(state => state.user);
+  const dateRange = useSelector(dateRangeSelector);
 
   // start with filtered alerts, looks better starting with none and showing
   // the right number in a few seconds, than starting with lots and then
   // shortening the list
-  const { filteredAlerts: events } = useSelector(state => state.eventAlerts);
+  const filteredEvents = useSelector(filteredEventsSelector);
 
   const mapRequests = useSelector(state => {
     // Find leaf nodes (mapRequests) in the mapRequest tree
     // and put these in a flat array for use in the pulldown
+    // @ts-ignore
     const categories = state.dataLayer.allMapRequests;
     const aoiBbox = defaultAoi.features[0].bbox;
     const leafNodes = flattenDeep(
@@ -105,7 +112,10 @@ const AOIBar = ({
       ...dateRangeParams,
     };
     dispatch(setEventParams(eventParams));
-    dispatch(getAllEventAlerts(eventParams, true, false));
+    dispatch(
+      // @ts-ignore
+      fetchEvents({ options: eventParams, fromPage: true, isLoading: false }),
+    );
   }, [dateRange, dispatch]);
 
   useEffect(() => {
@@ -113,8 +123,8 @@ const AOIBar = ({
   }, [dateRange, updateEventList]);
 
   useEffect(() => {
-    setEventList(events);
-  }, [events]);
+    setEventList(filteredEvents);
+  }, [filteredEvents]);
 
   const updateRasterLayer = newLayerId => {
     const selectedNode = mapRequests.find(layer => layer.key === newLayerId);
@@ -154,6 +164,7 @@ const AOIBar = ({
                 onChange={e => {
                   updateRasterLayer(e.target.value);
                 }}
+                // @ts-ignore
                 value={selectedLayer.key}
               >
                 {mapRequests?.length === 0 ? (
@@ -186,7 +197,7 @@ const AOIBar = ({
           </Card>
           <Container className="px-4 container">
             <Row>
-              <EventsPanel eventList={events} />
+              <EventsPanel eventList={filteredEvents} />
             </Row>
             <Row>
               <Card

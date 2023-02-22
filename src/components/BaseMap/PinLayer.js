@@ -1,6 +1,5 @@
 import { CompositeLayer } from '@deck.gl/core';
 import { IconLayer, TextLayer } from '@deck.gl/layers';
-import { color } from 'd3-color';
 import { get, isArray } from 'lodash';
 import Supercluster from 'supercluster';
 
@@ -117,9 +116,7 @@ export class PinLayer extends CompositeLayer {
     if (typeof this.props.getPinColor === 'function')
       return this.props.getPinColor(feature);
     if (isArray(this.props.pinColor)) return this.props.pinColor;
-    const colorInstance = color(this.props.pinColor);
-    const { r, g, b } = colorInstance.rgb();
-    return [r, g, b];
+    return this.props.pinColor;
   }
 
   // ===== Icon Layer Functions =====
@@ -146,9 +143,7 @@ export class PinLayer extends CompositeLayer {
     }
     if (isArray(this.props.iconColor)) return this.props.iconColor;
     if (typeof this.props.iconColor === 'string') {
-      const colorInstance = color(this.props.iconColor);
-      const { r, g, b } = colorInstance.rgb();
-      return [r, g, b];
+      return this.props.iconColor;
     }
     return [255, 255, 255, 255];
   }

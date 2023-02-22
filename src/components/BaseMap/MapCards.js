@@ -6,10 +6,11 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Card, CardHeader, CardBody, Col } from 'reactstrap';
 
+import { weatherStatsSelector } from 'store/dashboard/dashboard.slice';
 //i18n
 
 const MapCards = props => {
-  const weatherStats = useSelector(state => state.dashboard.weatherStats);
+  const weatherStats = useSelector(weatherStatsSelector);
   return (
     <Col xs={5} className="position-absolute bottom-0 end-0 me-2">
       <Card className="map-overlay-card pb-1">

@@ -7,23 +7,27 @@ import { Row, Col } from 'reactstrap';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import NotificationsList from './Components/NotificationsList';
-import SortSection from './Components/SortSection';
+import { dateRangeSelector } from 'store/common/common.slice';
 import {
-  getAllNotifications,
-  getAllNotificationSources,
-  getAllNotificationScopesRestrictions,
+  fetchNotifications,
+  fetchNotificationSources,
+  fetchNotificationScopeRestrictions,
   setNewNotificationState,
   setNotificationParams,
-} from '../../store/appAction';
-import { NOTIFICATIONS_PAGE_SIZE } from '../../store/notifications/types';
+  allNotificationsSelector,
+  notificationParamsSelector,
+} from 'store/notifications/notifications.slice';
+
+import NotificationsList from './Components/NotificationsList';
+import SortSection from './Components/SortSection';
+import { NOTIFICATIONS_PAGE_SIZE } from './constants';
 
 const Notifications = () => {
   const dispatch = useDispatch();
 
-  const { allNotifications: notifications, params: notificationParams } =
-    useSelector(state => state.notifications);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const notifications = useSelector(allNotificationsSelector);
+  const notificationParams = useSelector(notificationParamsSelector);
+  const dateRange = useSelector(dateRangeSelector);
 
   const [filteredNotifications, setFilterdNotifications] = useState([]);
   const [paginatedNotifications, setPaginatedNotifications] = useState([]);
@@ -36,8 +40,8 @@ const Notifications = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
-    dispatch(getAllNotificationSources());
-    dispatch(getAllNotificationScopesRestrictions());
+    dispatch(fetchNotificationSources());
+    dispatch(fetchNotificationScopeRestrictions());
   }, [dispatch]);
 
   useEffect(() => {
@@ -45,44 +49,46 @@ const Notifications = () => {
   }, [notifications]);
 
   useEffect(() => {
-    if (notificationSource) {
-      notificationParams.source = notificationSource;
+    const params = { ...notificationParams };
+
+    if (notificationSource && notificationSource !== 'all') {
+      params.source = notificationSource;
     }
-    if (notificationSource === 'all') {
-      delete notificationParams.source;
-    }
-    if (notificationScopeRestriction) {
-      notificationParams.scopeRestriction = notificationScopeRestriction;
-    }
-    if (notificationScopeRestriction === 'all') {
-      delete notificationParams.scopeRestriction;
+
+    if (
+      notificationScopeRestriction &&
+      notificationScopeRestriction !== 'all'
+    ) {
+      params.scopeRestriction = notificationScopeRestriction;
     }
 
     if (dateRange) {
-      notificationParams.start_date = dateRange[0];
-      notificationParams.end_date = dateRange[1];
+      params.start_date = dateRange[0];
+      params.end_date = dateRange[1];
     } else if (!dateRange) {
-      delete notificationParams.start_date;
-      delete notificationParams.end_date;
-    }
-    if (sortOrder) {
-      notificationParams.order = sortOrder;
+      delete params.start_date;
+      delete params.end_date;
     }
 
-    dispatch(setNotificationParams(notificationParams));
-    dispatch(getAllNotifications(notificationParams));
+    if (sortOrder) {
+      params.order = sortOrder;
+    }
+
+    dispatch(setNotificationParams(params));
+    dispatch(fetchNotifications(params));
     dispatch(setNewNotificationState(false, true));
+
     return () => {
       dispatch(setNotificationParams(undefined));
       dispatch(setNewNotificationState(false, false));
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dateRange,
     notificationSource,
     notificationScopeRestriction,
     sortOrder,
     dispatch,
-    notificationParams,
   ]);
 
   useEffect(() => {

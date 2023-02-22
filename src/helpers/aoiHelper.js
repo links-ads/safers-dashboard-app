@@ -9,8 +9,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import toastr from 'toastr';
 
+import { fetchAois, aoisSelector } from 'store/common/common.slice';
+
 import BaseMap from '../components/BaseMap/BaseMap';
-import { getAllAreas, setDefaultAoi } from '../store/appAction';
+import { setDefaultAoi } from '../store/appAction';
 
 import 'toastr/build/toastr.min.css';
 
@@ -21,7 +23,7 @@ const AoiHelper = ({ t }) => {
     preventDuplicates: true,
   };
   const { id: uid } = useSelector(state => state.auth.user);
-  const allAoi = useSelector(state => state.common.aois);
+  const allAoi = useSelector(aoisSelector);
   const { aoiSetSuccess, defaultAoi } = useSelector(state => state.user);
 
   const [selectedAoi, setSelectedAoi] = useState(defaultAoi);
@@ -32,7 +34,7 @@ const AoiHelper = ({ t }) => {
 
   useEffect(() => {
     if (!allAoi.length) {
-      dispatch(getAllAreas());
+      dispatch(fetchAois());
     }
   }, [allAoi.length, dispatch]);
 

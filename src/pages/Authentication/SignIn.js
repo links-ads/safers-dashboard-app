@@ -16,6 +16,8 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
+import { configSelector } from 'store/common/common.slice';
+
 import OAuth2 from './OAuth2';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import { signIn } from '../../store/appAction';
@@ -24,7 +26,7 @@ const SignIn = () => {
   const { errorSignIn: genError } = useSelector(state => state.auth);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const dispatch = useDispatch();
-  const config = useSelector(state => state.common.config);
+  const config = useSelector(configSelector);
   const signInSchema = Yup.object().shape({
     email: Yup.string()
       .email('Invalid email address')

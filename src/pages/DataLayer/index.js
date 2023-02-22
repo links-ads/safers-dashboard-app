@@ -19,6 +19,25 @@ import {
 import wkt from 'wkt';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import {
+  setFilteredAlerts,
+  setAlertApiParams,
+} from 'store/alerts/alerts.slice';
+import {
+  setDateRangeDisabled,
+  configSelector,
+  dateRangeSelector,
+} from 'store/common/common.slice';
+import {
+  fetchDataLayers,
+  fetchMapRequests,
+  setNewMapRequestState,
+  dataLayersSelector,
+  metaDataSelector,
+  isMetaDataLoadingSelector,
+  timeSeriesInfoSelector,
+  featureInfoSelector,
+} from 'store/datalayer/datalayer.slice';
 
 import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
 import DataLayer from './DataLayer';
@@ -29,14 +48,6 @@ import WildfireSimulation from './WildfireSimulation';
 import { MAP } from '../../constants/common';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { getBoundingBox, isWKTValid } from '../../helpers/mapHelper';
-import { setFilteredAlerts } from '../../store/alerts/action';
-import {
-  getAllDataLayers,
-  setNewMapRequestState,
-  setAlertApiParams,
-  setDateRangeDisabled,
-} from '../../store/appAction';
-import { getAllMapRequests } from '../../store/datalayer/action';
 import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
 
 const DataLayerDashboard = ({ t }) => {
@@ -44,20 +55,19 @@ const DataLayerDashboard = ({ t }) => {
   const dispatch = useDispatch();
   const timer = useRef(null);
 
-  const config = useSelector(state => state.common.config);
+  const config = useSelector(configSelector);
   const defaultAoi = useSelector(state => state.user?.defaultAoi);
   const dataLayerBoundingBox = config?.restrict_data_to_aoi
     ? defaultAoi.features[0].bbox
     : EUROPEAN_BBOX;
 
-  const {
-    dataLayers,
-    metaData,
-    isMetaDataLoading,
-    timeSeries: timeSeriesData,
-    featureInfo: featureInfoData,
-  } = useSelector(state => state.dataLayer);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const dataLayers = useSelector(dataLayersSelector);
+  const metaData = useSelector(metaDataSelector);
+  const isMetaDataLoading = useSelector(isMetaDataLoadingSelector);
+  const timeSeriesData = useSelector(timeSeriesInfoSelector);
+  const featureInfoData = useSelector(featureInfoSelector);
+
+  const dateRange = useSelector(dateRangeSelector);
   const { allMapRequests } = useSelector(state => state?.dataLayer);
 
   const [boundingBox, setBoundingBox] = useState(undefined);
@@ -141,8 +151,8 @@ const DataLayerDashboard = ({ t }) => {
       domain: dataDomain ? dataDomain : undefined,
     };
 
-    dispatch(getAllDataLayers(options));
-    dispatch(getAllMapRequests(options, true));
+    dispatch(fetchDataLayers(options));
+    dispatch(fetchMapRequests(options));
   }, [dataDomain, sortByDate, dateRange, boundingBox, dispatch]);
 
   useEffect(() => {
@@ -204,28 +214,6 @@ const DataLayerDashboard = ({ t }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, currentLayer, metaData]);
 
-  // This takes an array of objects and recursively filters out sibling
-  // objects that do not match the search term. It retains the original data
-  // shape and all children of matching objects.
-  const searchDataTree = (data, str) => {
-    const searchTerm = str.toLowerCase();
-    return data.reduce((acc, datum) => {
-      if (datum.text.toLowerCase().includes(searchTerm)) {
-        return [...acc, datum];
-      }
-
-      let children = [];
-      if (datum.children) {
-        const filteredChildren = searchDataTree(datum.children, searchTerm);
-        children = filteredChildren;
-      }
-
-      const hasChildren = !!children.length;
-
-      return hasChildren ? [...acc, { ...datum, children }] : acc;
-    }, []);
-  };
-
   const backToOnDemandPanel = () => {
     setActiveTab(DATA_LAYERS_PANELS.onDemandMapLayers);
   };
@@ -237,7 +225,6 @@ const DataLayerDashboard = ({ t }) => {
   };
 
   const getBitmapLayer = url => {
-    console.log('BITMAP URL: ', url);
     /*
      extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
      if this is an on-demand layer, it will have been hard-coded by the backend
@@ -384,7 +371,6 @@ const DataLayerDashboard = ({ t }) => {
     handleResetAOI,
     timeSeriesData,
     featureInfoData,
-    searchDataTree,
     timestamp,
     showLegend,
     legendUrl: currentLayer?.legend_url,

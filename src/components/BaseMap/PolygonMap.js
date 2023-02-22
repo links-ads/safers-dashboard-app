@@ -16,16 +16,18 @@ import {
 } from 'react-map-gl-draw';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { selectedFireBreakSelector } from 'store/datalayer/datalayer.slice';
+import {
+  mapStylesSelector,
+  selectedMapStyleSelector,
+  setSelectedMapStyle,
+} from 'store/map/map.slice';
+
 import { useMap } from './MapContext';
 import { MapStyleSwitcher } from './MapStyleSwitcher';
 import { MAPBOX_TOKEN } from '../../config';
 import { useLocalStorage } from '../../customHooks/useLocalStorage';
 import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
-import {
-  mapStylesSelector,
-  selectedMapStyleSelector,
-  setSelectedMapStyle,
-} from '../../store/map/map.slice';
 import { getWKTfromFeature } from '../../store/utility';
 
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
@@ -55,9 +57,7 @@ const PolygonMap = ({
   const [mapStyle, setMapStyle] = useLocalStorage('safers-map-style');
   const dispatch = useDispatch();
 
-  const selectedFireBreak = useSelector(
-    state => state.dataLayer.selectedFireBreak,
-  );
+  const selectedFireBreak = useSelector(selectedFireBreakSelector);
   const mapStyles = useSelector(mapStylesSelector);
   const selectedMapStyle = useSelector(selectedMapStyleSelector);
 

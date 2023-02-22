@@ -20,6 +20,13 @@ import {
 import * as Yup from 'yup';
 
 import {
+  postMapRequest,
+  fetchMapRequests,
+  setSelectedFireBreak,
+  selectedFireBreakSelector,
+} from 'store/datalayer/datalayer.slice';
+
+import {
   DEFAULT_WILDFIRE_GEOMETRY_BUFFER,
   SIMULATION_TIME_LIMIT,
   DEFAULT_FIRE_BREAK_TYPE,
@@ -32,8 +39,6 @@ import MapSection from './Map';
 import MapInput from '../../components/BaseMap/MapInput';
 import { MAP } from '../../constants/common';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
-import { postMapRequest, getAllMapRequests } from '../../store/appAction';
-import { setSelectedFireBreak } from '../../store/datalayer/action';
 import 'react-rangeslider/lib/index.css';
 import { getWKTfromFeature } from '../../store/utility';
 
@@ -65,9 +70,7 @@ const WildfireSimulation = ({
   const dispatch = useDispatch();
 
   const error = useSelector(state => state.auth.error);
-  const selectedFireBreak = useSelector(
-    state => state.dataLayer.selectedFireBreak,
-  );
+  const selectedFireBreak = useSelector(selectedFireBreakSelector);
 
   // to manage number of dynamic (vertical) table rows in `Boundary Conditions`
   const [tableEntries, setTableEntries] = useState([0]);
@@ -218,7 +221,7 @@ const WildfireSimulation = ({
     };
 
     dispatch(postMapRequest(payload));
-    dispatch(getAllMapRequests());
+    dispatch(fetchMapRequests());
     backToOnDemandPanel();
   };
 

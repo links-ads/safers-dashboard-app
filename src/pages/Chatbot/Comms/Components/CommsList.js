@@ -5,6 +5,11 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import {
+  allCommsSelector,
+  filteredCommsSelector,
+} from 'store/comms/comms.slice';
+
 import Comm from './Comm';
 import PaginationWrapper from '../../../../components/Pagination';
 import { MAP_TYPES } from '../../../../constants/common';
@@ -17,7 +22,9 @@ const CommsList = ({
   setCommID,
   setIconLayer,
 }) => {
-  const { allComms, filteredComms } = useSelector(state => state.comms);
+  const allComms = useSelector(allCommsSelector);
+  const filteredComms = useSelector(filteredCommsSelector);
+
   const [pageData, setPageData] = useState([]);
   const dispatch = useDispatch();
 

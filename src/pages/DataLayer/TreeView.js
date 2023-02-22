@@ -6,8 +6,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 
+import {
+  fetchMetadata,
+  resetMetaData,
+  metaDataSelector,
+} from 'store/datalayer/datalayer.slice';
+
 import { fetchEndpoint } from '../../helpers/apiHelper';
-import { getMetaData, resetMetaData } from '../../store/appAction';
 
 const TreeView = ({ data, setCurrentLayer, resetMap }) => {
   const [itemState, setItemState] = useState({});
@@ -17,7 +22,8 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
   const [tooltipInfo, setTooltipInfo] = useState(undefined);
   const [metaActive, setMetaActive] = useState('');
 
-  const { metaData } = useSelector(state => state.dataLayer);
+  const metaData = useSelector(metaDataSelector);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -56,7 +62,7 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
   const toggleMetaInfo = metaURL => {
     if (!metaData) {
       setMetaActive('alert-card-active');
-      dispatch(getMetaData(metaURL));
+      dispatch(fetchMetadata(metaURL));
     } else {
       dispatch(resetMetaData());
     }

@@ -2,18 +2,39 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 
-import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 import {
-  getAllFireAlerts,
+  fetchAlerts,
   setNewAlertState,
-  getAllEventAlerts,
-  setNewEventState,
-  getAllNotifications,
-  setNewNotificationState,
-  getAllMapRequests,
+  allAlertsSelector,
+  filteredAlertsSelector,
+  alertParamsSelector,
+  isAlertPageActiveSelector,
+} from 'store/alerts/alerts.slice';
+import { configSelector, dateRangeSelector } from 'store/common/common.slice';
+import {
+  fetchMapRequests,
   setNewMapRequestState,
-  getAllPeople,
-} from '../store/appAction';
+  dataLayerParamsSelector,
+  dataLayerMapRequestsSelector,
+  dataLayerIsPageActiveSelector,
+} from 'store/datalayer/datalayer.slice';
+import {
+  fetchEvents,
+  setNewEventState,
+  allEventsSelector,
+  filteredEventsSelector,
+  eventParamsSelector,
+  isEventPageActiveSelector,
+} from 'store/events/events.slice';
+import {
+  fetchNotifications,
+  setNewNotificationState,
+  allNotificationsSelector,
+  notificationParamsSelector,
+  notificationIsPageActiveSelector,
+} from 'store/notifications/notifications.slice';
+
+import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 
 const MILLISECONDS = 1000;
 const PollingHelper = props => {
@@ -21,36 +42,31 @@ const PollingHelper = props => {
   const timer = useRef(null);
 
   // Map Requests
-  const {
-    allMapRequests,
-    params: mapRequestParams,
-    isPageActive: isMapRequestPageActive,
-  } = useSelector(state => state.dataLayer);
+  const allMapRequests = useSelector(dataLayerMapRequestsSelector);
+  const mapRequestParams = useSelector(dataLayerParamsSelector);
+  const isMapRequestPageActive = useSelector(dataLayerIsPageActiveSelector);
 
   // Alerts
-  const {
-    allAlerts,
-    filteredAlerts,
-    params: alertParams,
-    isPageActive: isAlertPageActive,
-  } = useSelector(state => state.alerts);
+  const allAlerts = useSelector(allAlertsSelector);
+  const filteredAlerts = useSelector(filteredAlertsSelector);
+  const alertParams = useSelector(alertParamsSelector);
+  const isAlertPageActive = useSelector(isAlertPageActiveSelector);
 
   // Events
-  const {
-    allAlerts: allEvents,
-    filteredAlerts: filteredEvents,
-    params: eventParams,
-    isPageActive: isEventPageActive,
-  } = useSelector(state => state.eventAlerts);
+  const allEvents = useSelector(allEventsSelector);
+  const filteredEvents = useSelector(filteredEventsSelector);
+  const eventParams = useSelector(eventParamsSelector);
+  const isEventPageActive = useSelector(isEventPageActiveSelector);
 
   // Notifications
-  const {
-    allNotifications,
-    params: notificationParams,
-    isPageActive: isNotificationPageActive,
-  } = useSelector(state => state.notifications);
+  const allNotifications = useSelector(allNotificationsSelector);
+  const notificationParams = useSelector(notificationParamsSelector);
+  const isNotificationPageActive = useSelector(
+    notificationIsPageActiveSelector,
+  );
 
-  const { config, dateRange } = useSelector(state => state.common);
+  const config = useSelector(configSelector);
+  const dateRange = useSelector(dateRangeSelector);
   const pollingFrequency = config ? config.polling_frequency : undefined;
 
   const [currentNotificationCount, setCurrentNotificationCount] =
@@ -61,21 +77,29 @@ const PollingHelper = props => {
   let dateRangeParams = {};
 
   if (dateRange) {
-    delete alertParams.default_date;
-    delete eventParams.default_date;
-    delete notificationParams.default_date;
     dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {};
   }
 
   const callAPIs = () => {
-    dispatch(getAllFireAlerts({ ...alertParams, ...dateRangeParams }));
-    dispatch(getAllEventAlerts({ ...eventParams, ...dateRangeParams }));
-    dispatch(
-      getAllNotifications({ ...notificationParams, ...dateRangeParams }),
-    );
-    dispatch(getAllMapRequests({ ...mapRequestParams, ...dateRangeParams }));
+    let alParams = null;
+    let evParams = null;
+    let ntParams = null;
+    if (dateRange) {
+      const { default_date: alertDate, ...restAlerts } = alertParams;
+      alParams = { ...restAlerts };
+      const { default_date: eventDate, ...restEvents } = eventParams;
+      evParams = { ...restEvents };
+      const { default_date: notificationDate, ...restNotifications } =
+        notificationParams;
+      ntParams = { ...restNotifications };
+    }
+
+    dispatch(fetchAlerts({ options: { ...alParams, ...dateRangeParams } }));
+    dispatch(fetchEvents({ options: { ...evParams, ...dateRangeParams } }));
+    dispatch(fetchNotifications({ ...ntParams, ...dateRangeParams }));
+    dispatch(fetchMapRequests({ ...mapRequestParams, ...dateRangeParams }));
   };
 
   useEffect(() => {
@@ -97,7 +121,13 @@ const PollingHelper = props => {
   useSetNewAlerts(
     noOfMessages => {
       if (!isAlertPageActive) {
-        dispatch(setNewAlertState(true, false, noOfMessages));
+        dispatch(
+          setNewAlertState({
+            isNewAlert: true,
+            isPageActive: false,
+            newItemsCount: noOfMessages,
+          }),
+        );
       }
     },
     allAlerts,
@@ -108,7 +138,13 @@ const PollingHelper = props => {
   useSetNewAlerts(
     noOfMessages => {
       if (!isEventPageActive) {
-        dispatch(setNewEventState(true, false, noOfMessages));
+        dispatch(
+          setNewEventState({
+            isNewEvent: true,
+            isPageActive: false,
+            newItemsCount: noOfMessages,
+          }),
+        );
       }
     },
     allEvents,
@@ -124,7 +160,13 @@ const PollingHelper = props => {
     ) {
       let difference = newNotificationsCount - currentNotificationCount;
       if (!isNotificationPageActive)
-        dispatch(setNewNotificationState(true, false, difference));
+        dispatch(
+          setNewNotificationState({
+            isNewNotification: true,
+            isPageActive: false,
+            newItemsCount: difference,
+          }),
+        );
     }
     setCurrentNotificationCount(newNotificationsCount);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -137,7 +179,13 @@ const PollingHelper = props => {
 
     if (currentMapRequestCount && count) {
       let difference = newMapRequestCount - currentMapRequestCount;
-      dispatch(setNewMapRequestState(true, isMapRequestPageActive, difference));
+      dispatch(
+        setNewMapRequestState({
+          isNewAlert: true,
+          isPageActive: isMapRequestPageActive,
+          newItemsCount: difference,
+        }),
+      );
     }
     setCurrentMapRequestCount(newMapRequestCount);
     // eslint-disable-next-line react-hooks/exhaustive-deps

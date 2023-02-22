@@ -7,9 +7,25 @@ import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
 import { useMap } from 'components/BaseMap/MapContext';
-
+import { PAGE_SIZE } from 'pages/Events/constants';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { dateRangeSelector } from 'store/common/common.slice';
+import {
+  fetchCameras,
+  fetchCameraSources,
+  fetchCameraAlerts,
+  resetCameraAlertsResponseState,
+  setFilteredCameraAlerts,
+  setCurrentPage,
+  setPaginatedAlerts,
+  allInSituAlertsSelector,
+  filteredCameraAlertsSelector,
+  cameraListSelector,
+  cameraAlertsSuccessSelector,
+  cameraAlertsErrorSelector,
+} from 'store/insitu/insitu.slice';
+
 import AlertList from './Components/AlertList';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
@@ -20,30 +36,18 @@ import {
   getViewState,
   getAlertIconColorFromContext,
 } from '../../helpers/mapHelper';
-import {
-  getAllInSituAlerts,
-  resetInSituAlertsResponseState,
-  setCurrentPage,
-  setFilteredInSituAlerts,
-  setPaginatedAlerts,
-  getCameraList,
-  getCameraSources,
-} from '../../store/appAction';
-import { PAGE_SIZE } from '../../store/events/types';
 
 //i18n
 
 const InSituAlerts = () => {
   const { viewState, setViewState } = useMap();
   const defaultAoi = useSelector(state => state.user.defaultAoi);
-  const {
-    filteredAlerts,
-    allAlerts: alerts,
-    success,
-    error,
-    cameraList,
-  } = useSelector(state => state.inSituAlerts);
-  const dateRange = useSelector(state => state.common.dateRange);
+  const alerts = useSelector(allInSituAlertsSelector);
+  const filteredAlerts = useSelector(filteredCameraAlertsSelector);
+  const cameraList = useSelector(cameraListSelector);
+  const success = useSelector(cameraAlertsSuccessSelector);
+  const error = useSelector(cameraAlertsErrorSelector);
+  const dateRange = useSelector(dateRangeSelector);
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
@@ -70,7 +74,7 @@ const InSituAlerts = () => {
         getPinColor: feature =>
           getAlertIconColorFromContext(MAP_TYPES.IN_SITU, feature),
         icon: 'camera',
-        iconColor: '#ffffff',
+        iconColor: [255, 255, 255],
         clusterIconSize: 35,
         getPinSize: () => 35,
         pixelOffset: [-18, -18],
@@ -83,12 +87,12 @@ const InSituAlerts = () => {
   );
 
   useEffect(() => {
-    dispatch(getCameraSources());
+    dispatch(fetchCameraSources());
   }, [dispatch]);
 
   useEffect(() => {
     dispatch(
-      getCameraList({
+      fetchCameras({
         camera_id: inSituSource,
         bbox: boundingBox ? boundingBox.toString() : undefined,
         default_bbox: !boundingBox,
@@ -103,7 +107,7 @@ const InSituAlerts = () => {
 
     setAlertId(undefined);
     dispatch(
-      getAllInSituAlerts({
+      fetchCameraAlerts({
         type: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
         order: sortOrder ? sortOrder : '-date',
         camera_id: inSituSource,
@@ -128,7 +132,7 @@ const InSituAlerts = () => {
     } else if (error) {
       toastr.error(error, '');
     }
-    dispatch(resetInSituAlertsResponseState());
+    dispatch(resetCameraAlertsResponseState());
   }, [success, error, dispatch]);
 
   useEffect(() => {
@@ -144,8 +148,8 @@ const InSituAlerts = () => {
         ),
       );
     }
-    dispatch(setFilteredInSituAlerts(alerts));
-  }, [alerts, defaultAoi.features, dispatch, viewState]);
+    dispatch(setFilteredCameraAlerts(alerts));
+  }, [alerts, defaultAoi.features, dispatch, setViewState, viewState]);
 
   useEffect(() => {
     if (!viewState) {
@@ -161,7 +165,7 @@ const InSituAlerts = () => {
     dispatch(
       setPaginatedAlerts(_.cloneDeep(filteredAlerts.slice(0, PAGE_SIZE))),
     );
-  }, [defaultAoi.features, dispatch, filteredAlerts, viewState]);
+  }, [defaultAoi.features, dispatch, filteredAlerts, setViewState, viewState]);
 
   const handleResetAOI = useCallback(() => {
     setViewState(
@@ -170,7 +174,7 @@ const InSituAlerts = () => {
         defaultAoi.features[0].properties.zoomLevel,
       ),
     );
-  }, [defaultAoi.features]);
+  }, [defaultAoi.features, setViewState]);
 
   const showTooltip = info => {
     if (info) {
@@ -233,7 +237,7 @@ const InSituAlerts = () => {
                   setIconLayer={setIconLayer}
                   setHoverInfo={setHoverInfo}
                   hideTooltip={hideTooltip}
-                  setViewState={useCallback(() => setViewState, [])}
+                  setViewState={useCallback(() => setViewState, [setViewState])}
                   setIsViewStateChanged={setIsViewStateChanged}
                 />
               </Col>

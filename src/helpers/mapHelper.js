@@ -166,7 +166,7 @@ export const getEventIconLayer = (
     getPosition: feature => feature.geometry.coordinates,
     getPinColor: feature => getAlertIconColorFromContext(mapType, feature),
     icon: marker,
-    iconColor: '#ffffff',
+    iconColor: [255, 255, 255],
     clusterIconSize: 35,
     getPinSize: () => 35,
     pixelOffset: [-18, -18],
@@ -193,7 +193,7 @@ export const getIconLayer = (
     getPinColor: feature =>
       getAlertIconColorFromContext(mapType, feature, selectedItem),
     icon: markerName,
-    iconColor: '#ffffff',
+    iconColor: [255, 255, 255],
     clusterIconSize: 35,
     getPinSize: () => 35,
     pixelOffset: [-18, -18],

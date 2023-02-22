@@ -5,6 +5,11 @@ import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import {
+  allPeopleSelector,
+  filteredPeopleSelector,
+} from 'store/people/people.slice';
+
 import People from './People';
 import PaginationWrapper from '../../../../components/Pagination';
 import { MAP_TYPES } from '../../../../constants/common';
@@ -17,13 +22,12 @@ const PeopleList = ({
   setPeopleId,
   setIconLayer,
 }) => {
-  const { allPeople: OrgPeopleList, filteredPeople } = useSelector(state => {
-    return state.people;
-  });
+  const orgPeopleList = useSelector(allPeopleSelector);
+  const filteredPeople = useSelector(filteredPeopleSelector);
   const [pageData, setPageData] = useState([]);
   const dispatch = useDispatch();
 
-  const allPeople = filteredPeople || OrgPeopleList;
+  const allPeople = filteredPeople || orgPeopleList;
 
   const setSelectedPeople = people_id => {
     if (people_id) {

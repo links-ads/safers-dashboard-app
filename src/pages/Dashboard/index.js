@@ -3,11 +3,23 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Container } from 'reactstrap';
 
-import { getAllComms, getAllFireAlerts } from 'store/appAction';
-import { getAllEventAlerts } from 'store/events/action';
-import { getAllMissions } from 'store/missions/action';
-import { getAllPeople } from 'store/people/action';
-import { getAllReports } from 'store/reports/action';
+import {
+  fetchAlerts,
+  allAlertsSelector,
+  filteredAlertsSelector,
+} from 'store/alerts/alerts.slice';
+import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
+import { fetchEvents } from 'store/events/events.slice';
+import {
+  fetchMissions,
+  allMissionsSelector,
+} from 'store/missions/missions.slice';
+import {
+  fetchPeople,
+  allPeopleSelector,
+  filteredPeopleSelector,
+} from 'store/people/people.slice';
+import { fetchReports, allReportsSelector } from 'store/reports/reports.slice';
 
 import AOIBar from './Components/AOIBar';
 import NotificationsBar from './Components/Notifications';
@@ -36,16 +48,16 @@ const NewDashboard = () => {
   const [communicationStatusCounts, setCommunicationStatusCounts] = useState(
     {},
   );
-  const { allPeople: orgPplList, filteredPeople } = useSelector(
-    state => state.people,
-  );
+  const orgPplList = useSelector(allPeopleSelector);
+  const filteredPeople = useSelector(filteredPeopleSelector);
 
-  const { allReports: OrgReportList } = useSelector(state => state?.reports);
-  const { allAlerts: alerts, filteredAlerts } = useSelector(
-    state => state?.alerts,
-  );
-  const allMissions = useSelector(state => state?.missions?.allMissions || []);
-  const allCommunications = useSelector(state => state.comms.allComms || []);
+  const orgReportList = useSelector(allReportsSelector);
+
+  const alerts = useSelector(allAlertsSelector);
+  const filteredAlerts = useSelector(filteredAlertsSelector);
+
+  const allMissions = useSelector(allMissionsSelector);
+  const allCommunications = useSelector(allCommsSelector);
 
   const layerVisibilities = {
     events: true,
@@ -70,12 +82,12 @@ const NewDashboard = () => {
       default_date: false,
       default_bbox: true, // user AOI only
     };
-    dispatch(getAllEventAlerts(params, {}));
-    dispatch(getAllPeople(params, {}));
-    dispatch(getAllReports(params));
-    dispatch(getAllComms(params, {}));
-    dispatch(getAllMissions(params, {}));
-    dispatch(getAllFireAlerts(params));
+    dispatch(fetchEvents({ options: params, feFilters: {} }));
+    dispatch(fetchPeople({ options: params, feFilters: {} }));
+    dispatch(fetchReports({ options: params }));
+    dispatch(fetchComms({ options: params, feFilters: {} }));
+    dispatch(fetchMissions({ options: params, feFilters: {} }));
+    dispatch(fetchAlerts({ options: params }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -89,9 +101,9 @@ const NewDashboard = () => {
   }, [orgPplList, filteredPeople]);
 
   useEffect(() => {
-    const statusCounts = getStatusCountsForItems(OrgReportList);
+    const statusCounts = getStatusCountsForItems(orgReportList);
     setReportStatusCounts(statusCounts);
-  }, [OrgReportList]);
+  }, [orgReportList]);
 
   useEffect(() => {
     const statusCounts = getStatusCountsForItems(allMissions);
@@ -117,7 +129,7 @@ const NewDashboard = () => {
         />
         <AOIBar
           orgPplList={orgPplList}
-          orgReportList={OrgReportList}
+          orgReportList={orgReportList}
           commsList={allCommunications}
           missionsList={allMissions}
           alertsList={alerts}

@@ -6,7 +6,7 @@ import Pagination from 'rc-pagination';
 import { Row } from 'reactstrap';
 
 import NotificatonCard from './NotificationCard';
-import { NOTIFICATIONS_PAGE_SIZE } from '../../../store/notifications/types';
+import { NOTIFICATIONS_PAGE_SIZE } from '../constants';
 
 const NotificationsList = ({
   filteredNotifications,
@@ -28,7 +28,7 @@ const NotificationsList = ({
     <>
       <Row>
         {paginatedNotifications.map(alert => (
-          <NotificatonCard key={alert} card={alert} />
+          <NotificatonCard key={alert.id} card={alert} />
         ))}
       </Row>
 
