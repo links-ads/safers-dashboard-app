@@ -14,6 +14,7 @@ import {
   getViewState,
   getEventIconLayer,
   getBitmapLayer,
+  getBoundedViewState,
 } from '../../../helpers/mapHelper';
 
 const MapComponent = ({
@@ -26,20 +27,21 @@ const MapComponent = ({
   alertsList = [],
   visibleLayers = {},
 }) => {
-  const { setViewState } = useMap();
+  const { deckRef, updateViewState } = useMap();
 
   const objAoi = useSelector(state => state.user.defaultAoi);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
   const mapRequestLayer = useMemo(() => {
     if (Object.keys(selectedLayer).length === 0) return null;
-    const [minX, minY, maxX, maxY] = selectedLayer.bbox;
-    const midpoint = [(minX + maxX) / 2, (minY + maxY) / 2];
-    const zoom = 10;
-    const newViewState = getViewState(midpoint, zoom);
-    setViewState(newViewState);
+    const { latitude, longitude, zoom } = getBoundedViewState(
+      deckRef,
+      selectedLayer.bbox,
+    );
+    const newViewState = getViewState([longitude, latitude], zoom);
+    updateViewState(newViewState);
     return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
-  }, [selectedLayer, setViewState]);
+  }, [deckRef, selectedLayer, updateViewState]);
 
   const iconLayer = useMemo(
     () =>

@@ -32,7 +32,9 @@ const ALERT_TYPES = {
 export const getBoundedViewState = (deckRef, bbox) => {
   const viewport = deckRef.current.deck;
   const { width, height } = viewport;
-  const padding = 250;
+  // padding reduced. This was set too high, causing a
+  // deckGL assertion that image was too small to display
+  const padding = 50;
 
   const [minX, minY, maxX, maxY] = bbox;
 
