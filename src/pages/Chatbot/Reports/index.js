@@ -19,6 +19,7 @@ import {
   reportsBoundingBoxSelector,
   reportsMapFilterSelector,
 } from 'store/reports/reports.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
@@ -33,7 +34,7 @@ import {
 
 const Reports = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const orgReportList = useSelector(allReportsSelector);
   const filteredReports = useSelector(filteredReportsSelector);
   const success = useSelector(reportsSuccessSelector);

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { signOutSuccess } from 'store/authentication/action';
+import { signOutSuccess } from 'store/authentication/authentication.slice';
 import { setLoading } from 'store/common/common.slice';
 
 import { endpoints } from './endpoints';

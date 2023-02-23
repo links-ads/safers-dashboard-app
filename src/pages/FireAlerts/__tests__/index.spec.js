@@ -1,11 +1,9 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import userEvent from '@testing-library/user-event';
-
 import { ALL_ALERTS } from 'mockData/alerts';
 import { server, rest } from 'mocks/server';
-import { act, render, screen, waitFor, within } from 'test-utils';
+import { act, render, screen, waitFor, within, userEvent } from 'test-utils';
 
 import FireAlerts from '../index';
 

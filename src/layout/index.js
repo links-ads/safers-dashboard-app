@@ -3,17 +3,23 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 
+import {
+  refreshOAuthToken,
+  tokenLastUpdatedSelector,
+  tokenExpiresInSelector,
+} from 'store/authentication/authentication.slice';
+
 import Footer from './Footer';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import { GENERAL } from '../constants/common';
 import useTimeout from '../customHooks/useTimeout';
 import PollingHelper from '../helpers/pollingHelper';
-import { refreshOAuthToken } from '../store/appAction';
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();
-  const { tokenLastUpdated, tokenExpiresIn } = useSelector(state => state.auth);
+  const tokenLastUpdated = useSelector(tokenLastUpdatedSelector);
+  const tokenExpiresIn = useSelector(tokenExpiresInSelector);
 
   const interval =
     (tokenExpiresIn - GENERAL.API_GAP) * GENERAL.MILLISEC_TO_SECOND;

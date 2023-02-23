@@ -37,7 +37,9 @@ import {
   isMetaDataLoadingSelector,
   timeSeriesInfoSelector,
   featureInfoSelector,
+  dataLayerMapRequestsSelector,
 } from 'store/datalayer/datalayer.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
 import DataLayer from './DataLayer';
@@ -56,7 +58,7 @@ const DataLayerDashboard = ({ t }) => {
   const timer = useRef(null);
 
   const config = useSelector(configSelector);
-  const defaultAoi = useSelector(state => state.user?.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const dataLayerBoundingBox = config?.restrict_data_to_aoi
     ? defaultAoi.features[0].bbox
     : EUROPEAN_BBOX;
@@ -68,7 +70,7 @@ const DataLayerDashboard = ({ t }) => {
   const featureInfoData = useSelector(featureInfoSelector);
 
   const dateRange = useSelector(dateRangeSelector);
-  const { allMapRequests } = useSelector(state => state?.dataLayer);
+  const allMapRequests = useSelector(dataLayerMapRequestsSelector);
 
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [currentLayer, setCurrentLayer] = useState(undefined);

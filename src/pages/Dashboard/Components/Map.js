@@ -6,6 +6,7 @@ import { Card, Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import { MAP_TYPES } from 'constants/common';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import {
@@ -28,7 +29,7 @@ const MapComponent = ({
 }) => {
   const { deckRef, updateViewState } = useMap();
 
-  const objAoi = useSelector(state => state.user.defaultAoi);
+  const objAoi = useSelector(defaultAoiSelector);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
   const mapRequestLayer = useMemo(() => {

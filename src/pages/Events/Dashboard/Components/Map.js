@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
 import { aoisSelector } from 'store/common/common.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import BaseMap from '../../../../components/BaseMap/BaseMap';
 import MapCards from '../../../../components/BaseMap/MapCards';
@@ -13,7 +14,7 @@ import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
 const MapComponent = () => {
   const [viewState, setViewState] = useState(undefined);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const allAoi = useSelector(aoisSelector);
 
   useEffect(() => {

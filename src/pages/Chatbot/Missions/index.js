@@ -17,6 +17,7 @@ import {
   filteredMissionsSelector,
   missionsSuccessSelector,
 } from 'store/missions/missions.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import CreateMission from './Components/create-mission/CreateMission';
 import MapSection from './Components/Map';
@@ -32,7 +33,7 @@ import {
 
 const Missions = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const orgMissionList = useSelector(allMissionsSelector);
   const filteredMissions = useSelector(filteredMissionsSelector);
   const success = useSelector(missionsSuccessSelector);

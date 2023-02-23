@@ -6,6 +6,8 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle, Button } from 'reactstrap';
 
+import { defaultAoiSelector } from 'store/user/user.slice';
+
 import { MAP_TYPES } from '../../../../../constants/common';
 import { getIconLayer, getViewState } from '../../../../../helpers/mapHelper';
 import { formatDate } from '../../../../../store/utility';
@@ -16,7 +18,7 @@ import MapSection from '../Components/Map';
 const NO_AVAILABLE_DATA = 'no-data-available';
 
 const SummaryContainer = ({ reportDetail, t }) => {
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
 
   const navigate = useNavigate();
 

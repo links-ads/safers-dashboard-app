@@ -17,6 +17,7 @@ import {
   commsSuccessSelector,
   filteredCommsSelector,
 } from 'store/comms/comms.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import CommsList from './Components/CommsList';
 import CreateMessage from './Components/CreateMessage';
@@ -32,7 +33,7 @@ import {
 
 const Comms = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
-  const defaultAoi = useSelector(state => state.user.defaultAoi);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const allComms = useSelector(allCommsSelector);
   const success = useSelector(commsSuccessSelector);
   const filteredComms = useSelector(filteredCommsSelector);

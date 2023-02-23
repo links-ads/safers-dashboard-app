@@ -21,24 +21,30 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import { signOut } from 'store/authentication/authentication.slice';
 import {
   fetchOrganisations,
   fetchRoles,
   organisationsSelector,
   rolesSelector,
 } from 'store/common/common.slice';
+import {
+  fetchUserProfile,
+  updateUserProfile,
+  deleteUserProfile,
+  uploadProfileImage,
+  resetStatus,
+  userInfoSelector,
+  deleteAccSuccessResSelector,
+  deleteAccFailResSelector,
+  uploadProfileImageSelector,
+  updateStatusSelector,
+  uploadProfileImageFailResSelector,
+  defaultAoiSelector,
+} from 'store/user/user.slice';
 
 import avatar from '../../assets/images/users/profile.png';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
-import {
-  getInfo,
-  updateInfo,
-  uploadProfImg,
-  deleteAccount,
-  signOut,
-  resetStatus,
-} from '../../store/appAction';
-
 import 'toastr/build/toastr.min.css';
 
 //i18n
@@ -48,16 +54,15 @@ const UpdateProfile = ({ t }) => {
     preventDuplicates: true,
   };
 
-  const { id } = useSelector(state => state.user.info);
-  const {
-    uploadFileSuccessRes,
-    deleteAccSuccessRes,
-    uploadFileFailRes,
-    deleteAccFailRes,
-    updateStatus,
-    info: user,
-    defaultAoi,
-  } = useSelector(state => state.user);
+  const uploadFileSuccessRes = useSelector(uploadProfileImageSelector);
+  const deleteAccSuccessRes = useSelector(deleteAccSuccessResSelector);
+  const uploadFileFailRes = useSelector(uploadProfileImageFailResSelector);
+  const deleteAccFailRes = useSelector(deleteAccFailResSelector);
+  const updateStatus = useSelector(updateStatusSelector);
+  const user = useSelector(userInfoSelector);
+  const id = user.id;
+  const defaultAoi = useSelector(defaultAoiSelector);
+
   const orgList = useSelector(organisationsSelector);
   const roles = useSelector(rolesSelector);
 
@@ -82,7 +87,7 @@ const UpdateProfile = ({ t }) => {
   const countryNames = countryList.getNames().sort();
 
   useEffect(() => {
-    dispatch(getInfo(id));
+    dispatch(fetchUserProfile(id));
     if (roles.length === 0) dispatch(fetchRoles());
     if (orgList.length === 0) dispatch(fetchOrganisations());
   }, [dispatch, id, orgList.length, roles.length]);
@@ -132,11 +137,11 @@ const UpdateProfile = ({ t }) => {
     event.stopPropagation();
     event.preventDefault();
     var file = event.target.files[0];
-    dispatch(uploadProfImg(file));
+    dispatch(uploadProfileImage(file));
   };
 
   const confirmAccDelete = () => {
-    dispatch(deleteAccount(id));
+    dispatch(deleteUserProfile(id));
     setmodal_backdrop(false);
   };
 
@@ -270,7 +275,13 @@ const UpdateProfile = ({ t }) => {
                 initialValues={formInit}
                 validationSchema={myProfileSchema}
                 onSubmit={(values, { setSubmitting }) => {
-                  dispatch(updateInfo(id, values, values.role === citizenId));
+                  dispatch(
+                    updateUserProfile({
+                      id,
+                      userInfo: values,
+                      isCitizen: values.role === citizenId,
+                    }),
+                  );
                   setSubmitting(false);
                 }}
               >

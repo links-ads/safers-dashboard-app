@@ -20,6 +20,11 @@ import toastr from 'toastr';
 import * as Yup from 'yup';
 
 import { configSelector } from 'store/common/common.slice';
+import {
+  resetUserPassword,
+  resetPasswordSuccessMessageSelector,
+  resetPswFailResSelector,
+} from 'store/user/user.slice';
 
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import {
@@ -27,16 +32,13 @@ import {
   pwdRegEx,
   pwdValidationTxt,
 } from '../../helpers/passwordHelper';
-import { resetProfilePsw } from '../../store/appAction';
 import 'toastr/build/toastr.min.css';
 
 //i18n
 
 const ResetPsw = ({ t }) => {
-  const resetPswSuccessRes = useSelector(
-    state => state.user.resetPswSuccessRes,
-  );
-  const error = useSelector(state => state.user.resetPswFailRes);
+  const resetPswSuccessRes = useSelector(resetPasswordSuccessMessageSelector);
+  const error = useSelector(resetPswFailResSelector);
   const config = useSelector(configSelector);
   const [passwordToggle, setPasswordToggle] = useState(false);
   const dispatch = useDispatch();
@@ -74,7 +76,7 @@ const ResetPsw = ({ t }) => {
               }}
               validationSchema={pswResetSchema}
               onSubmit={(values, { setSubmitting }) => {
-                dispatch(resetProfilePsw(values));
+                dispatch(resetUserPassword(values));
                 setSubmitting(false);
               }}
             >

@@ -19,6 +19,7 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
+import { errorSelector } from 'store/authentication/authentication.slice';
 import {
   postMapRequest,
   fetchMapRequests,
@@ -69,7 +70,7 @@ const WildfireSimulation = ({
 }) => {
   const dispatch = useDispatch();
 
-  const error = useSelector(state => state.auth.error);
+  const error = useSelector(errorSelector);
   const selectedFireBreak = useSelector(selectedFireBreakSelector);
 
   // to manage number of dynamic (vertical) table rows in `Boundary Conditions`

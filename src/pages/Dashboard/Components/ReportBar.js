@@ -6,11 +6,13 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Container, Row, Card } from 'reactstrap';
 
+import { allReportsSelector } from 'store/reports/reports.slice';
+
 import Report from '../../Chatbot/Reports/Components/Report';
 import { MAX_REPORTS } from '../constants';
 
 const ReportBar = ({ t }) => {
-  const allReports = useSelector(state => state?.reports?.allReports);
+  const allReports = useSelector(allReportsSelector);
   const truncatedReports = allReports.slice(0, MAX_REPORTS);
 
   return (

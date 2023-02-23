@@ -17,21 +17,26 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
+import {
+  resetPassword,
+  errorSelector,
+  resetPasswordResponseSelector,
+} from 'store/authentication/authentication.slice';
+
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import {
   passwordHelper,
   pwdRegEx,
   pwdValidationTxt,
 } from '../../helpers/passwordHelper';
-import { resetPsw } from '../../store/appAction';
 
 const ResetPassword = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { otp: token, uid } = useParams();
   const [passwordToggle, setPasswordToggle] = useState(false);
-  const error = useSelector(state => state.auth.resetPswError);
-  const resetPswRes = useSelector(state => state.auth.resetPswRes);
+  const error = useSelector(errorSelector);
+  const resetPswRes = useSelector(resetPasswordResponseSelector);
 
   const signUpSchema = Yup.object().shape({
     new_password1: Yup.string()
@@ -61,7 +66,7 @@ const ResetPassword = () => {
       }}
       validationSchema={signUpSchema}
       onSubmit={(values, { setSubmitting }) => {
-        dispatch(resetPsw({ ...values, token, uid }));
+        dispatch(resetPassword({ ...values, token, uid }));
         setSubmitting(false);
       }}
     >
