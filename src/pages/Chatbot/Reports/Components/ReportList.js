@@ -86,8 +86,6 @@ const ReportList = ({ reportId, setReportId }) => {
 
 ReportList.propTypes = {
   reportId: PropTypes.any,
-  currentZoomLevel: PropTypes.any,
-  setViewState: PropTypes.func,
   setReportId: PropTypes.func,
   missionId: PropTypes.string,
   category: PropTypes.string,

@@ -87,8 +87,6 @@ const MissionList = ({ missionId, setMissionId }) => {
 
 MissionList.propTypes = {
   missionId: PropTypes.any,
-  currentZoomLevel: PropTypes.any,
-  setViewState: PropTypes.func,
   setMissionId: PropTypes.func,
 };
 
