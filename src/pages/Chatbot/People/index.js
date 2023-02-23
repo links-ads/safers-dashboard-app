@@ -33,6 +33,7 @@ import {
 
 const People = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
+
   const defaultAoi = useSelector(defaultAoiSelector);
   const orgPplList = useSelector(allPeopleSelector);
   const filteredPeople = useSelector(filteredPeopleSelector);
@@ -103,14 +104,7 @@ const People = ({ pollingFrequency }) => {
   useEffect(() => {
     if (allPeople.length > 0) {
       setIconLayer(
-        getIconLayer(
-          allPeople,
-          MAP_TYPES.PEOPLE,
-          'people',
-          dispatch,
-          setViewState,
-          { id: peopleId },
-        ),
+        getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', { id: peopleId }),
       );
     }
   }, [allPeople, dispatch, peopleId, setViewState]);
@@ -181,13 +175,7 @@ const People = ({ pollingFrequency }) => {
           />
           <Row>
             <Col xl={12} className="px-3">
-              <PeopleList
-                peopleId={peopleId}
-                currentZoomLevel={viewState.zoom}
-                setViewState={setViewState}
-                setPeopleId={setPeopleId}
-                setIconLayer={setIconLayer}
-              />
+              <PeopleList peopleId={peopleId} setPeopleId={setPeopleId} />
             </Col>
           </Row>
         </Col>
