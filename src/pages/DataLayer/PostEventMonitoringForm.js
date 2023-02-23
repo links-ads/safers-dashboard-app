@@ -118,13 +118,13 @@ const PostEventMonitoring = ({
         <Row>
           <Formik
             initialValues={{
-              dataLayerType: '',
+              dataLayerType: [],
               requestTitle: '',
-              mapSelection: null,
+              mapSelection: [],
               isMapAreaValid: null,
               isMapAreaValidWKT: null,
-              startDate: null,
-              endDate: null,
+              startDate: '',
+              endDate: '',
             }}
             validationSchema={postEventMonitoringSchema}
             onSubmit={onSubmit}
