@@ -61,7 +61,7 @@ MapSection.propTypes = {
   setNewHeight: PropTypes.func,
   setCoordinates: PropTypes.func,
   togglePolygonMap: PropTypes.any,
-  coordinates: PropTypes.string,
+  coordinates: PropTypes.array,
   handleAreaValidation: PropTypes.func,
 };
 
