@@ -11,6 +11,7 @@ import backgroundsIconAtlas from '../../assets/images/mappins/safers-pins.svg';
 const COLOR_TRANSPARENT = [0, 0, 0, 0],
   COLOR_PRIMARY = [246, 190, 0, 255],
   COLOR_SECONDARY = [51, 63, 72, 255];
+const SELECTED_CLUSTER = [255, 0, 206, 255];
 
 export class PinLayer extends CompositeLayer {
   _getPixelOffset(feature) {
@@ -111,11 +112,30 @@ export class PinLayer extends CompositeLayer {
     if (
       feature.properties.cluster &&
       this._getExpansionZoom(feature) <= this.props.maxZoom
-    )
-      return [246, 190, 0, 255];
-    if (typeof this.props.getPinColor === 'function')
+    ) {
+      // Get the points within the cluster.
+      const leaves = this.state.index.getLeaves(
+        feature.properties.cluster_id,
+        'Infinity',
+      );
+
+      // Check if the selected item is part of this clustered feature.
+      const isMatch = leaves.find(
+        leaf => leaf.properties.id === this.props.selectedItem.id,
+      );
+      if (isMatch) {
+        return SELECTED_CLUSTER;
+      }
+
+      return COLOR_PRIMARY;
+    }
+    if (typeof this.props.getPinColor === 'function') {
       return this.props.getPinColor(feature);
-    if (isArray(this.props.pinColor)) return this.props.pinColor;
+    }
+    if (isArray(this.props.pinColor)) {
+      return this.props.pinColor;
+    }
+
     return this.props.pinColor;
   }
 
