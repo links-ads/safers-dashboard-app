@@ -101,7 +101,6 @@ export const getPolygonLayer = aoi => {
     lineWidthMinPixels: 1,
     opacity: 0.25,
     getPolygon: d => d,
-    // getElevation: () => 10,
     getFillColor: [192, 105, 25],
     getLineColor: [0, 0, 0],
     getLineWidth: 100,
@@ -315,10 +314,6 @@ export const getBitmapLayer = selectedLayerNode => {
     */
   const firstURL = Object.values(selectedLayerNode.urls)[0];
   const urlSearchParams = new URLSearchParams(firstURL);
-  // const urlParams = Object.fromEntries(urlSearchParams.entries());
-  // const bounds = urlParams?.bbox
-  //   ? urlParams.bbox.split(',').map(Number)
-  //   : selectedLayerNode.bbox;
   const bounds = urlSearchParams.has('bbox')
     ? urlSearchParams.get('bbox').split(',').map(Number)
     : selectedLayerNode.bbox;
