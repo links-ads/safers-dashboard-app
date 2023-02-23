@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import { Container, Card, Row } from 'reactstrap';
 
 import { fetchCameraAlerts, allInSituAlertsSelector } from 'store/insitu.slice';
+import { formatDate } from 'utility';
 
 import { ReactComponent as Placeholder } from './placeholder.svg';
 
@@ -37,7 +38,7 @@ const PhotoBar = ({ t }) => {
   useEffect(() => {
     setPhotoList(allPhotos);
     setIsLoaded(true);
-  }, [allPhotos]);
+  }, [allPhotos, photoList]);
 
   return (
     <Container
@@ -58,23 +59,27 @@ const PhotoBar = ({ t }) => {
             </p>
           </Link>
         </Row>
-        <Row xs={1} sm={2} md={3} lg={4}>
+        <Row className="mx-3" xs={1} sm={2} md={3} lg={4}>
           {photoList && photoList.length === 0 ? (
             <div className="card noshadow mx-5">{t('No photos in AOI')}</div>
           ) : null}
           {photoList && photoList.length > 0 ? (
             photoList?.slice(0, NUMBER_OF_PHOTOS).map(photo => {
               return (
-                <div key={`photie_${photo.id}`} className="p-3 my-3">
+                <div key={`photie_${photo.id}`} className="p-3 ml-3 my-3">
                   {/* This is a custom component which handles fallbacks */}
-                  <Img
-                    decode={true}
-                    unloader={<Placeholder width="100%" height="120px" />}
-                    src={[`${photo.url}`]}
-                    width="100%"
-                    height="120px"
-                    alt="Image is missing"
-                  />
+                  <div>
+                    <Img
+                      decode={true}
+                      unloader={<Placeholder width="100%" height="120px" />}
+                      src={[`${photo.url}`]}
+                      width="100%"
+                      height="120px"
+                      alt="Image is missing"
+                    />
+                  </div>
+                  <div>{photo.camera_id}</div>
+                  <div>{formatDate(photo.timestamp)}</div>
                 </div>
               );
             })
