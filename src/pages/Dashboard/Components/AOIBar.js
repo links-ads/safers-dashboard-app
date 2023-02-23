@@ -14,6 +14,7 @@ import {
   setEventParams,
   filteredEventsSelector,
 } from 'store/events/events.slice';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 import EventsPanel from './EventsPanel';
 import MapComponent from './Map';
@@ -74,7 +75,7 @@ const AOIBar = ({
   const [eventList, setEventList] = useState([]);
   const [selectedLayer, setSelectedLayer] = useState(null);
 
-  const { defaultAoi } = useSelector(state => state.user);
+  const defaultAoi = useSelector(defaultAoiSelector);
   const dateRange = useSelector(dateRangeSelector);
 
   // start with filtered alerts, looks better starting with none and showing
