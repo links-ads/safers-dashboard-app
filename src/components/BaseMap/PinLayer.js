@@ -11,7 +11,7 @@ import backgroundsIconAtlas from '../../assets/images/mappins/safers-pins.svg';
 const COLOR_TRANSPARENT = [0, 0, 0, 0],
   COLOR_PRIMARY = [246, 190, 0, 255],
   COLOR_SECONDARY = [51, 63, 72, 255];
-const SELECTED_CLUSTER = [255, 0, 206, 255];
+const SELECTED_CLUSTER = [226, 123, 29];
 
 export class PinLayer extends CompositeLayer {
   _getPixelOffset(feature) {
