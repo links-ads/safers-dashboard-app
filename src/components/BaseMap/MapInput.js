@@ -113,7 +113,7 @@ const MapInput = ({
 };
 
 MapInput.propTypes = {
-  coordinates: PropTypes.any,
+  coordinates: PropTypes.string,
   setCoordinates: PropTypes.func,
   isValidFormat: PropTypes.func,
   t: PropTypes.any,
