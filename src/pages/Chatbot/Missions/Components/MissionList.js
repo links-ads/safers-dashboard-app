@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { useMap } from 'components/BaseMap/MapContext';
 import {
   setMissionFavorite,
   allMissionsSelector,
@@ -13,22 +14,26 @@ import {
 
 import Mission from './Mission';
 import PaginationWrapper from '../../../../components/Pagination';
-import { MAP_TYPES } from '../../../../constants/common';
-import { getIconLayer, getViewState } from '../../../../helpers/mapHelper';
+import { getViewState } from '../../../../helpers/mapHelper';
 
-const MissionList = ({
-  missionId,
-  currentZoomLevel,
-  setViewState,
-  setMissionId,
-  setIconLayer,
-}) => {
+const MissionList = ({ missionId, setMissionId }) => {
+  const { viewState, setViewState } = useMap();
+
   const orgMissionList = useSelector(allMissionsSelector);
   const filteredMissions = useSelector(filteredMissionsSelector);
   const [pageData, setPageData] = useState([]);
+
   const dispatch = useDispatch();
 
-  const allMissions = filteredMissions || orgMissionList;
+  const allMissions = filteredMissions ?? orgMissionList;
+
+  // Get the index, then divide that by 4 and ceil it, gets the page.
+  let selectedIndex = 1;
+  if (missionId) {
+    selectedIndex = allMissions.findIndex(mission => mission.id === missionId);
+  }
+
+  const pageNo = Math.ceil((selectedIndex + 1) / 4);
 
   const setFavoriteFlag = id => {
     let selectedMission = _.find(pageData, { id });
@@ -44,44 +49,15 @@ const MissionList = ({
       let missionList = _.cloneDeep(allMissions);
       let selectedMission = _.find(missionList, { id: mission_id });
       selectedMission.isSelected = true;
-      setIconLayer(
-        getIconLayer(
-          missionList,
-          MAP_TYPES.MISSIONS,
-          'target',
-          dispatch,
-          setViewState,
-          selectedMission,
-        ),
-      );
-      setViewState(getViewState(selectedMission.location, currentZoomLevel));
+      setViewState(getViewState(selectedMission.location, viewState.zoom));
     } else {
       setMissionId(undefined);
-      setIconLayer(
-        getIconLayer(
-          allMissions,
-          MAP_TYPES.MISSIONS,
-          'target',
-          dispatch,
-          setViewState,
-          {},
-        ),
-      );
     }
   };
   const updatePage = data => {
-    setMissionId(undefined);
-    setIconLayer(
-      getIconLayer(
-        data,
-        MAP_TYPES.MISSIONS,
-        'target',
-        dispatch,
-        setViewState,
-        {},
-      ),
-    );
-    setPageData(data);
+    if (JSON.stringify(data) !== JSON.stringify(pageData)) {
+      setPageData(data);
+    }
   };
 
   return (
@@ -99,6 +75,7 @@ const MissionList = ({
       </Row>
       <Row className="text-center">
         <PaginationWrapper
+          page={pageNo}
           pageSize={4}
           list={allMissions}
           setPageData={updatePage}
@@ -113,7 +90,6 @@ MissionList.propTypes = {
   currentZoomLevel: PropTypes.any,
   setViewState: PropTypes.func,
   setMissionId: PropTypes.func,
-  setIconLayer: PropTypes.func,
 };
 
 export default MissionList;

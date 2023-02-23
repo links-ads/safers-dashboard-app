@@ -33,6 +33,7 @@ import {
 
 const Missions = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
+
   const defaultAoi = useSelector(defaultAoiSelector);
   const orgMissionList = useSelector(allMissionsSelector);
   const filteredMissions = useSelector(filteredMissionsSelector);
@@ -104,17 +105,12 @@ const Missions = ({ pollingFrequency }) => {
   useEffect(() => {
     if (allMissions.length > 0) {
       setIconLayer(
-        getIconLayer(
-          allMissions,
-          MAP_TYPES.MISSIONS,
-          'target',
-          dispatch,
-          setViewState,
-          { id: missionId },
-        ),
+        getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', {
+          id: missionId,
+        }),
       );
     }
-  }, [allMissions, dispatch, missionId, setViewState]);
+  }, [allMissions, missionId]);
 
   useInterval(
     () => {
@@ -187,10 +183,7 @@ const Missions = ({ pollingFrequency }) => {
               <Col xl={12} className="px-3">
                 <MissionList
                   missionId={missionId}
-                  currentZoomLevel={viewState.zoom}
-                  setViewState={setViewState}
                   setMissionId={setMissionId}
-                  setIconLayer={setIconLayer}
                 />
               </Col>
             </Row>
