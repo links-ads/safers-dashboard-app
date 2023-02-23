@@ -68,12 +68,11 @@ const AOIBar = ({
   visibleLayers,
   t,
 }) => {
-  // @ts-ignore
   const { setViewState } = useMap();
   const dispatch = useDispatch();
 
   const [eventList, setEventList] = useState([]);
-  const [selectedLayer, setSelectedLayer] = useState({});
+  const [selectedLayer, setSelectedLayer] = useState(null);
 
   const { defaultAoi } = useSelector(state => state.user);
   const dateRange = useSelector(dateRangeSelector);
@@ -86,7 +85,6 @@ const AOIBar = ({
   const mapRequests = useSelector(state => {
     // Find leaf nodes (mapRequests) in the mapRequest tree
     // and put these in a flat array for use in the pulldown
-    // @ts-ignore
     const categories = state.dataLayer.allMapRequests;
     const aoiBbox = defaultAoi.features[0].bbox;
     const leafNodes = flattenDeep(
@@ -113,7 +111,6 @@ const AOIBar = ({
     };
     dispatch(setEventParams(eventParams));
     dispatch(
-      // @ts-ignore
       fetchEvents({ options: eventParams, fromPage: true, isLoading: false }),
     );
   }, [dateRange, dispatch]);
@@ -164,8 +161,7 @@ const AOIBar = ({
                 onChange={e => {
                   updateRasterLayer(e.target.value);
                 }}
-                // @ts-ignore
-                value={selectedLayer.key}
+                value={selectedLayer?.key}
               >
                 {mapRequests?.length === 0 ? (
                   <option value={''}>--{t('No layers in this AOI')}--</option>
