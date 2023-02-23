@@ -5,29 +5,34 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { useMap } from 'components/BaseMap/MapContext';
 import {
   setReportFavorite,
+  allReportsSelector,
   filteredReportsSelector,
 } from 'store/reports/reports.slice';
 
 import Report from './Report';
 import PaginationWrapper from '../../../../components/Pagination';
-import { MAP_TYPES } from '../../../../constants/common';
-import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
+import { getViewState } from '../../../../helpers/mapHelper';
 
-const ReportList = ({
-  reportId,
-  currentZoomLevel,
-  setViewState,
-  setReportId,
-  setIconLayer,
-}) => {
+const ReportList = ({ reportId, setReportId }) => {
+  const { viewState, setViewState } = useMap();
+
+  const allReports = useSelector(allReportsSelector);
   const filteredReports = useSelector(filteredReportsSelector);
   const [pageData, setPageData] = useState([]);
 
   const dispatch = useDispatch();
 
-  const allReports = filteredReports ?? [];
+  const reports = filteredReports ?? [];
+
+  // Get the index, then divide that by 4 and ceil it, gets the page.
+  let selectedIndex = 1;
+  if (reportId) {
+    selectedIndex = reports.findIndex(report => report.report_id === reportId);
+  }
+  const pageNo = Math.ceil((selectedIndex + 1) / 4);
 
   const setFavoriteFlag = id => {
     let selectedReport = _.find(pageData, { id });
@@ -43,33 +48,13 @@ const ReportList = ({
       let reportList = _.cloneDeep(allReports);
       let selectedReport = _.find(reportList, { report_id });
       selectedReport.isSelected = true;
-      setIconLayer(
-        getIconLayer(
-          reportList,
-          MAP_TYPES.REPORTS,
-          'report',
-          dispatch,
-          setViewState,
-          selectedReport,
-        ),
-      );
-      setViewState(getViewState(selectedReport.location, currentZoomLevel));
+      setViewState(getViewState(selectedReport.location, viewState.zoom));
     } else {
       setReportId(undefined);
-      setIconLayer(
-        getIconLayer(
-          allReports,
-          MAP_TYPES.REPORTS,
-          'report',
-          dispatch,
-          setViewState,
-        ),
-      );
     }
   };
   const updatePage = data => {
     if (JSON.stringify(data) !== JSON.stringify(pageData)) {
-      setReportId(undefined);
       setPageData(data);
     }
   };
@@ -89,6 +74,7 @@ const ReportList = ({
       </Row>
       <Row className="text-center">
         <PaginationWrapper
+          page={pageNo}
           pageSize={4}
           list={allReports}
           setPageData={updatePage}
@@ -103,7 +89,6 @@ ReportList.propTypes = {
   currentZoomLevel: PropTypes.any,
   setViewState: PropTypes.func,
   setReportId: PropTypes.func,
-  setIconLayer: PropTypes.func,
   missionId: PropTypes.string,
   category: PropTypes.string,
   sortOrder: PropTypes.string,
