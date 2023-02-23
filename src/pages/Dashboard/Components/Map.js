@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 
+import { isEmpty } from 'lodash';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
@@ -33,7 +34,7 @@ const MapComponent = ({
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
   const mapRequestLayer = useMemo(() => {
-    if (Object.keys(selectedLayer).length === 0) return null;
+    if (isEmpty(selectedLayer)) return null;
     const { latitude, longitude, zoom } = getBoundedViewState(
       deckRef,
       selectedLayer.bbox,

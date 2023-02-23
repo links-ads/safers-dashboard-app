@@ -1,6 +1,6 @@
 import { PolygonLayer } from '@deck.gl/layers';
 import { fitBounds } from '@math.gl/web-mercator';
-import { intersect, polygon } from '@turf/turf';
+import { bboxPolygon, intersect } from '@turf/turf';
 import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import wkt from 'wkt';
 
@@ -315,56 +315,27 @@ export const getBitmapLayer = selectedLayerNode => {
     */
   const firstURL = Object.values(selectedLayerNode.urls)[0];
   const urlSearchParams = new URLSearchParams(firstURL);
-  const urlParams = Object.fromEntries(urlSearchParams.entries());
-  const bounds = urlParams?.bbox
-    ? urlParams.bbox.split(',').map(Number)
+  // const urlParams = Object.fromEntries(urlSearchParams.entries());
+  // const bounds = urlParams?.bbox
+  //   ? urlParams.bbox.split(',').map(Number)
+  //   : selectedLayerNode.bbox;
+  const bounds = urlSearchParams.has('bbox')
+    ? urlSearchParams.get('bbox').split(',').map(Number)
     : selectedLayerNode.bbox;
   return new BitmapLayer({
-    id: 'bitmap-layer',
     bounds: bounds,
     image: firstURL,
     opacity: 0.5,
   });
 };
 
-const bboxToPolygon = bbox => {
-  // our Bbox is a 4-tuple with minx, miny, maxx, maxy,
-  // convert to a multipolygon (doesnt work with with polygon, not sure why)
-  const minimumX = bbox[0];
-  const minimumY = bbox[1];
-  const maximumX = bbox[2];
-  const maximumY = bbox[3];
-  const boundingBox = [
-    [
-      [minimumX, minimumY],
-      [minimumX, maximumY],
-      [maximumX, maximumY],
-      [maximumX, minimumY],
-      [minimumX, minimumY],
-    ],
-  ];
-  return boundingBox;
-};
-
-export const doesItOverlapAoi = (node, userAoi, showAll = false) => {
+export const doesItOverlapAoi = (node, userAoi) => {
   // using Turf.js to test for an overlap between the layer and AOI geometries
   // using bboxes for performance and also to increase likelihood of finding overlaps
-  const featureGeometry = polygon(bboxToPolygon(node.bbox));
-  if (showAll) {
-    return true; // used for debugging
-  }
+  const featureGeometry = bboxPolygon(node.bbox);
   if (!(featureGeometry && userAoi)) {
     return false;
   }
-  const aoiPolygon = polygon(bboxToPolygon(userAoi));
-
-  // avoid error if we get a geometrycollection, turf doesn't support these
-  const featureAsWKT = wkt.stringify(featureGeometry);
-  if (featureAsWKT.includes('GEOMETRYCOLLECTION')) {
-    console.info(
-      `Feature AOI is a Geometry collection, this is not supported (feature title is ${node.title})`,
-    );
-    return false;
-  }
+  const aoiPolygon = bboxPolygon(userAoi);
   return !!intersect(aoiPolygon, featureGeometry);
 };
