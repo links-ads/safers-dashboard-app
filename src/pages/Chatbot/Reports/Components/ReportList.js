@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import PaginationWrapper from 'components/Pagination';
+import { getViewState } from 'helpers/mapHelper';
 import {
   setReportFavorite,
   allReportsSelector,
@@ -13,8 +15,6 @@ import {
 } from 'store/reports.slice';
 
 import Report from './Report';
-import PaginationWrapper from '../../../../components/Pagination';
-import { getViewState } from '../../../../helpers/mapHelper';
 
 const ReportList = ({ reportId, setReportId }) => {
   const { viewState, setViewState } = useMap();

@@ -4,10 +4,9 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Navigate } from 'react-router-dom';
 
+import Layout from 'layout';
 import { isLoggedInSelector } from 'store/authentication.slice';
 import { defaultAoiSelector } from 'store/user.slice';
-
-import Layout from '../../layout';
 
 const Authmiddleware = ({ component: Component, isAuthProtected, ...rest }) => {
   const isLoggedIn = useSelector(isLoggedInSelector);

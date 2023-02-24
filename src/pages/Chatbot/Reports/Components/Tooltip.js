@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Popup } from 'react-map-gl';
 import { Col, Row } from 'reactstrap';
 
-import { formatDate } from '../../../../utility';
+import { formatDate } from 'utility';
 
 const Tooltip = ({ object, coordinate }) => {
   return (

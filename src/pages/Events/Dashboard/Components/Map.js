@@ -4,12 +4,11 @@ import _ from 'lodash';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
+import BaseMap from 'components/BaseMap/BaseMap';
+import MapCards from 'components/BaseMap/MapCards';
+import { getPolygonLayer, getViewState } from 'helpers/mapHelper';
 import { aoisSelector } from 'store/common.slice';
 import { defaultAoiSelector } from 'store/user.slice';
-
-import BaseMap from '../../../../components/BaseMap/BaseMap';
-import MapCards from '../../../../components/BaseMap/MapCards';
-import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
 
 const MapComponent = () => {
   const [viewState, setViewState] = useState(undefined);

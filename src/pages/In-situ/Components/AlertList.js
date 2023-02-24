@@ -6,6 +6,9 @@ import Pagination from 'rc-pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
+import { MAP_TYPES } from 'constants/common';
+import { getViewState, getAlertIconColorFromContext } from 'helpers/mapHelper';
 import {
   setCurrentPage,
   setCameraFavorite,
@@ -20,12 +23,6 @@ import {
 } from 'store/insitu.slice';
 
 import Alert from './Alert';
-import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
-import { MAP_TYPES } from '../../../constants/common';
-import {
-  getViewState,
-  getAlertIconColorFromContext,
-} from '../../../helpers/mapHelper';
 
 const PAGE_SIZE = 4;
 

@@ -9,6 +9,8 @@ import toastr from 'toastr';
 import { useMap } from 'components/BaseMap/MapContext';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { MAP_TYPES } from 'constants/common';
+import useInterval from 'customHooks/useInterval';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchComms,
@@ -23,8 +25,6 @@ import CommsList from './Components/CommsList';
 import CreateMessage from './Components/CreateMessage';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
-import { MAP_TYPES } from '../../../constants/common';
-import useInterval from '../../../customHooks/useInterval';
 import {
   getBoundingBox,
   getViewState,

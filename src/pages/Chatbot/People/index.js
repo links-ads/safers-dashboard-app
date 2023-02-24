@@ -9,6 +9,10 @@ import toastr from 'toastr';
 import { useMap } from 'components/BaseMap/MapContext';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { MAP_TYPES } from 'constants/common';
+import useInterval from 'customHooks/useInterval';
+import { fetchEndpoint } from 'helpers/apiHelper';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchPeople,
@@ -22,14 +26,6 @@ import { defaultAoiSelector } from 'store/user.slice';
 import MapSection from './Components/Map';
 import PeopleList from './Components/PeopleList';
 import SortSection from './Components/SortSection';
-import { MAP_TYPES } from '../../../constants/common';
-import useInterval from '../../../customHooks/useInterval';
-import { fetchEndpoint } from '../../../helpers/apiHelper';
-import {
-  getBoundingBox,
-  getViewState,
-  getIconLayer,
-} from '../../../helpers/mapHelper';
 
 const People = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();

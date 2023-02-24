@@ -19,6 +19,9 @@ import {
 import wkt from 'wkt';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import { MAP } from 'constants/common';
+import { fetchEndpoint } from 'helpers/apiHelper';
+import { getBoundingBox, isWKTValid } from 'helpers/mapHelper';
 import { setFilteredAlerts, setAlertApiParams } from 'store/alerts.slice';
 import {
   setDateRangeDisabled,
@@ -52,9 +55,6 @@ import FireAndBurnedArea from './FireAndBurnedArea';
 import OnDemandDataLayer from './OnDemandDataLayer';
 import PostEventMonitoringForm from './PostEventMonitoringForm';
 import WildfireSimulation from './wildfire-simulation-form/WildfireSimulation';
-import { MAP } from '../../constants/common';
-import { fetchEndpoint } from '../../helpers/apiHelper';
-import { getBoundingBox, isWKTValid } from '../../helpers/mapHelper';
 
 const DataLayerDashboard = ({ t }) => {
   const { viewState, setViewState } = useMap();

@@ -12,7 +12,7 @@ import {
   Badge,
 } from 'reactstrap';
 
-import { formatDate } from '../../../../utility';
+import { formatDate } from 'utility';
 
 const People = ({ card, peopleId, setSelectedPeople /*, setFavorite*/ }) => {
   const { t } = useTranslation();

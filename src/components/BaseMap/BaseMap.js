@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import React, { useCallback, useEffect, Fragment } from 'react';
 
 import { MapView, FlyToInterpolator } from '@deck.gl/core';
@@ -11,15 +10,16 @@ import {
 } from 'react-map-gl';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useMap } from './MapContext';
-import { MapStyleSwitcher } from './MapStyleSwitcher';
-import { MAPBOX_TOKEN } from '../../config';
-import { useLocalStorage } from '../../customHooks/useLocalStorage';
+import { MAPBOX_TOKEN } from 'config';
+import { useLocalStorage } from 'customHooks/useLocalStorage';
 import {
   mapStylesSelector,
   selectedMapStyleSelector,
   setSelectedMapStyle,
-} from '../../store/map.slice';
+} from 'store/map.slice';
+
+import { useMap } from './MapContext';
+import { MapStyleSwitcher } from './MapStyleSwitcher';
 
 const MAX_ZOOM = 20;
 

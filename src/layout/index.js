@@ -3,6 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { GENERAL } from 'constants/common';
+import useTimeout from 'customHooks/useTimeout';
+import PollingHelper from 'helpers/pollingHelper';
 import {
   refreshOAuthToken,
   tokenLastUpdatedSelector,
@@ -12,9 +15,6 @@ import {
 import Footer from './Footer';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { GENERAL } from '../constants/common';
-import useTimeout from '../customHooks/useTimeout';
-import PollingHelper from '../helpers/pollingHelper';
 
 const Layout = ({ children }) => {
   const dispatch = useDispatch();

@@ -119,7 +119,6 @@ const AreaOfInterestPanel = ({ t }) => {
       <>
         {sortedAois.map((aoisChunk, i) => {
           return (
-            // this is valid, it's a column (chunk) number, no id field is available
             // eslint-disable-next-line react/no-array-index-key
             <div className="d-flex flex-column me-5" key={i}>
               {aoisChunk.map((aoi, index) => {

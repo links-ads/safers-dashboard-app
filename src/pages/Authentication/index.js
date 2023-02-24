@@ -14,6 +14,12 @@ import {
   Col,
 } from 'reactstrap';
 
+// eslint-disable-next-line import/no-duplicates
+import logodark from 'assets/images/background-light-logo.png';
+// eslint-disable-next-line import/no-duplicates
+import logolight from 'assets/images/background-light-logo.png';
+import PreLoader from 'components/PreLoader';
+import { SIGNIN_REDIRECT } from 'config';
 import {
   isUserRembembered,
   userSelector,
@@ -30,12 +36,6 @@ import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-// eslint-disable-next-line import/no-duplicates
-import logodark from '../../assets/images/background-light-logo.png';
-// eslint-disable-next-line import/no-duplicates
-import logolight from '../../assets/images/background-light-logo.png';
-import PreLoader from '../../components/PreLoader';
-import { SIGNIN_REDIRECT } from '../../config';
 
 const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';

@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { Col, Button, Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import DateComponent from 'components/DateRangePicker/DateRange';
+import { getPolygonLayer, getViewState } from 'helpers/mapHelper';
 import {
   fetchAois,
   setPolygonLayer,
@@ -18,9 +20,6 @@ import {
 } from 'store/dashboard.slice';
 import { fetchEventCameraMedia, fetchEventTweets } from 'store/events.slice';
 import { defaultAoiSelector } from 'store/user.slice';
-
-import DateComponent from '../../../../components/DateRangePicker/DateRange';
-import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
 
 const SearchContainer = () => {
   const { setViewState } = useMap();

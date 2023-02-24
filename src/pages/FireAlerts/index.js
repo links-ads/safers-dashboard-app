@@ -11,7 +11,16 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 
+import BaseMap from 'components/BaseMap/BaseMap';
+import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
+import SearchButton from 'components/SearchButton';
+import { MAP_TYPES } from 'constants/common';
+import {
+  getBoundingBox,
+  getViewState,
+  getAlertIconColorFromContext,
+} from 'helpers/mapHelper';
 import {
   fetchAlerts,
   fetchAlertSource,
@@ -33,15 +42,6 @@ import { defaultAoiSelector } from 'store/user.slice';
 
 import Alert from './Alert';
 import Tooltip from './Tooltip';
-import BaseMap from '../../components/BaseMap/BaseMap';
-import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import SearchButton from '../../components/SearchButton';
-import { MAP_TYPES } from '../../constants/common';
-import {
-  getBoundingBox,
-  getViewState,
-  getAlertIconColorFromContext,
-} from '../../helpers/mapHelper';
 
 const PAGE_SIZE = 4;
 

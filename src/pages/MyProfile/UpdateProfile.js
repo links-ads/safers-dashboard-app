@@ -21,6 +21,8 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import avatar from 'assets/images/users/profile.png';
+import { getGeneralErrors, getError } from 'helpers/errorHelper';
 import { signOut } from 'store/authentication.slice';
 import {
   fetchOrganisations,
@@ -43,8 +45,6 @@ import {
   defaultAoiSelector,
 } from 'store/user.slice';
 
-import avatar from '../../assets/images/users/profile.png';
-import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import 'toastr/build/toastr.min.css';
 
 //i18n

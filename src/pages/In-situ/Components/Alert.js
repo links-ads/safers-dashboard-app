@@ -16,7 +16,7 @@ import {
   Modal,
 } from 'reactstrap';
 
-import { formatDate } from '../../../utility';
+import { formatDate } from 'utility';
 
 import 'react-image-lightbox/style.css';
 

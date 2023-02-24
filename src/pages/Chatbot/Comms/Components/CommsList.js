@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import PaginationWrapper from 'components/Pagination';
+import { getViewState } from 'helpers/mapHelper';
 import { allCommsSelector, filteredCommsSelector } from 'store/comms.slice';
 
 import Comm from './Comm';
-import PaginationWrapper from '../../../../components/Pagination';
-import { getViewState } from '../../../../helpers/mapHelper';
 
 const CommsList = ({ commID, setCommID }) => {
   const { viewState, setViewState } = useMap();

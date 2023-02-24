@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import PaginationWrapper from 'components/Pagination';
+import { getViewState } from 'helpers/mapHelper';
 import {
   setMissionFavorite,
   allMissionsSelector,
@@ -13,8 +15,6 @@ import {
 } from 'store/missions.slice';
 
 import Mission from './Mission';
-import PaginationWrapper from '../../../../components/Pagination';
-import { getViewState } from '../../../../helpers/mapHelper';
 
 const MissionList = ({ missionId, setMissionId }) => {
   const { viewState, setViewState } = useMap();

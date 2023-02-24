@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Card } from 'reactstrap';
 
-import { formatDate } from '../../../utility';
+import { formatDate } from 'utility';
 
 export const EventItem = ({ event, t }) => {
   return (

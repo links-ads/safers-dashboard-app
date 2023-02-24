@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Card, Row, Col } from 'reactstrap';
 
+import PaginationWrapper from 'components/Pagination';
+import TweetComponent from 'components/TweetComponent';
 import { tweetsSelector } from 'store/dashboard.slice';
-
-import PaginationWrapper from '../../components/Pagination';
-import TweetComponent from '../../components/TweetComponent';
 
 //i18n
 

@@ -9,6 +9,9 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
+import { MAP_TYPES } from 'constants/common';
+import useInterval from 'customHooks/useInterval';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchMissions,
@@ -23,13 +26,6 @@ import CreateMission from './Components/create-mission/CreateMission';
 import MapSection from './Components/Map';
 import MissionList from './Components/MissionList';
 import SortSection from './Components/SortSection';
-import { MAP_TYPES } from '../../../constants/common';
-import useInterval from '../../../customHooks/useInterval';
-import {
-  getBoundingBox,
-  getViewState,
-  getIconLayer,
-} from '../../../helpers/mapHelper';
 
 const Missions = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();

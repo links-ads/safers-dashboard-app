@@ -16,21 +16,19 @@ import {
 } from 'react-map-gl-draw';
 import { useSelector, useDispatch } from 'react-redux';
 
-import {
-  selectedFireBreakSelector,
-  setSelectedFireBreak,
-} from 'store/datalayer.slice';
+import { MAPBOX_TOKEN } from 'config';
+import { useLocalStorage } from 'customHooks/useLocalStorage';
+import { FIRE_BREAK_STROKE_COLORS } from 'pages/DataLayer/constants';
+import { selectedFireBreakSelector, setSelectedFireBreak } from 'store/datalayer.slice';
 import {
   mapStylesSelector,
   selectedMapStyleSelector,
   setSelectedMapStyle,
 } from 'store/map.slice';
+import { getWKTfromFeature } from 'utility';
 
 import { useMap } from './MapContext';
 import { MapStyleSwitcher } from './MapStyleSwitcher';
-import { MAPBOX_TOKEN } from '../../config';
-import { useLocalStorage } from '../../customHooks/useLocalStorage';
-import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
 
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
@@ -192,7 +190,7 @@ const PolygonMap = ({
           <i className="bx bx-shape-triangle" style={{ fontSize: '20px' }}></i>
         </MapControlButton>
       )}
-      <MapControlButton onClick={handleClearMap}>
+      <MapControlButton onClick={clearMap}>
         <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
       </MapControlButton>
     </>
@@ -269,6 +267,7 @@ const PolygonMap = ({
 
             const defaultFeatureStyles = {
               stroke,
+              fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
               r: POINT_RADIUS,
               strokeWidth: 4,

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Card, CardBody, CardText, Col, Row, Badge } from 'reactstrap';
 
-import { formatDate } from '../../../../utility';
+import { formatDate } from 'utility';
 
 const Comm = ({ card, commID, setSelectedComm }) => {
   const { t } = useTranslation();

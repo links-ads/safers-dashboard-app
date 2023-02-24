@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useLocation, Link } from 'react-router-dom';
 import SimpleBar from 'simplebar-react';
 
+import { SIGNIN_REDIRECT } from 'config';
 import { newItemsCountAlertSelector } from 'store/alerts.slice';
 import {
   dataLayerNewItemsCountSelector,
@@ -18,8 +19,6 @@ import {
   isNewNotificationSelector,
   newItemsCountNotificationSelector,
 } from 'store/notifications.slice';
-
-import { SIGNIN_REDIRECT } from '../config';
 
 //i18n
 

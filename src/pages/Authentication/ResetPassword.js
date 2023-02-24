@@ -17,18 +17,17 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
+import { getGeneralErrors, getError } from 'helpers/errorHelper';
+import {
+  passwordHelper,
+  pwdRegEx,
+  pwdValidationTxt,
+} from 'helpers/passwordHelper';
 import {
   resetPassword,
   errorSelector,
   resetPasswordResponseSelector,
 } from 'store/authentication.slice';
-
-import { getGeneralErrors, getError } from '../../helpers/errorHelper';
-import {
-  passwordHelper,
-  pwdRegEx,
-  pwdValidationTxt,
-} from '../../helpers/passwordHelper';
 
 const ResetPassword = () => {
   const dispatch = useDispatch();

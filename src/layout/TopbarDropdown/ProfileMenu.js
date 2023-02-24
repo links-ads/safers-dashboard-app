@@ -10,10 +10,9 @@ import {
   DropdownItem,
 } from 'reactstrap';
 
+import user1 from 'assets/images/users/profile.png';
 import { signOut } from 'store/authentication.slice';
 import { userInfoSelector } from 'store/user.slice';
-
-import user1 from '../../assets/images/users/profile.png';
 
 //i18n
 

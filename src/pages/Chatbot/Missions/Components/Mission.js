@@ -14,7 +14,7 @@ import {
   Button,
 } from 'reactstrap';
 
-import { formatDate } from '../../../../utility';
+import { formatDate } from 'utility';
 
 const Mission = ({ card, missionId, setSelectedMission /*, setFavorite*/ }) => {
   const { t } = useTranslation();

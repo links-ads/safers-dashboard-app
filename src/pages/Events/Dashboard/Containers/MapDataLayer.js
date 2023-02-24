@@ -4,7 +4,7 @@ import classnames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { Button, ButtonGroup, Card, Row, Col } from 'reactstrap';
 
-import BaseMap from '../../../../components/BaseMap/BaseMap';
+import BaseMap from 'components/BaseMap/BaseMap';
 
 const MapDataLayer = () => {
   // eslint-disable-next-line no-unused-vars

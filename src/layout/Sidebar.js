@@ -4,10 +4,10 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+import logoPng from 'assets/images/background-light-logo@3x.png';
+import logo from 'assets/images/fire-white.png';
+
 import SidebarContent from './SidebarContent';
-import logoPng from '../assets/images/background-light-logo@3x.png';
-import logo from '../assets/images/fire-white.png';
-// import logoDark from '../assets/images/safers-logo.svg'
 
 const Sidebar = props => {
   return (

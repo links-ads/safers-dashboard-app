@@ -14,7 +14,7 @@ import {
   Badge,
 } from 'reactstrap';
 
-import { formatDate } from '../../../../utility';
+import { formatDate } from 'utility';
 
 const Report = ({ card, reportId, setSelectedReport /*, setFavorite*/ }) => {
   const { t } = useTranslation();

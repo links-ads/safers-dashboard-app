@@ -7,6 +7,7 @@ import { Row, Col, Input, Button } from 'reactstrap';
 //i18N
 import toastr from 'toastr';
 
+import useSetNewAlerts from 'customHooks/useSetNewAlerts';
 import {
   refreshData,
   setFilteredComms,
@@ -15,7 +16,6 @@ import {
   filteredCommsSelector,
 } from 'store/comms.slice';
 
-import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({

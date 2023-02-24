@@ -3,7 +3,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'reactstrap';
 
-import BaseMap from '../../../../../components/BaseMap/BaseMap';
+import BaseMap from 'components/BaseMap/BaseMap';
 
 const MapSection = ({ viewState, iconLayer }) => {
   return (

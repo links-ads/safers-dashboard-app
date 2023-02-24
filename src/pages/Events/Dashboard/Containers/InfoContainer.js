@@ -8,8 +8,8 @@ import { useParams } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle } from 'reactstrap';
 
 import { allEventsSelector } from 'store/events.slice';
+import { formatDate } from 'utility';
 
-import { formatDate } from '../../../../utility';
 import MapComponent from '../Components/Map';
 
 //i18n

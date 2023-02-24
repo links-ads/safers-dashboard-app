@@ -8,13 +8,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 
+import { useMap } from 'components/BaseMap/MapContext';
+import JsonFormatter from 'components/JsonFormatter';
+import { fetchEndpoint } from 'helpers/apiHelper';
+import { getBoundedViewState } from 'helpers/mapHelper';
 import { deleteMapRequest, fetchMapRequests } from 'store/datalayer.slice';
 import { userInfoSelector } from 'store/user.slice';
-
-import { useMap } from '../../components/BaseMap/MapContext';
-import JsonFormatter from '../../components/JsonFormatter';
-import { fetchEndpoint } from '../../helpers/apiHelper';
-import { getBoundedViewState } from '../../helpers/mapHelper';
 
 const PropsPanel = node => {
   const node2 = node.node;

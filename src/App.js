@@ -3,6 +3,9 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
 
+import PreLoader from 'components/PreLoader';
+import { publicRoutes, privateRoutes } from 'routes/allRoutes';
+import Authmiddleware from 'routes/middleware/Authmiddleware';
 import {
   fetchConfig,
   isLoadingSelector,
@@ -10,11 +13,7 @@ import {
   configSelector,
 } from 'store/common.slice';
 
-import PreLoader from './components/PreLoader';
-import { publicRoutes, privateRoutes } from './routes/allRoutes';
-import Authmiddleware from './routes/middleware/Authmiddleware';
-
-import './assets/scss/theme.scss';
+import 'assets/scss/theme.scss';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 const App = () => {

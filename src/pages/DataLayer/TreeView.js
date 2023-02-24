@@ -6,13 +6,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 
+import { fetchEndpoint } from 'helpers/apiHelper';
 import {
   fetchMetadata,
   resetMetaData,
   metaDataSelector,
 } from 'store/datalayer.slice';
-
-import { fetchEndpoint } from '../../helpers/apiHelper';
 
 const TreeView = ({ data, setCurrentLayer, resetMap }) => {
   const [itemState, setItemState] = useState({});

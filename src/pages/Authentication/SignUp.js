@@ -18,6 +18,14 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
+import { endpoints } from 'api/endpoints';
+import { BASE_URL } from 'config';
+import { getGeneralErrors, getError } from 'helpers/errorHelper';
+import {
+  passwordHelper,
+  pwdRegEx,
+  pwdValidationTxt,
+} from 'helpers/passwordHelper';
 import {
   signUpOauth2 as registration,
   errorSelector,
@@ -30,15 +38,6 @@ import {
   organisationsSelector,
   rolesSelector,
 } from 'store/common.slice';
-
-import { endpoints } from '../../api/endpoints';
-import { BASE_URL } from '../../config';
-import { getGeneralErrors, getError } from '../../helpers/errorHelper';
-import {
-  passwordHelper,
-  pwdRegEx,
-  pwdValidationTxt,
-} from '../../helpers/passwordHelper';
 
 const SignUp = () => {
   const navigate = useNavigate();

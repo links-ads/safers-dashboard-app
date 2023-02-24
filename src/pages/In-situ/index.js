@@ -6,7 +6,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
+import { MAP_TYPES } from 'constants/common';
+import {
+  getBoundingBox,
+  getViewState,
+  getAlertIconColorFromContext,
+} from 'helpers/mapHelper';
 import { PAGE_SIZE } from 'pages/Events/constants';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
@@ -30,13 +37,6 @@ import { defaultAoiSelector } from 'store/user.slice';
 import AlertList from './Components/AlertList';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
-import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import { MAP_TYPES } from '../../constants/common';
-import {
-  getBoundingBox,
-  getViewState,
-  getAlertIconColorFromContext,
-} from '../../helpers/mapHelper';
 
 //i18n
 

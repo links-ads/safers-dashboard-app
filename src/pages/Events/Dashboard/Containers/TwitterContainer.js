@@ -4,10 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Card, Row, Col } from 'reactstrap';
 
+import PaginationWrapper from 'components/Pagination';
+import TweetComponent from 'components/TweetComponent';
 import { eventTweetsSelector } from 'store/events.slice';
-
-import PaginationWrapper from '../../../../components/Pagination';
-import TweetComponent from '../../../../components/TweetComponent';
 
 const TwitterContainer = () => {
   const tweets = useSelector(eventTweetsSelector);

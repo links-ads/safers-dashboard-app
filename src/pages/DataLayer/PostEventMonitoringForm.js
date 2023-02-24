@@ -18,14 +18,15 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
+import MapInput from 'components/BaseMap/MapInput';
+import { getGeneralErrors, getError } from 'helpers/errorHelper';
 import { errorSelector } from 'store/authentication.slice';
 import { postMapRequest, fetchMapRequests } from 'store/datalayer.slice';
+import { getWKTfromFeature } from 'utility';
 
 import MapSection from './Map';
-import MapInput from '../../components/BaseMap/MapInput';
-import { getGeneralErrors, getError } from '../../helpers/errorHelper';
+
 import 'react-rangeslider/lib/index.css';
-import { getWKTfromFeature } from '../../utility';
 
 // Fifty thousand hectares = 500 km2 = 500 million m2
 const MAX_GEOMETRY_AREA = {

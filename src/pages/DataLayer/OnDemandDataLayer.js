@@ -15,11 +15,12 @@ import {
 } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
+import BaseMap from 'components/BaseMap/BaseMap';
+import { formatDate } from 'utility';
+
 import { DATA_LAYERS_PANELS } from './constants';
 import DataLayerInformation from './DataLayerInformation';
 import OnDemandTreeView from './OnDemandTreeView';
-import BaseMap from '../../components/BaseMap/BaseMap';
-import { formatDate } from '../../utility';
 
 const OnDemandDataLayer = ({
   t,
