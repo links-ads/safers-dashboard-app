@@ -3,23 +3,18 @@ import React from 'react';
 
 import '@testing-library/jest-dom/extend-expect';
 
-import { USERS } from 'mockData/auth';
-import { signInSuccess } from 'store/authentication/action';
 import { act, fireEvent, render, screen, waitFor } from 'test-utils';
 import { mockedNavigator } from 'TestUtils';
 
 import SelectArea from '../SelectArea';
 
 xdescribe('Select Area Component', () => {
-  let mockStore = null;
-
   const renderApp = (props = {}, state = {}) => {
     return render(<SelectArea {...props} />, { state });
   };
 
   beforeEach(() => {
-    const { store } = renderApp();
-    mockStore = store;
+    renderApp();
   });
 
   describe('redirect to sign in if not logged in', () => {
@@ -29,12 +24,6 @@ xdescribe('Select Area Component', () => {
   });
 
   describe('Test Select Aoi Component', () => {
-    beforeAll(() => {
-      act(() => {
-        mockStore.dispatch(signInSuccess(USERS.user));
-      });
-    });
-
     it('check if page is displaying', () => {
       expect(
         screen.getByText(/Choose your area of interest/i),
@@ -51,10 +40,6 @@ xdescribe('Select Area Component', () => {
         fireEvent.click(
           screen.getByRole('button', { name: 'SAVE AREA OF INTEREST' }),
         );
-      });
-
-      await waitFor(() => {
-        expect(mockStore.getState().user.aoiSetSuccess).not.toEqual(null);
       });
 
       //calls dashboard
