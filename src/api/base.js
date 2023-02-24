@@ -1,4 +1,5 @@
 import axios from 'axios';
+import storage from 'redux-persist/lib/storage/session';
 
 import { signOutSuccess } from 'store/authentication/authentication.slice';
 import { setLoading } from 'store/common/common.slice';
@@ -97,7 +98,9 @@ const handleError = (error, store) => {
     switch (error.response.status) {
       case 401:
         deleteSession();
+        storage.removeItem('persist:root');
         store.dispatch(signOutSuccess());
+        window.location.href = '/auth/sign-in';
         return Promise.reject(error);
       case 500:
         window.location.href = '/pages-500';
