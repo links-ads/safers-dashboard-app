@@ -19,15 +19,12 @@ import {
 import wkt from 'wkt';
 
 import { useMap } from 'components/BaseMap/MapContext';
-import {
-  setFilteredAlerts,
-  setAlertApiParams,
-} from 'store/alerts/alerts.slice';
+import { setFilteredAlerts, setAlertApiParams } from 'store/alerts.slice';
 import {
   setDateRangeDisabled,
   configSelector,
   dateRangeSelector,
-} from 'store/common/common.slice';
+} from 'store/common.slice';
 import {
   fetchDataLayers,
   fetchMapRequests,
@@ -39,9 +36,9 @@ import {
   timeSeriesInfoSelector,
   featureInfoSelector,
   dataLayerMapRequestsSelector,
-} from 'store/datalayer/datalayer.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
-import { getWKTfromFeature } from 'store/utility';
+} from 'store/datalayer.slice';
+import { defaultAoiSelector } from 'store/user.slice';
+import { filterNodesByProperty, getGeoFeatures, getWKTfromFeature } from 'store/utility';
 
 import {
   SLIDER_SPEED,
@@ -58,7 +55,6 @@ import WildfireSimulation from './wildfire-simulation-form/WildfireSimulation';
 import { MAP } from '../../constants/common';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { getBoundingBox, isWKTValid } from '../../helpers/mapHelper';
-import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
 
 const DataLayerDashboard = ({ t }) => {
   const { viewState, setViewState } = useMap();

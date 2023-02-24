@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Container, Row } from 'reactstrap';
 
-import { defaultAoiSelector } from 'store/user/user.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import NotificationCard from './NotificationCard';
 

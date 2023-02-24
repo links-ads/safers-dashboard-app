@@ -18,17 +18,14 @@ import {
 import wkt from 'wkt';
 import * as Yup from 'yup';
 
-import { errorSelector } from 'store/authentication/authentication.slice';
-import {
-  postMapRequest,
-  fetchMapRequests,
-} from 'store/datalayer/datalayer.slice';
+import { errorSelector } from 'store/authentication.slice';
+import { postMapRequest, fetchMapRequests } from 'store/datalayer.slice';
 
 import MapSection from './Map';
 import MapInput from '../../components/BaseMap/MapInput';
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import 'react-rangeslider/lib/index.css';
-import { getWKTfromFeature } from '../../store/utility';
+import { getWKTfromFeature } from '../../utility';
 
 Yup.addMethod(Yup.date, 'max30Days', function (message) {
   return this.test('max30Days', message, (date, { parent }) => {

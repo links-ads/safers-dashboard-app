@@ -15,7 +15,7 @@ import {
   reportsCategorySelector,
   reportsMissionIdSelector,
   reportsPollingDataSelector,
-} from 'store/reports/reports.slice';
+} from 'store/reports.slice';
 
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
 import { fetchEndpoint } from '../../../../helpers/apiHelper';

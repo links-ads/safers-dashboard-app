@@ -10,7 +10,7 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchEvents,
   fetchEventDetail,
@@ -23,8 +23,8 @@ import {
   filteredEventsSelector,
   eventsSuccessSelector,
   eventsErrorSelector,
-} from 'store/events/events.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/events.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import EventList from './Components/EventList';
 import MapSection from './Components/Map';

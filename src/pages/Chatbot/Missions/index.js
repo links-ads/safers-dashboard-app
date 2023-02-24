@@ -9,15 +9,15 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchMissions,
   resetMissionResponseState,
   allMissionsSelector,
   filteredMissionsSelector,
   missionsSuccessSelector,
-} from 'store/missions/missions.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/missions.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import CreateMission from './Components/create-mission/CreateMission';
 import MapSection from './Components/Map';

@@ -12,7 +12,7 @@ import {
   allMissionsSelector,
   filteredMissionsSelector,
   missionsPollingDataSelector,
-} from 'store/missions/missions.slice';
+} from 'store/missions.slice';
 //i18N
 
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';

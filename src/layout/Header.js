@@ -5,15 +5,12 @@ import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
 
 // Import menuDropdown
-import {
-  setDateRange,
-  isDateRangeDisabledSelector,
-} from 'store/common/common.slice';
+import { setDateRange, isDateRangeDisabledSelector } from 'store/common.slice';
 
 import ProfileMenu from './TopbarDropdown/ProfileMenu';
 import DateRangePicker from '../components/DateRangePicker/DateRange';
 import LanguageDropdown from '../components/LanguageDropdown';
-import { getDefaultDateRange } from '../store/utility';
+import { getDefaultDateRange } from '../utility';
 
 const Header = () => {
   const dispatch = useDispatch();

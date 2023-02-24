@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Card, Row, Col } from 'reactstrap';
 
-import { eventInSituMediaSelector } from 'store/events/events.slice';
+import { eventInSituMediaSelector } from 'store/events.slice';
 
 import MediaComponent from '../../../../components/MediaComponent';
 import PaginationWrapper from '../../../../components/Pagination';

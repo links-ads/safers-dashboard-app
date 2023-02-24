@@ -17,15 +17,15 @@ import {
   fetchTeams,
   organisationsSelector,
   teamsSelector,
-} from 'store/common/common.slice';
+} from 'store/common.slice';
 import {
   createMission,
   resetMissionResponseState,
   missionCreatedSelector,
-} from 'store/missions/missions.slice';
-import { userInfoSelector } from 'store/user/user.slice';
+} from 'store/missions.slice';
+import { userInfoSelector } from 'store/user.slice';
 import 'toastr/build/toastr.min.css';
-import { getGeoFeatures, getWKTfromFeature } from 'store/utility';
+import { getGeoFeatures, getWKTfromFeature } from 'utility';
 
 const FORM_INITIAL_STATE = {
   coordinates: '',

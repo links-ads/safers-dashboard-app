@@ -19,12 +19,12 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
-import { configSelector } from 'store/common/common.slice';
+import { configSelector } from 'store/common.slice';
 import {
   resetUserPassword,
   resetPasswordSuccessMessageSelector,
   resetPswFailResSelector,
-} from 'store/user/user.slice';
+} from 'store/user.slice';
 
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import {

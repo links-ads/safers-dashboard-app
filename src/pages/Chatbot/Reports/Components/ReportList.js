@@ -10,7 +10,7 @@ import {
   setReportFavorite,
   allReportsSelector,
   filteredReportsSelector,
-} from 'store/reports/reports.slice';
+} from 'store/reports.slice';
 
 import Report from './Report';
 import PaginationWrapper from '../../../../components/Pagination';

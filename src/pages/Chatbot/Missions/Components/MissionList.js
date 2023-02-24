@@ -10,7 +10,7 @@ import {
   setMissionFavorite,
   allMissionsSelector,
   filteredMissionsSelector,
-} from 'store/missions/missions.slice';
+} from 'store/missions.slice';
 
 import Mission from './Mission';
 import PaginationWrapper from '../../../../components/Pagination';

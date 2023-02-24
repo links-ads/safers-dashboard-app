@@ -6,7 +6,7 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Card, CardHeader, CardBody, Col } from 'reactstrap';
 
-import { weatherStatsSelector } from 'store/dashboard/dashboard.slice';
+import { weatherStatsSelector } from 'store/dashboard.slice';
 //i18n
 
 const MapCards = props => {

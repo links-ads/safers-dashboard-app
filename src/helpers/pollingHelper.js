@@ -9,15 +9,15 @@ import {
   filteredAlertsSelector,
   alertParamsSelector,
   isAlertPageActiveSelector,
-} from 'store/alerts/alerts.slice';
-import { configSelector, dateRangeSelector } from 'store/common/common.slice';
+} from 'store/alerts.slice';
+import { configSelector, dateRangeSelector } from 'store/common.slice';
 import {
   fetchMapRequests,
   setNewMapRequestState,
   dataLayerParamsSelector,
   dataLayerMapRequestsSelector,
   dataLayerIsPageActiveSelector,
-} from 'store/datalayer/datalayer.slice';
+} from 'store/datalayer.slice';
 import {
   fetchEvents,
   setNewEventState,
@@ -25,14 +25,14 @@ import {
   filteredEventsSelector,
   eventParamsSelector,
   isEventPageActiveSelector,
-} from 'store/events/events.slice';
+} from 'store/events.slice';
 import {
   fetchNotifications,
   setNewNotificationState,
   allNotificationsSelector,
   notificationParamsSelector,
   notificationIsPageActiveSelector,
-} from 'store/notifications/notifications.slice';
+} from 'store/notifications.slice';
 
 import useSetNewAlerts from '../customHooks/useSetNewAlerts';
 

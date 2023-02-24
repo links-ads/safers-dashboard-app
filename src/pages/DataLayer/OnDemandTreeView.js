@@ -8,11 +8,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 
-import {
-  deleteMapRequest,
-  fetchMapRequests,
-} from 'store/datalayer/datalayer.slice';
-import { userInfoSelector } from 'store/user/user.slice';
+import { deleteMapRequest, fetchMapRequests } from 'store/datalayer.slice';
+import { userInfoSelector } from 'store/user.slice';
 
 import { useMap } from '../../components/BaseMap/MapContext';
 import JsonFormatter from '../../components/JsonFormatter';

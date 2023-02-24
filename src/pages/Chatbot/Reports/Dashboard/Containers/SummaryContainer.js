@@ -6,11 +6,11 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle, Button } from 'reactstrap';
 
-import { defaultAoiSelector } from 'store/user/user.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import { MAP_TYPES } from '../../../../../constants/common';
 import { getIconLayer, getViewState } from '../../../../../helpers/mapHelper';
-import { formatDate } from '../../../../../store/utility';
+import { formatDate } from '../../../../../utility';
 import MapSection from '../Components/Map';
 
 //i18n

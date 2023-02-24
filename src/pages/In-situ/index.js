@@ -10,7 +10,7 @@ import { useMap } from 'components/BaseMap/MapContext';
 import { PAGE_SIZE } from 'pages/Events/constants';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchCameras,
   fetchCameraSources,
@@ -24,8 +24,8 @@ import {
   cameraListSelector,
   cameraAlertsSuccessSelector,
   cameraAlertsErrorSelector,
-} from 'store/insitu/insitu.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/insitu.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import AlertList from './Components/AlertList';
 import MapSection from './Components/Map';

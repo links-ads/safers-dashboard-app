@@ -19,10 +19,10 @@ import {
   fetchTimeSeriesInfo,
   timeSeriesInfoSelector,
   featureInfoSelector,
-} from 'store/datalayer/datalayer.slice';
+} from 'store/datalayer.slice';
 
 import { getIconLayer } from '../../helpers/mapHelper';
-import { formatDate } from '../../store/utility';
+import { formatDate } from '../../utility';
 
 const displayFeature = properties => {
   const keys = Object.keys(properties);

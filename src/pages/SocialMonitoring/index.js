@@ -6,20 +6,16 @@ import { withTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
 
-import { dateRangeSelector } from 'store/common/common.slice';
-import {
-  fetchStats,
-  fetchTweets,
-  statsSelector,
-} from 'store/dashboard/dashboard.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+import { dateRangeSelector } from 'store/common.slice';
+import { fetchStats, fetchTweets, statsSelector } from 'store/dashboard.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import IconClusterLayer from './IconClusterLayer';
 import TwitterContainer from './TwitterContainer';
 import iconAtlas from '../../assets/images/location-icon-atlas.png';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import iconMapping from '../../constants/location-icon-mapping.json';
-import { formatNumber } from '../../store/utility';
+import { formatNumber } from '../../utility';
 
 //i18n
 

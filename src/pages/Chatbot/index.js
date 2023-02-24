@@ -13,8 +13,8 @@ import {
   Container,
 } from 'reactstrap';
 
-import { configSelector } from 'store/common/common.slice';
-import { userInfoSelector } from 'store/user/user.slice';
+import { configSelector } from 'store/common.slice';
+import { userInfoSelector } from 'store/user.slice';
 
 import Comms from './Comms';
 import Missions from './Missions';

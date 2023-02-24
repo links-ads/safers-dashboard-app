@@ -10,7 +10,7 @@ import {
   fetchMetadata,
   resetMetaData,
   metaDataSelector,
-} from 'store/datalayer/datalayer.slice';
+} from 'store/datalayer.slice';
 
 import { fetchEndpoint } from '../../helpers/apiHelper';
 

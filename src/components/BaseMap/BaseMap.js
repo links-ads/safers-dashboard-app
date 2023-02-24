@@ -19,7 +19,7 @@ import {
   mapStylesSelector,
   selectedMapStyleSelector,
   setSelectedMapStyle,
-} from '../../store/map/map.slice';
+} from '../../store/map.slice';
 
 const MAX_ZOOM = 20;
 

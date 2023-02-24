@@ -27,9 +27,9 @@ import {
   alertSourcesSelector,
   alertSuccessSelector,
   alertErrorSelector,
-} from 'store/alerts/alerts.slice';
-import { dateRangeSelector } from 'store/common/common.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/alerts.slice';
+import { dateRangeSelector } from 'store/common.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import Alert from './Alert';
 import Tooltip from './Tooltip';

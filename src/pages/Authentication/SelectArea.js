@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 
 import AreaOfInterestPanel from 'components/AreaOfInterestPanel';
-import { isLoggedInSelector } from 'store/authentication/authentication.slice';
-import { setAoiSuccessMessageSelector } from 'store/user/user.slice';
+import { isLoggedInSelector } from 'store/authentication.slice';
+import { setAoiSuccessMessageSelector } from 'store/user.slice';
 
 // eslint-disable-next-line import/no-duplicates
 import logodark from '../../assets/images/background-light-logo.png';

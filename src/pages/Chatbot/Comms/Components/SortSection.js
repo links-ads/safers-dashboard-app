@@ -13,7 +13,7 @@ import {
   allCommsSelector,
   commsPollingDataSelector,
   filteredCommsSelector,
-} from 'store/comms/comms.slice';
+} from 'store/comms.slice';
 
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
 import { getFilteredRec } from '../../filter';

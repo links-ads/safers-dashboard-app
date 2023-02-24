@@ -6,10 +6,7 @@ import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
-import {
-  allCommsSelector,
-  filteredCommsSelector,
-} from 'store/comms/comms.slice';
+import { allCommsSelector, filteredCommsSelector } from 'store/comms.slice';
 
 import Comm from './Comm';
 import PaginationWrapper from '../../../../components/Pagination';

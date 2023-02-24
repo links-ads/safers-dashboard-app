@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { Badge, Card, CardBody, CardText, Col, Row } from 'reactstrap';
 
-import { formatDate } from '../../../store/utility';
+import { formatDate } from '../../../utility';
 
 const BADGETYPES = {
   STATUS: { attr: 'status', style: 'notification-status-badge' },

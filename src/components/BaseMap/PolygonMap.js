@@ -19,12 +19,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   selectedFireBreakSelector,
   setSelectedFireBreak,
-} from 'store/datalayer/datalayer.slice';
+} from 'store/datalayer.slice';
 import {
   mapStylesSelector,
   selectedMapStyleSelector,
   setSelectedMapStyle,
-} from 'store/map/map.slice';
+} from 'store/map.slice';
 
 import { useMap } from './MapContext';
 import { MapStyleSwitcher } from './MapStyleSwitcher';

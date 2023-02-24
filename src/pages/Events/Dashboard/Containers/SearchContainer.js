@@ -10,17 +10,14 @@ import {
   fetchAois,
   setPolygonLayer,
   selectedAoiSelector,
-} from 'store/common/common.slice';
+} from 'store/common.slice';
 import {
   fetchStats,
   fetchWeatherStats,
   fetchWeatherVariables,
-} from 'store/dashboard/dashboard.slice';
-import {
-  fetchEventCameraMedia,
-  fetchEventTweets,
-} from 'store/events/events.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/dashboard.slice';
+import { fetchEventCameraMedia, fetchEventTweets } from 'store/events.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import DateComponent from '../../../../components/DateRangePicker/DateRange';
 import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';

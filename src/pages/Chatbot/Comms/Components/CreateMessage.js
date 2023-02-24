@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Input, Button, Label, Row, Col, FormGroup, Form } from 'reactstrap';
+import { userInfoSelector } from 'store/user.slice';
 import * as Yup from 'yup';
 
-import { organisationsSelector } from 'store/common/common.slice';
-import { createComms, resetCommsResponseState } from 'store/comms/comms.slice';
-import { userInfoSelector } from 'store/user/user.slice';
-import { getWKTfromFeature, getGeoFeatures } from 'store/utility';
+import { organisationsSelector } from 'store/common.slice';
+import { createComms, resetCommsResponseState } from 'store/comms.slice';
+import { getWKTfromFeature, getGeoFeatures } from 'utility';
 
 import MapInput from '../../../../components/BaseMap/MapInput';
 import DateRangePicker from '../../../../components/DateRangePicker/DateRange';

@@ -21,11 +21,11 @@ import {
   editEventInfo,
   eventsUpdateErrorSelector,
   eventSelector,
-} from 'store/events/events.slice';
+} from 'store/events.slice';
 
 import DatePicker from '../../../components/DateRangePicker/DatePicker';
 import { getGeneralErrors } from '../../../helpers/errorHelper';
-import { formatDate } from '../../../store/utility';
+import { formatDate } from '../../../utility';
 
 const Tooltip = ({
   object,

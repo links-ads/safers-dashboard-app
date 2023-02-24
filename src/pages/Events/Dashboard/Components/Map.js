@@ -4,8 +4,8 @@ import _ from 'lodash';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
-import { aoisSelector } from 'store/common/common.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+import { aoisSelector } from 'store/common.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import BaseMap from '../../../../components/BaseMap/BaseMap';
 import MapCards from '../../../../components/BaseMap/MapCards';

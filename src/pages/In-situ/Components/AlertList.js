@@ -6,7 +6,6 @@ import Pagination from 'rc-pagination';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
-import { PAGE_SIZE } from 'store/insitu/constants';
 import {
   setCurrentPage,
   setCameraFavorite,
@@ -18,7 +17,7 @@ import {
   cameraListSelector,
   cameraInfoSelector,
   cameraCurrentPageSelector,
-} from 'store/insitu/insitu.slice';
+} from 'store/insitu.slice';
 
 import Alert from './Alert';
 import { GeoJsonPinLayer } from '../../../components/BaseMap/GeoJsonPinLayer';
@@ -27,6 +26,8 @@ import {
   getViewState,
   getAlertIconColorFromContext,
 } from '../../../helpers/mapHelper';
+
+const PAGE_SIZE = 4;
 
 const AlertList = ({
   alertId,

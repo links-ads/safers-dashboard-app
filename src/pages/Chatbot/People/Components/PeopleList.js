@@ -6,10 +6,7 @@ import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
-import {
-  allPeopleSelector,
-  filteredPeopleSelector,
-} from 'store/people/people.slice';
+import { allPeopleSelector, filteredPeopleSelector } from 'store/people.slice';
 
 import People from './People';
 import PaginationWrapper from '../../../../components/Pagination';

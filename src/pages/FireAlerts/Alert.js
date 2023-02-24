@@ -11,7 +11,7 @@ import {
   Row,
 } from 'reactstrap';
 
-import { formatDate } from '../../store/utility';
+import { formatDate } from '../../utility';
 
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite }) => {
   const getBadge = () => {

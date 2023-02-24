@@ -22,14 +22,14 @@ import {
   signUpOauth2 as registration,
   errorSelector,
   signUpOauth2SuccessSelector,
-} from 'store/authentication/authentication.slice';
+} from 'store/authentication.slice';
 import {
   fetchOrganisations,
   fetchRoles,
   configSelector,
   organisationsSelector,
   rolesSelector,
-} from 'store/common/common.slice';
+} from 'store/common.slice';
 
 import { endpoints } from '../../api/endpoints';
 import { BASE_URL } from '../../config';

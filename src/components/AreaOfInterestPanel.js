@@ -9,13 +9,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import toastr from 'toastr';
 
-import { userSelector } from 'store/authentication/authentication.slice';
-import { fetchAois, aoisSelector } from 'store/common/common.slice';
+import { userSelector } from 'store/authentication.slice';
+import { fetchAois, aoisSelector } from 'store/common.slice';
 import {
   setUserDefaultAoi,
   defaultAoiSelector,
   setAoiSuccessMessageSelector,
-} from 'store/user/user.slice';
+} from 'store/user.slice';
 
 import BaseMap from './BaseMap/BaseMap';
 

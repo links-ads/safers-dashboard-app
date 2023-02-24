@@ -9,7 +9,7 @@ import toastr from 'toastr';
 import { useMap } from 'components/BaseMap/MapContext';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchReports,
   resetReportResponseState,
@@ -17,8 +17,8 @@ import {
   filteredReportsSelector,
   reportsSuccessSelector,
   reportsBoundingBoxSelector,
-} from 'store/reports/reports.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/reports.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';

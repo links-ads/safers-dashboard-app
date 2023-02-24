@@ -19,7 +19,7 @@ import { DATA_LAYERS_PANELS } from './constants';
 import DataLayerInformation from './DataLayerInformation';
 import OnDemandTreeView from './OnDemandTreeView';
 import BaseMap from '../../components/BaseMap/BaseMap';
-import { formatDate } from '../../store/utility';
+import { formatDate } from '../../utility';
 
 const OnDemandDataLayer = ({
   t,

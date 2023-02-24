@@ -21,7 +21,7 @@ import {
   resetPassword,
   errorSelector,
   resetPasswordResponseSelector,
-} from 'store/authentication/authentication.slice';
+} from 'store/authentication.slice';
 
 import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import {

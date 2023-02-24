@@ -8,7 +8,7 @@ import {
   isLoadingSelector,
   loadingMessageSelector,
   configSelector,
-} from 'store/common/common.slice';
+} from 'store/common.slice';
 
 import PreLoader from './components/PreLoader';
 import { publicRoutes, privateRoutes } from './routes/allRoutes';

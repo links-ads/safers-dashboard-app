@@ -7,7 +7,7 @@ import { Row, Col } from 'reactstrap';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchNotifications,
   fetchNotificationSources,
@@ -16,7 +16,7 @@ import {
   setNotificationParams,
   allNotificationsSelector,
   notificationParamsSelector,
-} from 'store/notifications/notifications.slice';
+} from 'store/notifications.slice';
 
 import NotificationsList from './Components/NotificationsList';
 import SortSection from './Components/SortSection';

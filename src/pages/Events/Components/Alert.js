@@ -12,7 +12,7 @@ import {
   Row,
 } from 'reactstrap';
 
-import { formatDate } from '../../../store/utility';
+import { formatDate } from '../../../utility';
 //i18n
 
 const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {

@@ -6,7 +6,7 @@ import { Card, Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import { MAP_TYPES } from 'constants/common';
-import { defaultAoiSelector } from 'store/user/user.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import BaseMap from '../../../components/BaseMap/BaseMap';
 import {

@@ -4,11 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
 import { Button } from 'reactstrap';
 
-import {
-  signInOauth2,
-  isLoggedInSelector,
-} from 'store/authentication/authentication.slice';
-import { setLoading } from 'store/common/common.slice';
+import { signInOauth2, isLoggedInSelector } from 'store/authentication.slice';
+import { setLoading } from 'store/common.slice';
 
 import {
   AUTH_BASE_URL,

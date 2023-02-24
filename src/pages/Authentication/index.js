@@ -18,17 +18,13 @@ import {
   isUserRembembered,
   userSelector,
   isLoggedInSelector,
-} from 'store/authentication/authentication.slice';
-import {
-  fetchAois,
-  aoisSelector,
-  isLoadingSelector,
-} from 'store/common/common.slice';
+} from 'store/authentication.slice';
+import { fetchAois, aoisSelector, isLoadingSelector } from 'store/common.slice';
 import {
   setDefaultAoi,
   setUserInfo,
   defaultAoiSelector,
-} from 'store/user/user.slice';
+} from 'store/user.slice';
 
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';

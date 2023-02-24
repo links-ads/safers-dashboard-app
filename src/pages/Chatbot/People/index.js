@@ -9,15 +9,15 @@ import toastr from 'toastr';
 import { useMap } from 'components/BaseMap/MapContext';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchPeople,
   resetPeopleResponseState,
   allPeopleSelector,
   filteredPeopleSelector,
   peopleSuccessSelector,
-} from 'store/people/people.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/people.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import MapSection from './Components/Map';
 import PeopleList from './Components/PeopleList';

@@ -7,7 +7,7 @@ import {
   refreshOAuthToken,
   tokenLastUpdatedSelector,
   tokenExpiresInSelector,
-} from 'store/authentication/authentication.slice';
+} from 'store/authentication.slice';
 
 import Footer from './Footer';
 import Header from './Header';

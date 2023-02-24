@@ -13,7 +13,7 @@ import {
   allPeopleSelector,
   filteredPeopleSelector,
   peoplePollingDataSelector,
-} from 'store/people/people.slice';
+} from 'store/people.slice';
 
 import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
 import { getFilteredRec } from '../../filter';

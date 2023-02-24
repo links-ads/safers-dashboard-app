@@ -7,7 +7,7 @@ import queryString from 'query-string';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-import { setLoading } from 'store/common/common.slice';
+import { setLoading } from 'store/common.slice';
 
 const name = 'events';
 
