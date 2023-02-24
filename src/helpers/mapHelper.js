@@ -178,14 +178,12 @@ export const getIconLayer = (
   alerts,
   mapType,
   markerName = 'alert',
-  dispatch,
-  setViewState,
   selectedItem = {},
 ) => {
   const data = getAsGeoJSON(alerts);
   return new GeoJsonPinLayer({
     data,
-    setViewState,
+    selectedItem,
     getPosition: feature => feature.geometry.coordinates,
     getPinColor: feature =>
       getAlertIconColorFromContext(mapType, feature, selectedItem),

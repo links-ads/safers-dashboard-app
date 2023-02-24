@@ -17,7 +17,6 @@ import {
   filteredReportsSelector,
   reportsSuccessSelector,
   reportsBoundingBoxSelector,
-  reportsMapFilterSelector,
 } from 'store/reports/reports.slice';
 import { defaultAoiSelector } from 'store/user/user.slice';
 
@@ -34,12 +33,12 @@ import {
 
 const Reports = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
+
   const defaultAoi = useSelector(defaultAoiSelector);
   const orgReportList = useSelector(allReportsSelector);
   const filteredReports = useSelector(filteredReportsSelector);
   const success = useSelector(reportsSuccessSelector);
   const gBbox = useSelector(reportsBoundingBoxSelector);
-  const mapFilter = useSelector(reportsMapFilterSelector);
 
   const dateRange = useSelector(dateRangeSelector);
 
@@ -100,19 +99,12 @@ const Reports = ({ pollingFrequency }) => {
       });
 
       setIconLayer(
-        getIconLayer(
-          reshapedReports,
-          MAP_TYPES.REPORTS,
-          'report',
-          dispatch,
-          setViewState,
-          {
-            id: reportId,
-          },
-        ),
+        getIconLayer(reshapedReports, MAP_TYPES.REPORTS, 'report', {
+          id: reportId,
+        }),
       );
     }
-  }, [allReports, dispatch, reportId, setViewState]);
+  }, [allReports, reportId]);
 
   const getReportsByArea = () => {
     setBoundingBox(
@@ -161,13 +153,7 @@ const Reports = ({ pollingFrequency }) => {
           />
           <Row>
             <Col xl={12} className="px-3">
-              <ReportList
-                reportId={reportId}
-                currentZoomLevel={viewState.zoom}
-                setViewState={setViewState}
-                setReportId={setReportId}
-                setIconLayer={setIconLayer}
-              />
+              <ReportList reportId={reportId} setReportId={setReportId} />
             </Col>
           </Row>
         </Col>

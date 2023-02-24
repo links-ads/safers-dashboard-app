@@ -2,9 +2,10 @@ import React, { useState } from 'react';
 
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
+import { useMap } from 'components/BaseMap/MapContext';
 import {
   allCommsSelector,
   filteredCommsSelector,
@@ -12,23 +13,24 @@ import {
 
 import Comm from './Comm';
 import PaginationWrapper from '../../../../components/Pagination';
-import { MAP_TYPES } from '../../../../constants/common';
-import { getViewState, getIconLayer } from '../../../../helpers/mapHelper';
+import { getViewState } from '../../../../helpers/mapHelper';
 
-const CommsList = ({
-  commID,
-  currentZoomLevel,
-  setViewState,
-  setCommID,
-  setIconLayer,
-}) => {
+const CommsList = ({ commID, setCommID }) => {
+  const { viewState, setViewState } = useMap();
+
   const allComms = useSelector(allCommsSelector);
   const filteredComms = useSelector(filteredCommsSelector);
 
   const [pageData, setPageData] = useState([]);
-  const dispatch = useDispatch();
 
-  const commList = filteredComms || allComms;
+  const commList = filteredComms ?? allComms;
+
+  // Get the index, then divide that by 4 and ceil it, gets the page.
+  let selectedIndex = 1;
+  if (commID) {
+    selectedIndex = commList.findIndex(comm => comm.id === commID);
+  }
+  const pageNo = Math.ceil((selectedIndex + 1) / 4);
 
   const setSelectedComm = mission_id => {
     if (mission_id) {
@@ -36,44 +38,15 @@ const CommsList = ({
       let copyCommList = _.cloneDeep(commList);
       let selectedComm = _.find(copyCommList, { id: mission_id });
       selectedComm.isSelected = true;
-      setIconLayer(
-        getIconLayer(
-          copyCommList,
-          MAP_TYPES.COMMUNICATIONS,
-          'communications',
-          dispatch,
-          setViewState,
-          selectedComm,
-        ),
-      );
-      setViewState(getViewState(selectedComm.location, currentZoomLevel));
+      setViewState(getViewState(selectedComm.location, viewState.zoom));
     } else {
       setCommID(undefined);
-      setIconLayer(
-        getIconLayer(
-          commList,
-          MAP_TYPES.COMMUNICATIONS,
-          'communications',
-          dispatch,
-          setViewState,
-          {},
-        ),
-      );
     }
   };
   const updatePage = data => {
-    setCommID(undefined);
-    setIconLayer(
-      getIconLayer(
-        data,
-        MAP_TYPES.COMMUNICATIONS,
-        'communications',
-        dispatch,
-        setViewState,
-        {},
-      ),
-    );
-    setPageData(data);
+    if (JSON.stringify(data) !== JSON.stringify(pageData)) {
+      setPageData(data);
+    }
   };
 
   return (
@@ -90,6 +63,7 @@ const CommsList = ({
       </Row>
       <Row className="text-center">
         <PaginationWrapper
+          page={pageNo}
           pageSize={4}
           list={commList}
           setPageData={updatePage}
@@ -101,10 +75,7 @@ const CommsList = ({
 
 CommsList.propTypes = {
   commID: PropTypes.any,
-  currentZoomLevel: PropTypes.any,
-  setViewState: PropTypes.func,
   setCommID: PropTypes.func,
-  setIconLayer: PropTypes.func,
 };
 
 export default CommsList;

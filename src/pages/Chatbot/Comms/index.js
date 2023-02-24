@@ -33,6 +33,7 @@ import {
 
 const Comms = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
+
   const defaultAoi = useSelector(defaultAoiSelector);
   const allComms = useSelector(allCommsSelector);
   const success = useSelector(commsSuccessSelector);
@@ -111,14 +112,9 @@ const Comms = ({ pollingFrequency }) => {
   useEffect(() => {
     if (allReports.length > 0) {
       setIconLayer(
-        getIconLayer(
-          allReports,
-          MAP_TYPES.COMMUNICATIONS,
-          'communications',
-          dispatch,
-          setViewState,
-          { id: commID },
-        ),
+        getIconLayer(allReports, MAP_TYPES.COMMUNICATIONS, 'communications', {
+          id: commID,
+        }),
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -184,13 +180,7 @@ const Comms = ({ pollingFrequency }) => {
             />
             <Row>
               <Col xl={12} className="px-3">
-                <CommsList
-                  commID={commID}
-                  currentZoomLevel={viewState.zoom}
-                  setViewState={setViewState}
-                  setCommID={setCommID}
-                  setIconLayer={setIconLayer}
-                />
+                <CommsList commID={commID} setCommID={setCommID} />
               </Col>
             </Row>
           </Col>
