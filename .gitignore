@@ -112,3 +112,6 @@ dist
 .tern-port
 package-lock.json
 
+# Generated Test Output
+jest-html*
+jest_html*

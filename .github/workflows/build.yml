@@ -1,0 +1,48 @@
+name: Run Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - development
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Client-side Tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 40
+    steps:
+      - name: Clone Repository
+        uses: actions/checkout@v2
+      - name: Setup Node Environment
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16.x
+      - name: Cache Node Modules
+        id: yarn-cache
+        uses: actions/cache@v3
+        with:
+          path: 'node_modules'
+          key: ${{ runner.os }}-safers-frontend-build-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-safers-frontend-build-
+      - name: Install Node Modules
+        if: steps.yarn-cache.outputs.cache-hit != 'true'
+        env:
+          CI: 'true'
+        run: |
+          yarn install
+      - name: Run Tests
+        env:
+          CI: 'true'
+        run: |
+          yarn test:ci
+      - name: Upload Test Results
+        uses: actions/upload-artifact@v1
+        with:
+          name: Frontend Test Report
+          path: |
+            jest_html_reporters.html
+            jest-html-reporters-attach
