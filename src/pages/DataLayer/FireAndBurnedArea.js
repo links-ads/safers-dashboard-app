@@ -35,7 +35,7 @@ Yup.addMethod(Yup.date, 'max30Days', function (message) {
     const startDate = parent.startDate;
 
     // if startDate not yet been entered, allow validation to pass
-    if (startDate.toString() === 'Invalid Date') {
+    if (startDate === 'Invalid Date') {
       return true;
     }
 

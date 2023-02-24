@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { Routes, Route } from 'react-router-dom';
+import * as Yup from 'yup';
 
 import {
   fetchConfig,
@@ -9,6 +10,7 @@ import {
   loadingMessageSelector,
   configSelector,
 } from 'store/common/common.slice';
+import { extendGlobalValidators } from 'Utility/extendGlobalValidators';
 
 import PreLoader from './components/PreLoader';
 import { publicRoutes, privateRoutes } from './routes/allRoutes';
@@ -23,6 +25,9 @@ const App = () => {
   const config = useSelector(configSelector);
 
   const dispatch = useDispatch();
+
+  // adds all shared custom validator methods to global Yup object
+  extendGlobalValidators(Yup);
 
   useEffect(() => {
     if (!config) {
