@@ -33,14 +33,16 @@ const MapComponent = ({
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
   const mapRequestLayer = useMemo(() => {
-    if (!selectedLayer) return null;
+    if (!selectedLayer) {
+      return null;
+    }
     const { latitude, longitude, zoom } = getBoundedViewState(
       deckRef,
       selectedLayer.bbox,
     );
     const newViewState = getViewState([longitude, latitude], zoom);
     updateViewState(newViewState);
-    return selectedLayer.geometry ? getBitmapLayer(selectedLayer) : null;
+    return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
   }, [deckRef, selectedLayer, updateViewState]);
 
   const iconLayer = useMemo(

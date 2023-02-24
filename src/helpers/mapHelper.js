@@ -331,6 +331,7 @@ export const doesItOverlapAoi = (node, userAoi) => {
   if (!(featureGeometry && userAoi)) {
     return false;
   }
+  // TODO check if we need to reinstate test for GEOMETRYCOLLECTION
   const aoiPolygon = bboxPolygon(userAoi);
   return !!intersect(aoiPolygon, featureGeometry);
 };
