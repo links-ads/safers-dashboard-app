@@ -7,6 +7,7 @@ import { Row, Col } from 'reactstrap';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import { PAGE_SIZE } from 'constants/common';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchNotifications,
@@ -20,7 +21,6 @@ import {
 
 import NotificationsList from './Components/NotificationsList';
 import SortSection from './Components/SortSection';
-import { NOTIFICATIONS_PAGE_SIZE } from './constants';
 
 const Notifications = () => {
   const dispatch = useDispatch();
@@ -94,7 +94,7 @@ const Notifications = () => {
   useEffect(() => {
     setCurrentPage(1);
     setPaginatedNotifications(
-      _.cloneDeep(filteredNotifications.slice(0, NOTIFICATIONS_PAGE_SIZE)),
+      _.cloneDeep(filteredNotifications.slice(0, PAGE_SIZE)),
     );
   }, [filteredNotifications]);
 

@@ -5,8 +5,9 @@ import PropTypes from 'prop-types';
 import Pagination from 'rc-pagination';
 import { Row } from 'reactstrap';
 
+import { PAGE_SIZE } from 'constants/common';
+
 import NotificatonCard from './NotificationCard';
-import { NOTIFICATIONS_PAGE_SIZE } from '../constants';
 
 const NotificationsList = ({
   filteredNotifications,
@@ -17,8 +18,8 @@ const NotificationsList = ({
 }) => {
   const updatePage = page => {
     setCurrentPage(page);
-    const to = NOTIFICATIONS_PAGE_SIZE * page;
-    const from = to - NOTIFICATIONS_PAGE_SIZE;
+    const to = PAGE_SIZE * page;
+    const from = to - PAGE_SIZE;
     setPaginatedNotifications(
       _.cloneDeep(filteredNotifications.slice(from, to)),
     );
@@ -34,7 +35,7 @@ const NotificationsList = ({
 
       <Row className="text-center my-1">
         <Pagination
-          pageSize={NOTIFICATIONS_PAGE_SIZE}
+          pageSize={PAGE_SIZE}
           onChange={updatePage}
           current={currentPage}
           total={filteredNotifications.length}

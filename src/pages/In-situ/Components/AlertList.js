@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
-import { MAP_TYPES } from 'constants/common';
+import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
 import { getViewState, getAlertIconColorFromContext } from 'helpers/mapHelper';
 import {
   setCurrentPage,
@@ -23,8 +23,6 @@ import {
 } from 'store/insitu.slice';
 
 import Alert from './Alert';
-
-const PAGE_SIZE = 4;
 
 const AlertList = ({
   alertId,

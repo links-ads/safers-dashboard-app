@@ -15,7 +15,7 @@ import BaseMap from 'components/BaseMap/BaseMap';
 import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
 import SearchButton from 'components/SearchButton';
-import { MAP_TYPES } from 'constants/common';
+import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
 import {
   getBoundingBox,
   getViewState,
@@ -42,8 +42,6 @@ import { defaultAoiSelector } from 'store/user.slice';
 
 import Alert from './Alert';
 import Tooltip from './Tooltip';
-
-const PAGE_SIZE = 4;
 
 const FireAlerts = ({ t }) => {
   const { viewState, setViewState } = useMap();

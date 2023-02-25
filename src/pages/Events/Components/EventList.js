@@ -6,11 +6,10 @@ import { Row } from 'reactstrap';
 
 import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import PaginationWrapper from 'components/Pagination';
-import { MAP_TYPES } from 'constants/common';
+import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
 import { getAlertIconColorFromContext } from 'helpers/mapHelper';
 
 import Alert from './Alert';
-import { PAGE_SIZE } from '../constants';
 
 const EventList = ({
   alertId,

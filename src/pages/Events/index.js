@@ -11,7 +11,7 @@ import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
-import { MAP_TYPES } from 'constants/common';
+import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
 import {
   getBoundingBox,
   getViewState,
@@ -36,8 +36,6 @@ import { defaultAoiSelector } from 'store/user.slice';
 import EventList from './Components/EventList';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
-import { PAGE_SIZE } from './constants';
-//i18n
 
 const EventAlerts = ({ t }) => {
   const { viewState, setViewState } = useMap();
