@@ -7,10 +7,6 @@ import { Button, ButtonGroup, Card, Row, Col } from 'reactstrap';
 import BaseMap from 'components/BaseMap/BaseMap';
 
 const MapDataLayer = () => {
-  // eslint-disable-next-line no-unused-vars
-  const [viewState, setViewState] = useState(undefined);
-  // eslint-disable-next-line no-unused-vars
-  const [polygonLayer, setPolygonLayer] = useState(undefined);
   //to update when data layers ready
   const [dataLayer, setDataLayer] = useState(1);
 
@@ -49,7 +45,7 @@ const MapDataLayer = () => {
       </Row>
       <Row className="h-100 w-100 mx-auto mt-3">
         <Card className="map-card" style={{ height: 400 }}>
-          <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
+          <BaseMap layers={[]} />
         </Card>
       </Row>
     </Col>

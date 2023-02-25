@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { MapView } from '@deck.gl/core';
 import MapGL, {
@@ -55,7 +54,7 @@ const PolygonMap = ({
   handleAreaValidation,
   singlePolygonOnly = false,
 }) => {
-  const { mapRef, viewState, setViewState } = useMap();
+  const { viewState, setViewState } = useMap();
   const [mapStyle, setMapStyle] = useLocalStorage('safers-map-style');
   const dispatch = useDispatch();
 
@@ -119,8 +118,6 @@ const PolygonMap = ({
       setModeHandler(modeHandler);
     }
   };
-
-  const _updateViewport = tempViewport => setViewState(tempViewport);
 
   const editToggle = mode => {
     if (mode == DRAW_TYPES.LINE_STRING) {
@@ -227,10 +224,9 @@ const PolygonMap = ({
         height="100%"
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapStyle={mapStyle ? mapStyle.uri : selectedMapStyle.uri}
-        onViewportChange={_updateViewport}
         ContextProvider={MapContext.Provider}
         onClick={onClick}
-        onViewStateChange={handleViewStateChange}
+        onViewStateChange={({ viewState }) => setViewState(viewState)}
         onViewportLoad={onViewportLoad}
         layers={finalLayerSet}
         views={new MapView({ repeat: true })}

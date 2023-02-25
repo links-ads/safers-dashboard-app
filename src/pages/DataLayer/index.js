@@ -372,8 +372,6 @@ const DataLayerDashboard = ({ t }) => {
     getSlider,
     getLegend,
     bitmapLayer,
-    setViewState,
-    viewState,
     handleResetAOI,
     timeSeriesData,
     featureInfoData,

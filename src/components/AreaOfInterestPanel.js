@@ -35,7 +35,6 @@ const AreaOfInterestPanel = ({ t }) => {
 
   const [selectedAoi, setSelectedAoi] = useState(defaultAoi);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
 
   const dispatch = useDispatch();
 
@@ -65,12 +64,6 @@ const AreaOfInterestPanel = ({ t }) => {
   const setMap = defaultAoi => {
     setSelectedAoi(defaultAoi);
     setPolygonLayer(getPolygonLayer(defaultAoi));
-    setViewState(
-      getViewState(
-        defaultAoi.features[0].properties.midPoint,
-        defaultAoi.features[0].properties.zoomLevel,
-      ),
-    );
   };
 
   const selectAoi = e => {
@@ -79,18 +72,6 @@ const AreaOfInterestPanel = ({ t }) => {
       features: [{ properties: { id: parseInt(aoiID) } }],
     });
     setMap(objAoi);
-  };
-
-  const getViewState = (midPoint, zoomLevel = 4) => {
-    return {
-      longitude: midPoint[0],
-      latitude: midPoint[1],
-      zoom: zoomLevel,
-      bearing: 0,
-      pitch: 0,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator(),
-    };
   };
 
   const getPolygonLayer = aoi => {
@@ -160,7 +141,7 @@ const AreaOfInterestPanel = ({ t }) => {
         <Col xl={8} md={10} xs={10} className="mx-auto">
           <Row>
             <div style={{ height: 350 }} className="mb-5">
-              <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
+              <BaseMap layers={[polygonLayer]} />
             </div>
           </Row>
           <Row>

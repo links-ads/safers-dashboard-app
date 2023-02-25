@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { FlyToInterpolator } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
@@ -30,7 +29,6 @@ const SocialMonitoring = ({ t }) => {
   const tweetsTrend = 23; //hard coded text until API available
   const socialStats = MOCK_DATA;
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
   const dispatch = useDispatch();
 
   const getSearchData = useCallback(() => {
@@ -47,32 +45,9 @@ const SocialMonitoring = ({ t }) => {
   }, [dateRange, defaultAoi, dispatch]);
 
   useEffect(() => {
-    if (!viewState) {
-      setViewState(
-        getViewState(
-          defaultAoi.features[0].properties.midPoint,
-          defaultAoi.features[0].properties.zoomLevel,
-        ),
-      );
-    }
-  }, [defaultAoi.features, viewState]);
-
-  useEffect(() => {
     getSearchData();
     setIconLayer(getIconLayer(socialStats));
   }, [dateRange, defaultAoi, getSearchData, socialStats]);
-
-  const getViewState = (midPoint, zoomLevel = 4) => {
-    return {
-      longitude: midPoint[0],
-      latitude: midPoint[1],
-      zoom: zoomLevel,
-      pitch: 0,
-      bearing: 0,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator(),
-    };
-  };
 
   const getIconLayer = data => {
     return new IconClusterLayer({
@@ -117,12 +92,6 @@ const SocialMonitoring = ({ t }) => {
           <Card className="map-card mb-0" style={{ height: 670 }}>
             <BaseMap
               layers={[iconLayer]}
-              initialViewState={viewState}
-              widgets={
-                [
-                  /*search button or any widget*/
-                ]
-              }
               screenControlPosition="top-right"
               navControlPosition="bottom-right"
             />

@@ -36,8 +36,6 @@ const OnDemandDataLayer = ({
   getSlider,
   getLegend,
   bitmapLayer,
-  setViewState,
-  viewState,
   timestamp,
   currentLayer,
   showLegend,
@@ -103,14 +101,6 @@ const OnDemandDataLayer = ({
     setActiveTab(+value);
     toggleModal();
   };
-
-  const handleViewStateChange = useCallback(
-    // eslint-disable-next-line no-unused-vars
-    ({ viewState: { width, height, ...rest } }) => {
-      setViewState(rest);
-    },
-    [setViewState],
-  );
 
   let layers = [...bboxLayers];
   if (bitmapLayer) {
@@ -253,8 +243,6 @@ const OnDemandDataLayer = ({
                   data={searchedMapRequests}
                   setCurrentLayer={setCurrentLayer}
                   t={t}
-                  setViewState={setViewState}
-                  viewState={viewState}
                   setBboxLayers={setBboxLayers}
                   resetMap={resetMap}
                 />
@@ -281,9 +269,6 @@ const OnDemandDataLayer = ({
             >
               <BaseMap
                 layers={layers}
-                initialViewState={viewState}
-                onViewStateChange={handleViewStateChange}
-                widgets={[]}
                 screenControlPosition="top-right"
                 navControlPosition="bottom-right"
               />

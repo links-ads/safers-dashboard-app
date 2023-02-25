@@ -31,7 +31,6 @@ const BaseMap = ({
   hoverInfo = null,
   renderTooltip = () => {},
   onClick = () => {},
-  onViewStateChange = () => {},
   onViewportLoad = () => {},
   setWidth = () => {},
   setHeight = () => {},
@@ -83,11 +82,6 @@ const BaseMap = ({
     }
   };
 
-  const handleViewStateChange = ({ viewState: { width, height, ...rest } }) => {
-    onViewStateChange({ viewState: { width, height, ...rest } });
-    setViewState(rest);
-  };
-
   const getPosition = position => {
     const props = position.split('-');
     return {
@@ -103,7 +97,7 @@ const BaseMap = ({
         ref={deckRef}
         views={new MapView({ repeat: true })}
         onClick={handleClick}
-        onViewStateChange={handleViewStateChange}
+        onViewStateChange={({ viewState }) => setViewState(viewState)}
         onViewportLoad={onViewportLoad}
         viewState={viewState}
         controller={true}

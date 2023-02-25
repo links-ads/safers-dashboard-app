@@ -6,12 +6,11 @@ import { Card, Row } from 'reactstrap';
 
 import BaseMap from 'components/BaseMap/BaseMap';
 import MapCards from 'components/BaseMap/MapCards';
-import { getPolygonLayer, getViewState } from 'helpers/mapHelper';
+import { getPolygonLayer } from 'helpers/mapHelper';
 import { aoisSelector } from 'store/common.slice';
 import { defaultAoiSelector } from 'store/user.slice';
 
 const MapComponent = () => {
-  const [viewState, setViewState] = useState(undefined);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
   const defaultAoi = useSelector(defaultAoiSelector);
   const allAoi = useSelector(aoisSelector);
@@ -27,19 +26,13 @@ const MapComponent = () => {
     });
     if (objAoi) {
       setPolygonLayer(getPolygonLayer(objAoi));
-      setViewState(
-        getViewState(
-          objAoi.features[0].properties.midPoint,
-          objAoi.features[0].properties.zoomLevel,
-        ),
-      );
     }
   };
 
   return (
     <Row className="h-100 w-100 mx-auto">
       <Card className="map-card">
-        <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
+        <BaseMap layers={[polygonLayer]} />
         <MapCards />
       </Card>
     </Row>

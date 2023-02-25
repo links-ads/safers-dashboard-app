@@ -30,13 +30,11 @@ const OnDemandTreeView = ({
   data,
   setCurrentLayer,
   t,
-  setViewState,
-  viewState,
   setBboxLayers,
   resetMap,
 }) => {
   const dispatch = useDispatch();
-  const { deckRef } = useMap();
+  const { deckRef, viewState, setViewState } = useMap();
 
   const [itemState, setItemState] = useState({});
   const [itemPropsState, setItemPropsState] = useState({});

@@ -2,33 +2,23 @@ import React from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle, Button } from 'reactstrap';
 
 import { MAP_TYPES } from 'constants/common';
-import { getIconLayer, getViewState } from 'helpers/mapHelper';
-import { defaultAoiSelector } from 'store/user.slice';
+import { getIconLayer } from 'helpers/mapHelper';
 import { formatDate } from 'utility';
 
 import MapSection from '../Components/Map';
 
-//i18n
-
 const NO_AVAILABLE_DATA = 'no-data-available';
 
 const SummaryContainer = ({ reportDetail, t }) => {
-  const defaultAoi = useSelector(defaultAoiSelector);
-
   const navigate = useNavigate();
 
   if (!reportDetail) return null;
 
   const iconLayer = getIconLayer([reportDetail], MAP_TYPES.REPORTS, 'report');
-  const viewState = getViewState(
-    reportDetail.location,
-    defaultAoi.features[0].properties.zoomLevel,
-  );
 
   const dateDisplay = reportDetail?.timestamp
     ? formatDate(reportDetail.timestamp)
@@ -204,7 +194,7 @@ const SummaryContainer = ({ reportDetail, t }) => {
         </Card>
       </Col>
       <Col className="mx-auto">
-        <MapSection viewState={viewState} iconLayer={iconLayer} />
+        <MapSection iconLayer={iconLayer} />
       </Col>
     </>
   );
