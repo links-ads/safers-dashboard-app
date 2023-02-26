@@ -45,8 +45,6 @@ const PolygonMap = ({
   clearMap,
   onViewStateChange = () => {},
   onViewportLoad = () => {},
-  setWidth = () => {},
-  setHeight = () => {},
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
   setCoordinates,
@@ -83,22 +81,6 @@ const PolygonMap = ({
   const [modeHandler, setModeHandler] = useState(null);
   const [selectedFeatureData, setSelectedFeatureData] = useState(null);
   const [areaIsValid, setAreaIsValid] = useState(true);
-
-  const getMapSize = useCallback(() => {
-    const newWidth = mapRef?.current?.deck?.width;
-    newWidth && setWidth(newWidth);
-
-    const newHeight = mapRef?.current?.deck.height;
-    newHeight && setHeight(newHeight);
-  }, [setHeight, setWidth]);
-
-  useEffect(() => {
-    window.addEventListener('resize', getMapSize);
-  }, [getMapSize]);
-
-  useEffect(() => {
-    getMapSize();
-  }, [getMapSize, layers]);
 
   const getPosition = position => {
     const props = position.split('-');

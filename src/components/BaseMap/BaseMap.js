@@ -32,8 +32,6 @@ const BaseMap = ({
   renderTooltip = () => {},
   onClick = () => {},
   onViewportLoad = () => {},
-  setWidth = () => {},
-  setHeight = () => {},
   widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
@@ -50,18 +48,6 @@ const BaseMap = ({
   };
 
   const finalLayerSet = [...(layers ? layers : null)];
-
-  const getMapSize = useCallback(() => {
-    const newWidth = deckRef?.current?.deck?.width;
-    newWidth && setWidth(newWidth);
-
-    const newHeight = deckRef?.current?.deck.height;
-    newHeight && setHeight(newHeight);
-  }, [deckRef, setHeight, setWidth]);
-
-  useEffect(() => {
-    window.addEventListener('resize', getMapSize);
-  }, [getMapSize]);
 
   const handleClick = (info, event) => {
     if (info?.object?.properties?.cluster) {
