@@ -16,12 +16,14 @@ import { deleteMapRequest, fetchMapRequests } from 'store/datalayer.slice';
 import { userInfoSelector } from 'store/user.slice';
 
 const PropsPanel = node => {
-  const node2 = node.node;
-  if (!node2.parameters) return null;
-  node2.parameters['geometry'] = node2?.geometry_wkt;
+  const params = {
+    ...node.node.parameters,
+    geometry: node.node.geometry_wkt,
+  };
+
   return (
     <div className="props_box">
-      <JsonFormatter data={node2?.parameters} />
+      <JsonFormatter data={params} />
     </div>
   );
 };
@@ -280,7 +282,7 @@ const OnDemandTreeView = ({
               ) : null}
               {node?.parameters && itemPropsState[id] ? (
                 <div className="mt-2">
-                  <PropsPanel node={node} />
+                  {node ? <PropsPanel node={node} /> : null}
                 </div>
               ) : null}
             </>

@@ -10,6 +10,7 @@
     "check-prop-types": "^1.1.2",
     "country-list": "^2.2.0",
     "deck.gl": "^8.7.0",
+    "dompurify": "^3.0.0",
     "express": "^4.17.3",
     "formik": "^2.2.9",
     "i18next": "^19.8.4",
