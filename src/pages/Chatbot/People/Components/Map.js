@@ -6,13 +6,7 @@ import { Card } from 'reactstrap';
 import BaseMap from 'components/BaseMap/BaseMap';
 import SearchButton from 'components/SearchButton';
 
-const MapSection = ({
-  iconLayer,
-  getPeopleByArea,
-  setNewWidth,
-  setNewHeight,
-  onClick,
-}) => {
+const MapSection = ({ iconLayer, getPeopleByArea, onClick }) => {
   const getSearchButton = index => {
     return <SearchButton index={index} getInfoByArea={getPeopleByArea} />;
   };
@@ -22,8 +16,6 @@ const MapSection = ({
       <BaseMap
         layers={[iconLayer]}
         widgets={[getSearchButton]}
-        setWidth={setNewWidth}
-        setHeight={setNewHeight}
         screenControlPosition="top-right"
         navControlPosition="bottom-right"
         onClick={onClick}
@@ -35,8 +27,6 @@ const MapSection = ({
 MapSection.propTypes = {
   iconLayer: PropTypes.any,
   getPeopleByArea: PropTypes.func,
-  setNewWidth: PropTypes.func,
-  setNewHeight: PropTypes.func,
   onClick: PropTypes.func,
 };
 

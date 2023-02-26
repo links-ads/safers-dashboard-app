@@ -43,8 +43,6 @@ const Reports = ({ pollingFrequency }) => {
   const [reportId, setReportId] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(gBbox);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
   const [reportParams, setReportParams] = useState({});
 
   const dispatch = useDispatch();
@@ -107,8 +105,8 @@ const Reports = ({ pollingFrequency }) => {
       getBoundingBox(
         [viewState.longitude, viewState.latitude],
         viewState.zoom,
-        newWidth,
-        newHeight,
+        viewState.width,
+        viewState.height,
       ),
     );
   };
@@ -157,8 +155,6 @@ const Reports = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getReportsByArea={getReportsByArea}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
             onClick={handleClick}
           />
         </Col>

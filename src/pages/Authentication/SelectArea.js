@@ -10,7 +10,6 @@ import logodark from 'assets/images/background-light-logo.png';
 import logolight from 'assets/images/background-light-logo.png';
 import AreaOfInterestPanel from 'components/AreaOfInterestPanel';
 import { SIGNIN_REDIRECT } from 'config';
-import AoiHelper from 'helpers/aoiHelper';
 import { isLoggedInSelector } from 'store/authentication.slice';
 import { setAoiSuccessMessageSelector } from 'store/user.slice';
 

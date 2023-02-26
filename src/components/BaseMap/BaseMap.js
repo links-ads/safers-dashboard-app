@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 import { MapView, FlyToInterpolator } from '@deck.gl/core';
 import { DeckGL } from 'deck.gl';

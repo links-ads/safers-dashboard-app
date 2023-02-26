@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { PolygonLayer } from '@deck.gl/layers';
-import { FlyToInterpolator } from 'deck.gl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';

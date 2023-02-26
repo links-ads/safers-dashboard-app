@@ -46,8 +46,6 @@ const People = ({ pollingFrequency }) => {
   const [status, setStatus] = useState('');
   const [activity, setActivity] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
   const [activitiesOptions, setActivitiesOptions] = useState([]);
   const [peopleParams, setPeopleParams] = useState({});
 
@@ -128,8 +126,8 @@ const People = ({ pollingFrequency }) => {
       getBoundingBox(
         [viewState.longitude, viewState.latitude],
         viewState.zoom,
-        newWidth,
-        newHeight,
+        viewState.width,
+        viewState.height,
       ),
     );
   };
@@ -179,8 +177,6 @@ const People = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getPeopleByArea={getPeopleByArea}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
             onClick={onClick}
           />
         </Col>

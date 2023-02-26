@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { BitmapLayer } from 'deck.gl';
 import PropTypes from 'prop-types';

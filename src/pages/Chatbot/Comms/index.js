@@ -48,8 +48,6 @@ const Comms = ({ pollingFrequency }) => {
   const [commStatus, setcommStatus] = useState('');
   const [target, setTarget] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState(null);
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
@@ -125,8 +123,8 @@ const Comms = ({ pollingFrequency }) => {
       getBoundingBox(
         [viewState.longitude, viewState.latitude],
         viewState.zoom,
-        newWidth,
-        newHeight,
+        viewState.width,
+        viewState.height,
       ),
     );
   };
@@ -198,8 +196,6 @@ const Comms = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getReportsByArea={getReportsByArea}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}

@@ -43,8 +43,6 @@ const Missions = ({ pollingFrequency }) => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [missionStatus, setMissionStatus] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState(null);
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMission, setToggleCreateNewMission] = useState(false);
@@ -130,8 +128,8 @@ const Missions = ({ pollingFrequency }) => {
       getBoundingBox(
         [viewState.longitude, viewState.latitude],
         viewState.zoom,
-        newWidth,
-        newHeight,
+        viewState.width,
+        viewState.height,
       ),
     );
   };
@@ -199,8 +197,6 @@ const Missions = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getMissionsByArea={getMissionsByArea}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}
