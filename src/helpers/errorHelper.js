@@ -11,17 +11,13 @@ export const getGeneralErrors = errors => {
     // arrays or strings, or jut a string.
     if (error instanceof Object) {
       if (error instanceof Array) {
-        return error.map(errorItem => {
-          return getErrorListItems(errorItem);
-        });
+        return error.map(errorItem => getErrorListItems(errorItem));
       } else {
-        return Object.entries(error).map(([key, value]) => {
-          return Array.isArray(value)
-            ? value.map(valueItem => {
-                return getErrorListItems(key + ' - ' + valueItem);
-              })
-            : getErrorListItems(key + ' - ' + value);
-        });
+        return Object.entries(error).map(([key, value]) =>
+          Array.isArray(value)
+            ? value.map(valueItem => getErrorListItems(`${key} - ${valueItem}`))
+            : getErrorListItems(`${key} - ${value}`),
+        );
       }
     } else {
       return <li>{error}</li>;
