@@ -1385,6 +1385,7 @@
   resolved "https://registry.yarnpkg.com/@eslint/js/-/js-8.35.0.tgz#b7569632b0b788a0ca0e438235154e45d42813a7"
   integrity sha512-JXdzbRiWclLVoD8sNUjR443VVlYqiYmDVT6rGUEIEHU5YJW0gaVZwV2xgM7D4arkvASqD0IlLUVjHiFuxaftRw==
 
+<<<<<<< HEAD
 "@floating-ui/core@^1.1.0":
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-1.2.2.tgz#66f62cf1b7de2ed23a09c101808536e68caffaec"
@@ -1397,6 +1398,8 @@
   dependencies:
     "@floating-ui/core" "^1.1.0"
 
+=======
+>>>>>>> 4e51d8d... feat(frontend): Add mocks & unit tests
 "@humanwhocodes/config-array@^0.11.8":
   version "0.11.8"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.11.8.tgz#03595ac2075a4dc0f191cc2131de14fbd7d410b9"
@@ -5456,7 +5459,11 @@ core-js-pure@^3.23.3:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.29.0.tgz#0e1ac889214398641ea4bb1c6cf25ff0959ec1d2"
   integrity sha512-v94gUjN5UTe1n0yN/opTihJ8QBWD2O8i19RfTZR7foONPWArnjB96QA/wk5ozu1mm6ja3udQCzOzwQXTxi3xOQ==
 
+<<<<<<< HEAD
 core-js@^3.19.2:
+=======
+core-js@^3.0.1, core-js@^3.19.2:
+>>>>>>> 4e51d8d... feat(frontend): Add mocks & unit tests
   version "3.29.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.29.0.tgz#0273e142b67761058bcde5615c503c7406b572d6"
   integrity sha512-VG23vuEisJNkGl6XQmFJd3rEG/so/CNatqeE+7uZAwTSwFeB/qaO0be8xZYUNWprJ/GIwL8aMt9cj1kvbpTZhg==
@@ -5929,7 +5936,11 @@ decimal.js@^10.2.1:
   resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.4.3.tgz#1044092884d245d1b7f65725fa4ad4c6f781cc23"
   integrity sha512-VBBaLc1MgL5XpzgIP7ny5Z6Nx3UrRkIViUkPUdtl9aya5amy3De1gsUUSB1g3+3sExYNjCAsAznmukyxCb1GRA==
 
+<<<<<<< HEAD
 deck.gl@^8.8.26:
+=======
+deck.gl@^8.7.0:
+>>>>>>> 4e51d8d... feat(frontend): Add mocks & unit tests
   version "8.8.26"
   resolved "https://registry.yarnpkg.com/deck.gl/-/deck.gl-8.8.26.tgz#0f42c6c42856783eefbca4d54ea3a042afb5fe85"
   integrity sha512-XjJRWsEDu2Hfd9NGoZa912YfqSjbHwtJBoIcnQ1lV4ZiaQPx0xqyeUrsBG9dZP0X7AOsDPxcPqwnAkcK1QD0Gg==
@@ -5946,10 +5957,17 @@ deck.gl@^8.8.26:
     "@deck.gl/mesh-layers" "8.8.26"
     "@deck.gl/react" "8.8.26"
 
+<<<<<<< HEAD
 decode-uri-component@^0.4.1:
   version "0.4.1"
   resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.4.1.tgz#2ac4859663c704be22bf7db760a1494a49ab2cc5"
   integrity sha512-+8VxcR21HhTy8nOt6jf20w0c9CADrw1O8d+VZ/YzzCt4bJ3uBjw+D1q2osAB8RnpwwaeYBxy0HyKQxD5JBMuuQ==
+=======
+decode-uri-component@^0.2.2:
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/decode-uri-component/-/decode-uri-component-0.2.2.tgz#e69dbe25d37941171dd540e024c444cd5188e1e9"
+  integrity sha512-FqUYQ+8o158GyGTrMFJms9qh3CqTKvAqgqsTnkLI8sKu0028orqBhxNMFkFen0zGyg6epACD32pjVk58ngIErQ==
+>>>>>>> 4e51d8d... feat(frontend): Add mocks & unit tests
 
 dedent@^0.7.0:
   version "0.7.0"
@@ -6297,9 +6315,15 @@ ejs@^3.1.5, ejs@^3.1.6:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.284:
+<<<<<<< HEAD
   version "1.4.315"
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.315.tgz#b60a6676b3a1db332cfc8919118344aa06b9ac99"
   integrity sha512-ndBQYz3Eyy3rASjjQ9poMJGoAlsZ/aZnq6GBsGL4w/4sWIAwiUHVSsMuADbxa8WJw7pZ0oxLpGbtoDt4vRTdCg==
+=======
+  version "1.4.311"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.311.tgz#953bc9a4767f5ce8ec125f9a1ad8e00e8f67e479"
+  integrity sha512-RoDlZufvrtr2Nx3Yx5MB8jX3aHIxm8nRWPJm3yVvyHmyKaRvn90RjzB6hNnt0AkhS3IInJdyRfQb4mWhPvUjVw==
+>>>>>>> 4e51d8d... feat(frontend): Add mocks & unit tests
 
 emittery@^0.10.2:
   version "0.10.2"
@@ -7761,7 +7785,11 @@ i18next-browser-languagedetector@^7.0.1:
   dependencies:
     "@babel/runtime" "^7.19.4"
 
+<<<<<<< HEAD
 i18next-resources-to-backend@^1.1.2:
+=======
+i18next-resources-to-backend@^1.0.0:
+>>>>>>> 4e51d8d... feat(frontend): Add mocks & unit tests
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/i18next-resources-to-backend/-/i18next-resources-to-backend-1.1.2.tgz#8842a9373807c6f2edf08e63ae93aaa41d8098f3"
   integrity sha512-Qr93d8wRNSSGg6JKCNxlLBansJ3GEqpwNnB9gGq2Yntqy92zWprtw0Gq1N5Hz8lIRoihW1EttltKTfAuy8y0uA==
@@ -9477,7 +9505,11 @@ ms@2.1.3, ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.3.tgz#574c8138ce1d2b5861f0b44579dbadd60c6615b2"
   integrity sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==
 
+<<<<<<< HEAD
 msw@^1.1.0:
+=======
+msw@^1.0.1:
+>>>>>>> 4e51d8d... feat(frontend): Add mocks & unit tests
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/msw/-/msw-1.1.0.tgz#f88806b7ce4cade89b5bf629fa98c17218a4f036"
   integrity sha512-oqMvUXm1bMbwvGpoXAQVz8vXXQyQyx52HBDg3EDOK+dFXkQHssgkXEG4LfMwwZyr2Qt18I/w04XPaY4BkFTkzA==
@@ -11501,6 +11533,43 @@ rollup@^2.43.1:
   optionalDependencies:
     fsevents "~2.3.2"
 
+<<<<<<< HEAD
+=======
+rsuite-table@^5.9.0:
+  version "5.9.0"
+  resolved "https://registry.yarnpkg.com/rsuite-table/-/rsuite-table-5.9.0.tgz#72a24e8fae8d6f04da1ce5bc0ef55321a80ce0c9"
+  integrity sha512-1zA7o9e2vEFbz1Z/2Ud5bGK73ixHE/A2BYA/WYxODc+QyzxiOxJvve1vw70Q7V7iDl7paQ0aIutUhOHKw1KcKw==
+  dependencies:
+    "@babel/runtime" "^7.12.5"
+    "@juggle/resize-observer" "^3.3.1"
+    "@rsuite/icons" "^1.0.0"
+    classnames "^2.3.1"
+    dom-lib "^3.1.3"
+    lodash "^4.17.21"
+    react-is "^17.0.2"
+
+rsuite@^5.6.6:
+  version "5.28.0"
+  resolved "https://registry.yarnpkg.com/rsuite/-/rsuite-5.28.0.tgz#6ffdd735a29ba9ba57ea8cc96ebd74af600d3bef"
+  integrity sha512-DYU939s6i+ucJGvBg159No64ZpDJn1pNdT+a8S1JLXMGMcboIZIL16NwtE+VmtNAKafpdKIY/z5VzoKanTBVBQ==
+  dependencies:
+    "@babel/runtime" "^7.20.1"
+    "@juggle/resize-observer" "^3.4.0"
+    "@rsuite/icons" "^1.0.2"
+    "@types/chai" "^4.3.3"
+    "@types/lodash" "^4.14.184"
+    "@types/prop-types" "^15.7.5"
+    "@types/react-window" "^1.8.5"
+    classnames "^2.3.1"
+    date-fns "^2.29.3"
+    dom-lib "^3.1.3"
+    lodash "^4.17.11"
+    prop-types "^15.8.1"
+    react-window "^1.8.8"
+    rsuite-table "^5.9.0"
+    schema-typed "^2.0.3"
+
+>>>>>>> 4e51d8d... feat(frontend): Add mocks & unit tests
 run-async@^2.4.0:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/run-async/-/run-async-2.4.1.tgz#8440eccf99ea3e70bd409d49aab88e10c189a455"
