@@ -5,20 +5,30 @@ import { withTranslation } from 'react-i18next';
 import { Img } from 'react-image';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Container, Card, Row } from 'reactstrap';
+import { Container, Card, Row, Input, Col } from 'reactstrap';
 
-import { fetchCameraAlerts, allInSituAlertsSelector } from 'store/insitu.slice';
+import {
+  fetchCameraAlerts,
+  allInSituAlertsSelector,
+  cameraSourcesSelector,
+  fetchCameraSources,
+} from 'store/insitu.slice';
 import { formatDate } from 'utility';
 
 import { ReactComponent as Placeholder } from './placeholder.svg';
 
 const PhotoBar = ({ t }) => {
   const [photoList, setPhotoList] = useState([]);
+  const [cameraList, setCameraList] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [selectedCamera, setSelectedCamera] = useState('All');
 
   const NUMBER_OF_PHOTOS = 8;
 
   const allPhotos = useSelector(allInSituAlertsSelector);
+  const allCameras = useSelector(cameraSourcesSelector);
+
+  console.log('cameraList', cameraList);
 
   const dispatch = useDispatch();
 
@@ -36,9 +46,23 @@ const PhotoBar = ({ t }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    setPhotoList(allPhotos);
+    dispatch(fetchCameraSources());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (selectedCamera === 'All') {
+      setPhotoList(allPhotos);
+    } else {
+      setPhotoList(
+        allPhotos.filter(image => image.camera_id === selectedCamera),
+      );
+    }
     setIsLoaded(true);
-  }, [allPhotos, photoList]);
+  }, [selectedCamera, allPhotos]);
+
+  useEffect(() => {
+    setCameraList(allCameras);
+  }, [allCameras]);
 
   return (
     <Container
@@ -58,6 +82,29 @@ const PhotoBar = ({ t }) => {
               <i className="bx bx-image float-right"></i>
             </p>
           </Link>
+        </Row>
+        <Row className="my-1 mx-4 row-cols-4">
+          <Col>
+            <Input
+              id="inSituSource"
+              className="btn-sm sort-select-input  mx-8"
+              name="inSituSource"
+              placeholder="Source"
+              type="select"
+              onChange={e => setSelectedCamera(e.target.value)}
+              value={selectedCamera}
+            >
+              <option value="" key={''}>
+                {' '}
+                ---------- {t('Source')} : {t('All')} -----------
+              </option>
+              {cameraList?.map(camera => (
+                <option key={camera} value={camera}>
+                  {camera}
+                </option>
+              ))}
+            </Input>
+          </Col>
         </Row>
         <Row className="mx-3" xs={1} sm={2} md={3} lg={4}>
           {photoList && photoList.length === 0 ? (
