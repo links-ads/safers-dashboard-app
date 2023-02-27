@@ -172,7 +172,6 @@ const WildfireSimulation = ({
   // For this form we hard-code the list and pass along to the API
   // when we reshape the form data for submission
   const layerTypes = [
-    { id: '35006', name: 'Fire Simulation' },
     { id: '35011', name: 'Max rate of spread' },
     { id: '35010', name: 'Mean rate of spread' },
     { id: '35009', name: 'Max fireline intensity' },
