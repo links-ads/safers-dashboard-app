@@ -3,11 +3,13 @@ import {
   createSlice,
   createSelector,
 } from '@reduxjs/toolkit';
+import { flattenDeep } from 'lodash';
 import queryString from 'query-string';
 import toastr from 'toastr';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
+import { doesItOverlapAoi } from 'helpers/mapHelper';
 
 const FIRST_REQUEST = 0;
 
@@ -299,6 +301,8 @@ export const {
 
 const baseSelector = state => state?.dataLayer;
 
+const rootSelector = state => state;
+
 export const dataLayersSelector = createSelector(
   baseSelector,
   dataLayer => dataLayer?.dataLayers,
@@ -352,6 +356,61 @@ export const dataLayerParamsSelector = createSelector(
 export const dataLayerMapRequestsSelector = createSelector(
   baseSelector,
   dataLayer => dataLayer?.allMapRequests,
+);
+
+const nodeVisitor = (node, userAoi, parentInfo = {}) => {
+  // node visitor. This is a recursive function called on each node
+  // in the tree. We use this to veto certain nodes based on AOI
+  // geometry intersection.
+
+  if (node.children) {
+    if (node.geometry) {
+      // intermediate node, this has a lot of metadata like geometry
+      // test that this node intersects the default user AOI
+      const overlaps = doesItOverlapAoi(node, userAoi);
+      if (overlaps) {
+        // we pass these down to the leaf nodes and recurse down to the children
+        const passDown = {
+          geometry: node.geometry,
+          requestId: node.request_id,
+          parentTitle: node.title,
+          id: node.id,
+          bbox: node.bbox,
+        };
+        return node.children.map(child =>
+          nodeVisitor(child, userAoi, passDown),
+        );
+      } else {
+        // prune the tree, these are out of bounds
+        return [];
+      }
+    } else {
+      // no geometry, so we're at top level
+      return node.children.map(child => nodeVisitor(child, userAoi));
+    }
+  } else {
+    // no children, so a leaf node. If data is avaialble,
+    // combine the node and the info passed down from the parent
+    if (node.status && node.status === 'AVAILABLE' && node.info_url) {
+      return [{ ...node, ...parentInfo }];
+    } else {
+      return [];
+    }
+  }
+};
+
+export const onDemandMapRequestsFlattenedSelector = createSelector(
+  // returned flattened representation On Demand Map Requests Tree
+  rootSelector,
+  state => {
+    const categories = state?.dataLayer?.allMapRequests;
+    const defaultAoi = state?.user?.defaultAoi;
+    const aoiBbox = defaultAoi?.features[0]?.bbox;
+    const leafNodes = flattenDeep(
+      categories.map(category => nodeVisitor(category, aoiBbox)),
+    );
+    return leafNodes;
+  },
 );
 
 export default reportsSlice.reducer;
