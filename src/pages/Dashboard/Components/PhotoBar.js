@@ -28,8 +28,6 @@ const PhotoBar = ({ t }) => {
   const allPhotos = useSelector(allInSituAlertsSelector);
   const allCameras = useSelector(cameraSourcesSelector);
 
-  console.log('cameraList', cameraList);
-
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -94,7 +92,7 @@ const PhotoBar = ({ t }) => {
               onChange={e => setSelectedCamera(e.target.value)}
               value={selectedCamera}
             >
-              <option value="" key={''}>
+              <option value="All" key={''}>
                 {' '}
                 ---------- {t('Source')} : {t('All')} -----------
               </option>
