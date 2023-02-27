@@ -250,6 +250,7 @@ const authenticationSlice = createSlice({
       })
       .addCase(signInOauth2.rejected, (state, { payload }) => {
         state.errorSignIn = payload.error;
+        state.error = true;
       })
       .addCase(signIn.fulfilled, (state, { payload }) => {
         state.user = payload;

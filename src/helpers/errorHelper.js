@@ -4,19 +4,26 @@ import { Card, CardBody, CardTitle, List } from 'reactstrap';
 
 export const getGeneralErrors = errors => {
   if (!errors) return '';
-  const errArr = Object.keys(errors);
-  const getErrContainer = error => {
-    if (Array.isArray(errors[error])) {
-      return errors[error].map(errorElem => {
-        return (
-          <li key={errorElem}>
-            {error} - {errorElem}
-          </li>
+
+  const getErrorListItems = error => {
+    // turns errors into individual ListItems; an error can either
+    // be an array (of strings), or an object whose values can be
+    // arrays or strings, or jut a string.
+    if (error instanceof Object) {
+      if (error instanceof Array) {
+        return error.map(errorItem => getErrorListItems(errorItem));
+      } else {
+        return Object.entries(error).map(([key, value]) =>
+          Array.isArray(value)
+            ? value.map(valueItem => getErrorListItems(`${key} - ${valueItem}`))
+            : getErrorListItems(`${key} - ${value}`),
         );
-      });
+      }
+    } else {
+      return <li>{error}</li>;
     }
-    return <p>{error}</p>;
   };
+
   return (
     <Card color="danger" className="text-white-50">
       <CardBody>
@@ -24,11 +31,7 @@ export const getGeneralErrors = errors => {
           <i className="mdi mdi-alert-outline me-3" />
           Please fix the following error(s):
         </CardTitle>
-        <List className="text-white">
-          {errArr.map(error => {
-            return getErrContainer(error);
-          })}
-        </List>
+        <List className="text-white">{getErrorListItems(errors)}</List>
       </CardBody>
     </Card>
   );
