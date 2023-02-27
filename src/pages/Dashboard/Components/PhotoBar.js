@@ -27,10 +27,6 @@ const PhotoBar = ({ t }) => {
 
   const allPhotos = useSelector(allInSituAlertsSelector);
   const allCameras = useSelector(cameraSourcesSelector);
-  const testState = useSelector(state => console.log('state', state));
-
-  console.log('allPhotos', allPhotos);
-  console.log('allCameras', allCameras);
 
   const dispatch = useDispatch();
 
@@ -52,7 +48,6 @@ const PhotoBar = ({ t }) => {
   }, [dispatch]);
 
   useEffect(() => {
-    console.log('XXX');
     if (selectedCamera === 'All') {
       setPhotoList(allPhotos);
     } else {
@@ -68,7 +63,6 @@ const PhotoBar = ({ t }) => {
   }, [allCameras]);
 
   useEffect(() => {
-    console.log('photoList now', photoList);
     setIsLoaded(true);
   }, [photoList]);
 
