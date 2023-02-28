@@ -25,7 +25,7 @@ import UpdateProfile from './UpdateProfile';
 const MyProfile = ({ t }) => {
   const [selectedTab, setSelectedTab] = useState('1');
 
-  const toggleTab = tab => {
+  const selectTab = tab => {
     if (selectedTab !== tab) {
       setSelectedTab(tab);
     }
@@ -41,21 +41,21 @@ const MyProfile = ({ t }) => {
                 <ProfileTab
                   selectedTab={selectedTab}
                   tabId={'1'}
-                  toggleTab={toggleTab}
+                  selectTab={selectTab}
                   title={'My Profile'}
                   iconClass="fa-user-alt"
                 ></ProfileTab>
                 <ProfileTab
                   selectedTab={selectedTab}
                   tabId={'2'}
-                  toggleTab={toggleTab}
+                  selectTab={selectTab}
                   title={'Change Password'}
                   iconClass="fa-lock"
                 ></ProfileTab>
                 <ProfileTab
                   selectedTab={selectedTab}
                   tabId={'3'}
-                  toggleTab={toggleTab}
+                  selectTab={selectTab}
                   title={'Area of Interest'}
                   iconClass="fa-flag-checkered"
                 ></ProfileTab>

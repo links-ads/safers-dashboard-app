@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { NavItem, NavLink } from 'reactstrap';
 
-const ProfileTab = ({ t, selectedTab, tabId, toggleTab, title, iconClass }) => (
+const ProfileTab = ({ t, selectedTab, tabId, selectTab, title, iconClass }) => (
   <NavItem>
     <NavLink
       className={classnames({
@@ -13,7 +13,7 @@ const ProfileTab = ({ t, selectedTab, tabId, toggleTab, title, iconClass }) => (
         cursor: 'pointer',
       })}
       onClick={() => {
-        toggleTab(tabId);
+        selectTab(tabId);
       }}
     >
       <span className="d-none d-sm-block me-2">
@@ -28,7 +28,7 @@ ProfileTab.propTypes = {
   t: PropTypes.func,
   selectedTab: PropTypes.string,
   tabId: PropTypes.string,
-  toggleTab: PropTypes.func,
+  selectTab: PropTypes.func,
   title: PropTypes.string,
   iconClass: PropTypes.string,
 };
