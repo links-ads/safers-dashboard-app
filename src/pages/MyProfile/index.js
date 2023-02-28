@@ -14,19 +14,20 @@ import {
   CardTitle,
 } from 'reactstrap';
 
+import AreaOfInterestPanel from 'helpers/AreaOfInterestPanel';
+
 import ProfileTab from './ProfileTab';
 import ResetPsw from './ResetPsw';
 import UpdateProfile from './UpdateProfile';
-import AreaOfInterestPanel from '../../helpers/AreaOfInterestPanel';
 
 //i18n
 
 const MyProfile = ({ t }) => {
-  const [customActiveTab, setCustomActiveTab] = useState('1');
+  const [selectedTab, setSelectedTab] = useState('1');
 
-  const toggleCustom = tab => {
-    if (customActiveTab !== tab) {
-      setCustomActiveTab(tab);
+  const toggleTab = tab => {
+    if (selectedTab !== tab) {
+      setSelectedTab(tab);
     }
   };
 
@@ -38,28 +39,28 @@ const MyProfile = ({ t }) => {
             <div className="tab-container p-3">
               <Nav tabs className="nav-default nav-tabs-custom nav-justified">
                 <ProfileTab
-                  customActiveTab={customActiveTab}
-                  thisTabId={'1'}
-                  toggleCustom={toggleCustom}
+                  selectedTab={selectedTab}
+                  tabId={'1'}
+                  toggleTab={toggleTab}
                   title={'My Profile'}
                   iconClass="fa-user-alt"
                 ></ProfileTab>
                 <ProfileTab
-                  customActiveTab={customActiveTab}
-                  thisTabId={'2'}
-                  toggleCustom={toggleCustom}
+                  selectedTab={selectedTab}
+                  tabId={'2'}
+                  toggleTab={toggleTab}
                   title={'Change Password'}
                   iconClass="fa-lock"
                 ></ProfileTab>
                 <ProfileTab
-                  customActiveTab={customActiveTab}
-                  thisTabId={'3'}
-                  toggleCustom={toggleCustom}
+                  selectedTab={selectedTab}
+                  tabId={'3'}
+                  toggleTab={toggleTab}
                   title={'Area of Interest'}
                   iconClass="fa-flag-checkered"
                 ></ProfileTab>
               </Nav>
-              <TabContent activeTab={customActiveTab} className="p-3">
+              <TabContent activeTab={selectedTab} className="p-3">
                 <TabPane tabId="1">
                   <UpdateProfile />
                 </TabPane>
