@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Nav,
-  NavItem,
-  NavLink,
   TabContent,
   TabPane,
   Container,
@@ -17,18 +14,20 @@ import {
   CardTitle,
 } from 'reactstrap';
 
+import AreaOfInterestPanel from 'components/AreaOfInterestPanel';
+
+import ProfileTab from './ProfileTab';
 import ResetPsw from './ResetPsw';
 import UpdateProfile from './UpdateProfile';
-import AoiHelper from '../../helpers/aoiHelper';
 
 //i18n
 
 const MyProfile = ({ t }) => {
-  const [customActiveTab, setCustomActiveTab] = useState('1');
+  const [selectedTab, setSelectedTab] = useState('1');
 
-  const toggleCustom = tab => {
-    if (customActiveTab !== tab) {
-      setCustomActiveTab(tab);
+  const selectTab = tab => {
+    if (selectedTab !== tab) {
+      setSelectedTab(tab);
     }
   };
 
@@ -39,59 +38,29 @@ const MyProfile = ({ t }) => {
           <Col>
             <div className="tab-container p-3">
               <Nav tabs className="nav-default nav-tabs-custom nav-justified">
-                <NavItem>
-                  <NavLink
-                    style={{ cursor: 'pointer' }}
-                    className={classnames({
-                      active: customActiveTab === '1',
-                    })}
-                    onClick={() => {
-                      toggleCustom('1');
-                    }}
-                  >
-                    <span className="d-none d-sm-block me-2">
-                      <i className="fas fa-user-alt"></i>
-                    </span>
-                    <span className="d-block">{t('My Profile')}</span>
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    style={{ cursor: 'pointer' }}
-                    className={classnames({
-                      active: customActiveTab === '2',
-                    })}
-                    onClick={() => {
-                      toggleCustom('2');
-                    }}
-                    data-testid="updateProfilePasswordBtn"
-                  >
-                    <span className="d-none d-sm-block me-2">
-                      <i className="fas fa-lock"></i>
-                    </span>
-                    <span className="d-block">{t('Change Password')}</span>
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    style={{ cursor: 'pointer' }}
-                    className={classnames({
-                      active: customActiveTab === '3',
-                    })}
-                    onClick={() => {
-                      toggleCustom('3');
-                    }}
-                  >
-                    <span className="d-none d-sm-block me-2">
-                      <i className="fas fa-flag-checkered"></i>
-                    </span>
-                    <span className="d-block">
-                      {t('Area of Interest', { ns: 'common' })}
-                    </span>
-                  </NavLink>
-                </NavItem>
+                <ProfileTab
+                  selectedTab={selectedTab}
+                  tabId={'1'}
+                  selectTab={selectTab}
+                  title={'My Profile'}
+                  iconClass="fa-user-alt"
+                ></ProfileTab>
+                <ProfileTab
+                  selectedTab={selectedTab}
+                  tabId={'2'}
+                  selectTab={selectTab}
+                  title={'Change Password'}
+                  iconClass="fa-lock"
+                ></ProfileTab>
+                <ProfileTab
+                  selectedTab={selectedTab}
+                  tabId={'3'}
+                  selectTab={selectTab}
+                  title={'Area of Interest'}
+                  iconClass="fa-flag-checkered"
+                ></ProfileTab>
               </Nav>
-              <TabContent activeTab={customActiveTab} className="p-3">
+              <TabContent activeTab={selectedTab} className="p-3">
                 <TabPane tabId="1">
                   <UpdateProfile />
                 </TabPane>
@@ -106,7 +75,7 @@ const MyProfile = ({ t }) => {
                           <CardTitle className="mb-2 dflt-seperator">
                             <h3 className="h5 mb-0">{t('select-aoi')}</h3>
                           </CardTitle>
-                          <AoiHelper />
+                          <AreaOfInterestPanel />
                         </CardBody>
                       </Card>
                     </Col>
