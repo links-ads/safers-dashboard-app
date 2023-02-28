@@ -10,6 +10,7 @@ import toastr from 'toastr';
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
 import { doesItOverlapAoi } from 'helpers/mapHelper';
+import { defaultAoiSelector } from 'store/user/user.slice';
 
 const FIRST_REQUEST = 0;
 
@@ -301,8 +302,6 @@ export const {
 
 const baseSelector = state => state?.dataLayer;
 
-const rootSelector = state => state;
-
 export const dataLayersSelector = createSelector(
   baseSelector,
   dataLayer => dataLayer?.dataLayers,
@@ -401,10 +400,8 @@ const nodeVisitor = (node, userAoi, parentInfo = {}) => {
 
 export const onDemandMapRequestsFlattenedSelector = createSelector(
   // returned flattened representation On Demand Map Requests Tree
-  rootSelector,
-  state => {
-    const categories = state?.dataLayer?.allMapRequests;
-    const defaultAoi = state?.user?.defaultAoi;
+  [dataLayerMapRequestsSelector, defaultAoiSelector],
+  (categories, defaultAoi) => {
     const aoiBbox = defaultAoi?.features[0]?.bbox;
     const leafNodes = flattenDeep(
       categories.map(category => nodeVisitor(category, aoiBbox)),

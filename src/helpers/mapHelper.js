@@ -328,7 +328,7 @@ export const doesItOverlapAoi = (node, userAoi) => {
   // using Turf.js to test for an overlap between the layer and AOI geometries
   // using bboxes for performance and also to increase likelihood of finding overlaps
   const featureGeometry = bboxPolygon(node.bbox);
-  if (!(featureGeometry && userAoi)) {
+  if (!userAoi) {
     return false;
   }
   // TODO check if we need to reinstate test for GEOMETRYCOLLECTION
