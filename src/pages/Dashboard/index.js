@@ -9,6 +9,7 @@ import {
   filteredAlertsSelector,
 } from 'store/alerts/alerts.slice';
 import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
+import { fetchMapRequests } from 'store/datalayer/datalayer.slice';
 import { fetchEvents } from 'store/events/events.slice';
 import {
   fetchMissions,
@@ -88,6 +89,7 @@ const NewDashboard = () => {
     dispatch(fetchComms({ options: params, feFilters: {} }));
     dispatch(fetchMissions({ options: params, feFilters: {} }));
     dispatch(fetchAlerts({ options: params }));
+    dispatch(fetchMapRequests({ options: params }));
   }, [dispatch]);
 
   useEffect(() => {
