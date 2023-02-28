@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 
-import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
   Nav,
-  NavItem,
-  NavLink,
   TabContent,
   TabPane,
   Container,
@@ -17,6 +14,7 @@ import {
   CardTitle,
 } from 'reactstrap';
 
+import ProfileTab from './ProfileTab';
 import ResetPsw from './ResetPsw';
 import UpdateProfile from './UpdateProfile';
 import AoiHelper from '../../helpers/aoiHelper';
@@ -39,57 +37,27 @@ const MyProfile = ({ t }) => {
           <Col>
             <div className="tab-container p-3">
               <Nav tabs className="nav-default nav-tabs-custom nav-justified">
-                <NavItem>
-                  <NavLink
-                    style={{ cursor: 'pointer' }}
-                    className={classnames({
-                      active: customActiveTab === '1',
-                    })}
-                    onClick={() => {
-                      toggleCustom('1');
-                    }}
-                  >
-                    <span className="d-none d-sm-block me-2">
-                      <i className="fas fa-user-alt"></i>
-                    </span>
-                    <span className="d-block">{t('My Profile')}</span>
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    style={{ cursor: 'pointer' }}
-                    className={classnames({
-                      active: customActiveTab === '2',
-                    })}
-                    onClick={() => {
-                      toggleCustom('2');
-                    }}
-                    data-testid="updateProfilePasswordBtn"
-                  >
-                    <span className="d-none d-sm-block me-2">
-                      <i className="fas fa-lock"></i>
-                    </span>
-                    <span className="d-block">{t('Change Password')}</span>
-                  </NavLink>
-                </NavItem>
-                <NavItem>
-                  <NavLink
-                    style={{ cursor: 'pointer' }}
-                    className={classnames({
-                      active: customActiveTab === '3',
-                    })}
-                    onClick={() => {
-                      toggleCustom('3');
-                    }}
-                  >
-                    <span className="d-none d-sm-block me-2">
-                      <i className="fas fa-flag-checkered"></i>
-                    </span>
-                    <span className="d-block">
-                      {t('Area of Interest', { ns: 'common' })}
-                    </span>
-                  </NavLink>
-                </NavItem>
+                <ProfileTab
+                  customActiveTab={customActiveTab}
+                  thisTabId={'1'}
+                  toggleCustom={toggleCustom}
+                  title={'My Profile'}
+                  iconClass="fa-user-alt"
+                ></ProfileTab>
+                <ProfileTab
+                  customActiveTab={customActiveTab}
+                  thisTabId={'2'}
+                  toggleCustom={toggleCustom}
+                  title={'Change Password'}
+                  iconClass="fa-lock"
+                ></ProfileTab>
+                <ProfileTab
+                  customActiveTab={customActiveTab}
+                  thisTabId={'3'}
+                  toggleCustom={toggleCustom}
+                  title={'Area of Interest'}
+                  iconClass="fa-flag-checkered"
+                ></ProfileTab>
               </Nav>
               <TabContent activeTab={customActiveTab} className="p-3">
                 <TabPane tabId="1">
