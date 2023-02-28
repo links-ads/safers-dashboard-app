@@ -10,7 +10,7 @@ import toastr from 'toastr';
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
 import { doesItOverlapAoi } from 'helpers/mapHelper';
-import { defaultAoiSelector } from 'store/user/user.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 const FIRST_REQUEST = 0;
 

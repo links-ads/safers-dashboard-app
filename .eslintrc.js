@@ -5,8 +5,16 @@ module.exports = {
     'plugin:import/warnings',
     'plugin:prettier/recommended',
     'plugin:promise/recommended',
+    'plugin:jest-dom/recommended',
   ],
-  plugins: ['react-hooks', 'import', 'prettier', 'jsx-a11y', 'promise'],
+  plugins: [
+    'react-hooks',
+    'import',
+    'prettier',
+    'jsx-a11y',
+    'promise',
+    'jest-dom',
+  ],
   settings: {
     'import/resolver': {
       node: {
