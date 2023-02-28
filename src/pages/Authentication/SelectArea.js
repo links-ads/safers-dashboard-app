@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 
+import AreaOfInterestPanel from 'helpers/AreaOfInterestPanel';
 import { isLoggedInSelector } from 'store/authentication/authentication.slice';
 import { setAoiSuccessMessageSelector } from 'store/user/user.slice';
 
@@ -12,7 +13,6 @@ import logodark from '../../assets/images/background-light-logo.png';
 // eslint-disable-next-line import/no-duplicates
 import logolight from '../../assets/images/background-light-logo.png';
 import { SIGNIN_REDIRECT } from '../../config';
-import AoiHelper from '../../helpers/aoiHelper';
 
 const SelectArea = () => {
   const navigate = useNavigate();
@@ -54,7 +54,7 @@ const SelectArea = () => {
                   <h5>Choose your area of interest</h5>
                 </div>
                 <hr />
-                <AoiHelper />
+                <AreaOfInterestPanel />
               </Col>
             </Row>
           </Row>

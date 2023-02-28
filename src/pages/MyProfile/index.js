@@ -17,7 +17,7 @@ import {
 import ProfileTab from './ProfileTab';
 import ResetPsw from './ResetPsw';
 import UpdateProfile from './UpdateProfile';
-import AoiHelper from '../../helpers/aoiHelper';
+import AreaOfInterestPanel from '../../helpers/AreaOfInterestPanel';
 
 //i18n
 
@@ -74,7 +74,7 @@ const MyProfile = ({ t }) => {
                           <CardTitle className="mb-2 dflt-seperator">
                             <h3 className="h5 mb-0">{t('select-aoi')}</h3>
                           </CardTitle>
-                          <AoiHelper />
+                          <AreaOfInterestPanel />
                         </CardBody>
                       </Card>
                     </Col>

@@ -23,7 +23,7 @@ import 'toastr/build/toastr.min.css';
 
 //i18n
 
-const AoiHelper = ({ t }) => {
+const AreaOfInterestPanel = ({ t }) => {
   toastr.options = {
     preventDuplicates: true,
   };
@@ -96,7 +96,6 @@ const AoiHelper = ({ t }) => {
   const getPolygonLayer = aoi => {
     const coordinates = aoi.features[0].geometry.coordinates;
     return new PolygonLayer({
-      id: 'polygon-layer',
       data: coordinates,
       pickable: true,
       stroked: true,
@@ -106,7 +105,6 @@ const AoiHelper = ({ t }) => {
       lineWidthMinPixels: 1,
       opacity: 0.25,
       getPolygon: d => d,
-      // getElevation: () => 10,
       getFillColor: [192, 105, 25],
       getLineColor: [0, 0, 0],
       getLineWidth: 100,
@@ -116,18 +114,21 @@ const AoiHelper = ({ t }) => {
   const renderAreasOfInterest = () => {
     let aoisToSplit = _.cloneDeep(allAoi);
     const sortedAois = _.chunk(aoisToSplit, 3);
-
     const selVal = selectedAoi ? selectedAoi.features[0].properties.id : null;
     return (
       <>
         {sortedAois.map((aoisChunk, i) => {
           return (
+            // this is valid, it's a column (chunk) number, no id field is available
             // eslint-disable-next-line react/no-array-index-key
             <div className="d-flex flex-column me-5" key={i}>
               {aoisChunk.map((aoi, index) => {
                 return (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <FormGroup key={index} className="form-group mb-2" check>
+                  <FormGroup
+                    key={aoi.features[0].properties.id}
+                    className="form-group mb-2"
+                    check
+                  >
                     <Label check id={`selectAoi${index}`}>
                       <Input
                         id={`selectAoi${index}`}
@@ -181,8 +182,8 @@ const AoiHelper = ({ t }) => {
   );
 };
 
-AoiHelper.propTypes = {
+AreaOfInterestPanel.propTypes = {
   t: PropTypes.any,
 };
 
-export default withTranslation(['common'])(AoiHelper);
+export default withTranslation(['common'])(AreaOfInterestPanel);
