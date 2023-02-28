@@ -8,7 +8,7 @@ import { Container, Row, Card, Input, Button } from 'reactstrap';
 import { useMap } from 'components/BaseMap/MapContext';
 import { getViewState } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common/common.slice';
-import { onDemandMapRequestsFlattenedSelector } from 'store/datalayer/datalayer.slice';
+import { flattenedMapRequestsSelector } from 'store/datalayer/datalayer.slice';
 import {
   fetchEvents,
   setEventParams,
@@ -41,7 +41,7 @@ const AOIBar = ({
   // the right number in a few seconds, than starting with lots and then
   // shortening the list
   const filteredEvents = useSelector(filteredEventsSelector);
-  const mapRequests = useSelector(onDemandMapRequestsFlattenedSelector);
+  const mapRequests = useSelector(flattenedMapRequestsSelector);
 
   const updateEventList = useCallback(() => {
     // default to last 3 days, else use date range selector

@@ -398,7 +398,7 @@ const nodeVisitor = (node, userAoi, parentInfo = {}) => {
   }
 };
 
-export const onDemandMapRequestsFlattenedSelector = createSelector(
+export const flattenedMapRequestsSelector = createSelector(
   // returned flattened representation On Demand Map Requests Tree
   [dataLayerMapRequestsSelector, defaultAoiSelector],
   (categories, defaultAoi) => {
