@@ -14,7 +14,7 @@ import {
   CardTitle,
 } from 'reactstrap';
 
-import AreaOfInterestPanel from 'helpers/AreaOfInterestPanel';
+import AreaOfInterestPanel from 'components/AreaOfInterestPanel';
 
 import ProfileTab from './ProfileTab';
 import ResetPsw from './ResetPsw';

@@ -17,7 +17,7 @@ import {
   setAoiSuccessMessageSelector,
 } from 'store/user/user.slice';
 
-import BaseMap from '../components/BaseMap/BaseMap';
+import BaseMap from './BaseMap/BaseMap';
 
 import 'toastr/build/toastr.min.css';
 

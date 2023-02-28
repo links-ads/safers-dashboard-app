@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 
-import AreaOfInterestPanel from 'helpers/AreaOfInterestPanel';
+import AreaOfInterestPanel from 'components/AreaOfInterestPanel';
 import { isLoggedInSelector } from 'store/authentication/authentication.slice';
 import { setAoiSuccessMessageSelector } from 'store/user/user.slice';
 
