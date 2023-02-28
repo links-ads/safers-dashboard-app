@@ -43,6 +43,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: Frontend Test Report
-          path: |
-            jest_html_reporters.html
-            jest-html-reporters-attach
+          path: jest_html_reporters.html
