@@ -1,6 +1,7 @@
 import { PolygonLayer } from '@deck.gl/layers';
 import { fitBounds } from '@math.gl/web-mercator';
-import { FlyToInterpolator } from 'deck.gl';
+import { bboxPolygon, intersect } from '@turf/turf';
+import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
 import wkt from 'wkt';
 
 import { GeoJsonPinLayer } from '../components/BaseMap/GeoJsonPinLayer';
@@ -32,7 +33,9 @@ const ALERT_TYPES = {
 export const getBoundedViewState = (deckRef, bbox) => {
   const viewport = deckRef.current.deck;
   const { width, height } = viewport;
-  const padding = 250;
+  // padding reduced. This was set too high, causing a
+  // deckGL assertion that image was too small to display
+  const padding = 50;
 
   const [minX, minY, maxX, maxY] = bbox;
 
@@ -98,7 +101,6 @@ export const getPolygonLayer = aoi => {
     lineWidthMinPixels: 1,
     opacity: 0.25,
     getPolygon: d => d,
-    // getElevation: () => 10,
     getFillColor: [192, 105, 25],
     getLineColor: [0, 0, 0],
     getLineWidth: 100,
@@ -282,4 +284,52 @@ export const isWKTValid = str => {
     );
   }
   return !!geoObj;
+};
+
+export const getPolygonLayerFromGeometry = geometry => {
+  // fetch polygon for arbitrary polygonal geometry
+  // e.g. AOI for a data layer
+  return new PolygonLayer({
+    data: geometry.coordinates,
+    pickable: true,
+    stroked: true,
+    filled: true,
+    extruded: false,
+    wireframe: true,
+    lineWidthMinPixels: 1,
+    opacity: 0.25,
+    getPolygon: d => d,
+    getFillColor: [192, 105, 25],
+    getLineColor: [0, 0, 0],
+    getLineWidth: 100,
+  });
+};
+
+export const getBitmapLayer = selectedLayerNode => {
+  /*
+     extract bounds from url, this is passed in as an object with timestamps
+     as the keys and urls as the values. Only going to show first one for now
+    */
+  const firstURL = Object.values(selectedLayerNode.urls)[0];
+  const urlSearchParams = new URLSearchParams(firstURL);
+  const bounds = urlSearchParams.has('bbox')
+    ? urlSearchParams.get('bbox').split(',').map(Number)
+    : selectedLayerNode.bbox;
+  return new BitmapLayer({
+    bounds: bounds,
+    image: firstURL,
+    opacity: 0.5,
+  });
+};
+
+export const doesItOverlapAoi = (node, userAoi) => {
+  // using Turf.js to test for an overlap between the layer and AOI geometries
+  // using bboxes for performance and also to increase likelihood of finding overlaps
+  const featureGeometry = bboxPolygon(node.bbox);
+  if (!userAoi) {
+    return false;
+  }
+  // TODO check if we need to reinstate test for GEOMETRYCOLLECTION
+  const aoiPolygon = bboxPolygon(userAoi);
+  return !!intersect(aoiPolygon, featureGeometry);
 };

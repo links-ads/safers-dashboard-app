@@ -13,9 +13,12 @@ import {
   getPolygonLayer,
   getViewState,
   getEventIconLayer,
+  getBitmapLayer,
+  getBoundedViewState,
 } from '../../../helpers/mapHelper';
 
 const MapComponent = ({
+  selectedLayer, // raster layer
   eventList = [],
   orgPplList = [],
   orgReportList = [],
@@ -24,9 +27,23 @@ const MapComponent = ({
   alertsList = [],
   visibleLayers = {},
 }) => {
-  const { setViewState } = useMap();
+  const { deckRef, updateViewState } = useMap();
+
   const objAoi = useSelector(defaultAoiSelector);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
+
+  const mapRequestLayer = useMemo(() => {
+    if (!selectedLayer) {
+      return null;
+    }
+    const { latitude, longitude, zoom } = getBoundedViewState(
+      deckRef,
+      selectedLayer.bbox,
+    );
+    const newViewState = getViewState([longitude, latitude], zoom);
+    updateViewState(newViewState);
+    return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
+  }, [deckRef, selectedLayer, updateViewState]);
 
   const iconLayer = useMemo(
     () =>
@@ -103,14 +120,6 @@ const MapComponent = ({
     [commsList, visibleLayers.communications],
   );
 
-  const viewState = useMemo(() => {
-    return getViewState(
-      //memoized this to prevent map snapping back to AOI after polling
-      objAoi.features[0].properties.midPoint,
-      objAoi.features[0].properties.zoomLevel,
-    );
-  }, [objAoi]);
-
   const allLayers = [
     polygonLayer,
     iconLayer,
@@ -119,6 +128,7 @@ const MapComponent = ({
     peopleLayer,
     reportLayer,
     commsLayer,
+    mapRequestLayer,
   ];
 
   return (
@@ -126,8 +136,6 @@ const MapComponent = ({
       <Row style={{ height: 550 }} className="mx-auto">
         <BaseMap
           layers={allLayers}
-          setViewState={setViewState}
-          initialViewState={viewState}
           screenControlPosition="top-right"
           navControlPosition="bottom-right"
         />
