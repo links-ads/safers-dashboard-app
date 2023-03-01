@@ -15,6 +15,7 @@ import {
   getEventIconLayer,
   getBitmapLayer,
   getBoundedViewState,
+  getIconLayer,
 } from '../../../helpers/mapHelper';
 
 const MapComponent = ({
@@ -45,85 +46,103 @@ const MapComponent = ({
     return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
   }, [deckRef, selectedLayer, updateViewState]);
 
-  const iconLayer = useMemo(
-    () =>
-      getEventIconLayer(
-        'events-layer',
-        eventList,
-        MAP_TYPES.ALERTS,
-        'flag',
-        visibleLayers.events,
-      ),
-    [eventList, visibleLayers.events],
-  );
+  // const iconLayer = useMemo(
+  //   () =>
+  //     getEventIconLayer(
+  //       'events-layer',
+  //       eventList,
+  //       MAP_TYPES.ALERTS,
+  //       'flag',
+  //       visibleLayers.events,
+  //     ),
+  //   [eventList, visibleLayers.events],
+  // );
 
   const missionsLayer = useMemo(
     () =>
-      getEventIconLayer(
-        'missions-layer',
-        missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
+      getIconLayer(
+        //missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
+        missionsList,
         MAP_TYPES.MISSIONS,
         'target',
+        {},
         visibleLayers.missions,
+        'missions-layer',
       ),
     [missionsList, visibleLayers.missions],
   );
 
-  const alertsLayer = useMemo(
-    () =>
-      getEventIconLayer(
-        'alerts-layer',
-        alertsList.filter(
-          item =>
-            item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
-        ),
-        MAP_TYPES.ALERTS,
-        'fire',
-        visibleLayers.alerts,
-      ),
-    [alertsList, visibleLayers.alerts],
-  );
+  // const alertsLayer = useMemo(() => {
+  //   console.log('alertsList', alertsList);
+  //   return getIconLayer(
+  //     // alertsList.filter(
+  //     //   item => item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
+  //     // ),
+  //     alertsList,
+  //     MAP_TYPES.ALERTS,
+  //     'fire',
+  //     {},
+  //     visibleLayers.alerts,
+  //   );
+  // }, [alertsList, visibleLayers.alerts]);
 
   const peopleLayer = useMemo(
     () =>
-      getEventIconLayer(
-        'people-layer',
-        orgPplList.filter(item => item?.geometry?.coordinates?.length > 0),
+      getIconLayer(
+        // orgPplList.filter(
+        //   item =>
+        //     item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
+        // ),
+        orgPplList,
         MAP_TYPES.PEOPLE,
         'people',
+        {},
         visibleLayers.people,
+        'people-layer',
       ),
     [orgPplList, visibleLayers.people],
   );
 
   const reportLayer = useMemo(
     () =>
-      getEventIconLayer(
-        'report-layer',
-        orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
+      // getEventIconLayer(
+      //   'report-layer',
+      //   orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
+      //   MAP_TYPES.REPORTS,
+      //   'report',
+      //   visibleLayers.reports,
+      // ),
+
+      getIconLayer(
+        //orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
+        orgReportList,
         MAP_TYPES.REPORTS,
         'report',
+        {},
         visibleLayers.reports,
+        'reports-layer',
       ),
     [orgReportList, visibleLayers.reports],
   );
 
   const commsLayer = useMemo(
     () =>
-      getEventIconLayer(
-        'comms-layer',
-        commsList.filter(item => item?.geometry?.coordinates?.length > 0),
+      getIconLayer(
+        //commsList.filter(item => item?.geometry?.coordinates?.length > 0),
+        commsList,
         MAP_TYPES.COMMUNICATIONS,
         'communications',
+        {},
         visibleLayers.communications,
+        'communications-layer',
       ),
     [commsList, visibleLayers.communications],
   );
 
   const allLayers = [
     polygonLayer,
-    iconLayer,
-    alertsLayer,
+    //iconLayer,
+    //alertsLayer,
     missionsLayer,
     peopleLayer,
     reportLayer,

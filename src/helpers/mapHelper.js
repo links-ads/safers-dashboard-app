@@ -181,9 +181,15 @@ export const getIconLayer = (
   mapType,
   markerName = 'alert',
   selectedItem = {},
+  visible = true, // needed for dashboard
+  id = null, // ditto, but ok to leave as null if only showing 1 layer
 ) => {
+  if (!alerts || alerts.length === 0) {
+    return null;
+  }
   const data = getAsGeoJSON(alerts);
   return new GeoJsonPinLayer({
+    id,
     data,
     selectedItem,
     getPosition: feature => feature.geometry.coordinates,
@@ -195,6 +201,7 @@ export const getIconLayer = (
     getPinSize: () => 35,
     pixelOffset: [-18, -18],
     pinSize: 25,
+    visible: visible,
   });
 };
 
