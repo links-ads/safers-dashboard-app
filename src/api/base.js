@@ -6,7 +6,7 @@ import { setLoading } from 'store/common.slice';
 
 import { endpoints } from './endpoints';
 import { BASE_URL } from '../config';
-import { authHeader, deleteSession } from '../helpers/authHelper';
+import { deleteSession, getSession } from '../helpers/authHelper';
 export const API_PREFIX = 'api';
 
 const axiosApi = axios.create({
@@ -31,6 +31,12 @@ export const setupInterceptors = store => {
       const isPermitted = isWhitelisted(config.url);
       if (!isPermitted || (isPermitted && config.method === 'post')) {
         store.dispatch(setLoading({ status: true, message: 'Please wait..' }));
+      }
+
+      const session = getSession();
+      if (session) {
+        // Add auth header for bearer token
+        config.headers.Authorization = `Bearer ${session.access_token}`;
       }
       return config;
     },
@@ -62,35 +68,31 @@ export async function getCustom(url, config) {
 }
 
 export async function get(url, config = {}) {
-  return await axiosApi
-    .get(url, { params: config, headers: authHeader() })
-    .then(response => response);
+  return await axiosApi.get(url, { params: config }).then(response => response);
 }
 
 export async function patch(url, data, config = {}) {
   return await axiosApi
-    .patch(url, { ...data }, { ...config, headers: authHeader() })
+    .patch(url, { ...data }, { ...config })
     .then(response => response)
     .catch(error => error.response);
 }
 
 export async function post(url, data, config = {}) {
   return axiosApi
-    .post(url, { ...data }, { ...config, headers: authHeader() })
+    .post(url, { ...data }, { ...config })
     .then(response => response)
     .catch(error => error.response);
 }
 
 export async function put(url, data, config = {}) {
   return axiosApi
-    .put(url, { ...data }, { ...config, headers: authHeader() })
+    .put(url, { ...data }, { ...config })
     .then(response => response);
 }
 
 export async function del(url, config = {}) {
-  return await axiosApi
-    .delete(url, { ...config, headers: authHeader() })
-    .then(response => response);
+  return await axiosApi.delete(url, { ...config }).then(response => response);
 }
 
 const handleError = (error, store) => {
