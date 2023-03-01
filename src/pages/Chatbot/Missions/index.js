@@ -209,6 +209,7 @@ const Missions = ({ pollingFrequency }) => {
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}
             onClick={onClick}
+            clearMap={() => setCoordinates([])}
           />
         </Col>
       </Row>

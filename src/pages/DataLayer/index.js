@@ -31,6 +31,7 @@ import {
 import {
   fetchDataLayers,
   fetchMapRequests,
+  postMapRequest,
   setNewMapRequestState,
   dataLayersSelector,
   metaDataSelector,
@@ -40,13 +41,20 @@ import {
   dataLayerMapRequestsSelector,
 } from 'store/datalayer/datalayer.slice';
 import { defaultAoiSelector } from 'store/user/user.slice';
+import { getWKTfromFeature } from 'store/utility';
 
-import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
+import {
+  SLIDER_SPEED,
+  DATA_LAYERS_PANELS,
+  EUROPEAN_BBOX,
+  WILDFIRE_LAYER_TYPES,
+  DEFAULT_WILDFIRE_GEOMETRY_BUFFER,
+} from './constants';
 import DataLayer from './DataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
 import OnDemandDataLayer from './OnDemandDataLayer';
 import PostEventMonitoringForm from './PostEventMonitoringForm';
-import WildfireSimulation from './WildfireSimulation';
+import WildfireSimulation from './wildfire-simulation-form/WildfireSimulation';
 import { MAP } from '../../constants/common';
 import { fetchEndpoint } from '../../helpers/apiHelper';
 import { getBoundingBox, isWKTValid } from '../../helpers/mapHelper';
@@ -421,6 +429,61 @@ const DataLayerDashboard = ({ t }) => {
     }
   };
 
+  const onWildfireFormSubmit = formData => {
+    // rename properties to match what server expects
+    const boundary_conditions = Object.values(formData.boundaryConditions).map(
+      obj => ({
+        time: Number(obj.timeOffset),
+        w_dir: Number(obj.windDirection),
+        w_speed: Number(obj.windSpeed),
+        moisture: Number(obj.fuelMoistureContent),
+        fireBreak: obj.fireBreak
+          ? // filter out any 'fireBreak' keys which are just empy arrays
+            Object.entries(obj.fireBreak).reduce(
+              (acc, [key, value]) =>
+                value.length
+                  ? {
+                      ...acc,
+                      [key]: getWKTfromFeature(value),
+                    }
+                  : acc,
+              {},
+            )
+          : {},
+      }),
+      [],
+    );
+
+    const transformedGeometry = getWKTfromFeature(formData.mapSelection);
+    const startDateTime = new Date(formData.ignitionDateTime).toISOString();
+    const endDateTime = new Date(
+      moment(startDateTime)
+        .add(formData.hoursOfProjection, 'hours')
+        .toISOString()
+        .slice(0, 19),
+    );
+
+    const payload = {
+      data_types: WILDFIRE_LAYER_TYPES.map(item => item.id),
+      geometry: transformedGeometry,
+      geometry_buffer_size: DEFAULT_WILDFIRE_GEOMETRY_BUFFER,
+      title: formData.simulationTitle,
+      parameters: {
+        description: formData.simulationDescription,
+        start: startDateTime,
+        end: endDateTime,
+        time_limit: Number(formData.hoursOfProjection),
+        probabilityRange: Number(formData.probabilityRange),
+        do_spotting: formData.simulationFireSpotting,
+        boundary_conditions,
+      },
+    };
+
+    dispatch(postMapRequest(payload));
+    dispatch(fetchMapRequests());
+    backToOnDemandPanel();
+  };
+
   return (
     <div className="page-content">
       <div className="mx-2 sign-up-aoi-map-bg">
@@ -537,6 +600,7 @@ const DataLayerDashboard = ({ t }) => {
                 handleResetAOI={handleResetAOI}
                 backToOnDemandPanel={backToOnDemandPanel}
                 mapInputOnChange={mapInputOnChange}
+                onSubmit={onWildfireFormSubmit}
               />
             ) : null}
           </TabPane>

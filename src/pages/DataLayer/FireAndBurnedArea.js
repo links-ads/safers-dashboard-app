@@ -412,6 +412,11 @@ const FireAndBurnedArea = ({
                           );
                           return isAreaValid;
                         }}
+                        clearMap={() => {
+                          setFieldValue('mapSelection', []);
+                          setFieldValue('isMapAreaValid', true);
+                          setFieldValue('isMapAreaValidWKT', true);
+                        }}
                       />
                     </Card>
                   </Col>

@@ -16,6 +16,7 @@ const MapSection = ({
   coordinates,
   togglePolygonMap = false,
   handleAreaValidation,
+  clearMap,
 }) => {
   const getSearchButton = index => (
     <SearchButton index={index} getInfoByArea={getReportsByArea} />
@@ -48,6 +49,7 @@ const MapSection = ({
           key="comm-polygon-map"
           handleAreaValidation={handleAreaValidation}
           singlePolygonOnly={true}
+          clearMap={clearMap}
         />
       ) : null}
     </Card>
