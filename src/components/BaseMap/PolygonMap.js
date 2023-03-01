@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { MapView } from '@deck.gl/core';
 import MapGL, {
@@ -18,13 +18,15 @@ import { useSelector, useDispatch } from 'react-redux';
 import { MAPBOX_TOKEN } from 'config';
 import { useLocalStorage } from 'customHooks/useLocalStorage';
 import { FIRE_BREAK_STROKE_COLORS } from 'pages/DataLayer/constants';
-import { selectedFireBreakSelector, setSelectedFireBreak } from 'store/datalayer.slice';
+import {
+  selectedFireBreakSelector,
+  setSelectedFireBreak,
+} from 'store/datalayer.slice';
 import {
   mapStylesSelector,
   selectedMapStyleSelector,
   setSelectedMapStyle,
 } from 'store/map.slice';
-import { getWKTfromFeature } from 'utility';
 
 import { useMap } from './MapContext';
 import { MapStyleSwitcher } from './MapStyleSwitcher';
@@ -102,16 +104,18 @@ const PolygonMap = ({
   };
 
   const editToggle = mode => {
-    if (mode == DRAW_TYPES.LINE_STRING) {
+    if (mode === DRAW_TYPES.LINE_STRING) {
       toggleMode(
-        modeId == DRAW_TYPES.LINE_STRING ? 'editing' : DRAW_TYPES.LINE_STRING,
+        modeId === DRAW_TYPES.LINE_STRING ? 'editing' : DRAW_TYPES.LINE_STRING,
       );
-    } else if (mode == DRAW_TYPES.POLYGON) {
+    } else if (mode === DRAW_TYPES.POLYGON) {
       if (singlePolygonOnly) {
         setAreaIsValid(true);
         setCoordinates([]);
       }
-      toggleMode(modeId == DRAW_TYPES.POLYGON ? 'editing' : DRAW_TYPES.POLYGON);
+      toggleMode(
+        modeId === DRAW_TYPES.POLYGON ? 'editing' : DRAW_TYPES.POLYGON,
+      );
     }
   };
 
@@ -169,7 +173,7 @@ const PolygonMap = ({
           <i className="bx bx-shape-triangle" style={{ fontSize: '20px' }}></i>
         </MapControlButton>
       )}
-      <MapControlButton onClick={clearMap}>
+      <MapControlButton onClick={handleClearMap}>
         <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
       </MapControlButton>
     </>
@@ -191,11 +195,6 @@ const PolygonMap = ({
   const handleSelectMapStyle = mapStyle => {
     dispatch(setSelectedMapStyle(mapStyle));
     setMapStyle(mapStyle);
-  };
-
-  const handleViewStateChange = ({ viewState: { width, height, ...rest } }) => {
-    onViewStateChange({ viewState: { width, height, ...rest } });
-    setViewState(rest);
   };
 
   return (

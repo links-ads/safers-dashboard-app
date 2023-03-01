@@ -41,7 +41,11 @@ import {
   dataLayerMapRequestsSelector,
 } from 'store/datalayer.slice';
 import { defaultAoiSelector } from 'store/user.slice';
-import { filterNodesByProperty, getGeoFeatures, getWKTfromFeature } from 'store/utility';
+import {
+  filterNodesByProperty,
+  getGeoFeatures,
+  getWKTfromFeature,
+} from 'utility';
 
 import {
   SLIDER_SPEED,
