@@ -22,8 +22,38 @@ import Missions from './Missions';
 import People from './People';
 import Reports from './Reports';
 
+const ChatbotTab = ({
+  selectedTab,
+  tabId,
+  title,
+  iconClass,
+  isDisabled = false,
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <NavItem className={isDisabled ? 'disabled' : ''}>
+      <NavLink
+        className={classnames({
+          active: selectedTab === tabId,
+          cursor: 'pointer',
+          disabled: isDisabled ? 'disabled' : '',
+        })}
+        onClick={() => {
+          navigate(`/chatbot?tab=${tabId}`);
+        }}
+      >
+        <span className="d-none d-sm-block me-2">
+          <i className={`fas ${iconClass}`}></i>
+        </span>
+        <span className="d-block">{title}</span>
+      </NavLink>
+    </NavItem>
+  );
+};
+
 const Chatbot = () => {
-  const [customActiveTab, setCustomActiveTab] = useState();
+  const [selectedTab, setSelectedTab] = useState();
   const config = useSelector(configSelector);
   const user = useSelector(userInfoSelector);
   const isProfessionalUser = user.is_professional;
@@ -31,7 +61,6 @@ const Chatbot = () => {
     config?.polling_frequency * GENERAL.MILLISEC_TO_SECOND ?? 0;
   const { t } = useTranslation();
   const location = useLocation();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const queryString = location.search;
@@ -39,11 +68,10 @@ const Chatbot = () => {
     const tab = params.get('tab');
 
     if (!tab) {
-      setCustomActiveTab('1');
-    } else if (tab && customActiveTab !== tab) {
-      setCustomActiveTab(tab);
+      setSelectedTab('1');
+    } else {
+      setSelectedTab(tab);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.search]);
 
   const renderContent = tab => {
@@ -70,76 +98,34 @@ const Chatbot = () => {
       <Container fluid="true" className="chatbot p-0">
         <div className="tab-container p-3">
           <Nav tabs className="nav-default nav-tabs-custom nav-justified">
-            <NavItem>
-              <NavLink
-                style={{ cursor: 'pointer' }}
-                className={classnames({
-                  active: customActiveTab === '1',
-                })}
-                onClick={() => {
-                  navigate('/chatbot?tab=1');
-                }}
-              >
-                <span className="d-none d-sm-block me-2">
-                  <i className="fas fa-user-alt"></i>
-                </span>
-                <span className="d-block">{t('people', { ns: 'common' })}</span>
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                style={{ cursor: 'pointer' }}
-                className={classnames({
-                  active: customActiveTab === '2',
-                })}
-                onClick={() => {
-                  navigate('/chatbot?tab=2');
-                }}
-                data-testid="updateProfilePasswordBtn"
-              >
-                <span className="d-none d-sm-block me-2">
-                  <i className="fas fa-envelope"></i>
-                </span>
-                <span className="d-block">{t('Communications')}</span>
-              </NavLink>
-            </NavItem>
-            <NavItem className={!isProfessionalUser ? 'disabled' : ''}>
-              <NavLink
-                style={{ cursor: 'pointer' }}
-                className={classnames({
-                  active: customActiveTab === '3',
-                })}
-                disabled={!isProfessionalUser}
-                onClick={() => {
-                  navigate('/chatbot?tab=3');
-                }}
-              >
-                <span className="d-none d-sm-block me-2">
-                  <i className="fas fa-flag-checkered"></i>
-                </span>
-                <span className="d-block">
-                  {t('mission', { ns: 'common' })}
-                </span>
-              </NavLink>
-            </NavItem>
-            <NavItem>
-              <NavLink
-                style={{ cursor: 'pointer' }}
-                className={classnames({
-                  active: customActiveTab === '4',
-                })}
-                onClick={() => {
-                  navigate('/chatbot?tab=4');
-                }}
-              >
-                <span className="d-none d-sm-block me-2">
-                  <i className="fas fa-file-image"></i>
-                </span>
-                <span className="d-block">
-                  {t('Reports', { ns: 'common' })}
-                </span>
-              </NavLink>
-            </NavItem>
+            <ChatbotTab
+              selectedTab={selectedTab}
+              tabId="1"
+              title={t('people', { ns: 'common' })}
+              iconClass="fa-user-alt"
+            />
+
+            <ChatbotTab
+              selectedTab={selectedTab}
+              tabId="2"
+              title={t('Communications', { ns: 'common' })}
+              iconClass="fa-envelope"
+            />
+
+            <ChatbotTab
+              selectedTab={selectedTab}
+              tabId="3"
+              title={t('mission', { ns: 'common' })}
+              iconClass="fa-checkered"
+              isDisabled={!isProfessionalUser}
+            />
+
+            <ChatbotTab
+              selectedTab={selectedTab}
+              tabId="4"
+              title={t('Reports', { ns: 'common' })}
+              iconClass="fa-file-image"
+            />
           </Nav>
           <TabContent activeTab={customActiveTab} className="p-3">
             <TabPane tabId="1">{renderContent('1')}</TabPane>
