@@ -16,6 +16,7 @@ const MapSection = ({
   coordinates,
   togglePolygonMap = false,
   onClick,
+  clearMap,
 }) => {
   const getSearchButton = index => {
     return <SearchButton index={index} getInfoByArea={getReportsByArea} />;
@@ -48,6 +49,7 @@ const MapSection = ({
           coordinates={coordinates}
           key="comm-polygon-map"
           onClick={onClick}
+          clearMap={clearMap}
         />
       )}
     </Card>
@@ -63,6 +65,7 @@ MapSection.propTypes = {
   setCoordinates: PropTypes.func,
   togglePolygonMap: PropTypes.any,
   onClick: PropTypes.func,
+  clearMap: PropTypes.func,
 };
 
 export default MapSection;
