@@ -150,47 +150,8 @@ export const reshapeEventsData = events => {
       geometry: geometry,
     };
   });
-  console.log('reshaped event data', data);
   return data;
 };
-
-// export const getEventIconLayer = (
-//   id,
-//   alerts,
-//   mapType,
-//   marker,
-//   isVisible = false,
-// ) => {
-//   // fetch pin layer for dashboard
-//   // caters for two slightly different data shapes, which is confusing
-//   const data = alerts?.map(alert => {
-//     let { geometry, ...properties } = alert;
-//     // there are two possible shapes. No idea why
-//     if (geometry?.features) {
-//       geometry = geometry.features[0]?.geometry;
-//     }
-//     return {
-//       type: 'Feature',
-//       properties,
-//       geometry: geometry,
-//     };
-//   });
-//   return new GeoJsonPinLayer({
-//     id,
-//     data,
-//     getPosition: feature => feature.geometry.coordinates,
-//     getPinColor: feature => getAlertIconColorFromContext(mapType, feature),
-//     icon: marker,
-//     iconColor: [255, 255, 255],
-//     clusterIconSize: 35,
-//     getPinSize: () => 35,
-//     pixelOffset: [-18, -18],
-//     pinSize: 25,
-//     onGroupClick: true,
-//     onPointClick: true,
-//     visible: isVisible,
-//   });
-// };
 
 export const getIconLayer = (
   alerts,
@@ -204,7 +165,11 @@ export const getIconLayer = (
     return null;
   }
   const data = getAsGeoJSON(alerts);
-  console.log(`data for layer "${id}" is `, data);
+  //console.log(`data for layer "${id}" is `, data);
+  if (!data || data.length === 0) {
+    // deckGL really doesnt like empty data
+    return null;
+  }
   return new GeoJsonPinLayer({
     id,
     data,

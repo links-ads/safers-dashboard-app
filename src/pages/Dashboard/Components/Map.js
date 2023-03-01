@@ -47,7 +47,6 @@ const MapComponent = ({
   }, [deckRef, selectedLayer, updateViewState]);
 
   const eventsLayer = useMemo(() => {
-    console.log('eventList', eventList);
     return getIconLayer(
       reshapeEventsData(eventList),
       MAP_TYPES.EVENTS,
@@ -61,6 +60,7 @@ const MapComponent = ({
   const missionsLayer = useMemo(
     () =>
       getIconLayer(
+        // TODO check if these checks are needed
         //missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
         missionsList,
         MAP_TYPES.MISSIONS,
@@ -73,7 +73,6 @@ const MapComponent = ({
   );
 
   const alertsLayer = useMemo(() => {
-    console.log('alertsList', alertsList);
     return getIconLayer(
       // alertsList.filter(
       //   item => item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
@@ -106,14 +105,6 @@ const MapComponent = ({
 
   const reportLayer = useMemo(
     () =>
-      // getEventIconLayer(
-      //   'report-layer',
-      //   orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
-      //   MAP_TYPES.REPORTS,
-      //   'report',
-      //   visibleLayers.reports,
-      // ),
-
       getIconLayer(
         //orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
         orgReportList,
