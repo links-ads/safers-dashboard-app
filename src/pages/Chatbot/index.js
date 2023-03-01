@@ -74,25 +74,6 @@ const Chatbot = () => {
     }
   }, [location.search]);
 
-  const renderContent = tab => {
-    if (customActiveTab !== tab) {
-      return null;
-    }
-
-    switch (tab) {
-      case '1':
-        return <People pollingFrequency={pollingFrequency} />;
-      case '2':
-        return <Comms pollingFrequency={pollingFrequency} />;
-      case '3':
-        return <Missions pollingFrequency={pollingFrequency} />;
-      case '4':
-        return <Reports pollingFrequency={pollingFrequency} />;
-      default:
-        throw new Error('Unknown tab');
-    }
-  };
-
   return (
     <div className="page-content">
       <Container fluid="true" className="chatbot p-0">
@@ -127,11 +108,23 @@ const Chatbot = () => {
               iconClass="fa-file-image"
             />
           </Nav>
-          <TabContent activeTab={customActiveTab} className="p-3">
-            <TabPane tabId="1">{renderContent('1')}</TabPane>
-            <TabPane tabId="2">{renderContent('2')}</TabPane>
-            <TabPane tabId="3">{renderContent('3')}</TabPane>
-            <TabPane tabId="4">{renderContent('4')}</TabPane>
+
+          <TabContent activeTab={selectedTab} className="p-3">
+            <TabPane tabId="1">
+              <People pollingFrequency={pollingFrequency} />
+            </TabPane>
+
+            <TabPane tabId="2">
+              <Comms pollingFrequency={pollingFrequency} />
+            </TabPane>
+
+            <TabPane tabId="3">
+              <Missions pollingFrequency={pollingFrequency} />
+            </TabPane>
+
+            <TabPane tabId="4">
+              <Reports pollingFrequency={pollingFrequency} />
+            </TabPane>
           </TabContent>
         </div>
       </Container>
