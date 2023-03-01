@@ -31,7 +31,7 @@ const Reports = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
 
   const defaultAoi = useSelector(defaultAoiSelector);
-  const orgReportList = useSelector(allReportsSelector);
+  const allReports = useSelector(allReportsSelector);
   const filteredReports = useSelector(filteredReportsSelector);
   const success = useSelector(reportsSuccessSelector);
   const gBbox = useSelector(reportsBoundingBoxSelector);
@@ -47,7 +47,7 @@ const Reports = ({ pollingFrequency }) => {
 
   const dispatch = useDispatch();
 
-  const allReports = filteredReports || orgReportList;
+  const reportsList = filteredReports || allReports;
 
   useEffect(() => {
     setReportId(undefined);
@@ -86,19 +86,17 @@ const Reports = ({ pollingFrequency }) => {
   }, [dispatch, success]);
 
   useEffect(() => {
-    if (allReports.length > 0) {
-      const reshapedReports = allReports.map(report => {
-        const { report_id: id, ...rest } = report;
-        return { id, ...rest };
-      });
+    const reshapedReports = reportsList.map(report => {
+      const { report_id: id, ...rest } = report;
+      return { id, ...rest };
+    });
 
-      setIconLayer(
-        getIconLayer(reshapedReports, MAP_TYPES.REPORTS, 'report', {
-          id: reportId,
-        }),
-      );
-    }
-  }, [allReports, reportId]);
+    setIconLayer(
+      getIconLayer(reshapedReports, MAP_TYPES.REPORTS, 'report', {
+        id: reportId,
+      }),
+    );
+  }, [reportsList, reportId]);
 
   const getReportsByArea = () => {
     setBoundingBox(

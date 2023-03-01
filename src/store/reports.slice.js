@@ -46,24 +46,6 @@ export const fetchReportDetail = createAsyncThunk(
   },
 );
 
-export const setReportFavorite = createAsyncThunk(
-  `${name}/setReportFavorite`,
-  async ({ alertId, isFavorite }, { rejectWithValue }) => {
-    const response = await api.post(endpoints.eventAlerts.setFavorite, {
-      alert_id: alertId,
-      is_favorite: isFavorite,
-    });
-
-    if (response.status === 200) {
-      return {
-        msg: response.data,
-      };
-    }
-
-    return rejectWithValue({ error: true });
-  },
-);
-
 export const initialState = {
   allReports: [],
   pollingData: [],
@@ -130,13 +112,6 @@ const reportsSlice = createSlice({
         state.error = false;
       })
       .addCase(fetchReportDetail.rejected, state => {
-        state.error = true;
-      })
-      .addCase(setReportFavorite.fulfilled, (state, { payload }) => {
-        state.success = payload.msg;
-        state.error = false;
-      })
-      .addCase(setReportFavorite.rejected, state => {
         state.error = true;
       });
   },

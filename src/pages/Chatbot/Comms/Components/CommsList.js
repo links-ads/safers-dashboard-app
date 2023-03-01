@@ -29,11 +29,11 @@ const CommsList = ({ commID, setCommID }) => {
   }
   const pageNo = Math.ceil((selectedIndex + 1) / 4);
 
-  const setSelectedComm = mission_id => {
-    if (mission_id) {
-      setCommID(mission_id);
+  const setSelectedComm = id => {
+    if (id) {
+      setCommID(id);
       let copyCommList = _.cloneDeep(commList);
-      let selectedComm = _.find(copyCommList, { id: mission_id });
+      let selectedComm = _.find(copyCommList, { id });
       selectedComm.isSelected = true;
       setViewState(getViewState(selectedComm.location, viewState.zoom));
     } else {

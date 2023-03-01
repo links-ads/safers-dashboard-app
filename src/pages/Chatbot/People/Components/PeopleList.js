@@ -15,24 +15,24 @@ import People from './People';
 const PeopleList = ({ peopleId, setPeopleId }) => {
   const { viewState, setViewState } = useMap();
 
-  const orgPeopleList = useSelector(allPeopleSelector);
+  const allPeople = useSelector(allPeopleSelector);
   const filteredPeople = useSelector(filteredPeopleSelector);
   const [pageData, setPageData] = useState([]);
 
-  const allPeople = filteredPeople ?? orgPeopleList;
+  const peopleList = filteredPeople ?? allPeople;
 
   // Get the index, then divide that by 4 and ceil it, gets the page.
   let selectedIndex = 1;
   if (peopleId) {
-    selectedIndex = allPeople.findIndex(person => person.id === peopleId);
+    selectedIndex = peopleList.findIndex(person => person.id === peopleId);
   }
   const pageNo = Math.ceil((selectedIndex + 1) / 4);
 
   const setSelectedPeople = people_id => {
     if (people_id) {
       setPeopleId(people_id);
-      let peopleList = _.cloneDeep(allPeople);
-      let selectedPeople = _.find(peopleList, { id: people_id });
+      let copyPeopleList = _.cloneDeep(peopleList);
+      let selectedPeople = _.find(copyPeopleList, { id: people_id });
       selectedPeople.isSelected = true;
       setViewState(getViewState(selectedPeople.location, viewState.zoom));
     } else {
@@ -61,7 +61,7 @@ const PeopleList = ({ peopleId, setPeopleId }) => {
         <PaginationWrapper
           page={pageNo}
           pageSize={4}
-          list={allPeople}
+          list={peopleList}
           setPageData={updatePage}
         />
       </Row>

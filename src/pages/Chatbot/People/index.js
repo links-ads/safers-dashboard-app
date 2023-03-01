@@ -31,12 +31,12 @@ const People = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
 
   const defaultAoi = useSelector(defaultAoiSelector);
-  const orgPplList = useSelector(allPeopleSelector);
+  const allPeople = useSelector(allPeopleSelector);
   const filteredPeople = useSelector(filteredPeopleSelector);
   const success = useSelector(peopleSuccessSelector);
   const dateRange = useSelector(dateRangeSelector);
 
-  let allPeople = filteredPeople || orgPplList;
+  let peopleList = filteredPeople ?? allPeople;
 
   const { t } = useTranslation();
 
@@ -96,12 +96,10 @@ const People = ({ pollingFrequency }) => {
   }, [dispatch, success]);
 
   useEffect(() => {
-    if (allPeople.length > 0) {
-      setIconLayer(
-        getIconLayer(allPeople, MAP_TYPES.PEOPLE, 'people', { id: peopleId }),
-      );
-    }
-  }, [allPeople, dispatch, peopleId, setViewState]);
+    setIconLayer(
+      getIconLayer(peopleList, MAP_TYPES.PEOPLE, 'people', { id: peopleId }),
+    );
+  }, [peopleList, dispatch, peopleId, setViewState]);
 
   useInterval(
     () => {

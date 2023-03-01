@@ -66,24 +66,6 @@ export const createMission = createAsyncThunk(
   },
 );
 
-export const setMissionFavorite = createAsyncThunk(
-  `${name}/setMissionFavorite`,
-  async ({ alertId, isFavorite }, { rejectWithValue }) => {
-    const response = await api.post(endpoints.eventAlerts.setFavorite, {
-      alert_id: alertId,
-      is_favorite: isFavorite,
-    });
-
-    if (response.status === 200) {
-      return {
-        msg: response.data,
-      };
-    }
-
-    return rejectWithValue({ error: true });
-  },
-);
-
 export const initialState = {
   allMissions: [],
   pollingData: [],
@@ -151,13 +133,6 @@ const missionsSlice = createSlice({
         state.error = false;
       })
       .addCase(createMission.rejected, state => {
-        state.error = true;
-      })
-      .addCase(setMissionFavorite.fulfilled, (state, { payload }) => {
-        state.success = payload.msg;
-        state.error = false;
-      })
-      .addCase(setMissionFavorite.rejected, state => {
         state.error = true;
       });
   },

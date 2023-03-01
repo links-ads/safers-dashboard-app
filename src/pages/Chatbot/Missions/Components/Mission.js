@@ -16,7 +16,7 @@ import {
 
 import { formatDate } from 'utility';
 
-const Mission = ({ card, missionId, setSelectedMission /*, setFavorite*/ }) => {
+const Mission = ({ card, missionId, setSelectedMission }) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();

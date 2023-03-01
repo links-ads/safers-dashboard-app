@@ -31,7 +31,7 @@ const Missions = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
 
   const defaultAoi = useSelector(defaultAoiSelector);
-  const orgMissionList = useSelector(allMissionsSelector);
+  const allMissions = useSelector(allMissionsSelector);
   const filteredMissions = useSelector(filteredMissionsSelector);
   const success = useSelector(missionsSuccessSelector);
   const dateRange = useSelector(dateRangeSelector);
@@ -50,7 +50,7 @@ const Missions = ({ pollingFrequency }) => {
 
   const dispatch = useDispatch();
 
-  const allMissions = filteredMissions || orgMissionList;
+  const missionsList = filteredMissions ?? allMissions;
 
   const loadAllMissions = () => {
     setMissionId(undefined);
@@ -97,14 +97,12 @@ const Missions = ({ pollingFrequency }) => {
   }, [dispatch, success]);
 
   useEffect(() => {
-    if (allMissions.length > 0) {
-      setIconLayer(
-        getIconLayer(allMissions, MAP_TYPES.MISSIONS, 'target', {
-          id: missionId,
-        }),
-      );
-    }
-  }, [allMissions, missionId]);
+    setIconLayer(
+      getIconLayer(missionsList, MAP_TYPES.MISSIONS, 'target', {
+        id: missionId,
+      }),
+    );
+  }, [missionsList, missionId]);
 
   useInterval(
     () => {
