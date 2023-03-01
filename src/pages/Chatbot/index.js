@@ -13,14 +13,14 @@ import {
   Container,
 } from 'reactstrap';
 
-import { configSelector } from 'store/common/common.slice';
-import { userInfoSelector } from 'store/user/user.slice';
+import { GENERAL } from 'constants/common';
+import { configSelector } from 'store/common.slice';
+import { userInfoSelector } from 'store/user.slice';
 
 import Comms from './Comms';
 import Missions from './Missions';
 import People from './People';
 import Reports from './Reports';
-import { GENERAL } from '../../constants/common';
 
 const Chatbot = () => {
   const [customActiveTab, setCustomActiveTab] = useState();

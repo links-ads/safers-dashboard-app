@@ -7,10 +7,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Container, Card, Row } from 'reactstrap';
 
-import {
-  fetchCameraAlerts,
-  allInSituAlertsSelector,
-} from 'store/insitu/insitu.slice';
+import { fetchCameraAlerts, allInSituAlertsSelector } from 'store/insitu.slice';
 
 import { ReactComponent as Placeholder } from './placeholder.svg';
 

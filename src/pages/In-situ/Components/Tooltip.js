@@ -5,7 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { Popup } from 'react-map-gl';
 import { Col, Row } from 'reactstrap';
 
-import { formatDate } from '../../../store/utility';
+import { formatDate } from 'utility';
 
 //i18n
 

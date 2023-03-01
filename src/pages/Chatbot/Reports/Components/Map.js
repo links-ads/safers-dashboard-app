@@ -3,16 +3,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'reactstrap';
 
-import BaseMap from '../../../../components/BaseMap/BaseMap';
-import SearchButton from '../../../../components/SearchButton';
+import BaseMap from 'components/BaseMap/BaseMap';
+import SearchButton from 'components/SearchButton';
 
-const MapSection = ({
-  iconLayer,
-  getReportsByArea,
-  setNewWidth,
-  setNewHeight,
-  onClick,
-}) => {
+const MapSection = ({ iconLayer, getReportsByArea, onClick }) => {
   const getSearchButton = index => {
     return <SearchButton index={index} getInfoByArea={getReportsByArea} />;
   };
@@ -22,8 +16,6 @@ const MapSection = ({
       <BaseMap
         layers={[iconLayer]}
         widgets={[getSearchButton]}
-        setWidth={setNewWidth}
-        setHeight={setNewHeight}
         screenControlPosition="top-right"
         navControlPosition="bottom-right"
         onClick={onClick}
@@ -35,8 +27,6 @@ const MapSection = ({
 MapSection.propTypes = {
   iconLayer: PropTypes.any,
   getReportsByArea: PropTypes.func,
-  setNewWidth: PropTypes.func,
-  setNewHeight: PropTypes.func,
   onClick: PropTypes.func,
 };
 

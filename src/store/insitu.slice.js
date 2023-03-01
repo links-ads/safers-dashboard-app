@@ -7,8 +7,7 @@ import queryString from 'query-string';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-
-import { getDefaultDateRange } from '../utility';
+import { getDefaultDateRange } from 'utility';
 
 const name = 'inSituAlerts';
 

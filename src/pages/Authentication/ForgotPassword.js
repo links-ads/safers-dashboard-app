@@ -18,7 +18,7 @@ import * as Yup from 'yup';
 import {
   resetForgottenUserPasswordRequest,
   forgotPasswordResponseSelector,
-} from 'store/authentication/authentication.slice';
+} from 'store/authentication.slice';
 
 const ForgotPassword = () => {
   const dispatch = useDispatch();

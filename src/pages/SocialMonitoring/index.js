@@ -1,25 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { FlyToInterpolator } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Card, CardHeader, CardBody, CardFooter } from 'reactstrap';
 
-import { dateRangeSelector } from 'store/common/common.slice';
-import {
-  fetchStats,
-  fetchTweets,
-  statsSelector,
-} from 'store/dashboard/dashboard.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+import iconAtlas from 'assets/images/location-icon-atlas.png';
+import BaseMap from 'components/BaseMap/BaseMap';
+import iconMapping from 'constants/location-icon-mapping.json';
+import { dateRangeSelector } from 'store/common.slice';
+import { fetchStats, fetchTweets, statsSelector } from 'store/dashboard.slice';
+import { defaultAoiSelector } from 'store/user.slice';
+import { formatNumber } from 'utility';
 
 import IconClusterLayer from './IconClusterLayer';
 import TwitterContainer from './TwitterContainer';
-import iconAtlas from '../../assets/images/location-icon-atlas.png';
-import BaseMap from '../../components/BaseMap/BaseMap';
-import iconMapping from '../../constants/location-icon-mapping.json';
-import { formatNumber } from '../../store/utility';
 
 //i18n
 
@@ -34,7 +29,6 @@ const SocialMonitoring = ({ t }) => {
   const tweetsTrend = 23; //hard coded text until API available
   const socialStats = MOCK_DATA;
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
   const dispatch = useDispatch();
 
   const getSearchData = useCallback(() => {
@@ -51,32 +45,9 @@ const SocialMonitoring = ({ t }) => {
   }, [dateRange, defaultAoi, dispatch]);
 
   useEffect(() => {
-    if (!viewState) {
-      setViewState(
-        getViewState(
-          defaultAoi.features[0].properties.midPoint,
-          defaultAoi.features[0].properties.zoomLevel,
-        ),
-      );
-    }
-  }, [defaultAoi.features, viewState]);
-
-  useEffect(() => {
     getSearchData();
     setIconLayer(getIconLayer(socialStats));
   }, [dateRange, defaultAoi, getSearchData, socialStats]);
-
-  const getViewState = (midPoint, zoomLevel = 4) => {
-    return {
-      longitude: midPoint[0],
-      latitude: midPoint[1],
-      zoom: zoomLevel,
-      pitch: 0,
-      bearing: 0,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator(),
-    };
-  };
 
   const getIconLayer = data => {
     return new IconClusterLayer({
@@ -121,12 +92,6 @@ const SocialMonitoring = ({ t }) => {
           <Card className="map-card mb-0" style={{ height: 670 }}>
             <BaseMap
               layers={[iconLayer]}
-              initialViewState={viewState}
-              widgets={
-                [
-                  /*search button or any widget*/
-                ]
-              }
               screenControlPosition="top-right"
               navControlPosition="bottom-right"
             />

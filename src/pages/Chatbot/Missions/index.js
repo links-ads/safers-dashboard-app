@@ -9,27 +9,23 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { MAP_TYPES } from 'constants/common';
+import useInterval from 'customHooks/useInterval';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchMissions,
   resetMissionResponseState,
   allMissionsSelector,
   filteredMissionsSelector,
   missionsSuccessSelector,
-} from 'store/missions/missions.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/missions.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import CreateMission from './Components/create-mission/CreateMission';
 import MapSection from './Components/Map';
 import MissionList from './Components/MissionList';
 import SortSection from './Components/SortSection';
-import { MAP_TYPES } from '../../../constants/common';
-import useInterval from '../../../customHooks/useInterval';
-import {
-  getBoundingBox,
-  getViewState,
-  getIconLayer,
-} from '../../../helpers/mapHelper';
 
 const Missions = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
@@ -47,8 +43,6 @@ const Missions = ({ pollingFrequency }) => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [missionStatus, setMissionStatus] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState(null);
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMission, setToggleCreateNewMission] = useState(false);
@@ -134,8 +128,8 @@ const Missions = ({ pollingFrequency }) => {
       getBoundingBox(
         [viewState.longitude, viewState.latitude],
         viewState.zoom,
-        newWidth,
-        newHeight,
+        viewState.width,
+        viewState.height,
       ),
     );
   };
@@ -203,8 +197,6 @@ const Missions = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getMissionsByArea={getMissionsByArea}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}

@@ -19,19 +19,19 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
-import { configSelector } from 'store/common/common.slice';
-import {
-  resetUserPassword,
-  resetPasswordSuccessMessageSelector,
-  resetPswFailResSelector,
-} from 'store/user/user.slice';
-
-import { getGeneralErrors, getError } from '../../helpers/errorHelper';
+import { getGeneralErrors, getError } from 'helpers/errorHelper';
 import {
   passwordHelper,
   pwdRegEx,
   pwdValidationTxt,
-} from '../../helpers/passwordHelper';
+} from 'helpers/passwordHelper';
+import { configSelector } from 'store/common.slice';
+import {
+  resetUserPassword,
+  resetPasswordSuccessMessageSelector,
+  resetPswFailResSelector,
+} from 'store/user.slice';
+
 import 'toastr/build/toastr.min.css';
 
 //i18n

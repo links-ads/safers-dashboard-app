@@ -7,10 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 //i18n
 import { Row, Col, Input, Label, FormGroup, InputGroup } from 'reactstrap';
 
-import {
-  setFilteredEvents,
-  allEventsSelector,
-} from 'store/events/events.slice';
+import { setFilteredEvents, allEventsSelector } from 'store/events.slice';
 
 const SortSection = ({
   t,

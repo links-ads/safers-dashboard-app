@@ -6,11 +6,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
-import { PAGE_SIZE } from 'pages/Events/constants';
+import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
+import {
+  getBoundingBox,
+  getViewState,
+  getAlertIconColorFromContext,
+} from 'helpers/mapHelper';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchCameras,
   fetchCameraSources,
@@ -24,19 +30,12 @@ import {
   cameraListSelector,
   cameraAlertsSuccessSelector,
   cameraAlertsErrorSelector,
-} from 'store/insitu/insitu.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/insitu.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import AlertList from './Components/AlertList';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
-import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import { MAP_TYPES } from '../../constants/common';
-import {
-  getBoundingBox,
-  getViewState,
-  getAlertIconColorFromContext,
-} from '../../helpers/mapHelper';
 
 //i18n
 

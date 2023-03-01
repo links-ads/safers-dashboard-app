@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Container, Row, Card } from 'reactstrap';
 
-import { allReportsSelector } from 'store/reports/reports.slice';
+import { allReportsSelector } from 'store/reports.slice';
 
 import Report from '../../Chatbot/Reports/Components/Report';
 import { MAX_REPORTS } from '../constants';

@@ -3,15 +3,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'reactstrap';
 
-import BaseMap from '../../../../components/BaseMap/BaseMap';
-import PolygonMap from '../../../../components/BaseMap/PolygonMap';
-import SearchButton from '../../../../components/SearchButton';
+import BaseMap from 'components/BaseMap/BaseMap';
+import PolygonMap from 'components/BaseMap/PolygonMap';
+import SearchButton from 'components/SearchButton';
 
 const MapSection = ({
   iconLayer,
   getMissionsByArea,
-  setNewWidth,
-  setNewHeight,
   setCoordinates,
   coordinates,
   togglePolygonMap = false,
@@ -28,11 +26,8 @@ const MapSection = ({
         <BaseMap
           layers={[iconLayer]}
           widgets={[getSearchButton]}
-          setWidth={setNewWidth}
-          setHeight={setNewHeight}
           screenControlPosition="top-right"
           navControlPosition="bottom-right"
-          key="comm-base-map"
           onClick={onClick}
         />
       )}
@@ -41,13 +36,10 @@ const MapSection = ({
         <PolygonMap
           layers={[iconLayer]}
           widgets={[getSearchButton]}
-          setWidth={setNewWidth}
-          setHeight={setNewHeight}
           screenControlPosition="top-right"
           navControlPosition="bottom-right"
           setCoordinates={setCoordinates}
           coordinates={coordinates}
-          key="comm-polygon-map"
           onClick={onClick}
           clearMap={clearMap}
         />
@@ -59,8 +51,6 @@ const MapSection = ({
 MapSection.propTypes = {
   iconLayer: PropTypes.any,
   getMissionsByArea: PropTypes.func,
-  setNewWidth: PropTypes.func,
-  setNewHeight: PropTypes.func,
   setCoordinates: PropTypes.func,
   coordinates: PropTypes.any,
   togglePolygonMap: PropTypes.any,

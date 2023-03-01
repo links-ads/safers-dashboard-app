@@ -4,21 +4,20 @@ import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Card, Row } from 'reactstrap';
 
+import BaseMap from 'components/BaseMap/BaseMap';
 import { useMap } from 'components/BaseMap/MapContext';
 import { MAP_TYPES } from 'constants/common';
-import { defaultAoiSelector } from 'store/user/user.slice';
-
-import BaseMap from '../../../components/BaseMap/BaseMap';
 import {
   getPolygonLayer,
   getViewState,
   getEventIconLayer,
   getBitmapLayer,
   getBoundedViewState,
-} from '../../../helpers/mapHelper';
+} from 'helpers/mapHelper';
+import { defaultAoiSelector } from 'store/user.slice';
 
 const MapComponent = ({
-  selectedLayer, // raster layer
+  selectedLayer,
   eventList = [],
   orgPplList = [],
   orgReportList = [],

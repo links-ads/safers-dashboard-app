@@ -7,20 +7,17 @@ import {
   fetchAlerts,
   allAlertsSelector,
   filteredAlertsSelector,
-} from 'store/alerts/alerts.slice';
-import { fetchComms, allCommsSelector } from 'store/comms/comms.slice';
-import { fetchMapRequests } from 'store/datalayer/datalayer.slice';
-import { fetchEvents } from 'store/events/events.slice';
-import {
-  fetchMissions,
-  allMissionsSelector,
-} from 'store/missions/missions.slice';
+} from 'store/alerts.slice';
+import { fetchComms, allCommsSelector } from 'store/comms.slice';
+import { fetchMapRequests } from 'store/datalayer.slice';
+import { fetchEvents } from 'store/events.slice';
+import { fetchMissions, allMissionsSelector } from 'store/missions.slice';
 import {
   fetchPeople,
   allPeopleSelector,
   filteredPeopleSelector,
-} from 'store/people/people.slice';
-import { fetchReports, allReportsSelector } from 'store/reports/reports.slice';
+} from 'store/people.slice';
+import { fetchReports, allReportsSelector } from 'store/reports.slice';
 
 import AOIBar from './Components/AOIBar';
 import NotificationsBar from './Components/Notifications';

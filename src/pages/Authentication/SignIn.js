@@ -16,14 +16,11 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
-import {
-  signIn,
-  errorSignInSelector,
-} from 'store/authentication/authentication.slice';
-import { configSelector } from 'store/common/common.slice';
+import { getGeneralErrors, getError } from 'helpers/errorHelper';
+import { signIn, errorSignInSelector } from 'store/authentication.slice';
+import { configSelector } from 'store/common.slice';
 
 import OAuth2 from './OAuth2';
-import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 
 const SignIn = () => {
   const genError = useSelector(errorSignInSelector);

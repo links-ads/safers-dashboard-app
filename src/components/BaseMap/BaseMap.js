@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, Fragment } from 'react';
+import React, { Fragment } from 'react';
 
 import { MapView, FlyToInterpolator } from '@deck.gl/core';
 import { DeckGL } from 'deck.gl';
@@ -11,15 +10,16 @@ import {
 } from 'react-map-gl';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useMap } from './MapContext';
-import { MapStyleSwitcher } from './MapStyleSwitcher';
-import { MAPBOX_TOKEN } from '../../config';
-import { useLocalStorage } from '../../customHooks/useLocalStorage';
+import { MAPBOX_TOKEN } from 'config';
+import { useLocalStorage } from 'customHooks/useLocalStorage';
 import {
   mapStylesSelector,
   selectedMapStyleSelector,
   setSelectedMapStyle,
-} from '../../store/map/map.slice';
+} from 'store/map.slice';
+
+import { useMap } from './MapContext';
+import { MapStyleSwitcher } from './MapStyleSwitcher';
 
 const MAX_ZOOM = 20;
 
@@ -31,10 +31,7 @@ const BaseMap = ({
   hoverInfo = null,
   renderTooltip = () => {},
   onClick = () => {},
-  onViewStateChange = () => {},
   onViewportLoad = () => {},
-  setWidth = () => {},
-  setHeight = () => {},
   widgets = [],
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
@@ -51,18 +48,6 @@ const BaseMap = ({
   };
 
   const finalLayerSet = [...(layers ? layers : null)];
-
-  const getMapSize = useCallback(() => {
-    const newWidth = deckRef?.current?.deck?.width;
-    newWidth && setWidth(newWidth);
-
-    const newHeight = deckRef?.current?.deck.height;
-    newHeight && setHeight(newHeight);
-  }, [deckRef, setHeight, setWidth]);
-
-  useEffect(() => {
-    window.addEventListener('resize', getMapSize);
-  }, [getMapSize]);
 
   const handleClick = (info, event) => {
     if (info?.object?.properties?.cluster) {
@@ -83,11 +68,6 @@ const BaseMap = ({
     }
   };
 
-  const handleViewStateChange = ({ viewState: { width, height, ...rest } }) => {
-    onViewStateChange({ viewState: { width, height, ...rest } });
-    setViewState(rest);
-  };
-
   const getPosition = position => {
     const props = position.split('-');
     return {
@@ -103,7 +83,7 @@ const BaseMap = ({
         ref={deckRef}
         views={new MapView({ repeat: true })}
         onClick={handleClick}
-        onViewStateChange={handleViewStateChange}
+        onViewStateChange={({ viewState }) => setViewState(viewState)}
         onViewportLoad={onViewportLoad}
         viewState={viewState}
         controller={true}

@@ -9,22 +9,22 @@ import toastr from 'toastr';
 import { useMap } from 'components/BaseMap/MapContext';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { MAP_TYPES } from 'constants/common';
+import useInterval from 'customHooks/useInterval';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchComms,
   resetCommsResponseState,
   allCommsSelector,
   commsSuccessSelector,
   filteredCommsSelector,
-} from 'store/comms/comms.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/comms.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import CommsList from './Components/CommsList';
 import CreateMessage from './Components/CreateMessage';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
-import { MAP_TYPES } from '../../../constants/common';
-import useInterval from '../../../customHooks/useInterval';
 import {
   getBoundingBox,
   getViewState,
@@ -48,8 +48,6 @@ const Comms = ({ pollingFrequency }) => {
   const [commStatus, setcommStatus] = useState('');
   const [target, setTarget] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
   const [coordinates, setCoordinates] = useState(null);
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
@@ -125,8 +123,8 @@ const Comms = ({ pollingFrequency }) => {
       getBoundingBox(
         [viewState.longitude, viewState.latitude],
         viewState.zoom,
-        newWidth,
-        newHeight,
+        viewState.width,
+        viewState.height,
       ),
     );
   };
@@ -198,8 +196,6 @@ const Comms = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getReportsByArea={getReportsByArea}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
             coordinates={coordinates}

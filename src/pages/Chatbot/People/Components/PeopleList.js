@@ -6,14 +6,11 @@ import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
-import {
-  allPeopleSelector,
-  filteredPeopleSelector,
-} from 'store/people/people.slice';
+import PaginationWrapper from 'components/Pagination';
+import { getViewState } from 'helpers/mapHelper';
+import { allPeopleSelector, filteredPeopleSelector } from 'store/people.slice';
 
 import People from './People';
-import PaginationWrapper from '../../../../components/Pagination';
-import { getViewState } from '../../../../helpers/mapHelper';
 
 const PeopleList = ({ peopleId, setPeopleId }) => {
   const { viewState, setViewState } = useMap();

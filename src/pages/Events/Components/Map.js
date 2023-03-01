@@ -5,12 +5,12 @@ import PropTypes from 'prop-types';
 import { useDispatch } from 'react-redux';
 import { Card } from 'reactstrap';
 
-import { editEventInfo, validateEvent } from 'store/events/events.slice';
+import BaseMap from 'components/BaseMap/BaseMap';
+import SearchButton from 'components/SearchButton';
+import { PAGE_SIZE } from 'constants/common';
+import { editEventInfo, validateEvent } from 'store/events.slice';
 
 import ToolTip from './Tooltip';
-import BaseMap from '../../../components/BaseMap/BaseMap';
-import SearchButton from '../../../components/SearchButton';
-import { PAGE_SIZE } from '../constants';
 
 const MapSection = ({
   currentPage,

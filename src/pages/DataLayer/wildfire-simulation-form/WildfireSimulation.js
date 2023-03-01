@@ -19,12 +19,12 @@ import {
 } from 'reactstrap';
 import * as Yup from 'yup';
 
-import { errorSelector } from 'store/authentication/authentication.slice';
+import { errorSelector } from 'store/authentication.slice';
 import {
   setSelectedFireBreak,
   selectedFireBreakSelector,
-} from 'store/datalayer/datalayer.slice';
-import { getWKTfromFeature } from 'store/utility';
+} from 'store/datalayer.slice';
+import { getWKTfromFeature } from 'utility';
 
 import MapInput from '../../../components/BaseMap/MapInput';
 import { MAP } from '../../../constants/common';

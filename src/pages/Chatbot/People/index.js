@@ -9,27 +9,23 @@ import toastr from 'toastr';
 import { useMap } from 'components/BaseMap/MapContext';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { MAP_TYPES } from 'constants/common';
+import useInterval from 'customHooks/useInterval';
+import { fetchEndpoint } from 'helpers/apiHelper';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchPeople,
   resetPeopleResponseState,
   allPeopleSelector,
   filteredPeopleSelector,
   peopleSuccessSelector,
-} from 'store/people/people.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/people.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import MapSection from './Components/Map';
 import PeopleList from './Components/PeopleList';
 import SortSection from './Components/SortSection';
-import { MAP_TYPES } from '../../../constants/common';
-import useInterval from '../../../customHooks/useInterval';
-import { fetchEndpoint } from '../../../helpers/apiHelper';
-import {
-  getBoundingBox,
-  getViewState,
-  getIconLayer,
-} from '../../../helpers/mapHelper';
 
 const People = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
@@ -50,8 +46,6 @@ const People = ({ pollingFrequency }) => {
   const [status, setStatus] = useState('');
   const [activity, setActivity] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
   const [activitiesOptions, setActivitiesOptions] = useState([]);
   const [peopleParams, setPeopleParams] = useState({});
 
@@ -132,8 +126,8 @@ const People = ({ pollingFrequency }) => {
       getBoundingBox(
         [viewState.longitude, viewState.latitude],
         viewState.zoom,
-        newWidth,
-        newHeight,
+        viewState.width,
+        viewState.height,
       ),
     );
   };
@@ -183,8 +177,6 @@ const People = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getPeopleByArea={getPeopleByArea}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
             onClick={onClick}
           />
         </Col>

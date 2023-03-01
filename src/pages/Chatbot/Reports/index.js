@@ -9,7 +9,10 @@ import toastr from 'toastr';
 import { useMap } from 'components/BaseMap/MapContext';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { MAP_TYPES } from 'constants/common';
+import useInterval from 'customHooks/useInterval';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchReports,
   resetReportResponseState,
@@ -17,19 +20,12 @@ import {
   filteredReportsSelector,
   reportsSuccessSelector,
   reportsBoundingBoxSelector,
-} from 'store/reports/reports.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/reports.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
 import SortSection from './Components/SortSection';
-import { MAP_TYPES } from '../../../constants/common';
-import useInterval from '../../../customHooks/useInterval';
-import {
-  getBoundingBox,
-  getViewState,
-  getIconLayer,
-} from '../../../helpers/mapHelper';
 
 const Reports = ({ pollingFrequency }) => {
   const { viewState, setViewState } = useMap();
@@ -47,8 +43,6 @@ const Reports = ({ pollingFrequency }) => {
   const [reportId, setReportId] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(gBbox);
-  const [newWidth, setNewWidth] = useState(600);
-  const [newHeight, setNewHeight] = useState(600);
   const [reportParams, setReportParams] = useState({});
 
   const dispatch = useDispatch();
@@ -111,8 +105,8 @@ const Reports = ({ pollingFrequency }) => {
       getBoundingBox(
         [viewState.longitude, viewState.latitude],
         viewState.zoom,
-        newWidth,
-        newHeight,
+        viewState.width,
+        viewState.height,
       ),
     );
   };
@@ -161,8 +155,6 @@ const Reports = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getReportsByArea={getReportsByArea}
-            setNewWidth={setNewWidth}
-            setNewHeight={setNewHeight}
             onClick={handleClick}
           />
         </Col>

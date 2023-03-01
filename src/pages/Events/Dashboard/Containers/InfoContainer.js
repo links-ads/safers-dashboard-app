@@ -7,9 +7,9 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Card, Row, Col, CardText, CardSubtitle } from 'reactstrap';
 
-import { allEventsSelector } from 'store/events/events.slice';
+import { allEventsSelector } from 'store/events.slice';
+import { formatDate } from 'utility';
 
-import { formatDate } from '../../../../store/utility';
 import MapComponent from '../Components/Map';
 
 //i18n

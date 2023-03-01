@@ -9,7 +9,7 @@ import { Row, Col, Input } from 'reactstrap';
 import {
   filteredCameraAlertsSelector,
   cameraSourcesSelector,
-} from 'store/insitu/insitu.slice';
+} from 'store/insitu.slice';
 
 const SortSection = ({
   t,

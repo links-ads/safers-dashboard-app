@@ -8,24 +8,22 @@ import { useSelector, useDispatch } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 
-import {
-  deleteMapRequest,
-  fetchMapRequests,
-} from 'store/datalayer/datalayer.slice';
-import { userInfoSelector } from 'store/user/user.slice';
-
-import { useMap } from '../../components/BaseMap/MapContext';
-import JsonFormatter from '../../components/JsonFormatter';
-import { fetchEndpoint } from '../../helpers/apiHelper';
-import { getBoundedViewState } from '../../helpers/mapHelper';
+import { useMap } from 'components/BaseMap/MapContext';
+import JsonFormatter from 'components/JsonFormatter';
+import { fetchEndpoint } from 'helpers/apiHelper';
+import { getBoundedViewState } from 'helpers/mapHelper';
+import { deleteMapRequest, fetchMapRequests } from 'store/datalayer.slice';
+import { userInfoSelector } from 'store/user.slice';
 
 const PropsPanel = node => {
-  const node2 = node.node;
-  if (!node2.parameters) return null;
-  node2.parameters['geometry'] = node2?.geometry_wkt;
+  const params = {
+    ...node.node.parameters,
+    geometry: node.node.geometry_wkt,
+  };
+
   return (
     <div className="props_box">
-      <JsonFormatter data={node2?.parameters} />
+      <JsonFormatter data={params} />
     </div>
   );
 };
@@ -34,13 +32,11 @@ const OnDemandTreeView = ({
   data,
   setCurrentLayer,
   t,
-  setViewState,
-  viewState,
   setBboxLayers,
   resetMap,
 }) => {
   const dispatch = useDispatch();
-  const { deckRef } = useMap();
+  const { deckRef, viewState, setViewState } = useMap();
 
   const [itemState, setItemState] = useState({});
   const [itemPropsState, setItemPropsState] = useState({});
@@ -286,7 +282,7 @@ const OnDemandTreeView = ({
               ) : null}
               {node?.parameters && itemPropsState[id] ? (
                 <div className="mt-2">
-                  <PropsPanel node={node} />
+                  {node ? <PropsPanel node={node} /> : null}
                 </div>
               ) : null}
             </>

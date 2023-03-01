@@ -6,24 +6,20 @@ import { useNavigate } from 'react-router-dom';
 import { Col, Button, Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
+import DateComponent from 'components/DateRangePicker/DateRange';
+import { getPolygonLayer, getViewState } from 'helpers/mapHelper';
 import {
   fetchAois,
   setPolygonLayer,
   selectedAoiSelector,
-} from 'store/common/common.slice';
+} from 'store/common.slice';
 import {
   fetchStats,
   fetchWeatherStats,
   fetchWeatherVariables,
-} from 'store/dashboard/dashboard.slice';
-import {
-  fetchEventCameraMedia,
-  fetchEventTweets,
-} from 'store/events/events.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
-
-import DateComponent from '../../../../components/DateRangePicker/DateRange';
-import { getPolygonLayer, getViewState } from '../../../../helpers/mapHelper';
+} from 'store/dashboard.slice';
+import { fetchEventCameraMedia, fetchEventTweets } from 'store/events.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 const SearchContainer = () => {
   const { setViewState } = useMap();

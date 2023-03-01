@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { PolygonLayer } from '@deck.gl/layers';
-import { FlyToInterpolator } from 'deck.gl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -9,13 +8,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import toastr from 'toastr';
 
-import { userSelector } from 'store/authentication/authentication.slice';
-import { fetchAois, aoisSelector } from 'store/common/common.slice';
+import { userSelector } from 'store/authentication.slice';
+import { fetchAois, aoisSelector } from 'store/common.slice';
 import {
   setUserDefaultAoi,
   defaultAoiSelector,
   setAoiSuccessMessageSelector,
-} from 'store/user/user.slice';
+} from 'store/user.slice';
 
 import BaseMap from './BaseMap/BaseMap';
 
@@ -35,7 +34,6 @@ const AreaOfInterestPanel = ({ t }) => {
 
   const [selectedAoi, setSelectedAoi] = useState(defaultAoi);
   const [polygonLayer, setPolygonLayer] = useState(undefined);
-  const [viewState, setViewState] = useState(undefined);
 
   const dispatch = useDispatch();
 
@@ -65,12 +63,6 @@ const AreaOfInterestPanel = ({ t }) => {
   const setMap = defaultAoi => {
     setSelectedAoi(defaultAoi);
     setPolygonLayer(getPolygonLayer(defaultAoi));
-    setViewState(
-      getViewState(
-        defaultAoi.features[0].properties.midPoint,
-        defaultAoi.features[0].properties.zoomLevel,
-      ),
-    );
   };
 
   const selectAoi = e => {
@@ -79,18 +71,6 @@ const AreaOfInterestPanel = ({ t }) => {
       features: [{ properties: { id: parseInt(aoiID) } }],
     });
     setMap(objAoi);
-  };
-
-  const getViewState = (midPoint, zoomLevel = 4) => {
-    return {
-      longitude: midPoint[0],
-      latitude: midPoint[1],
-      zoom: zoomLevel,
-      bearing: 0,
-      pitch: 0,
-      transitionDuration: 1000,
-      transitionInterpolator: new FlyToInterpolator(),
-    };
   };
 
   const getPolygonLayer = aoi => {
@@ -119,7 +99,6 @@ const AreaOfInterestPanel = ({ t }) => {
       <>
         {sortedAois.map((aoisChunk, i) => {
           return (
-            // this is valid, it's a column (chunk) number, no id field is available
             // eslint-disable-next-line react/no-array-index-key
             <div className="d-flex flex-column me-5" key={i}>
               {aoisChunk.map((aoi, index) => {
@@ -161,7 +140,7 @@ const AreaOfInterestPanel = ({ t }) => {
         <Col xl={8} md={10} xs={10} className="mx-auto">
           <Row>
             <div style={{ height: 350 }} className="mb-5">
-              <BaseMap layers={[polygonLayer]} initialViewState={viewState} />
+              <BaseMap layers={[polygonLayer]} />
             </div>
           </Row>
           <Row>

@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { MapView } from '@deck.gl/core';
 import MapGL, {
@@ -16,21 +15,21 @@ import {
 } from 'react-map-gl-draw';
 import { useSelector, useDispatch } from 'react-redux';
 
+import { MAPBOX_TOKEN } from 'config';
+import { useLocalStorage } from 'customHooks/useLocalStorage';
+import { FIRE_BREAK_STROKE_COLORS } from 'pages/DataLayer/constants';
 import {
   selectedFireBreakSelector,
   setSelectedFireBreak,
-} from 'store/datalayer/datalayer.slice';
+} from 'store/datalayer.slice';
 import {
   mapStylesSelector,
   selectedMapStyleSelector,
   setSelectedMapStyle,
-} from 'store/map/map.slice';
+} from 'store/map.slice';
 
 import { useMap } from './MapContext';
 import { MapStyleSwitcher } from './MapStyleSwitcher';
-import { MAPBOX_TOKEN } from '../../config';
-import { useLocalStorage } from '../../customHooks/useLocalStorage';
-import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
 
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
@@ -48,8 +47,6 @@ const PolygonMap = ({
   clearMap,
   onViewStateChange = () => {},
   onViewportLoad = () => {},
-  setWidth = () => {},
-  setHeight = () => {},
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
   setCoordinates,
@@ -57,7 +54,7 @@ const PolygonMap = ({
   handleAreaValidation,
   singlePolygonOnly = false,
 }) => {
-  const { mapRef, viewState, setViewState } = useMap();
+  const { viewState, setViewState } = useMap();
   const [mapStyle, setMapStyle] = useLocalStorage('safers-map-style');
   const dispatch = useDispatch();
 
@@ -87,22 +84,6 @@ const PolygonMap = ({
   const [selectedFeatureData, setSelectedFeatureData] = useState(null);
   const [areaIsValid, setAreaIsValid] = useState(true);
 
-  const getMapSize = useCallback(() => {
-    const newWidth = mapRef?.current?.deck?.width;
-    newWidth && setWidth(newWidth);
-
-    const newHeight = mapRef?.current?.deck.height;
-    newHeight && setHeight(newHeight);
-  }, [setHeight, setWidth]);
-
-  useEffect(() => {
-    window.addEventListener('resize', getMapSize);
-  }, [getMapSize]);
-
-  useEffect(() => {
-    getMapSize();
-  }, [getMapSize, layers]);
-
   const getPosition = position => {
     const props = position.split('-');
     return {
@@ -122,19 +103,19 @@ const PolygonMap = ({
     }
   };
 
-  const _updateViewport = tempViewport => setViewState(tempViewport);
-
   const editToggle = mode => {
-    if (mode == DRAW_TYPES.LINE_STRING) {
+    if (mode === DRAW_TYPES.LINE_STRING) {
       toggleMode(
-        modeId == DRAW_TYPES.LINE_STRING ? 'editing' : DRAW_TYPES.LINE_STRING,
+        modeId === DRAW_TYPES.LINE_STRING ? 'editing' : DRAW_TYPES.LINE_STRING,
       );
-    } else if (mode == DRAW_TYPES.POLYGON) {
+    } else if (mode === DRAW_TYPES.POLYGON) {
       if (singlePolygonOnly) {
         setAreaIsValid(true);
         setCoordinates([]);
       }
-      toggleMode(modeId == DRAW_TYPES.POLYGON ? 'editing' : DRAW_TYPES.POLYGON);
+      toggleMode(
+        modeId === DRAW_TYPES.POLYGON ? 'editing' : DRAW_TYPES.POLYGON,
+      );
     }
   };
 
@@ -216,11 +197,6 @@ const PolygonMap = ({
     setMapStyle(mapStyle);
   };
 
-  const handleViewStateChange = ({ viewState: { width, height, ...rest } }) => {
-    onViewStateChange({ viewState: { width, height, ...rest } });
-    setViewState(rest);
-  };
-
   return (
     <>
       <MapGL
@@ -229,10 +205,9 @@ const PolygonMap = ({
         height="100%"
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapStyle={mapStyle ? mapStyle.uri : selectedMapStyle.uri}
-        onViewportChange={_updateViewport}
         ContextProvider={MapContext.Provider}
         onClick={onClick}
-        onViewStateChange={handleViewStateChange}
+        onViewStateChange={({ viewState }) => setViewState(viewState)}
         onViewportLoad={onViewportLoad}
         layers={finalLayerSet}
         views={new MapView({ repeat: true })}
@@ -269,6 +244,7 @@ const PolygonMap = ({
 
             const defaultFeatureStyles = {
               stroke,
+              fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
               r: POINT_RADIUS,
               strokeWidth: 4,

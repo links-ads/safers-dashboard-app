@@ -6,8 +6,7 @@ import {
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-
-import { getDefaultDateRange } from '../utility';
+import { getDefaultDateRange } from 'utility';
 
 const name = 'notifications';
 
