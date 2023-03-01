@@ -352,6 +352,11 @@ const PostEventMonitoring = ({
                           const area = Math.ceil(getFeatureArea(feature));
                           return area <= MAX_GEOMETRY_AREA.value;
                         }}
+                        clearMap={() => {
+                          setFieldValue('mapSelection', []);
+                          setFieldValue('isMapAreaValid', true);
+                          setFieldValue('isMapAreaValidWKT', true);
+                        }}
                       />
                     </Card>
                   </Col>
