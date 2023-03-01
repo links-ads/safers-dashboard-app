@@ -12,7 +12,6 @@ import BaseMap from '../../../components/BaseMap/BaseMap';
 import {
   getPolygonLayer,
   getViewState,
-  getEventIconLayer,
   getBitmapLayer,
   getBoundedViewState,
   getIconLayer,
@@ -46,17 +45,17 @@ const MapComponent = ({
     return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
   }, [deckRef, selectedLayer, updateViewState]);
 
-  // const iconLayer = useMemo(
-  //   () =>
-  //     getEventIconLayer(
-  //       'events-layer',
-  //       eventList,
-  //       MAP_TYPES.ALERTS,
-  //       'flag',
-  //       visibleLayers.events,
-  //     ),
-  //   [eventList, visibleLayers.events],
-  // );
+  const eventsLayer = useMemo(() => {
+    console.log('eventList', eventList);
+    return getIconLayer(
+      eventList,
+      MAP_TYPES.ALERTS,
+      'flag',
+      {},
+      visibleLayers.events,
+      'events-layer',
+    );
+  }, [eventList, visibleLayers.events]);
 
   const missionsLayer = useMemo(
     () =>
@@ -72,19 +71,20 @@ const MapComponent = ({
     [missionsList, visibleLayers.missions],
   );
 
-  // const alertsLayer = useMemo(() => {
-  //   console.log('alertsList', alertsList);
-  //   return getIconLayer(
-  //     // alertsList.filter(
-  //     //   item => item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
-  //     // ),
-  //     alertsList,
-  //     MAP_TYPES.ALERTS,
-  //     'fire',
-  //     {},
-  //     visibleLayers.alerts,
-  //   );
-  // }, [alertsList, visibleLayers.alerts]);
+  const alertsLayer = useMemo(() => {
+    console.log('alertsList', alertsList);
+    return getIconLayer(
+      // alertsList.filter(
+      //   item => item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
+      // ),
+      alertsList,
+      MAP_TYPES.ALERTS,
+      'fire',
+      {},
+      visibleLayers.alerts,
+      'alerts-layer',
+    );
+  }, [alertsList, visibleLayers.alerts]);
 
   const peopleLayer = useMemo(
     () =>
@@ -141,8 +141,8 @@ const MapComponent = ({
 
   const allLayers = [
     polygonLayer,
-    //iconLayer,
-    //alertsLayer,
+    eventsLayer,
+    alertsLayer,
     missionsLayer,
     peopleLayer,
     reportLayer,

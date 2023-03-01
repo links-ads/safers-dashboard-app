@@ -188,6 +188,7 @@ export const getIconLayer = (
     return null;
   }
   const data = getAsGeoJSON(alerts);
+  console.log(`data for layer "${id}" is `, data);
   return new GeoJsonPinLayer({
     id,
     data,
