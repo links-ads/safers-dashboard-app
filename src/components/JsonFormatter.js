@@ -17,7 +17,7 @@ const JsonFormatter = ({ data }) => {
     <pre className="px-3">
       <code
         dangerouslySetInnerHTML={{
-          __html: DOMPurify(highlight(data, jsonTheme)),
+          __html: DOMPurify.sanitize(highlight(data, jsonTheme)),
         }}
       />
     </pre>
