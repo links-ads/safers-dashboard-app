@@ -41,7 +41,10 @@ import {
   getBoundingBox,
   getViewState,
   getAlertIconColorFromContext,
+  getIconLayer,
 } from '../../helpers/mapHelper';
+
+import { IconLayer } from 'deck.gl';
 
 const PAGE_SIZE = 4;
 
@@ -96,43 +99,24 @@ const FireAlerts = ({ t }) => {
     [alertSource, boundingBox, dateRange, dispatch, sortByDate],
   );
 
-  const getFireAlertLayer = useCallback(
-    (alerts, selectedAlert = {}) => {
-      const data = alerts.map(alert => {
-        const { center, id, ...properties } = alert;
-        return {
-          type: 'Feature',
-          properties: {
-            id,
-            ...properties,
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: center,
-          },
-        };
-      });
+  const getFireAlertLayer = useCallback((alerts, selectedAlert = {}) => {
+    const data = alerts.map(alert => {
+      const { center, id, ...properties } = alert;
+      return {
+        type: 'Feature',
+        properties: {
+          id,
+          ...properties,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: center,
+        },
+      };
+    });
 
-      return new GeoJsonPinLayer({
-        data,
-        dispatch,
-        getPosition: feature => feature.geometry.coordinates,
-        getPinColor: feature =>
-          getAlertIconColorFromContext(
-            MAP_TYPES.ALERTS,
-            feature,
-            selectedAlert,
-          ),
-        icon: 'fire',
-        iconColor: [255, 255, 255],
-        clusterIconSize: 35,
-        getPinSize: () => 35,
-        pixelOffset: [-18, -18],
-        pinSize: 25,
-      });
-    },
-    [dispatch],
-  );
+    return getIconLayer(data, MAP_TYPES.ALERTS, 'flag', {});
+  }, []);
 
   useEffect(() => {
     dispatch(fetchAlertSource());
