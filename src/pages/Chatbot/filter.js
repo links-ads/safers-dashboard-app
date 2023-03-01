@@ -1,38 +1,40 @@
-/* Chatbot - front-end filtering/sorting */
-/* Note: Only Date and Geometry related data filtered on backend */
+const ORDER = {
+  ASC: 'asc',
+  DESC: 'desc',
+};
 
-import _ from 'lodash';
-
-export const getFilteredRec = (allRecords, filters, sort) => {
-  let actFiltered = [...allRecords];
+export const getFilteredRecords = (records, filters, sort) => {
+  let filtered = [...records];
   const filterNames = Object.keys(filters);
+
   filterNames.forEach(key => {
     if (filters[key] !== '') {
-      actFiltered = actFiltered.filter(o => {
+      filtered = filtered.filter(record => {
         // matches against arrays of values
-        if (Array.isArray(o[key])) {
-          const lowercased = o[key].map(str => str.toLowerCase());
-          if (lowercased.includes(filters[key])) {
-            return true;
-          }
+        if (Array.isArray(record[key])) {
+          return record[key].includes(filters[key]);
         }
 
         // matches against existence of property (truthy value)
         if (typeof filters[key] === 'boolean') {
-          if (!!o[key] === filters[key]) {
-            return true;
-          }
+          return !!record[key] === filters[key];
         }
 
-        return o[key] === filters[key];
+        return record[key] === filters[key];
       });
     }
   });
 
-  actFiltered = _.orderBy(
-    actFiltered,
-    [o => new Date(o[sort.fieldName])],
-    [sort.order],
-  );
-  return actFiltered;
+  // Sort by property representing the timestamp.
+  filtered.sort((val1, val2) => {
+    if (sort.order === ORDER.ASC) {
+      return new Date(val1[sort.fieldName]) - new Date(val2[sort.fieldName]);
+    } else if (sort.order === ORDER.DESC) {
+      return new Date(val2[sort.fieldName]) - new Date(val1[sort.fieldName]);
+    }
+
+    return null;
+  });
+
+  return filtered;
 };

@@ -6,7 +6,7 @@ import {
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-import { getFilteredRec } from 'pages/Chatbot/filter';
+import { getFilteredRecords } from 'pages/Chatbot/filter';
 
 const name = 'missions';
 
@@ -125,7 +125,11 @@ const missionsSlice = createSlice({
           const { order, status } = payload.feFilters ?? {};
           const filters = { status };
           const sort = { fieldName: 'start', order };
-          const filteredMissions = getFilteredRec(payload.data, filters, sort);
+          const filteredMissions = getFilteredRecords(
+            payload.data,
+            filters,
+            sort,
+          );
 
           state.filteredMissions = filteredMissions;
           state.allMissions = payload.data;

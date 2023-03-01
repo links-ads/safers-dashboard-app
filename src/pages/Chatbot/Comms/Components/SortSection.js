@@ -16,7 +16,7 @@ import {
   filteredCommsSelector,
 } from 'store/comms.slice';
 
-import { getFilteredRec } from '../../filter';
+import { getFilteredRecords } from '../../filter';
 
 const SortSection = ({
   t,
@@ -39,8 +39,8 @@ const SortSection = ({
     if (allComms.length > 0) {
       const filters = { target, status: commStatus };
       const sort = { fieldName: 'start', order: sortOrder };
-      const actFiltered = getFilteredRec(allComms, filters, sort);
-      dispatch(setFilteredComms(actFiltered));
+      const filteredRecords = getFilteredRecords(allComms, filters, sort);
+      dispatch(setFilteredComms(filteredRecords));
     }
   }, [target, sortOrder, commStatus, allComms, dispatch]);
 

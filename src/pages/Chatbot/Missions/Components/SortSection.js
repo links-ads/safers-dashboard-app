@@ -16,7 +16,7 @@ import {
 } from 'store/missions.slice';
 //i18N
 
-import { getFilteredRec } from '../../filter';
+import { getFilteredRecords } from '../../filter';
 
 const SortSection = ({
   t,
@@ -36,8 +36,8 @@ const SortSection = ({
     if (allMissions.length > 0) {
       const filters = { status: missionStatus };
       const sort = { fieldName: 'start', order: sortOrder };
-      const actFiltered = getFilteredRec(allMissions, filters, sort);
-      dispatch(setFilteredMissions(actFiltered));
+      const filteredRecords = getFilteredRecords(allMissions, filters, sort);
+      dispatch(setFilteredMissions(filteredRecords));
     }
   }, [sortOrder, missionStatus, allMissions, dispatch]);
 

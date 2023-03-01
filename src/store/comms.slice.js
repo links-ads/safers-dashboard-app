@@ -7,7 +7,7 @@ import toastr from 'toastr';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-import { getFilteredRec } from 'pages/Chatbot/filter';
+import { getFilteredRecords } from 'pages/Chatbot/filter';
 
 const name = 'comms';
 
@@ -83,7 +83,7 @@ const commsSlice = createSlice({
           const { target, status, sortOrder } = payload.feFilters ?? {};
           const filters = { target, status };
           const sort = { fieldName: 'start', order: sortOrder };
-          const filteredComms = getFilteredRec(payload.data, filters, sort);
+          const filteredComms = getFilteredRecords(payload.data, filters, sort);
 
           state.filteredComms = filteredComms;
           state.allComms = payload.data;

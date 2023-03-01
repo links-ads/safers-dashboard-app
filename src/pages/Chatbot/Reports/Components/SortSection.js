@@ -19,7 +19,7 @@ import {
   reportsPollingDataSelector,
 } from 'store/reports.slice';
 
-import { getFilteredRec } from '../../filter';
+import { getFilteredRecords } from '../../filter';
 
 //i18N
 
@@ -49,10 +49,10 @@ const SortSection = ({ t, boundingBox, mapFilter }) => {
     };
 
     const sort = { fieldName: 'timestamp', order: sortOrder };
-    const actFiltered = getFilteredRec(OrgReportList, filters, sort);
+    const filteredRecords = getFilteredRecords(OrgReportList, filters, sort);
     dispatch(
       setFilteredReports({
-        data: actFiltered,
+        data: filteredRecords,
         filterParams: {
           missionId,
           category,
