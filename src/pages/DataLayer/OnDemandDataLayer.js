@@ -14,20 +14,12 @@ import {
   Modal,
 } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
-import wkt from 'wkt';
-import * as Yup from 'yup';
 
 import { DATA_LAYERS_PANELS } from './constants';
 import DataLayerInformation from './DataLayerInformation';
 import OnDemandTreeView from './OnDemandTreeView';
 import BaseMap from '../../components/BaseMap/BaseMap';
 import { formatDate } from '../../store/utility';
-
-Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
-  return this.test('isValidWKTString', message, value =>
-    value.length ? typeof wkt.stringify(value[0]) === 'string' : false,
-  );
-});
 
 const OnDemandDataLayer = ({
   t,
