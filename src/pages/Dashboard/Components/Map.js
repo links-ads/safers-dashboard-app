@@ -15,6 +15,7 @@ import {
   getBitmapLayer,
   getBoundedViewState,
   getIconLayer,
+  reshapeEventsData,
 } from '../../../helpers/mapHelper';
 
 const MapComponent = ({
@@ -48,8 +49,8 @@ const MapComponent = ({
   const eventsLayer = useMemo(() => {
     console.log('eventList', eventList);
     return getIconLayer(
-      eventList,
-      MAP_TYPES.ALERTS,
+      reshapeEventsData(eventList),
+      MAP_TYPES.EVENTS,
       'flag',
       {},
       visibleLayers.events,
