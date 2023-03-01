@@ -1,7 +1,5 @@
 import '@testing-library/jest-dom';
 
-import * as Yup from 'yup';
-
 import { server } from 'mocks/server';
 import { extendGlobalValidators } from 'Utility/extendGlobalValidators';
 
@@ -10,7 +8,7 @@ import { extendGlobalValidators } from 'Utility/extendGlobalValidators';
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 
-extendGlobalValidators(Yup);
+extendGlobalValidators();
 
 window.scrollTo = (x, y) => {
   document.documentElement.scrollTop = y;

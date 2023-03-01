@@ -5,7 +5,6 @@ import { Provider } from 'react-redux';
 import { BrowserRouter } from 'react-router-dom';
 import './index.scss';
 import { PersistGate } from 'redux-persist/integration/react';
-import * as Yup from 'yup';
 
 import { setupInterceptors } from 'api/base';
 import { extendGlobalValidators } from 'Utility/extendGlobalValidators';
@@ -18,7 +17,7 @@ import store, { persistor } from './store';
 setupInterceptors(store);
 
 // adds all shared custom validator methods to global Yup object
-extendGlobalValidators(Yup);
+extendGlobalValidators();
 
 ReactDOM.render(
   <Provider store={store}>

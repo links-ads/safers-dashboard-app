@@ -194,7 +194,7 @@ const WildfireSimulation = ({
     return endTime;
   };
 
-  const handleTableEntriesAddClick = () => {
+  const addBoundaryConditionTableColumn = () => {
     const nextIndex = tableEntries.length;
     setTableEntries([...tableEntries, nextIndex]);
 
@@ -206,7 +206,7 @@ const WildfireSimulation = ({
     }));
   };
 
-  const handleTableEntriesDeleteClick = position => {
+  const removeBoundaryConditionTableColumn = position => {
     setTableEntries(tableEntries.filter(entry => entry !== position));
 
     // remove selected fire break key for boundary condition when it is deleted
@@ -695,7 +695,7 @@ const WildfireSimulation = ({
                                       <i
                                         className="bx bx-trash font-size-24 p-0 w-auto"
                                         onClick={() =>
-                                          handleTableEntriesDeleteClick(
+                                          removeBoundaryConditionTableColumn(
                                             position,
                                           )
                                         }
@@ -832,7 +832,7 @@ const WildfireSimulation = ({
                             Number(values.hoursOfProjection)
                           )
                             return;
-                          handleTableEntriesAddClick();
+                          addBoundaryConditionTableColumn();
                         }}
                         className="bx bx-plus-circle p-0 ms-2 w-auto"
                         style={{

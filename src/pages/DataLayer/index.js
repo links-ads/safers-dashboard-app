@@ -430,6 +430,7 @@ const DataLayerDashboard = ({ t }) => {
   };
 
   const onWildfireFormSubmit = formData => {
+    // rename properties to match what server expects
     const boundary_conditions = Object.values(formData.boundaryConditions).map(
       obj => ({
         time: Number(obj.timeOffset),
@@ -437,7 +438,8 @@ const DataLayerDashboard = ({ t }) => {
         w_speed: Number(obj.windSpeed),
         moisture: Number(obj.fuelMoistureContent),
         fireBreak: obj.fireBreak
-          ? Object.entries(obj.fireBreak).reduce(
+          ? // filter out any 'fireBreak' keys which are just empy arrays
+            Object.entries(obj.fireBreak).reduce(
               (acc, [key, value]) =>
                 value.length
                   ? {
