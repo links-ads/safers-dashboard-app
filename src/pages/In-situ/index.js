@@ -52,9 +52,7 @@ const InSituAlerts = () => {
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
   const [inSituSource, setInSituSource] = useState(undefined);
-  const [midPoint, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState(undefined);
   const [checkedStatus, setCheckedStatus] = useState([]);
@@ -184,18 +182,18 @@ const InSituAlerts = () => {
     }
   };
 
-  const hideTooltip = (e, viewStateCHanged) => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
-    }
-    setIsViewStateChanged(viewStateCHanged);
+  const hideTooltip = () => {
     setHoverInfo(undefined);
   };
 
   const getCamByArea = () => {
     setBoundingBox(
-      getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight),
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        newWidth,
+        newHeight,
+      ),
     );
   };
 
@@ -230,7 +228,6 @@ const InSituAlerts = () => {
               <Col xl={12} className="px-3">
                 <AlertList
                   viewState={viewState}
-                  currentZoomLevel={currentZoomLevel}
                   isViewStateChanged={isViewStateChanged}
                   alertId={alertId}
                   setAlertId={setAlertId}
@@ -248,7 +245,6 @@ const InSituAlerts = () => {
               viewState={viewState}
               iconLayer={iconLayer}
               hoverInfo={hoverInfo}
-              setMidPoint={setMidPoint}
               setHoverInfo={setHoverInfo}
               showTooltip={showTooltip}
               hideTooltip={hideTooltip}
