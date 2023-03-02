@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 //i18n
 import { withTranslation } from 'react-i18next';
 import Lightbox from 'react-image-lightbox';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import {
   Badge,
   Card,
@@ -141,8 +141,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
                   {card.fire_classes != null && (
                     <p className="mb-1">
                       <i
-                        data-tip
-                        data-for="smoke-column"
+                        data-tooltip-id="smoke-column"
                         className="bx bx-info-circle float-start fs-5 me-2"
                       ></i>
                       <span>
@@ -153,8 +152,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
                   {card.direction != null && (
                     <p className="mb-1">
                       <i
-                        data-tip
-                        data-for="geo-direction"
+                        data-tooltip-id="geo-direction"
                         className="bx bx-info-circle float-start fs-5 me-2"
                       ></i>
                       <span>
@@ -179,25 +177,13 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
             </Col>
           </Row>
         </CardBody>
-        <ReactTooltip
-          id="smoke-column"
-          aria-haspopup="true"
-          role="example"
-          place="right"
-          class="alert-tooltip"
-        >
+        <Tooltip id="smoke-column" place="right" className="alert-tooltip">
           <h5>{t('Smoke Column Class')}</h5>
           <p className="mb-2">CL1 - {t('cl1-txt')}</p>
           <p className="mb-2">CL2 - {t('cl2-txt')}</p>
           <p>CL3 - {t('cl3-txt')}</p>
-        </ReactTooltip>
-        <ReactTooltip
-          id="geo-direction"
-          aria-haspopup="true"
-          role="example"
-          place="right"
-          class="alert-tooltip"
-        >
+        </Tooltip>
+        <Tooltip id="geo-direction" place="right" className="alert-tooltip">
           <h5>{t('Geographical Direction')}</h5>
           <p className="tooltip-desc">{t('geo-direction-txt')}</p>
           <Row>
@@ -220,7 +206,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
               <span>270&deg; = {t('West', { ns: 'common' })}</span>
             </Col>
           </Row>
-        </ReactTooltip>
+        </Tooltip>
       </Card>
       {getMedia(card)}
     </>

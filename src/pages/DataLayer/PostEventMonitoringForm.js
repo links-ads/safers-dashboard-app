@@ -5,7 +5,7 @@ import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import {
   Button,
   Input,
@@ -256,18 +256,16 @@ const PostEventMonitoring = ({
                               <Label for="startDate">{t('startDate')}</Label>
                               &nbsp;
                               <i
-                                data-tip
-                                data-for="startDateToolTip"
+                                data-tooltip-id="startDateToolTip"
                                 className="bx bx-info-circle font-size-16 me-1"
                               />
-                              <ReactTooltip
+                              <Tooltip
                                 id="startDateToolTip"
-                                aria-haspopup="true"
                                 place="right"
-                                class="alert-tooltip"
+                                className="alert-tooltip"
                               >
                                 <span>{t('Date fire started')}</span>
-                              </ReactTooltip>
+                              </Tooltip>
                               <Input
                                 id="startDate"
                                 name="startDate"
@@ -284,18 +282,16 @@ const PostEventMonitoring = ({
                               <Label for="endDate">{t('endDate')}</Label>
                               &nbsp;
                               <i
-                                data-tip
-                                data-for="endDateToolTip"
+                                data-tooltip-id="endDateToolTip"
                                 className="bx bx-info-circle font-size-16 me-1"
                               />
-                              <ReactTooltip
+                              <Tooltip
                                 id="endDateToolTip"
-                                aria-haspopup="true"
                                 place="right"
-                                class="alert-tooltip"
+                                className="alert-tooltip"
                               >
                                 <span>{t('Date fire ended')}</span>
-                              </ReactTooltip>
+                              </Tooltip>
                               <Input
                                 id="endDate"
                                 name="endDate"

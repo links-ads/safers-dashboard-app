@@ -5,7 +5,7 @@ import { PolygonLayer } from 'deck.gl';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { useSelector, useDispatch } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { Badge, ListGroup, ListGroupItem, Collapse, Modal } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
@@ -167,8 +167,7 @@ const OnDemandTreeView = ({
             <>
               {node.info_url && (
                 <i
-                  data-tip
-                  data-for={`${parentId}-${index}-tooltip`}
+                  data-tooltip-id={`${parentId}-${index}-tooltip`}
                   className="bx font-size-16 me-1"
                 />
               )}
@@ -176,8 +175,8 @@ const OnDemandTreeView = ({
                 <>
                   {node.info && (
                     <i
-                      data-tip
-                      data-for={`${parentId}-${index}-tooltip`}
+                      data-tooltip-id={`${parentId}-${index}-tooltip`}
+                      data-tooltip-content={tooltipDisplay ?? 'Loading...'}
                       className="bx bx-info-circle font-size-16 me-1"
                     />
                   )}
@@ -193,8 +192,8 @@ const OnDemandTreeView = ({
                   <div>
                     {node.info_url && (
                       <i
-                        data-tip
-                        data-for={`${parentId}-${index}-tooltip`}
+                        data-tooltip-id={`${parentId}-${index}-tooltip`}
+                        data-tooltip-content={tooltipDisplay ?? 'Loading...'}
                         className="bx bx-info-circle font-size-16 me-1"
                       />
                     )}
@@ -202,8 +201,8 @@ const OnDemandTreeView = ({
                   </div>
                   {node.status && (
                     <Badge
-                      data-tip
-                      data-for={`${parentId}-${index}-status`}
+                      data-tooltip-id={`${parentId}-${index}-status`}
+                      data-tooltip-content={node.message}
                       className="rounded-pill alert-badge event-alert-badge d-inline-flex justify-content-center align-items-center p-2"
                     >
                       <span className={`${node.status?.toLowerCase()}`}>
@@ -297,25 +296,18 @@ const OnDemandTreeView = ({
             </Collapse>
           )}
           {(node.info || node.info_url) && (
-            <ReactTooltip
+            <Tooltip
               id={`${parentId}-${index}-tooltip`}
-              aria-haspopup="true"
-              role={tooltipInfo || node.info}
               place="right"
-              class="alert-tooltip data-layers-alert-tooltip"
-            >
-              {tooltipDisplay ?? 'Loading...'}
-            </ReactTooltip>
+              className="alert-tooltip data-layers-alert-tooltip"
+            />
           )}
           {node.message && (
-            <ReactTooltip
+            <Tooltip
               id={`${parentId}-${index}-status`}
-              aria-haspopup="true"
               place="right"
-              class="alert-tooltip data-layers-alert-tooltip"
-            >
-              {node.message}
-            </ReactTooltip>
+              className="alert-tooltip data-layers-alert-tooltip"
+            />
           )}
         </Fragment>
       );

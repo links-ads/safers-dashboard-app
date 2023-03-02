@@ -3,7 +3,7 @@ import React, { useEffect, useState, Fragment } from 'react';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import { ListGroup, ListGroupItem, Collapse } from 'reactstrap';
 
 import { fetchEndpoint } from 'helpers/apiHelper';
@@ -113,8 +113,8 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
                 <>
                   {(node.info || node.info_url) && (
                     <i
-                      data-tip
-                      data-for={`${parentId}-${index}-tooltip`}
+                      data-tooltip-id={`${parentId}-${index}-tooltip`}
+                      data-tooltip-content={tooltipDisplay ?? 'Loading...'}
                       className="bx bx-info-circle font-size-16 me-1"
                     />
                   )}
@@ -154,15 +154,11 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
             </Collapse>
           )}
           {(node.info || node.info_url) && (
-            <ReactTooltip
+            <Tooltip
               id={`${parentId}-${index}-tooltip`}
-              aria-haspopup="true"
-              role={tooltipInfo || node.info}
               place="right"
-              class="alert-tooltip data-layers-alert-tooltip"
-            >
-              {tooltipDisplay ?? 'Loading...'}
-            </ReactTooltip>
+              className="alert-tooltip data-layers-alert-tooltip"
+            />
           )}
         </Fragment>
       );

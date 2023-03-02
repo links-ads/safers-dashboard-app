@@ -14,6 +14,8 @@ import { extendGlobalValidators } from 'Utility/extendGlobalValidators';
 
 import App from './App';
 
+import 'react-tooltip/dist/react-tooltip.css';
+
 setupInterceptors(store);
 
 // adds all shared custom validator methods to global Yup object

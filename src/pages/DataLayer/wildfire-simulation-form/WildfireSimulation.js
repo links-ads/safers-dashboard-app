@@ -6,7 +6,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
+import { Tooltip } from 'react-tooltip';
 import {
   Button,
   Input,
@@ -369,15 +369,15 @@ const WildfireSimulation = ({
                             for="probabilityRange"
                             className="d-flex align-items-center"
                           >
-                            <ReactTooltip
-                              aria-haspopup="true"
+                            <Tooltip
+                              id="probabilityTooltip"
                               place="right"
-                              class="alert-tooltip data-layers-alert-tooltip"
+                              className="alert-tooltip data-layers-alert-tooltip"
                             >
                               {PROBABILITY_INFO}
-                            </ReactTooltip>
+                            </Tooltip>
                             <i
-                              data-tip
+                              data-tooltip-id="probabilityTooltip"
                               className="bx bx-info-circle font-size-8 p-0 me-1"
                               style={{ cursor: 'pointer' }}
                             />
