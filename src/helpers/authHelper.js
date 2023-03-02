@@ -1,14 +1,5 @@
 import Cookies from 'js-cookie';
 
-export const authHeader = () => {
-  let sessionObj = getSession();
-  if (sessionObj && sessionObj.access_token) {
-    return { Authorization: 'Bearer ' + sessionObj.access_token };
-  } else {
-    return {};
-  }
-};
-
 export const setSession = (sessionObj, rememberMe) => {
   if (rememberMe) {
     Cookies.set('authUser', JSON.stringify(sessionObj), { expires: 1 });
