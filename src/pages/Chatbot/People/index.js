@@ -4,67 +4,55 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
-import toastr from 'toastr';
 
 import { useMap } from 'components/BaseMap/MapContext';
-import 'toastr/build/toastr.min.css';
-import 'rc-pagination/assets/index.css';
 import { MAP_TYPES } from 'constants/common';
 import useInterval from 'customHooks/useInterval';
 import { fetchEndpoint } from 'helpers/apiHelper';
-import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
+import { getIconLayer } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchPeople,
-  resetPeopleResponseState,
   allPeopleSelector,
   filteredPeopleSelector,
-  peopleSuccessSelector,
 } from 'store/people.slice';
 import { defaultAoiSelector } from 'store/user.slice';
 
-import MapSection from './Components/Map';
 import PeopleList from './Components/PeopleList';
 import SortSection from './Components/SortSection';
+import MapSection from '../Components/DefaultMapSection';
 
 const People = ({ pollingFrequency }) => {
-  const { viewState, setViewState } = useMap();
+  const { deckRef, updateViewState } = useMap();
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const defaultAoi = useSelector(defaultAoiSelector);
   const allPeople = useSelector(allPeopleSelector);
   const filteredPeople = useSelector(filteredPeopleSelector);
-  const success = useSelector(peopleSuccessSelector);
   const dateRange = useSelector(dateRangeSelector);
 
-  let peopleList = filteredPeople ?? allPeople;
-
-  const { t } = useTranslation();
-
-  const [peopleId, setPeopleId] = useState(undefined);
+  const [selectedPerson, setSelectedPerson] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
   const [status, setStatus] = useState('');
   const [activity, setActivity] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [activitiesOptions, setActivitiesOptions] = useState([]);
+  const [activities, setActivities] = useState([]);
   const [peopleParams, setPeopleParams] = useState({});
 
-  const dispatch = useDispatch();
+  let peopleList = filteredPeople ?? allPeople;
 
   useEffect(() => {
     (async () => {
-      const activitiesOptions = await fetchEndpoint(
-        '/chatbot/people/activities',
-      );
-      setActivitiesOptions(activitiesOptions);
+      const responseData = await fetchEndpoint('/chatbot/people/activities');
+      setActivities(responseData);
     })();
   }, []);
 
   useEffect(() => {
-    setPeopleId(undefined);
-
     setPeopleParams(previous => {
-      const params = {
+      const options = {
         ...previous,
         bbox: boundingBox?.toString(),
         default_date: false,
@@ -82,27 +70,23 @@ const People = ({ pollingFrequency }) => {
         status,
         sortOrder,
       };
-      dispatch(fetchPeople({ options: params, feFilters }));
-      return params;
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, boundingBox, dateRange]);
 
-  useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
-    }
-    dispatch(resetPeopleResponseState());
-  }, [dispatch, success]);
+      dispatch(fetchPeople({ options, feFilters }));
+
+      return options;
+    });
+  }, [activity, boundingBox, dateRange, dispatch, sortOrder, status]);
 
   useEffect(() => {
     setIconLayer(
-      getIconLayer(peopleList, MAP_TYPES.PEOPLE, 'people', { id: peopleId }),
+      getIconLayer(peopleList, MAP_TYPES.PEOPLE, 'people', {
+        id: selectedPerson?.id,
+      }),
     );
-  }, [peopleList, dispatch, peopleId, setViewState]);
+  }, [peopleList, selectedPerson?.id]);
 
   useInterval(
-    () => {
+    () =>
       dispatch(
         fetchPeople({
           options: peopleParams,
@@ -113,36 +97,34 @@ const People = ({ pollingFrequency }) => {
           },
           isPolling: true,
         }),
-      );
-    },
+      ),
     pollingFrequency,
     [peopleParams],
   );
 
-  const getPeopleByArea = () => {
-    setBoundingBox(
-      getBoundingBox(
-        [viewState.longitude, viewState.latitude],
-        viewState.zoom,
-        viewState.width,
-        viewState.height,
-      ),
-    );
-  };
+  const getPeopleByArea = () =>
+    setBoundingBox(deckRef.current.deck.viewManager._viewports[0].getBounds());
 
-  const handleResetAOI = useCallback(() => {
-    setBoundingBox(undefined);
-    setViewState(
-      getViewState(
-        defaultAoi.features[0].properties.midPoint,
-        defaultAoi.features[0].properties.zoomLevel,
-      ),
-    );
-  }, [defaultAoi.features, setViewState]);
+  const handleResetAOI = useCallback(
+    () =>
+      updateViewState({
+        longitude: defaultAoi.features[0].properties.midPoint[0],
+        latitude: defaultAoi.features[0].properties.midPoint[1],
+        zoom: defaultAoi.features[0].properties.zoomLevel,
+      }),
+    [defaultAoi.features, updateViewState],
+  );
 
   const onClick = info => {
-    const { id } = info?.object?.properties ?? {};
-    setPeopleId(peopleId === id ? undefined : id);
+    const id = info?.object?.properties.id;
+
+    if (id) {
+      const person = peopleList.find(p => p.id === id);
+
+      if (person) {
+        setSelectedPerson(person);
+      }
+    }
   };
 
   return (
@@ -163,18 +145,21 @@ const People = ({ pollingFrequency }) => {
             setStatus={setStatus}
             setActivity={setActivity}
             setSortOrder={setSortOrder}
-            activitiesOptions={activitiesOptions}
+            activities={activities}
           />
           <Row>
             <Col xl={12} className="px-3">
-              <PeopleList peopleId={peopleId} setPeopleId={setPeopleId} />
+              <PeopleList
+                selectedPerson={selectedPerson}
+                setSelectedPerson={setSelectedPerson}
+              />
             </Col>
           </Row>
         </Col>
         <Col xl={7} className="mx-auto">
           <MapSection
             iconLayer={iconLayer}
-            getPeopleByArea={getPeopleByArea}
+            getInfoByArea={getPeopleByArea}
             onClick={onClick}
           />
         </Col>

@@ -56,9 +56,10 @@ const Chatbot = () => {
   const { t } = useTranslation();
   const location = useLocation();
 
-  const [selectedTab, setSelectedTab] = useState();
   const config = useSelector(configSelector);
   const user = useSelector(userInfoSelector);
+
+  const [selectedTab, setSelectedTab] = useState();
 
   const isProfessionalUser = user.is_professional;
   const pollingFrequency =
