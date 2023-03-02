@@ -32,6 +32,9 @@ const MapComponent = ({
   const objAoi = useSelector(defaultAoiSelector);
   const polygonLayer = useMemo(() => getPolygonLayer(objAoi), [objAoi]);
 
+  const filterNullGeometries = items =>
+    items.filter(item => item?.geometry?.coordinates?.length > 0);
+
   const mapRequestLayer = useMemo(() => {
     if (!selectedLayer) {
       return null;
@@ -59,7 +62,7 @@ const MapComponent = ({
   const missionsLayer = useMemo(
     () =>
       getIconLayer(
-        missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
+        filterNullGeometries(missionsList),
         MAP_TYPES.MISSIONS,
         'target',
         {},
@@ -88,11 +91,7 @@ const MapComponent = ({
       return null;
     }
     return getIconLayer(
-      // TODO: investigate why this is broken.
-      // orgPplList.filter(
-      //   item => item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
-      // ),
-      orgPplList,
+      filterNullGeometries(orgPplList),
       MAP_TYPES.PEOPLE,
       'people',
       {},
@@ -104,7 +103,7 @@ const MapComponent = ({
   const reportLayer = useMemo(
     () =>
       getIconLayer(
-        orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
+        filterNullGeometries(orgReportList),
         MAP_TYPES.REPORTS,
         'report',
         {},
@@ -117,7 +116,7 @@ const MapComponent = ({
   const commsLayer = useMemo(
     () =>
       getIconLayer(
-        commsList.filter(item => item?.geometry?.coordinates?.length > 0),
+        filterNullGeometries(commsList),
         MAP_TYPES.COMMUNICATIONS,
         'communications',
         {},
