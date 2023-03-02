@@ -1,4 +1,4 @@
-import { getPropertyValue, filterNodesByProperty } from '../utility';
+import { getPropertyValue, filterNodesByProperty } from '../../utility';
 
 describe('Utilities', () => {
   describe('getPropertyValue', () => {

@@ -9,8 +9,9 @@ import {
 } from 'reactstrap';
 
 //i18n
+import i18n from 'i18n';
+
 import languages from './languages';
-import i18n from '../i18n';
 
 const LanguageDropdown = () => {
   // Declare a new state variable, which we'll call 'menu'

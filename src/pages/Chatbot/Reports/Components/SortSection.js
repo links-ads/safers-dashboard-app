@@ -6,6 +6,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Input, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import useSetNewAlerts from 'customHooks/useSetNewAlerts';
+import { fetchEndpoint } from 'helpers/apiHelper';
 import {
   setFilteredReports,
   refreshReports,
@@ -15,10 +17,8 @@ import {
   reportsCategorySelector,
   reportsMissionIdSelector,
   reportsPollingDataSelector,
-} from 'store/reports/reports.slice';
+} from 'store/reports.slice';
 
-import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
-import { fetchEndpoint } from '../../../../helpers/apiHelper';
 import { getFilteredRec } from '../../filter';
 
 //i18N

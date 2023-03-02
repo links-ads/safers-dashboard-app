@@ -10,7 +10,9 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import { useMap } from 'components/BaseMap/MapContext';
-import { dateRangeSelector } from 'store/common/common.slice';
+import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
+import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchEvents,
   fetchEventDetail,
@@ -23,22 +25,12 @@ import {
   filteredEventsSelector,
   eventsSuccessSelector,
   eventsErrorSelector,
-} from 'store/events/events.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/events.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import EventList from './Components/EventList';
 import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
-import { PAGE_SIZE } from './constants';
-import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import { MAP_TYPES } from '../../constants/common';
-import {
-  getBoundingBox,
-  getViewState,
-  getAlertIconColorFromContext,
-  getIconLayer,
-} from '../../helpers/mapHelper';
-//i18n
 
 const EventAlerts = ({ t }) => {
   const { viewState, setViewState } = useMap();

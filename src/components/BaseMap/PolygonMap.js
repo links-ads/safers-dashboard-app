@@ -1,5 +1,4 @@
-/* eslint-disable react/prop-types */
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import { MapView } from '@deck.gl/core';
 import MapGL, {
@@ -16,24 +15,27 @@ import {
 } from 'react-map-gl-draw';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { selectedFireBreakSelector } from 'store/datalayer/datalayer.slice';
+import { MAPBOX_TOKEN } from 'config';
+import { useLocalStorage } from 'customHooks/useLocalStorage';
+import { FIRE_BREAK_STROKE_COLORS } from 'pages/DataLayer/constants';
+import {
+  selectedFireBreakSelector,
+  setSelectedFireBreak,
+} from 'store/datalayer.slice';
 import {
   mapStylesSelector,
   selectedMapStyleSelector,
   setSelectedMapStyle,
-} from 'store/map/map.slice';
+} from 'store/map.slice';
 
 import { useMap } from './MapContext';
 import { MapStyleSwitcher } from './MapStyleSwitcher';
-import { MAPBOX_TOKEN } from '../../config';
-import { useLocalStorage } from '../../customHooks/useLocalStorage';
-import { FIRE_BREAK_STROKE_COLORS } from '../../pages/DataLayer/constants';
-import { getWKTfromFeature } from '../../store/utility';
 
 const POLYGON_LINE_COLOR = 'rgb(38, 181, 242)';
 const POLYGON_FILL_COLOR = 'rgba(255, 255, 255, 0.5)';
 const POLYGON_LINE_DASH = '10,2';
 const POLYGON_ERROR_COLOR = 'rgba(255, 0, 0, 0.5)';
+const TRANSPARENT_COLOR = 'rgba(0, 0, 0, 0)';
 
 const POINT_RADIUS = 8;
 
@@ -42,10 +44,9 @@ const PolygonMap = ({
   hoverInfo = null,
   renderTooltip = () => {},
   onClick = () => {},
+  clearMap,
   onViewStateChange = () => {},
   onViewportLoad = () => {},
-  setWidth = () => {},
-  setHeight = () => {},
   screenControlPosition = 'top-left',
   navControlPosition = 'bottom-left',
   setCoordinates,
@@ -53,7 +54,7 @@ const PolygonMap = ({
   handleAreaValidation,
   singlePolygonOnly = false,
 }) => {
-  const { mapRef, viewState, setViewState } = useMap();
+  const { viewState, setViewState } = useMap();
   const [mapStyle, setMapStyle] = useLocalStorage('safers-map-style');
   const dispatch = useDispatch();
 
@@ -73,27 +74,15 @@ const PolygonMap = ({
     },
   ];
 
+  const DRAW_TYPES = {
+    LINE_STRING: 'drawLineString',
+    POLYGON: 'drawPolygon',
+  };
+
   const [modeId, setModeId] = useState(null);
   const [modeHandler, setModeHandler] = useState(null);
-  const [features, setFeatures] = useState([]);
   const [selectedFeatureData, setSelectedFeatureData] = useState(null);
   const [areaIsValid, setAreaIsValid] = useState(true);
-
-  const getMapSize = useCallback(() => {
-    const newWidth = mapRef?.current?.deck?.width;
-    newWidth && setWidth(newWidth);
-
-    const newHeight = mapRef?.current?.deck.height;
-    newHeight && setHeight(newHeight);
-  }, [setHeight, setWidth]);
-
-  useEffect(() => {
-    window.addEventListener('resize', getMapSize);
-  }, [getMapSize]);
-
-  useEffect(() => {
-    getMapSize();
-  }, [getMapSize, layers]);
 
   const getPosition = position => {
     const props = position.split('-');
@@ -114,30 +103,26 @@ const PolygonMap = ({
     }
   };
 
-  const _updateViewport = tempViewport => setViewState(tempViewport);
-
   const editToggle = mode => {
-    if (mode === 'drawLineString') {
-      toggleMode(modeId === 'drawLineString' ? 'editing' : 'drawLineString');
-    } else if (mode === 'drawPolygon') {
+    if (mode === DRAW_TYPES.LINE_STRING) {
+      toggleMode(
+        modeId === DRAW_TYPES.LINE_STRING ? 'editing' : DRAW_TYPES.LINE_STRING,
+      );
+    } else if (mode === DRAW_TYPES.POLYGON) {
       if (singlePolygonOnly) {
         setAreaIsValid(true);
-        setFeatures([]);
+        setCoordinates([]);
       }
-      toggleMode(modeId === 'drawPolygon' ? 'editing' : 'drawPolygon');
+      toggleMode(
+        modeId === DRAW_TYPES.POLYGON ? 'editing' : DRAW_TYPES.POLYGON,
+      );
     }
   };
 
-  const clearMap = () => {
+  const handleClearMap = () => {
     setAreaIsValid(true);
     if (selectedFeatureData?.selectedFeature) {
-      const tempFeatures = [...features];
-      tempFeatures.splice(selectedFeatureData.selectedFeatureIndex, 1);
-      setFeatures(tempFeatures);
-      setCoordinates(getWKTfromFeature(tempFeatures));
-    } else {
-      setFeatures([]);
-      setCoordinates(null);
+      clearMap(selectedFeatureData);
     }
   };
 
@@ -167,9 +152,11 @@ const PolygonMap = ({
         <MapControlButton
           top="50px"
           style={
-            modeId === 'drawLineString' ? { backgroundColor: 'lightgray' } : {}
+            modeId === DRAW_TYPES.LINE_STRING
+              ? { backgroundColor: 'lightgray' }
+              : {}
           }
-          onClick={() => editToggle('drawLineString')}
+          onClick={() => editToggle(DRAW_TYPES.LINE_STRING)}
         >
           <i className="bx bx-minus" style={{ fontSize: '20px' }}></i>
         </MapControlButton>
@@ -177,14 +164,16 @@ const PolygonMap = ({
         <MapControlButton
           top="50px"
           style={
-            modeId === 'drawPolygon' ? { backgroundColor: 'lightgray' } : {}
+            modeId === DRAW_TYPES.POLYGON
+              ? { backgroundColor: 'lightgray' }
+              : {}
           }
-          onClick={() => editToggle('drawPolygon')}
+          onClick={() => editToggle(DRAW_TYPES.POLYGON)}
         >
           <i className="bx bx-shape-triangle" style={{ fontSize: '20px' }}></i>
         </MapControlButton>
       )}
-      <MapControlButton onClick={clearMap}>
+      <MapControlButton onClick={handleClearMap}>
         <i className="bx bx-trash" style={{ fontSize: '20px' }}></i>
       </MapControlButton>
     </>
@@ -196,11 +185,9 @@ const PolygonMap = ({
       if (handleAreaValidation) {
         areaValidation = handleAreaValidation(val.data[0]);
       }
-      setFeatures(val.data);
       setCoordinates(val.data, areaValidation);
       toggleMode('editing');
     } else if (val.editType === 'movePosition') {
-      setFeatures(val.data);
       setCoordinates(val.data, areaValidation);
     }
   };
@@ -210,19 +197,6 @@ const PolygonMap = ({
     setMapStyle(mapStyle);
   };
 
-  const handleViewStateChange = ({ viewState: { width, height, ...rest } }) => {
-    onViewStateChange({ viewState: { width, height, ...rest } });
-    setViewState(rest);
-  };
-
-  useEffect(() => {
-    if (coordinates) {
-      setFeatures(coordinates);
-    }
-    toggleMode('editing');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [coordinates]);
-
   return (
     <>
       <MapGL
@@ -231,10 +205,9 @@ const PolygonMap = ({
         height="100%"
         mapboxApiAccessToken={MAPBOX_TOKEN}
         mapStyle={mapStyle ? mapStyle.uri : selectedMapStyle.uri}
-        onViewportChange={_updateViewport}
         ContextProvider={MapContext.Provider}
         onClick={onClick}
-        onViewStateChange={handleViewStateChange}
+        onViewStateChange={({ viewState }) => setViewState(viewState)}
         onViewportLoad={onViewportLoad}
         layers={finalLayerSet}
         views={new MapView({ repeat: true })}
@@ -242,9 +215,16 @@ const PolygonMap = ({
         <Editor
           clickRadius={12}
           mode={modeHandler}
-          features={features}
+          features={coordinates}
           onUpdate={handleUpdate}
           onSelect={selected => {
+            const id = selected?.selectedFeature?.properties?.id;
+            if (id) {
+              const [type, position] = id.split('-');
+              dispatch(
+                setSelectedFireBreak({ type, position: Number(position) }),
+              );
+            }
             setSelectedFeatureData(selected);
           }}
           featureStyle={data => {
@@ -261,12 +241,24 @@ const PolygonMap = ({
             const stroke =
               FIRE_BREAK_STROKE_COLORS[data.feature.properties.fireBreakType] ??
               POLYGON_LINE_COLOR;
-            return {
+
+            const defaultFeatureStyles = {
               stroke,
               fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
               strokeDasharray: POLYGON_LINE_DASH,
               r: POINT_RADIUS,
+              strokeWidth: 4,
             };
+
+            return data.feature.geometry.type === 'Polygon'
+              ? {
+                  ...defaultFeatureStyles,
+                  fill: areaIsValid ? POLYGON_FILL_COLOR : POLYGON_ERROR_COLOR,
+                }
+              : {
+                  ...defaultFeatureStyles,
+                  fill: TRANSPARENT_COLOR,
+                };
           }}
         />
         <FullscreenControl style={getPosition(screenControlPosition)} />

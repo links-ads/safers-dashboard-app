@@ -19,18 +19,19 @@ import {
 import wkt from 'wkt';
 
 import { useMap } from 'components/BaseMap/MapContext';
-import {
-  setFilteredAlerts,
-  setAlertApiParams,
-} from 'store/alerts/alerts.slice';
+import { MAP } from 'constants/common';
+import { fetchEndpoint } from 'helpers/apiHelper';
+import { getBoundingBox, isWKTValid } from 'helpers/mapHelper';
+import { setFilteredAlerts, setAlertApiParams } from 'store/alerts.slice';
 import {
   setDateRangeDisabled,
   configSelector,
   dateRangeSelector,
-} from 'store/common/common.slice';
+} from 'store/common.slice';
 import {
   fetchDataLayers,
   fetchMapRequests,
+  postMapRequest,
   setNewMapRequestState,
   dataLayersSelector,
   metaDataSelector,
@@ -38,19 +39,26 @@ import {
   timeSeriesInfoSelector,
   featureInfoSelector,
   dataLayerMapRequestsSelector,
-} from 'store/datalayer/datalayer.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/datalayer.slice';
+import { defaultAoiSelector } from 'store/user.slice';
+import {
+  filterNodesByProperty,
+  getGeoFeatures,
+  getWKTfromFeature,
+} from 'utility';
 
-import { SLIDER_SPEED, DATA_LAYERS_PANELS, EUROPEAN_BBOX } from './constants';
+import {
+  SLIDER_SPEED,
+  DATA_LAYERS_PANELS,
+  EUROPEAN_BBOX,
+  WILDFIRE_LAYER_TYPES,
+  DEFAULT_WILDFIRE_GEOMETRY_BUFFER,
+} from './constants';
 import DataLayer from './DataLayer';
 import FireAndBurnedArea from './FireAndBurnedArea';
 import OnDemandDataLayer from './OnDemandDataLayer';
 import PostEventMonitoringForm from './PostEventMonitoringForm';
-import WildfireSimulation from './WildfireSimulation';
-import { MAP } from '../../constants/common';
-import { fetchEndpoint } from '../../helpers/apiHelper';
-import { getBoundingBox, isWKTValid } from '../../helpers/mapHelper';
-import { filterNodesByProperty, getGeoFeatures } from '../../store/utility';
+import WildfireSimulation from './wildfire-simulation-form/WildfireSimulation';
 
 const DataLayerDashboard = ({ t }) => {
   const { viewState, setViewState } = useMap();
@@ -368,8 +376,6 @@ const DataLayerDashboard = ({ t }) => {
     getSlider,
     getLegend,
     bitmapLayer,
-    setViewState,
-    viewState,
     handleResetAOI,
     timeSeriesData,
     featureInfoData,
@@ -419,6 +425,61 @@ const DataLayerDashboard = ({ t }) => {
         setFieldValue('isMapAreaValidWKT', true);
       }
     }
+  };
+
+  const onWildfireFormSubmit = formData => {
+    // rename properties to match what server expects
+    const boundary_conditions = Object.values(formData.boundaryConditions).map(
+      obj => ({
+        time: Number(obj.timeOffset),
+        w_dir: Number(obj.windDirection),
+        w_speed: Number(obj.windSpeed),
+        moisture: Number(obj.fuelMoistureContent),
+        fireBreak: obj.fireBreak
+          ? // filter out any 'fireBreak' keys which are just empy arrays
+            Object.entries(obj.fireBreak).reduce(
+              (acc, [key, value]) =>
+                value.length
+                  ? {
+                      ...acc,
+                      [key]: getWKTfromFeature(value),
+                    }
+                  : acc,
+              {},
+            )
+          : {},
+      }),
+      [],
+    );
+
+    const transformedGeometry = getWKTfromFeature(formData.mapSelection);
+    const startDateTime = new Date(formData.ignitionDateTime).toISOString();
+    const endDateTime = new Date(
+      moment(startDateTime)
+        .add(formData.hoursOfProjection, 'hours')
+        .toISOString()
+        .slice(0, 19),
+    );
+
+    const payload = {
+      data_types: WILDFIRE_LAYER_TYPES.map(item => item.id),
+      geometry: transformedGeometry,
+      geometry_buffer_size: DEFAULT_WILDFIRE_GEOMETRY_BUFFER,
+      title: formData.simulationTitle,
+      parameters: {
+        description: formData.simulationDescription,
+        start: startDateTime,
+        end: endDateTime,
+        time_limit: Number(formData.hoursOfProjection),
+        probabilityRange: Number(formData.probabilityRange),
+        do_spotting: formData.simulationFireSpotting,
+        boundary_conditions,
+      },
+    };
+
+    dispatch(postMapRequest(payload));
+    dispatch(fetchMapRequests());
+    backToOnDemandPanel();
   };
 
   return (
@@ -537,6 +598,7 @@ const DataLayerDashboard = ({ t }) => {
                 handleResetAOI={handleResetAOI}
                 backToOnDemandPanel={backToOnDemandPanel}
                 mapInputOnChange={mapInputOnChange}
+                onSubmit={onWildfireFormSubmit}
               />
             ) : null}
           </TabPane>

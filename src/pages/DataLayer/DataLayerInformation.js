@@ -14,15 +14,14 @@ import {
   VictoryBrushContainer,
 } from 'victory';
 
+import { getIconLayer } from 'helpers/mapHelper';
 import {
   fetchFeatureInfo,
   fetchTimeSeriesInfo,
   timeSeriesInfoSelector,
   featureInfoSelector,
-} from 'store/datalayer/datalayer.slice';
-
-import { getIconLayer } from '../../helpers/mapHelper';
-import { formatDate } from '../../store/utility';
+} from 'store/datalayer.slice';
+import { formatDate } from 'utility';
 
 const displayFeature = properties => {
   const keys = Object.keys(properties);
@@ -95,7 +94,6 @@ const DataLayerInformationComponent = ({
   tempLayerData,
   setTempLayerData,
   setInformation,
-  currentViewState,
   dispatch,
 }) => {
   const timeSeriesData = useSelector(timeSeriesInfoSelector);
@@ -108,7 +106,6 @@ const DataLayerInformationComponent = ({
   const [chartValues, setChartValues] = useState([]);
   const [zoomDomain, setZoomDomain] = useState(null);
   const [selectedDomain, setSelectedDomain] = useState(null);
-  const [contextMenuKey, setContextMenuKey] = useState(0);
   const chartContainerRef = useRef(null);
   const timeseriesExists = !!currentLayer?.timeseries_urls;
 
@@ -149,10 +146,6 @@ const DataLayerInformationComponent = ({
       }
     }
   }, [timeSeriesData]);
-
-  useEffect(() => {
-    setContextMenuKey(prev => prev + 1);
-  }, [currentViewState]);
 
   useEffect(() => {
     if (chartValues?.length > 0) {
@@ -486,8 +479,6 @@ const DataLayerInformationComponent = ({
       );
       setTempLayerData(layer);
       setTempSelectedPixel(data.coordinate);
-    } else if (!event.rightButton) {
-      setContextMenuKey(prev => prev + 1);
     }
   };
 
@@ -497,7 +488,7 @@ const DataLayerInformationComponent = ({
         {React.cloneElement(children, { onClick: generateGeoJson })}
       </ContextMenuTrigger>
       {currentLayer ? (
-        <ContextMenu key={contextMenuKey} id={menuId} className="geo-menu">
+        <ContextMenu id={menuId} className="geo-menu">
           {currentLayer && (
             <>
               <MenuItem
@@ -529,7 +520,6 @@ DataLayerInformationComponent.propTypes = {
   tempLayerData: PropTypes.any,
   setTempLayerData: PropTypes.any,
   setInformation: PropTypes.any,
-  currentViewState: PropTypes.any,
   dispatch: PropTypes.any,
 };
 

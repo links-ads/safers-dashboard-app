@@ -1,20 +1,20 @@
 import { combineReducers } from 'redux';
 import storage from 'redux-persist/lib/storage/session'; //or session
 
-import alertReducer from './alerts/alerts.slice';
-import authReducer from './authentication/authentication.slice';
-import commonReducer from './common/common.slice';
-import commsReducer from './comms/comms.slice';
-import dashboardReducer from './dashboard/dashboard.slice';
-import dataLayerReducer from './datalayer/datalayer.slice';
-import eventReducer from './events/events.slice';
-import inSituAlertReducer from './insitu/insitu.slice';
-import mapReducer from './map/map.slice';
-import missionReducer from './missions/missions.slice';
-import notificationsReducer from './notifications/notifications.slice';
-import peopleReducer from './people/people.slice';
-import reportReducer from './reports/reports.slice';
-import userReducer from './user/user.slice';
+import alertReducer from './alerts.slice';
+import authReducer from './authentication.slice';
+import commonReducer from './common.slice';
+import commsReducer from './comms.slice';
+import dashboardReducer from './dashboard.slice';
+import dataLayerReducer from './datalayer.slice';
+import eventReducer from './events.slice';
+import inSituAlertReducer from './insitu.slice';
+import mapReducer from './map.slice';
+import missionReducer from './missions.slice';
+import notificationsReducer from './notifications.slice';
+import peopleReducer from './people.slice';
+import reportReducer from './reports.slice';
+import userReducer from './user.slice';
 
 const appReducer = combineReducers({
   auth: authReducer,

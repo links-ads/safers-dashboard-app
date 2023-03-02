@@ -9,7 +9,7 @@ import { Row, Col, Input } from 'reactstrap';
 import {
   notificationSourcesSelector,
   notificationScopeRestrictionsSelector,
-} from 'store/notifications/notifications.slice';
+} from 'store/notifications.slice';
 
 const SortSection = ({
   filteredNotifications,

@@ -1,4 +1,3 @@
-// import BaseMap from '../../layout/BaseMap/BaseMap';
 import React from 'react';
 
 import PropTypes from 'prop-types';
@@ -6,8 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Card, CardHeader, CardBody, Col } from 'reactstrap';
 
-import { weatherStatsSelector } from 'store/dashboard/dashboard.slice';
-//i18n
+import { weatherStatsSelector } from 'store/dashboard.slice';
 
 const MapCards = props => {
   const weatherStats = useSelector(weatherStatsSelector);

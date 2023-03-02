@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Container, Row } from 'reactstrap';
 
-import { fetchEvents } from 'store/events/events.slice';
+import { fetchEvents } from 'store/events.slice';
 
 import InfoContainer from './Containers/InfoContainer';
 import InSituContainer from './Containers/InSituContainer';

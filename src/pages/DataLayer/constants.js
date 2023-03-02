@@ -47,4 +47,22 @@ export const FIRE_BREAK_STROKE_COLORS = {
   vehicle: 'rgb(0, 0, 255)',
 };
 
+export const BOUNDARY_CONDITION_INITIAL_STATE = {
+  windDirection: '',
+  windSpeed: '',
+  fuelMoistureContent: '',
+  fireBreak: {},
+};
+
 export const EUROPEAN_BBOX = [-18.36914, 14.51978, 41.660156, 71.130987];
+
+// The other two On-Demand forms allow user to select these from a dropdown.
+// For this form we hard-code the list and pass along to the API
+// when we reshape the form data for submission
+export const WILDFIRE_LAYER_TYPES = [
+  { id: '35011', name: 'Max rate of spread' },
+  { id: '35010', name: 'Mean rate of spread' },
+  { id: '35009', name: 'Max fireline intensity' },
+  { id: '35008', name: 'Mean fireline intensity' },
+  { id: '35007', name: 'Fire perimeter simulation as isochrones maps' },
+];

@@ -8,7 +8,7 @@ import storage from 'redux-persist/lib/storage/session';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-import { setLoading } from 'store/common/common.slice';
+import { setLoading } from 'store/common.slice';
 
 import {
   AUTH_BASE_URL,
@@ -16,12 +16,8 @@ import {
   AUTH_TENANT_ID,
   CLIENT_BASE_URL,
   REDIRECT_URL,
-} from '../../config';
-import {
-  setSession,
-  deleteSession,
-  getSession,
-} from '../../helpers/authHelper';
+} from '../config';
+import { setSession, deleteSession, getSession } from '../helpers/authHelper';
 
 const name = 'auth';
 

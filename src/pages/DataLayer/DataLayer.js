@@ -14,13 +14,13 @@ import {
 } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
 
-import { resetMetaData } from 'store/datalayer/datalayer.slice';
+import BaseMap from 'components/BaseMap/BaseMap';
+import JsonFormatter from 'components/JsonFormatter';
+import { resetMetaData } from 'store/datalayer.slice';
+import { formatDate } from 'utility';
 
 import DataLayerInformation from './DataLayerInformation';
 import TreeView from './TreeView';
-import BaseMap from '../../components/BaseMap/BaseMap';
-import JsonFormatter from '../../components/JsonFormatter';
-import { formatDate } from '../../store/utility';
 
 import 'react-rangeslider/lib/index.css';
 
@@ -40,7 +40,6 @@ const DataLayer = ({
   getSlider,
   getLegend,
   bitmapLayer,
-  viewState,
   timestamp,
   showLegend,
   legendUrl,
@@ -52,7 +51,6 @@ const DataLayer = ({
 
   const [tempLayerData, setTempLayerData] = useState(null);
   const [information, setInformation] = useState(null);
-  const [currentViewState, setCurrentViewState] = useState(viewState);
 
   // places global data layers into local state,
   // so that search filtering can then be applied
@@ -138,17 +136,11 @@ const DataLayer = ({
           setInformation={setInformation}
           dispatch={dispatch}
           menuId={'DataLayerMapMenu'}
-          currentViewState={currentViewState}
         >
           <BaseMap
             layers={layers}
-            initialViewState={viewState}
-            widgets={[]}
             screenControlPosition="top-right"
             navControlPosition="bottom-right"
-            onViewStateChange={data => {
-              setCurrentViewState(data);
-            }}
           />
         </DataLayerInformation>
         {getSlider()}

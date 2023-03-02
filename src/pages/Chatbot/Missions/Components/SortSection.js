@@ -6,16 +6,16 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col, Input, Button } from 'reactstrap';
 import toastr from 'toastr';
 
+import useSetNewAlerts from 'customHooks/useSetNewAlerts';
 import {
   setFilteredMissions,
   refreshMissions,
   allMissionsSelector,
   filteredMissionsSelector,
   missionsPollingDataSelector,
-} from 'store/missions/missions.slice';
+} from 'store/missions.slice';
 //i18N
 
-import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({

@@ -11,7 +11,12 @@ import toastr from 'toastr';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 
+import BaseMap from 'components/BaseMap/BaseMap';
+import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
+import SearchButton from 'components/SearchButton';
+import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
 import {
   fetchAlerts,
   fetchAlertSource,
@@ -27,26 +32,12 @@ import {
   alertSourcesSelector,
   alertSuccessSelector,
   alertErrorSelector,
-} from 'store/alerts/alerts.slice';
-import { dateRangeSelector } from 'store/common/common.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/alerts.slice';
+import { dateRangeSelector } from 'store/common.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import Alert from './Alert';
 import Tooltip from './Tooltip';
-import BaseMap from '../../components/BaseMap/BaseMap';
-import { GeoJsonPinLayer } from '../../components/BaseMap/GeoJsonPinLayer';
-import SearchButton from '../../components/SearchButton';
-import { MAP_TYPES } from '../../constants/common';
-import {
-  getBoundingBox,
-  getViewState,
-  getAlertIconColorFromContext,
-  getIconLayer,
-} from '../../helpers/mapHelper';
-
-import { IconLayer } from 'deck.gl';
-
-const PAGE_SIZE = 4;
 
 const FireAlerts = ({ t }) => {
   const { viewState, setViewState } = useMap();

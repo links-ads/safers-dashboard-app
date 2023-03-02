@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { BitmapLayer } from 'deck.gl';
 import PropTypes from 'prop-types';
@@ -14,20 +14,13 @@ import {
   Modal,
 } from 'reactstrap';
 import SimpleBar from 'simplebar-react';
-import wkt from 'wkt';
-import * as Yup from 'yup';
+
+import BaseMap from 'components/BaseMap/BaseMap';
+import { formatDate } from 'utility';
 
 import { DATA_LAYERS_PANELS } from './constants';
 import DataLayerInformation from './DataLayerInformation';
 import OnDemandTreeView from './OnDemandTreeView';
-import BaseMap from '../../components/BaseMap/BaseMap';
-import { formatDate } from '../../store/utility';
-
-Yup.addMethod(Yup.array, 'isValidWKTString', function (message) {
-  return this.test('isValidWKTString', message, value =>
-    value.length ? typeof wkt.stringify(value[0]) === 'string' : false,
-  );
-});
 
 const OnDemandDataLayer = ({
   t,
@@ -43,8 +36,6 @@ const OnDemandDataLayer = ({
   getSlider,
   getLegend,
   bitmapLayer,
-  setViewState,
-  viewState,
   timestamp,
   currentLayer,
   showLegend,
@@ -110,14 +101,6 @@ const OnDemandDataLayer = ({
     setActiveTab(+value);
     toggleModal();
   };
-
-  const handleViewStateChange = useCallback(
-    // eslint-disable-next-line no-unused-vars
-    ({ viewState: { width, height, ...rest } }) => {
-      setViewState(rest);
-    },
-    [setViewState],
-  );
 
   let layers = [...bboxLayers];
   if (bitmapLayer) {
@@ -260,8 +243,6 @@ const OnDemandDataLayer = ({
                   data={searchedMapRequests}
                   setCurrentLayer={setCurrentLayer}
                   t={t}
-                  setViewState={setViewState}
-                  viewState={viewState}
                   setBboxLayers={setBboxLayers}
                   resetMap={resetMap}
                 />
@@ -288,9 +269,6 @@ const OnDemandDataLayer = ({
             >
               <BaseMap
                 layers={layers}
-                initialViewState={viewState}
-                onViewStateChange={handleViewStateChange}
-                widgets={[]}
                 screenControlPosition="top-right"
                 navControlPosition="bottom-right"
               />

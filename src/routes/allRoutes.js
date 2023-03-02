@@ -1,19 +1,19 @@
 //Pages
-import Authentication from '../pages/Authentication';
-import SelectArea from '../pages/Authentication/SelectArea';
-import Chatbot from '../pages/Chatbot';
-import ReportsDashboard from '../pages/Chatbot/Reports/Dashboard';
-import Dashboard from '../pages/Dashboard';
-import DataLayerDashboard from '../pages/DataLayer';
-import EventAlerts from '../pages/Events';
-import EventDashboard from '../pages/Events/Dashboard';
-import FireAlerts from '../pages/FireAlerts';
-import InSituAlerts from '../pages/In-situ';
-import MyProfile from '../pages/MyProfile';
-import Notifications from '../pages/Notifications';
-import SocialMonitoring from '../pages/SocialMonitoring';
-import Pages404 from '../Utility/pages-404';
-import Pages500 from '../Utility/pages-500';
+import Authentication from 'pages/Authentication';
+import SelectArea from 'pages/Authentication/SelectArea';
+import Chatbot from 'pages/Chatbot';
+import ReportsDashboard from 'pages/Chatbot/Reports/Dashboard';
+import Dashboard from 'pages/Dashboard';
+import DataLayerDashboard from 'pages/DataLayer';
+import EventAlerts from 'pages/Events';
+import EventDashboard from 'pages/Events/Dashboard';
+import FireAlerts from 'pages/FireAlerts';
+import InSituAlerts from 'pages/In-situ';
+import MyProfile from 'pages/MyProfile';
+import Notifications from 'pages/Notifications';
+import SocialMonitoring from 'pages/SocialMonitoring';
+import Pages404 from 'Utility/pages-404';
+import Pages500 from 'Utility/pages-500';
 
 const publicRoutes = [
   { path: 'auth/:currentPage', component: Authentication },

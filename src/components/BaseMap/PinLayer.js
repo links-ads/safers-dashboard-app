@@ -3,10 +3,10 @@ import { IconLayer, TextLayer } from '@deck.gl/layers';
 import { get, isArray } from 'lodash';
 import Supercluster from 'supercluster';
 
-import iconMapping from '../../assets/images/mappins/safers-icons.json';
-import iconAtlas from '../../assets/images/mappins/safers-icons.svg';
-import backgroundsIconMapping from '../../assets/images/mappins/safers-pins.json';
-import backgroundsIconAtlas from '../../assets/images/mappins/safers-pins.svg';
+import iconMapping from 'assets/images/mappins/safers-icons.json';
+import iconAtlas from 'assets/images/mappins/safers-icons.svg';
+import backgroundsIconMapping from 'assets/images/mappins/safers-pins.json';
+import backgroundsIconAtlas from 'assets/images/mappins/safers-pins.svg';
 
 const COLOR_TRANSPARENT = [0, 0, 0, 0],
   COLOR_PRIMARY = [246, 190, 0, 255],

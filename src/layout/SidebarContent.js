@@ -7,19 +7,18 @@ import { useSelector } from 'react-redux';
 import { useLocation, Link } from 'react-router-dom';
 import SimpleBar from 'simplebar-react';
 
-import { newItemsCountAlertSelector } from 'store/alerts/alerts.slice';
+import { SIGNIN_REDIRECT } from 'config';
+import { newItemsCountAlertSelector } from 'store/alerts.slice';
 import {
   dataLayerNewItemsCountSelector,
   dataLayerIsNewAlertSelector,
   dataLayerIsPageActiveSelector,
-} from 'store/datalayer/datalayer.slice';
-import { newEventCountSelector } from 'store/events/events.slice';
+} from 'store/datalayer.slice';
+import { newEventCountSelector } from 'store/events.slice';
 import {
   isNewNotificationSelector,
   newItemsCountNotificationSelector,
-} from 'store/notifications/notifications.slice';
-
-import { SIGNIN_REDIRECT } from '../config';
+} from 'store/notifications.slice';
 
 //i18n
 

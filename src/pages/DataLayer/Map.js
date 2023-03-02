@@ -3,9 +3,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Card } from 'reactstrap';
 
-import BaseMap from '../../components/BaseMap/BaseMap';
-import PolygonMap from '../../components/BaseMap/PolygonMap';
-import SearchButton from '../../components/SearchButton';
+import BaseMap from 'components/BaseMap/BaseMap';
+import PolygonMap from 'components/BaseMap/PolygonMap';
+import SearchButton from 'components/SearchButton';
 
 const MapSection = ({
   iconLayer,
@@ -16,6 +16,7 @@ const MapSection = ({
   coordinates,
   togglePolygonMap = false,
   handleAreaValidation,
+  clearMap,
 }) => {
   const getSearchButton = index => (
     <SearchButton index={index} getInfoByArea={getReportsByArea} />
@@ -48,6 +49,7 @@ const MapSection = ({
           key="comm-polygon-map"
           handleAreaValidation={handleAreaValidation}
           singlePolygonOnly={true}
+          clearMap={clearMap}
         />
       ) : null}
     </Card>

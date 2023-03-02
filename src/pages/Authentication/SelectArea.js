@@ -4,15 +4,14 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 
+// eslint-disable-next-line import/no-duplicates
+import logodark from 'assets/images/background-light-logo.png';
+// eslint-disable-next-line import/no-duplicates
+import logolight from 'assets/images/background-light-logo.png';
 import AreaOfInterestPanel from 'components/AreaOfInterestPanel';
-import { isLoggedInSelector } from 'store/authentication/authentication.slice';
-import { setAoiSuccessMessageSelector } from 'store/user/user.slice';
-
-// eslint-disable-next-line import/no-duplicates
-import logodark from '../../assets/images/background-light-logo.png';
-// eslint-disable-next-line import/no-duplicates
-import logolight from '../../assets/images/background-light-logo.png';
-import { SIGNIN_REDIRECT } from '../../config';
+import { SIGNIN_REDIRECT } from 'config';
+import { isLoggedInSelector } from 'store/authentication.slice';
+import { setAoiSuccessMessageSelector } from 'store/user.slice';
 
 const SelectArea = () => {
   const navigate = useNavigate();

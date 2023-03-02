@@ -7,13 +7,17 @@ import './index.scss';
 import { PersistGate } from 'redux-persist/integration/react';
 
 import { setupInterceptors } from 'api/base';
+import { MapProvider } from 'components/BaseMap/MapContext';
+import reportWebVitals from 'reportWebVitals';
+import store, { persistor } from 'store';
+import { extendGlobalValidators } from 'Utility/extendGlobalValidators';
 
 import App from './App';
-import { MapProvider } from './components/BaseMap/MapContext';
-import reportWebVitals from './reportWebVitals';
-import store, { persistor } from './store';
 
 setupInterceptors(store);
+
+// adds all shared custom validator methods to global Yup object
+extendGlobalValidators();
 
 ReactDOM.render(
   <Provider store={store}>

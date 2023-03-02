@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { Input, Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { isWKTValid } from '../../helpers/mapHelper';
+import { isWKTValid } from 'helpers/mapHelper';
 
 const MapInput = ({
   isValidFormat = () => {},

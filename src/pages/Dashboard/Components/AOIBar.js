@@ -7,14 +7,14 @@ import { Container, Row, Card, Input, Button } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import { getViewState } from 'helpers/mapHelper';
-import { dateRangeSelector } from 'store/common/common.slice';
-import { flattenedMapRequestsSelector } from 'store/datalayer/datalayer.slice';
+import { dateRangeSelector } from 'store/common.slice';
+import { flattenedMapRequestsSelector } from 'store/datalayer.slice';
 import {
   fetchEvents,
   setEventParams,
   filteredEventsSelector,
-} from 'store/events/events.slice';
-import { defaultAoiSelector } from 'store/user/user.slice';
+} from 'store/events.slice';
+import { defaultAoiSelector } from 'store/user.slice';
 
 import EventsPanel from './EventsPanel';
 import MapComponent from './Map';

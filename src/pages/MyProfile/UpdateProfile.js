@@ -21,13 +21,15 @@ import {
 import toastr from 'toastr';
 import * as Yup from 'yup';
 
-import { signOut } from 'store/authentication/authentication.slice';
+import avatar from 'assets/images/users/profile.png';
+import { getGeneralErrors, getError } from 'helpers/errorHelper';
+import { signOut } from 'store/authentication.slice';
 import {
   fetchOrganisations,
   fetchRoles,
   organisationsSelector,
   rolesSelector,
-} from 'store/common/common.slice';
+} from 'store/common.slice';
 import {
   fetchUserProfile,
   updateUserProfile,
@@ -41,10 +43,8 @@ import {
   updateStatusSelector,
   uploadProfileImageFailResSelector,
   defaultAoiSelector,
-} from 'store/user/user.slice';
+} from 'store/user.slice';
 
-import avatar from '../../assets/images/users/profile.png';
-import { getGeneralErrors, getError } from '../../helpers/errorHelper';
 import 'toastr/build/toastr.min.css';
 
 //i18n

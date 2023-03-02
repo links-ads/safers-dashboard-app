@@ -1,5 +1,6 @@
 import React from 'react';
 
+import DOMPurify from 'dompurify';
 import highlight from 'json-format-highlight';
 import PropTypes from 'prop-types';
 
@@ -16,7 +17,7 @@ const JsonFormatter = ({ data }) => {
     <pre className="px-3">
       <code
         dangerouslySetInnerHTML={{
-          __html: highlight(data, jsonTheme),
+          __html: DOMPurify.sanitize(highlight(data, jsonTheme)),
         }}
       />
     </pre>

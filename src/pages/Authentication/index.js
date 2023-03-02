@@ -14,32 +14,28 @@ import {
   Col,
 } from 'reactstrap';
 
+// eslint-disable-next-line import/no-duplicates
+import logodark from 'assets/images/background-light-logo.png';
+// eslint-disable-next-line import/no-duplicates
+import logolight from 'assets/images/background-light-logo.png';
+import PreLoader from 'components/PreLoader';
+import { SIGNIN_REDIRECT } from 'config';
 import {
   isUserRembembered,
   userSelector,
   isLoggedInSelector,
-} from 'store/authentication/authentication.slice';
-import {
-  fetchAois,
-  aoisSelector,
-  isLoadingSelector,
-} from 'store/common/common.slice';
+} from 'store/authentication.slice';
+import { fetchAois, aoisSelector, isLoadingSelector } from 'store/common.slice';
 import {
   setDefaultAoi,
   setUserInfo,
   defaultAoiSelector,
-} from 'store/user/user.slice';
+} from 'store/user.slice';
 
 import ForgotPassword from './ForgotPassword';
 import ResetPassword from './ResetPassword';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
-// eslint-disable-next-line import/no-duplicates
-import logodark from '../../assets/images/background-light-logo.png';
-// eslint-disable-next-line import/no-duplicates
-import logolight from '../../assets/images/background-light-logo.png';
-import PreLoader from '../../components/PreLoader';
-import { SIGNIN_REDIRECT } from '../../config';
 
 const Authentication = () => {
   const DEFAULT_PAGE = 'sign-in';

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import storage from 'redux-persist/lib/storage/session';
 
-import { signOutSuccess } from 'store/authentication/authentication.slice';
-import { setLoading } from 'store/common/common.slice';
+import { signOutSuccess } from 'store/authentication.slice';
+import { setLoading } from 'store/common.slice';
 
 import { endpoints } from './endpoints';
 import { BASE_URL } from '../config';

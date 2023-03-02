@@ -7,15 +7,15 @@ import { Row, Col, Input, Button } from 'reactstrap';
 //i18N
 import toastr from 'toastr';
 
+import useSetNewAlerts from 'customHooks/useSetNewAlerts';
 import {
   setFilteredPeople,
   refreshPeople,
   allPeopleSelector,
   filteredPeopleSelector,
   peoplePollingDataSelector,
-} from 'store/people/people.slice';
+} from 'store/people.slice';
 
-import useSetNewAlerts from '../../../../customHooks/useSetNewAlerts';
 import { getFilteredRec } from '../../filter';
 
 const SortSection = ({

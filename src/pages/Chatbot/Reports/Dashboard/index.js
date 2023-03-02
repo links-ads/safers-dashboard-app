@@ -4,10 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Container, Row } from 'reactstrap';
 
-import {
-  fetchReportDetail,
-  reportDetailSelector,
-} from 'store/reports/reports.slice';
+import { fetchReportDetail, reportDetailSelector } from 'store/reports.slice';
 
 import MediaContainer from './Containers/MediaContainer';
 import SummaryContainer from './Containers/SummaryContainer';
