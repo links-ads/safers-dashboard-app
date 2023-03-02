@@ -120,11 +120,13 @@ export class PinLayer extends CompositeLayer {
       );
 
       // Check if the selected item is part of this clustered feature.
-      const isMatch = leaves.find(
-        leaf => leaf.properties.id === this.props.selectedItem.id,
-      );
-      if (isMatch) {
-        return SELECTED_CLUSTER;
+      if (this.props.selectedItem.id) {
+        const isMatch = leaves.find(
+          leaf => leaf.properties.id === this.props.selectedItem.id,
+        );
+        if (isMatch) {
+          return SELECTED_CLUSTER;
+        }
       }
 
       return COLOR_PRIMARY;
