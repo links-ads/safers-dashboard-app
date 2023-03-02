@@ -16,7 +16,7 @@ import {
 
 import { formatDate } from 'utility';
 
-const Report = ({ card, reportId, setSelectedReport /*, setFavorite*/ }) => {
+const Report = ({ card, reportId, setSelectedReport }) => {
   const { t } = useTranslation();
 
   const navigate = useNavigate();

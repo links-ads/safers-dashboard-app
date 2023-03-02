@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import PaginationWrapper from 'components/Pagination';
 import { getViewState } from 'helpers/mapHelper';
 import {
-  setReportFavorite,
   allReportsSelector,
   filteredReportsSelector,
 } from 'store/reports.slice';
@@ -23,30 +22,22 @@ const ReportList = ({ reportId, setReportId }) => {
   const filteredReports = useSelector(filteredReportsSelector);
   const [pageData, setPageData] = useState([]);
 
-  const dispatch = useDispatch();
-
-  const reports = filteredReports ?? [];
+  const reportList = filteredReports ?? allReports;
 
   // Get the index, then divide that by 4 and ceil it, gets the page.
   let selectedIndex = 1;
   if (reportId) {
-    selectedIndex = reports.findIndex(report => report.report_id === reportId);
+    selectedIndex = reportList.findIndex(
+      report => report.report_id === reportId,
+    );
   }
   const pageNo = Math.ceil((selectedIndex + 1) / 4);
 
-  const setFavoriteFlag = id => {
-    let selectedReport = _.find(pageData, { id });
-    selectedReport.isFavorite = !selectedReport.isFavorite;
-    dispatch(
-      setReportFavorite({ alertId: id, isFavorite: selectedReport.isFavorite }),
-    );
-  };
-
-  const setSelectedReport = report_id => {
-    if (report_id) {
-      setReportId(report_id);
-      let reportList = _.cloneDeep(allReports);
-      let selectedReport = _.find(reportList, { report_id });
+  const setSelectedReport = id => {
+    if (id) {
+      setReportId(id);
+      let copyReportList = _.cloneDeep(reportList);
+      let selectedReport = _.find(copyReportList, { id });
       selectedReport.isSelected = true;
       setViewState(getViewState(selectedReport.location, viewState.zoom));
     } else {
@@ -68,7 +59,6 @@ const ReportList = ({ reportId, setReportId }) => {
             card={report}
             reportId={reportId}
             setSelectedReport={setSelectedReport}
-            setFavorite={setFavoriteFlag}
           />
         ))}
       </Row>
@@ -76,7 +66,7 @@ const ReportList = ({ reportId, setReportId }) => {
         <PaginationWrapper
           page={pageNo}
           pageSize={4}
-          list={allReports}
+          list={reportList}
           setPageData={updatePage}
         />
       </Row>

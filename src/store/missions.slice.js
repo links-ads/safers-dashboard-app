@@ -6,7 +6,7 @@ import {
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-import { getFilteredRec } from 'pages/Chatbot/filter';
+import { getFilteredRecords } from 'pages/Chatbot/filter';
 
 const name = 'missions';
 
@@ -66,24 +66,6 @@ export const createMission = createAsyncThunk(
   },
 );
 
-export const setMissionFavorite = createAsyncThunk(
-  `${name}/setMissionFavorite`,
-  async ({ alertId, isFavorite }, { rejectWithValue }) => {
-    const response = await api.post(endpoints.eventAlerts.setFavorite, {
-      alert_id: alertId,
-      is_favorite: isFavorite,
-    });
-
-    if (response.status === 200) {
-      return {
-        msg: response.data,
-      };
-    }
-
-    return rejectWithValue({ error: true });
-  },
-);
-
 export const initialState = {
   allMissions: [],
   pollingData: [],
@@ -125,7 +107,11 @@ const missionsSlice = createSlice({
           const { order, status } = payload.feFilters ?? {};
           const filters = { status };
           const sort = { fieldName: 'start', order };
-          const filteredMissions = getFilteredRec(payload.data, filters, sort);
+          const filteredMissions = getFilteredRecords(
+            payload.data,
+            filters,
+            sort,
+          );
 
           state.filteredMissions = filteredMissions;
           state.allMissions = payload.data;
@@ -147,13 +133,6 @@ const missionsSlice = createSlice({
         state.error = false;
       })
       .addCase(createMission.rejected, state => {
-        state.error = true;
-      })
-      .addCase(setMissionFavorite.fulfilled, (state, { payload }) => {
-        state.success = payload.msg;
-        state.error = false;
-      })
-      .addCase(setMissionFavorite.rejected, state => {
         state.error = true;
       });
   },

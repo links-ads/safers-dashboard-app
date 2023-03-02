@@ -16,7 +16,7 @@ import {
   peoplePollingDataSelector,
 } from 'store/people.slice';
 
-import { getFilteredRec } from '../../filter';
+import { getFilteredRecords } from '../../filter';
 
 const SortSection = ({
   t,
@@ -38,8 +38,8 @@ const SortSection = ({
     if (allPeople.length > 0) {
       const filters = { activity, status };
       const sort = { fieldName: 'timestamp', order: sortOrder };
-      const actFiltered = getFilteredRec(allPeople, filters, sort);
-      dispatch(setFilteredPeople(actFiltered));
+      const filteredRecords = getFilteredRecords(allPeople, filters, sort);
+      dispatch(setFilteredPeople(filteredRecords));
     }
   }, [activity, allPeople, dispatch, sortOrder, status]);
 

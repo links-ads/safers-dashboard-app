@@ -3,13 +3,12 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
 import { server } from 'mocks/server';
-import { getFilteredRec } from 'pages/Chatbot/filter';
+import { getFilteredRecords } from 'pages/Chatbot/filter';
 
 import reducer, {
   initialState,
   fetchReports,
   fetchReportDetail,
-  setReportFavorite,
   resetReportResponseState,
   refreshReports,
   setFilteredReports,
@@ -146,59 +145,6 @@ describe('Reports Slice', () => {
         expect(store.getActions()).toEqual(expectedActions);
       });
     });
-
-    describe('setReportFavorite', () => {
-      let store = null;
-
-      beforeEach(() => {
-        store = mockStore();
-      });
-
-      it('should dispatch setting report as a favorite failure', async () => {
-        server.use(
-          rest.get('*/api/events/test-id/favorite/', (req, res, ctx) =>
-            res(ctx.status(400, 'Test Error')),
-          ),
-        );
-
-        const expectedActions = expect.arrayContaining([
-          expect.objectContaining({
-            type: setReportFavorite.rejected.type,
-          }),
-        ]);
-
-        await store.dispatch(
-          setReportFavorite({ alertId: 'test-id', isFavorite: true }),
-        );
-
-        expect(store.getActions()).toEqual(expectedActions);
-      });
-
-      it('should dispatch setting report as a favorite success', async () => {
-        const message = 'Test success message';
-
-        server.use(
-          rest.post('*/api/events/:event_id/favorite/', (req, res, ctx) => {
-            return res(ctx.status(200), ctx.json(message));
-          }),
-        );
-
-        const expectedActions = expect.arrayContaining([
-          expect.objectContaining({
-            type: setReportFavorite.fulfilled.type,
-            payload: {
-              msg: message,
-            },
-          }),
-        ]);
-
-        await store.dispatch(
-          setReportFavorite({ alertId: 'test-id', isFavorite: true }),
-        );
-
-        expect(store.getActions()).toEqual(expectedActions);
-      });
-    });
   });
 
   describe('Reducer', () => {
@@ -289,7 +235,7 @@ describe('Reports Slice', () => {
           isPolling: false,
           data: [{ id: 3 }, { id: 4 }],
         };
-        const filtered = getFilteredRec(
+        const filtered = getFilteredRecords(
           payload.data,
           { category: beforeState.category },
           { sortOrder: beforeState.sortOrder },
@@ -331,33 +277,6 @@ describe('Reports Slice', () => {
         expect(actualState).toEqual({
           ...initialState,
           reportDetail: payload.data,
-          error: false,
-        });
-      });
-    });
-
-    describe('setReportFavorite', () => {
-      it('should handle error when setting report as favorite is rejected', () => {
-        const actualState = reducer(beforeState, {
-          type: setReportFavorite.rejected.type,
-        });
-
-        expect(actualState.error).toBe(true);
-      });
-
-      it('should set report detail when successfully retrieved', () => {
-        const payload = {
-          msg: 'Test Success Message',
-        };
-
-        const actualState = reducer(beforeState, {
-          type: setReportFavorite.fulfilled.type,
-          payload,
-        });
-
-        expect(actualState).toEqual({
-          ...initialState,
-          success: payload.msg,
           error: false,
         });
       });

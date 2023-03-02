@@ -55,7 +55,7 @@ const Comms = ({ pollingFrequency }) => {
 
   const dispatch = useDispatch();
 
-  const allReports = filteredComms || allComms;
+  const commsList = filteredComms ?? allComms;
 
   const loadComms = () => {
     setCommID(undefined);
@@ -108,15 +108,12 @@ const Comms = ({ pollingFrequency }) => {
   }, [dispatch, success]);
 
   useEffect(() => {
-    if (allReports.length > 0) {
-      setIconLayer(
-        getIconLayer(allReports, MAP_TYPES.COMMUNICATIONS, 'communications', {
-          id: commID,
-        }),
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [allReports, commID]);
+    setIconLayer(
+      getIconLayer(commsList, MAP_TYPES.COMMUNICATIONS, 'communications', {
+        id: commID,
+      }),
+    );
+  }, [commsList, commID]);
 
   const getReportsByArea = () => {
     setBoundingBox(
