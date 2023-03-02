@@ -60,9 +60,7 @@ const MapComponent = ({
   const missionsLayer = useMemo(
     () =>
       getIconLayer(
-        // TODO check if these checks are needed
-        //missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
-        missionsList,
+        missionsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.MISSIONS,
         'target',
         {},
@@ -73,11 +71,11 @@ const MapComponent = ({
   );
 
   const alertsLayer = useMemo(() => {
+    const filtered = alertsList.filter(
+      item => item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
+    );
     return getIconLayer(
-      // alertsList.filter(
-      //   item => item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
-      // ),
-      alertsList,
+      filtered,
       MAP_TYPES.ALERTS,
       'fire',
       {},
@@ -86,28 +84,28 @@ const MapComponent = ({
     );
   }, [alertsList, visibleLayers.alerts]);
 
-  const peopleLayer = useMemo(
-    () =>
-      getIconLayer(
-        // orgPplList.filter(
-        //   item =>
-        //     item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
-        // ),
-        orgPplList,
-        MAP_TYPES.PEOPLE,
-        'people',
-        {},
-        visibleLayers.people,
-        'people-layer',
-      ),
-    [orgPplList, visibleLayers.people],
-  );
+  const peopleLayer = useMemo(() => {
+    if (!orgPplList) {
+      return null;
+    }
+    return getIconLayer(
+      // TODO: investigate why this is broken.
+      // orgPplList.filter(
+      //   item => item?.geometry?.features[0]?.geometry?.coordinates?.length > 0,
+      // ),
+      orgPplList,
+      MAP_TYPES.PEOPLE,
+      'people',
+      {},
+      visibleLayers.people,
+      'people-layer',
+    );
+  }, [orgPplList, visibleLayers.people]);
 
   const reportLayer = useMemo(
     () =>
       getIconLayer(
-        //orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
-        orgReportList,
+        orgReportList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.REPORTS,
         'report',
         {},
@@ -120,8 +118,7 @@ const MapComponent = ({
   const commsLayer = useMemo(
     () =>
       getIconLayer(
-        //commsList.filter(item => item?.geometry?.coordinates?.length > 0),
-        commsList,
+        commsList.filter(item => item?.geometry?.coordinates?.length > 0),
         MAP_TYPES.COMMUNICATIONS,
         'communications',
         {},

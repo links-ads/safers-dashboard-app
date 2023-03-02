@@ -165,7 +165,6 @@ export const getIconLayer = (
     return null;
   }
   const data = getAsGeoJSON(alerts);
-  //console.log(`data for layer "${id}" is `, data);
   if (!data || data.length === 0) {
     // deckGL really doesnt like empty data
     return null;

@@ -68,47 +68,24 @@ const EventAlerts = ({ t }) => {
 
   const dispatch = useDispatch();
 
-  const getEventsLayer = useCallback(
-    (alerts, selectedAlert = {}) => {
-      const data = alerts.map(alert => {
-        const { center, id, ...properties } = alert;
-        return {
-          type: 'Feature',
-          properties: {
-            id,
-            ...properties,
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: center,
-          },
-        };
-      });
+  const getEventsLayer = useCallback((alerts, selectedAlert = {}) => {
+    const data = alerts.map(alert => {
+      const { center, id, ...properties } = alert;
+      return {
+        type: 'Feature',
+        properties: {
+          id,
+          ...properties,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: center,
+        },
+      };
+    });
 
-      return getIconLayer(data, MAP_TYPES.EVENTS, 'flag', selectedAlert);
-      // return new GeoJsonPinLayer({
-      //   data,
-      //   dispatch,
-      //   setViewState,
-      //   getPosition: feature => feature.geometry.coordinates,
-      //   getPinColor: feature =>
-      //     getAlertIconColorFromContext(
-      //       MAP_TYPES.ALERTS,
-      //       feature,
-      //       selectedAlert,
-      //     ),
-      //   icon: 'flag',
-      //   iconColor: [255, 255, 255],
-      //   clusterIconSize: 35,
-      //   getPinSize: () => 35,
-      //   pixelOffset: [-18, -18],
-      //   pinSize: 25,
-      //   onGroupClick: true,
-      //   onPointClick: true,
-      // });
-    },
-    [dispatch, setViewState],
-  );
+    return getIconLayer(data, MAP_TYPES.EVENTS, 'flag', selectedAlert);
+  }, []);
 
   const getEvents = useCallback(
     (isLoading = true) => {
