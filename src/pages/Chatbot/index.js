@@ -69,11 +69,7 @@ const Chatbot = () => {
     const params = new URLSearchParams(queryString);
     const tab = params.get('tab');
 
-    if (!tab) {
-      setSelectedTab('1');
-    } else {
-      setSelectedTab(tab);
-    }
+    !tab ? setSelectedTab('1') : setSelectedTab(tab);
   }, [location.search]);
 
   return (
