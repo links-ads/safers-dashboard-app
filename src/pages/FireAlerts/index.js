@@ -12,7 +12,6 @@ import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 
 import BaseMap from 'components/BaseMap/BaseMap';
-import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
 import SearchButton from 'components/SearchButton';
 import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
@@ -52,12 +51,12 @@ const FireAlerts = ({ t }) => {
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
-  const [midPoint, setMidPoint] = useState([]);
+  const [, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
+  const [, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
   const [isEdit, setIsEdit] = useState(false);
-  const [isViewStateChanged, setIsViewStateChanged] = useState(false);
+  const [, setIsViewStateChanged] = useState(false);
   const [hoverInfo, setHoverInfo] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);

@@ -145,7 +145,7 @@ const EventAlerts = ({ t }) => {
   }, [
     defaultAoi.features,
     filteredAlerts,
-    getIconLayer,
+    getEventsLayer,
     setViewState,
     viewState,
   ]);
