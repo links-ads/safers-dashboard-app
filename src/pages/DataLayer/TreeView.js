@@ -154,13 +154,11 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
             </Collapse>
           )}
           {(node.info || node.info_url) && (
-            <>
-              <Tooltip
-                id={`${parentId}-${index}-tooltip`}
-                place="right"
-                className="alert-tooltip data-layers-alert-tooltip"
-              />
-            </>
+            <Tooltip
+              id={`${parentId}-${index}-tooltip`}
+              place="right"
+              className="alert-tooltip data-layers-alert-tooltip"
+            />
           )}
         </Fragment>
       );
