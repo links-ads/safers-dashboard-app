@@ -33,7 +33,7 @@ import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
 
 const EventAlerts = ({ t }) => {
-  const { viewState, setViewState } = useMap();
+  const { viewState, setViewState, updateViewState } = useMap();
   const defaultAoi = useSelector(defaultAoiSelector);
 
   const alerts = useSelector(allEventsSelector);
@@ -45,10 +45,8 @@ const EventAlerts = ({ t }) => {
 
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
-  const [midPoint, setMidPoint] = useState([]);
   const [checkedStatus, setCheckedStatus] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -152,7 +150,12 @@ const EventAlerts = ({ t }) => {
 
   const getAlertsByArea = () => {
     setBoundingBox(
-      getBoundingBox(midPoint, currentZoomLevel, newWidth, newHeight),
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        newWidth,
+        newHeight,
+      ),
     );
   };
 
@@ -166,12 +169,7 @@ const EventAlerts = ({ t }) => {
     );
   }, [defaultAoi.features, setViewState]);
 
-  const hideTooltip = e => {
-    if (e && e.viewState) {
-      setMidPoint([e.viewState.longitude, e.viewState.latitude]);
-      setCurrentZoomLevel(e.viewState.zoom);
-    }
-    setIsViewStateChanged(true);
+  const hideTooltip = () => {
     setHoverInfo({});
   };
 
@@ -222,7 +220,7 @@ const EventAlerts = ({ t }) => {
         ? setViewState(
             getViewState(
               selectedAlert.center,
-              currentZoomLevel,
+              viewState.zoom,
               selectedAlert,
               setHoverInfo,
               setIsViewStateChanged,
