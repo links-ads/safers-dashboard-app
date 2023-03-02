@@ -9,14 +9,9 @@ import toastr from 'toastr';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
-import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
 import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
-import {
-  getBoundingBox,
-  getViewState,
-  getAlertIconColorFromContext,
-} from 'helpers/mapHelper';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchEvents,
@@ -65,46 +60,24 @@ const EventAlerts = ({ t }) => {
 
   const dispatch = useDispatch();
 
-  const getIconLayer = useCallback(
-    (alerts, selectedAlert = {}) => {
-      const data = alerts.map(alert => {
-        const { center, id, ...properties } = alert;
-        return {
-          type: 'Feature',
-          properties: {
-            id,
-            ...properties,
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: center,
-          },
-        };
-      });
+  const getEventsLayer = useCallback((alerts, selectedAlert = {}) => {
+    const data = alerts.map(alert => {
+      const { center, id, ...properties } = alert;
+      return {
+        type: 'Feature',
+        properties: {
+          id,
+          ...properties,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: center,
+        },
+      };
+    });
 
-      return new GeoJsonPinLayer({
-        data,
-        dispatch,
-        setViewState,
-        getPosition: feature => feature.geometry.coordinates,
-        getPinColor: feature =>
-          getAlertIconColorFromContext(
-            MAP_TYPES.ALERTS,
-            feature,
-            selectedAlert,
-          ),
-        icon: 'flag',
-        iconColor: [255, 255, 255],
-        clusterIconSize: 35,
-        getPinSize: () => 35,
-        pixelOffset: [-18, -18],
-        pinSize: 25,
-        onGroupClick: true,
-        onPointClick: true,
-      });
-    },
-    [dispatch, setViewState],
-  );
+    return getIconLayer(data, MAP_TYPES.EVENTS, 'flag', selectedAlert);
+  }, []);
 
   const getEvents = useCallback(
     (isLoading = true) => {
@@ -157,7 +130,7 @@ const EventAlerts = ({ t }) => {
   }, [alerts, filteredAlerts.length]);
 
   useEffect(() => {
-    setIconLayer(getIconLayer(filteredAlerts));
+    setIconLayer(getEventsLayer(filteredAlerts));
     if (!viewState) {
       setViewState(
         getViewState(
@@ -172,7 +145,7 @@ const EventAlerts = ({ t }) => {
   }, [
     defaultAoi.features,
     filteredAlerts,
-    getIconLayer,
+    getEventsLayer,
     setViewState,
     viewState,
   ]);

@@ -138,42 +138,19 @@ export const getAsGeoJSON = data => {
   });
 };
 
-export const getEventIconLayer = (
-  id,
-  alerts,
-  mapType,
-  marker,
-  isVisible = false,
-) => {
-  // fetch pin layer for dashboard
-  // caters for two slightly different data shapes, which is confusing
-  const data = alerts?.map(alert => {
-    let { geometry, ...properties } = alert;
-    // there are two possible shapes. No idea why
-    if (geometry?.features) {
-      geometry = geometry.features[0]?.geometry;
-    }
+export const reshapeEventsData = events => {
+  // reshape list of events geometries to be consistent with all
+  // the others.
+  const data = events?.map(event => {
+    let { geometry, ...properties } = event;
+    geometry = geometry.features[0]?.geometry;
     return {
       type: 'Feature',
       properties,
       geometry: geometry,
     };
   });
-  return new GeoJsonPinLayer({
-    id,
-    data,
-    getPosition: feature => feature.geometry.coordinates,
-    getPinColor: feature => getAlertIconColorFromContext(mapType, feature),
-    icon: marker,
-    iconColor: [255, 255, 255],
-    clusterIconSize: 35,
-    getPinSize: () => 35,
-    pixelOffset: [-18, -18],
-    pinSize: 25,
-    onGroupClick: true,
-    onPointClick: true,
-    visible: isVisible,
-  });
+  return data;
 };
 
 export const getIconLayer = (
@@ -181,9 +158,19 @@ export const getIconLayer = (
   mapType,
   markerName = 'alert',
   selectedItem = {},
+  visible = true, // needed for dashboard
+  id = null, // ditto, but ok to leave as null if only showing 1 layer
 ) => {
+  if (!alerts || alerts.length === 0) {
+    return null;
+  }
   const data = getAsGeoJSON(alerts);
+  if (!data || data.length === 0) {
+    // deckGL really doesnt like empty data
+    return null;
+  }
   return new GeoJsonPinLayer({
+    id,
     data,
     selectedItem,
     getPosition: feature => feature.geometry.coordinates,
@@ -195,6 +182,7 @@ export const getIconLayer = (
     getPinSize: () => 35,
     pixelOffset: [-18, -18],
     pinSize: 25,
+    visible: visible,
   });
 };
 

@@ -12,15 +12,10 @@ import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 
 import BaseMap from 'components/BaseMap/BaseMap';
-import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
 import { useMap } from 'components/BaseMap/MapContext';
 import SearchButton from 'components/SearchButton';
 import { MAP_TYPES, PAGE_SIZE } from 'constants/common';
-import {
-  getBoundingBox,
-  getViewState,
-  getAlertIconColorFromContext,
-} from 'helpers/mapHelper';
+import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
 import {
   fetchAlerts,
   fetchAlertSource,
@@ -56,12 +51,12 @@ const FireAlerts = ({ t }) => {
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortByDate, setSortByDate] = useState(undefined);
   const [alertSource, setAlertSource] = useState(undefined);
-  const [midPoint, setMidPoint] = useState([]);
+  const [, setMidPoint] = useState([]);
   const [boundingBox, setBoundingBox] = useState(undefined);
-  const [currentZoomLevel, setCurrentZoomLevel] = useState(undefined);
+  const [, setCurrentZoomLevel] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
   const [isEdit, setIsEdit] = useState(false);
-  const [isViewStateChanged, setIsViewStateChanged] = useState(false);
+  const [, setIsViewStateChanged] = useState(false);
   const [hoverInfo, setHoverInfo] = useState(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [paginatedAlerts, setPaginatedAlerts] = useState([]);
@@ -94,43 +89,24 @@ const FireAlerts = ({ t }) => {
     [alertSource, boundingBox, dateRange, dispatch, sortByDate],
   );
 
-  const getFireAlertLayer = useCallback(
-    (alerts, selectedAlert = {}) => {
-      const data = alerts.map(alert => {
-        const { center, id, ...properties } = alert;
-        return {
-          type: 'Feature',
-          properties: {
-            id,
-            ...properties,
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: center,
-          },
-        };
-      });
+  const getFireAlertLayer = useCallback((alerts, selectedAlert = {}) => {
+    const data = alerts.map(alert => {
+      const { center, id, ...properties } = alert;
+      return {
+        type: 'Feature',
+        properties: {
+          id,
+          ...properties,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: center,
+        },
+      };
+    });
 
-      return new GeoJsonPinLayer({
-        data,
-        dispatch,
-        getPosition: feature => feature.geometry.coordinates,
-        getPinColor: feature =>
-          getAlertIconColorFromContext(
-            MAP_TYPES.ALERTS,
-            feature,
-            selectedAlert,
-          ),
-        icon: 'fire',
-        iconColor: [255, 255, 255],
-        clusterIconSize: 35,
-        getPinSize: () => 35,
-        pixelOffset: [-18, -18],
-        pinSize: 25,
-      });
-    },
-    [dispatch],
-  );
+    return getIconLayer(data, MAP_TYPES.ALERTS, 'flag', {});
+  }, []);
 
   useEffect(() => {
     dispatch(fetchAlertSource());
