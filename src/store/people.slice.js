@@ -37,7 +37,6 @@ export const initialState = {
   sortByDate: 'desc',
   alertSource: 'all',
   error: false,
-  success: null,
   peopleDetail: null,
 };
 
@@ -45,10 +44,6 @@ const peopleSlice = createSlice({
   name,
   initialState,
   reducers: {
-    resetPeopleResponseState: state => {
-      state.error = false;
-      state.success = null;
-    },
     refreshPeople: (state, { payload }) => {
       state.allPeople = payload;
       state.filteredPeople = null;
@@ -86,8 +81,7 @@ const peopleSlice = createSlice({
   },
 });
 
-export const { resetPeopleResponseState, refreshPeople, setFilteredPeople } =
-  peopleSlice.actions;
+export const { refreshPeople, setFilteredPeople } = peopleSlice.actions;
 
 const baseSelector = state => state?.people;
 
@@ -104,11 +98,6 @@ export const filteredPeopleSelector = createSelector(
 export const peoplePollingDataSelector = createSelector(
   baseSelector,
   people => people?.pollingData,
-);
-
-export const peopleSuccessSelector = createSelector(
-  baseSelector,
-  people => people?.success,
 );
 
 export const missionCreatedSelector = createSelector(

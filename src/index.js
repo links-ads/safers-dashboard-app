@@ -15,6 +15,7 @@ import { extendGlobalValidators } from 'Utility/extendGlobalValidators';
 import App from './App';
 
 import 'react-tooltip/dist/react-tooltip.css';
+import 'rc-pagination/assets/index.css';
 
 setupInterceptors(store);
 
