@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 
 import _ from 'lodash';
 import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import PaginationWrapper from 'components/Pagination';
 import { getViewState } from 'helpers/mapHelper';
 import {
-  setMissionFavorite,
   allMissionsSelector,
   filteredMissionsSelector,
 } from 'store/missions.slice';
@@ -23,8 +22,6 @@ const MissionList = ({ missionId, setMissionId }) => {
   const filteredMissions = useSelector(filteredMissionsSelector);
 
   const [pageData, setPageData] = useState([]);
-
-  const dispatch = useDispatch();
 
   const missionList = filteredMissions ?? allMissions;
 
