@@ -45,10 +45,6 @@ import {
   defaultAoiSelector,
 } from 'store/user.slice';
 
-import 'toastr/build/toastr.min.css';
-
-//i18n
-
 const UpdateProfile = ({ t }) => {
   toastr.options = {
     preventDuplicates: true,

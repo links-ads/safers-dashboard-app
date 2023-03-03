@@ -18,10 +18,6 @@ import {
 
 import BaseMap from './BaseMap/BaseMap';
 
-import 'toastr/build/toastr.min.css';
-
-//i18n
-
 const AreaOfInterestPanel = ({ t }) => {
   toastr.options = {
     preventDuplicates: true,
