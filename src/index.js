@@ -16,6 +16,7 @@ import App from './App';
 
 import 'react-tooltip/dist/react-tooltip.css';
 import 'rc-pagination/assets/index.css';
+import 'toastr/build/toastr.min.css';
 
 setupInterceptors(store);
 
