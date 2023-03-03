@@ -4,56 +4,46 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
-import toastr from 'toastr';
 
 import { useMap } from 'components/BaseMap/MapContext';
-import 'toastr/build/toastr.min.css';
-import 'rc-pagination/assets/index.css';
 import { MAP_TYPES } from 'constants/common';
 import useInterval from 'customHooks/useInterval';
-import { getBoundingBox, getViewState, getIconLayer } from 'helpers/mapHelper';
+import { getIconLayer } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchReports,
-  resetReportResponseState,
   allReportsSelector,
   filteredReportsSelector,
-  reportsSuccessSelector,
   reportsBoundingBoxSelector,
 } from 'store/reports.slice';
 import { defaultAoiSelector } from 'store/user.slice';
 
-import MapSection from './Components/Map';
 import ReportList from './Components/ReportList';
 import SortSection from './Components/SortSection';
+import MapSection from '../Components/DefaultMapSection';
 
 const Reports = ({ pollingFrequency }) => {
-  const { viewState, setViewState } = useMap();
+  const { deckRef, viewState, updateViewState } = useMap();
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const defaultAoi = useSelector(defaultAoiSelector);
   const allReports = useSelector(allReportsSelector);
   const filteredReports = useSelector(filteredReportsSelector);
-  const success = useSelector(reportsSuccessSelector);
-  const gBbox = useSelector(reportsBoundingBoxSelector);
-
   const dateRange = useSelector(dateRangeSelector);
 
-  const { t } = useTranslation();
+  const gBbox = useSelector(reportsBoundingBoxSelector);
 
-  const [reportId, setReportId] = useState(undefined);
+  const [selectedReport, setSelectedReport] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(gBbox);
   const [reportParams, setReportParams] = useState({});
 
-  const dispatch = useDispatch();
-
   const reportsList = filteredReports || allReports;
 
   useEffect(() => {
-    setReportId(undefined);
-
     setReportParams(previous => {
-      const params = {
+      const options = {
         ...previous,
         bbox: boundingBox?.toString(),
         default_date: false,
@@ -65,63 +55,53 @@ const Reports = ({ pollingFrequency }) => {
             }
           : {}),
       };
-      dispatch(fetchReports({ options: params }));
-      return params;
+      dispatch(fetchReports({ options }));
+      return options;
     });
-  }, [dispatch, boundingBox, setReportParams, dateRange]);
-
-  useInterval(
-    () => {
-      dispatch(fetchReports({ options: reportParams, isPoling: true }));
-    },
-    pollingFrequency,
-    [reportParams],
-  );
+  }, [boundingBox, dateRange, dispatch]);
 
   useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
-    }
-    dispatch(resetReportResponseState());
-  }, [dispatch, success]);
-
-  useEffect(() => {
-    const reshapedReports = reportsList.map(report => {
+    const reports = reportsList.map(report => {
       const { report_id: id, ...rest } = report;
       return { id, ...rest };
     });
 
     setIconLayer(
-      getIconLayer(reshapedReports, MAP_TYPES.REPORTS, 'report', {
-        id: reportId,
+      getIconLayer(reports, MAP_TYPES.REPORTS, 'report', {
+        id: selectedReport?.report_id,
       }),
     );
-  }, [reportsList, reportId]);
+  }, [reportsList, selectedReport?.report_id]);
 
-  const getReportsByArea = () => {
-    setBoundingBox(
-      getBoundingBox(
-        [viewState.longitude, viewState.latitude],
-        viewState.zoom,
-        viewState.width,
-        viewState.height,
-      ),
-    );
-  };
+  useInterval(
+    () => dispatch(fetchReports({ options: reportParams, isPoling: true })),
+    pollingFrequency,
+    [reportParams],
+  );
 
-  const handleResetAOI = useCallback(() => {
-    setBoundingBox(undefined);
-    setViewState(
-      getViewState(
-        defaultAoi.features[0].properties.midPoint,
-        defaultAoi.features[0].properties.zoomLevel,
-      ),
-    );
-  }, [defaultAoi.features, setViewState]);
+  const getReportsByArea = () =>
+    setBoundingBox(deckRef.current.deck.viewManager._viewports[0].getBounds());
 
-  const handleClick = info => {
-    const { id } = info?.object?.properties ?? {};
-    setReportId(reportId === id ? undefined : id);
+  const handleResetAOI = useCallback(
+    () =>
+      updateViewState({
+        longitude: defaultAoi.features[0].properties.midPoint[0],
+        latitude: defaultAoi.features[0].properties.midPoint[1],
+        zoom: defaultAoi.features[0].properties.zoomLevel,
+      }),
+    [defaultAoi.features, updateViewState],
+  );
+
+  const onClick = info => {
+    const id = info?.object?.properties.id;
+
+    if (id) {
+      const report = reportsList.find(r => r.report_id === id);
+
+      if (report) {
+        setSelectedReport(report);
+      }
+    }
   };
 
   return (
@@ -145,15 +125,18 @@ const Reports = ({ pollingFrequency }) => {
           />
           <Row>
             <Col xl={12} className="px-3">
-              <ReportList reportId={reportId} setReportId={setReportId} />
+              <ReportList
+                selectedReport={selectedReport}
+                setSelectedReport={setSelectedReport}
+              />
             </Col>
           </Row>
         </Col>
         <Col xl={7} className="mx-auto">
           <MapSection
             iconLayer={iconLayer}
-            getReportsByArea={getReportsByArea}
-            onClick={handleClick}
+            getInfoByArea={getReportsByArea}
+            onClick={onClick}
           />
         </Col>
       </Row>
