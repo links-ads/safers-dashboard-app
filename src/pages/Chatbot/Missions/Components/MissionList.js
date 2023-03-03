@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import PaginationWrapper from 'components/Pagination';
-import { getViewState } from 'helpers/mapHelper';
 import {
   allMissionsSelector,
   filteredMissionsSelector,
@@ -15,8 +13,8 @@ import {
 
 import Mission from './Mission';
 
-const MissionList = ({ missionId, setMissionId }) => {
-  const { viewState, setViewState } = useMap();
+const MissionList = ({ selectedMission, setSelectedMission }) => {
+  const { updateViewState } = useMap();
 
   const allMissions = useSelector(allMissionsSelector);
   const filteredMissions = useSelector(filteredMissionsSelector);
@@ -27,21 +25,22 @@ const MissionList = ({ missionId, setMissionId }) => {
 
   // Get the index, then divide that by 4 and ceil it, gets the page.
   let selectedIndex = 1;
-  if (missionId) {
-    selectedIndex = missionList.findIndex(mission => mission.id === missionId);
+  if (selectedMission) {
+    selectedIndex = missionList.findIndex(
+      mission => mission.id === selectedMission?.id,
+    );
   }
 
   const pageNo = Math.ceil((selectedIndex + 1) / 4);
 
-  const setSelectedMission = id => {
-    if (id) {
-      setMissionId(id);
-      let copyMissionList = _.cloneDeep(missionList);
-      let selectedMission = copyMissionList.find(mission => mission.id === id);
-      selectedMission.isSelected = true;
-      setViewState(getViewState(selectedMission.location, viewState.zoom));
-    } else {
-      setMissionId(undefined);
+  const selectMission = mission => {
+    if (mission) {
+      setSelectedMission(mission);
+
+      updateViewState({
+        longitude: mission.location[0],
+        latitude: mission.location[1],
+      });
     }
   };
   const updatePage = data => {
@@ -56,9 +55,9 @@ const MissionList = ({ missionId, setMissionId }) => {
         {pageData.map(mission => (
           <Mission
             key={mission.id}
-            card={mission}
-            missionId={missionId}
-            setSelectedMission={setSelectedMission}
+            mission={mission}
+            selectedMission={selectedMission}
+            selectMission={selectMission}
           />
         ))}
       </Row>
@@ -75,8 +74,8 @@ const MissionList = ({ missionId, setMissionId }) => {
 };
 
 MissionList.propTypes = {
-  missionId: PropTypes.any,
-  setMissionId: PropTypes.func,
+  selectedMission: PropTypes.any,
+  setSelectedMission: PropTypes.func,
 };
 
 export default MissionList;
