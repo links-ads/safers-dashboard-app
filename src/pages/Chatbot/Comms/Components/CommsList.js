@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { Row } from 'reactstrap';
 
 import { useMap } from 'components/BaseMap/MapContext';
 import PaginationWrapper from 'components/Pagination';
-import { getViewState } from 'helpers/mapHelper';
 import { allCommsSelector, filteredCommsSelector } from 'store/comms.slice';
 
 import Comm from './Comm';
 
-const CommsList = ({ commID, setCommID }) => {
-  const { viewState, setViewState } = useMap();
+const CommsList = ({ selectedComm, setSelectedComm }) => {
+  const { updateViewState } = useMap();
 
   const allComms = useSelector(allCommsSelector);
   const filteredComms = useSelector(filteredCommsSelector);
@@ -24,20 +22,19 @@ const CommsList = ({ commID, setCommID }) => {
 
   // Get the index, then divide that by 4 and ceil it, gets the page.
   let selectedIndex = 1;
-  if (commID) {
-    selectedIndex = commList.findIndex(comm => comm.id === commID);
+  if (selectedComm) {
+    selectedIndex = commList.findIndex(comm => comm.id === selectedComm.id);
   }
   const pageNo = Math.ceil((selectedIndex + 1) / 4);
 
-  const setSelectedComm = id => {
-    if (id) {
-      setCommID(id);
-      let copyCommList = _.cloneDeep(commList);
-      let selectedComm = _.find(copyCommList, { id });
-      selectedComm.isSelected = true;
-      setViewState(getViewState(selectedComm.location, viewState.zoom));
-    } else {
-      setCommID(undefined);
+  const selectComm = comm => {
+    if (comm) {
+      setSelectedComm(comm);
+
+      updateViewState({
+        longitude: comm.location[0],
+        latitude: comm.location[1],
+      });
     }
   };
   const updatePage = data => {
@@ -52,9 +49,9 @@ const CommsList = ({ commID, setCommID }) => {
         {pageData.map(comm => (
           <Comm
             key={comm.id}
-            card={comm}
-            commID={commID}
-            setSelectedComm={setSelectedComm}
+            comm={comm}
+            selectedComm={selectedComm}
+            selectComm={selectComm}
           />
         ))}
       </Row>
@@ -71,8 +68,8 @@ const CommsList = ({ commID, setCommID }) => {
 };
 
 CommsList.propTypes = {
-  commID: PropTypes.any,
-  setCommID: PropTypes.func,
+  selectedComm: PropTypes.any,
+  setSelectedComm: PropTypes.func,
 };
 
 export default CommsList;

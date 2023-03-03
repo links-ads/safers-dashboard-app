@@ -4,48 +4,38 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button } from 'reactstrap';
-import toastr from 'toastr';
 
 import { useMap } from 'components/BaseMap/MapContext';
-import 'toastr/build/toastr.min.css';
-import 'rc-pagination/assets/index.css';
 import { MAP_TYPES } from 'constants/common';
 import useInterval from 'customHooks/useInterval';
+import { getIconLayer } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchComms,
-  resetCommsResponseState,
   allCommsSelector,
-  commsSuccessSelector,
   filteredCommsSelector,
 } from 'store/comms.slice';
 import { defaultAoiSelector } from 'store/user.slice';
 
 import CommsList from './Components/CommsList';
 import CreateMessage from './Components/CreateMessage';
-import MapSection from './Components/Map';
 import SortSection from './Components/SortSection';
-import {
-  getBoundingBox,
-  getViewState,
-  getIconLayer,
-} from '../../../helpers/mapHelper';
+import MapSection from '../Components/FormMapSection';
 
 const Comms = ({ pollingFrequency }) => {
-  const { viewState, setViewState } = useMap();
+  const { deckRef, updateViewState } = useMap();
+  const { t } = useTranslation();
+  const dispatch = useDispatch();
 
   const defaultAoi = useSelector(defaultAoiSelector);
   const allComms = useSelector(allCommsSelector);
-  const success = useSelector(commsSuccessSelector);
   const filteredComms = useSelector(filteredCommsSelector);
   const dateRange = useSelector(dateRangeSelector);
 
-  const { t } = useTranslation();
-
-  const [commID, setCommID] = useState(undefined);
+  const [selectedComm, setSelectedComm] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState('desc');
-  const [commStatus, setcommStatus] = useState('');
+  const [status, setStatus] = useState('');
   const [target, setTarget] = useState('');
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [coordinates, setCoordinates] = useState(null);
@@ -53,40 +43,50 @@ const Comms = ({ pollingFrequency }) => {
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
   const [commsParams, setCommsParams] = useState({});
 
-  const dispatch = useDispatch();
-
   const commsList = filteredComms ?? allComms;
 
-  const loadComms = () => {
-    setCommID(undefined);
-    const params = {
-      ...commsParams,
-      bbox: boundingBox?.toString(),
-      default_date: false,
-      default_bbox: !boundingBox,
-      ...(dateRange
-        ? {
-            start: dateRange[0],
-            end: dateRange[1],
-          }
-        : {}),
-    };
+  useEffect(() => {
+    setCommsParams(previous => {
+      const options = {
+        ...previous,
+        bbox: boundingBox?.toString(),
+        default_date: false,
+        default_bbox: !boundingBox,
+        ...(dateRange
+          ? {
+              start: dateRange[0],
+              end: dateRange[1],
+            }
+          : {}),
+      };
 
-    setCommsParams(params);
-    dispatch(
-      fetchComms({
-        options: params,
-        feFilters: { sortOrder, status: commStatus, target },
+      const feFilters = { sortOrder, status, target };
+
+      dispatch(
+        fetchComms({
+          options,
+          feFilters,
+        }),
+      );
+
+      return options;
+    });
+  }, [dateRange, boundingBox, sortOrder, status, target, dispatch]);
+
+  useEffect(() => {
+    setIconLayer(
+      getIconLayer(commsList, MAP_TYPES.COMMUNICATIONS, 'communications', {
+        id: selectedComm?.id,
       }),
     );
-  };
+  }, [commsList, selectedComm?.id]);
 
   useInterval(
     () => {
       dispatch(
         fetchComms({
           options: commsParams,
-          feFilters: { sortOrder, status: commStatus, target },
+          feFilters: { status, sortOrder, target },
           isPolling: true,
         }),
       );
@@ -95,58 +95,35 @@ const Comms = ({ pollingFrequency }) => {
     [commsParams],
   );
 
-  useEffect(() => {
-    loadComms();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateRange, boundingBox]);
+  const getCommsByArea = () =>
+    setBoundingBox(deckRef.current.deck.viewManager._viewports[0].getBounds());
 
-  useEffect(() => {
-    if (success?.detail) {
-      toastr.success(success.detail, '');
-    }
-    dispatch(resetCommsResponseState());
-  }, [dispatch, success]);
-
-  useEffect(() => {
-    setIconLayer(
-      getIconLayer(commsList, MAP_TYPES.COMMUNICATIONS, 'communications', {
-        id: commID,
+  const handleResetAOI = useCallback(
+    () =>
+      updateViewState({
+        longitude: defaultAoi.features[0].properties.midPoint[0],
+        latitude: defaultAoi.features[0].properties.midPoint[1],
+        zoom: defaultAoi.features[0].properties.zoomLevel,
       }),
-    );
-  }, [commsList, commID]);
+    [defaultAoi.features, updateViewState],
+  );
 
-  const getReportsByArea = () => {
-    setBoundingBox(
-      getBoundingBox(
-        [viewState.longitude, viewState.latitude],
-        viewState.zoom,
-        viewState.width,
-        viewState.height,
-      ),
-    );
+  const onClick = info => {
+    const id = info?.object?.properties.id;
+
+    if (id) {
+      const comm = commsList.find(c => c.id === id);
+
+      if (comm) {
+        setSelectedComm(comm);
+      }
+    }
   };
-
-  const handleResetAOI = useCallback(() => {
-    setBoundingBox(undefined);
-    setViewState(
-      getViewState(
-        defaultAoi.features[0].properties.midPoint,
-        defaultAoi.features[0].properties.zoomLevel,
-      ),
-    );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   const onCancel = () => {
     setTogglePolygonMap(false);
     setToggleCreateNewMessage(false);
     setCoordinates('');
-    loadComms();
-  };
-
-  const onClick = info => {
-    const { id } = info?.object?.properties ?? {};
-    setCommID(commID === id ? undefined : id);
   };
 
   return (
@@ -159,28 +136,31 @@ const Comms = ({ pollingFrequency }) => {
         </Col>
       </Row>
       <Row>
-        {!toggleCreateNewMessage && (
+        {!toggleCreateNewMessage ? (
           <Col xl={5}>
             <SortSection
-              commStatus={commStatus}
+              status={status}
+              setStatus={setStatus}
               sortOrder={sortOrder}
-              setcommStatus={setcommStatus}
               setSortOrder={setSortOrder}
+              target={target}
+              setTarget={setTarget}
               setTogglePolygonMap={() => {
                 setTogglePolygonMap(true);
                 setToggleCreateNewMessage(true);
               }}
-              target={target}
-              setTarget={setTarget}
             />
+
             <Row>
               <Col xl={12} className="px-3">
-                <CommsList commID={commID} setCommID={setCommID} />
+                <CommsList
+                  selectedComm={selectedComm}
+                  setSelectedComm={setSelectedComm}
+                />
               </Col>
             </Row>
           </Col>
-        )}
-        {toggleCreateNewMessage && (
+        ) : (
           <Col xl={5}>
             <CreateMessage
               onCancel={onCancel}
@@ -189,13 +169,14 @@ const Comms = ({ pollingFrequency }) => {
             />
           </Col>
         )}
+
         <Col xl={7} className="mx-auto">
           <MapSection
             iconLayer={iconLayer}
-            getReportsByArea={getReportsByArea}
+            getInfoByArea={getCommsByArea}
+            coordinates={coordinates}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
-            coordinates={coordinates}
             onClick={onClick}
             clearMap={() => setCoordinates([])}
           />

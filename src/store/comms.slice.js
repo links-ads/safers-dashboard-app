@@ -51,7 +51,6 @@ export const initialState = {
   sortByDate: 'desc',
   alertSource: 'all',
   error: false,
-  success: null,
   filteredComms: null,
 };
 
@@ -61,7 +60,6 @@ const commsSlice = createSlice({
   reducers: {
     resetCommsResponseState: state => {
       state.error = false;
-      state.success = null;
     },
     refreshData: (state, { payload }) => {
       state.allComms = payload;
@@ -120,11 +118,6 @@ export const filteredCommsSelector = createSelector(
 export const commsPollingDataSelector = createSelector(
   baseSelector,
   comms => comms?.pollingData,
-);
-
-export const commsSuccessSelector = createSelector(
-  baseSelector,
-  comms => comms?.success,
 );
 
 export default commsSlice.reducer;
