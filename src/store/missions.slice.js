@@ -3,6 +3,7 @@ import {
   createSlice,
   createSelector,
 } from '@reduxjs/toolkit';
+import toastr from 'toastr';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
@@ -59,6 +60,7 @@ export const createMission = createAsyncThunk(
     );
 
     if (response.status === 200) {
+      toastr.success(response.data.msg, '');
       return response.data;
     } else {
       return rejectWithValue({ error: true });
@@ -72,7 +74,6 @@ export const initialState = {
   sortByDate: 'desc',
   alertSource: 'all',
   error: false,
-  success: null,
   filteredMissions: null,
   missionDetail: null,
   missionCreated: null,
@@ -85,7 +86,6 @@ const missionsSlice = createSlice({
     resetMissionResponseState: state => {
       state.error = false;
       state.missionCreated = null;
-      state.success = null;
     },
     refreshMissions: (state, { payload }) => {
       state.allMissions = payload;
@@ -159,16 +159,6 @@ export const filteredMissionsSelector = createSelector(
 export const missionsPollingDataSelector = createSelector(
   baseSelector,
   missions => missions?.pollingData,
-);
-
-export const missionsSuccessSelector = createSelector(
-  baseSelector,
-  missions => missions?.success,
-);
-
-export const missionCreatedSelector = createSelector(
-  baseSelector,
-  missions => missions?.missionCreated,
 );
 
 export default missionsSlice.reducer;
