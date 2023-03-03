@@ -51,7 +51,6 @@ export const initialState = {
   pollingData: [],
   alertSource: 'all',
   error: false,
-  success: null,
   filteredReports: null,
   reportDetail: null,
   category: '',
@@ -65,10 +64,6 @@ const reportsSlice = createSlice({
   name,
   initialState,
   reducers: {
-    resetReportResponseState: state => {
-      state.error = false;
-      state.success = null;
-    },
     refreshReports: (state, { payload }) => {
       state.allReports = payload;
       state.error = false;
@@ -117,8 +112,7 @@ const reportsSlice = createSlice({
   },
 });
 
-export const { resetReportResponseState, refreshReports, setFilteredReports } =
-  reportsSlice.actions;
+export const { refreshReports, setFilteredReports } = reportsSlice.actions;
 
 const baseSelector = state => state?.reports;
 
@@ -160,11 +154,6 @@ export const reportsMissionIdSelector = createSelector(
 export const reportsBoundingBoxSelector = createSelector(
   baseSelector,
   reports => reports?.boundingBox,
-);
-
-export const reportsSuccessSelector = createSelector(
-  baseSelector,
-  reports => reports?.success,
 );
 
 export const reportsMapFilterSelector = createSelector(
