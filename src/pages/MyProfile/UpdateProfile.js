@@ -353,7 +353,8 @@ const UpdateProfile = ({ t }) => {
                             placeholder="organization"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            disabled={values.role === citizenId}
+                            // disabled={values.role === citizenId}
+                            disabled={true}
                             value={
                               values.role === citizenId
                                 ? ''
@@ -442,6 +443,7 @@ const UpdateProfile = ({ t }) => {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             value={values.role}
+                            disabled={true}
                             data-testid="update-profile-role"
                           >
                             <option value={''}>
