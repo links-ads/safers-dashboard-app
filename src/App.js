@@ -23,7 +23,9 @@ const App = () => {
 
   const dispatch = useDispatch();
 
-  useEffect(() => dispatch(fetchConfig()), [dispatch]);
+  useEffect(() => {
+    dispatch(fetchConfig());
+  }, [dispatch]);
 
   return config ? (
     <React.Fragment>
