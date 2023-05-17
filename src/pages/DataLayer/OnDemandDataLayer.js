@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 
-import { BitmapLayer, TileLayer } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -16,6 +15,7 @@ import {
 import SimpleBar from 'simplebar-react';
 
 import BaseMap from 'components/BaseMap/BaseMap';
+import { TiledRasterLayer } from 'components/BaseMap/TiledRasterLayer';
 import { formatDate } from 'utility';
 
 import { DATA_LAYERS_PANELS } from './constants';
@@ -102,28 +102,11 @@ const OnDemandDataLayer = ({
   };
 
   let layers = [...bboxLayers];
-  if (currentLayer) {
+  if (currentLayer?.urls) {
     const data = currentLayer?.urls[timestamp];
     layers.push(
-      new TileLayer({
+      new TiledRasterLayer({
         data,
-        minZoom: 0,
-        maxZoom: 20,
-        tileSize: 256,
-        updateTriggers: {
-          getTileData: { data },
-        },
-        renderSubLayers: props => {
-          const {
-            bbox: { west, south, east, north },
-          } = props.tile;
-
-          return new BitmapLayer(props, {
-            data: null,
-            image: props.data,
-            bounds: [west, south, east, north],
-          });
-        },
       }),
     );
     layers.push(tempLayerData);

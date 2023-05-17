@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import { BitmapLayer, TileLayer } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -15,6 +14,7 @@ import {
 import SimpleBar from 'simplebar-react';
 
 import BaseMap from 'components/BaseMap/BaseMap';
+import { TiledRasterLayer } from 'components/BaseMap/TiledRasterLayer';
 import JsonFormatter from 'components/JsonFormatter';
 import { resetMetaData } from 'store/datalayer.slice';
 import { formatDate } from 'utility';
@@ -116,26 +116,10 @@ const DataLayer = ({
     }
 
     const data = currentLayer?.urls[timestamp];
-    const layers = [
-      new TileLayer({
-        data,
-        minZoom: 0,
-        maxZoom: 20,
-        tileSize: 256,
-        updateTriggers: {
-          getTileData: { data },
-        },
-        renderSubLayers: props => {
-          const {
-            bbox: { west, south, east, north },
-          } = props.tile;
 
-          return new BitmapLayer(props, {
-            data: null,
-            image: props.data,
-            bounds: [west, south, east, north],
-          });
-        },
+    const layers = [
+      new TiledRasterLayer({
+        data,
       }),
     ];
 
