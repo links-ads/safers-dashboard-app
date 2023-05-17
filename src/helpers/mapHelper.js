@@ -1,10 +1,11 @@
 import { PolygonLayer } from '@deck.gl/layers';
 import { fitBounds } from '@math.gl/web-mercator';
 import { bboxPolygon, intersect } from '@turf/turf';
-import { BitmapLayer, FlyToInterpolator } from 'deck.gl';
+import { FlyToInterpolator } from 'deck.gl';
 import wkt from 'wkt';
 
 import { GeoJsonPinLayer } from 'components/BaseMap/GeoJsonPinLayer';
+import { TiledRasterLayer } from 'components/BaseMap/TiledRasterLayer';
 
 const EARTH_CIR_METERS = 40075016.686;
 const DEGREES_PER_METER = 360 / EARTH_CIR_METERS;
@@ -290,23 +291,6 @@ export const getPolygonLayerFromGeometry = geometry => {
     getFillColor: [192, 105, 25],
     getLineColor: [0, 0, 0],
     getLineWidth: 100,
-  });
-};
-
-export const getBitmapLayer = selectedLayerNode => {
-  /*
-     extract bounds from url, this is passed in as an object with timestamps
-     as the keys and urls as the values. Only going to show first one for now
-    */
-  const firstURL = Object.values(selectedLayerNode.urls)[0];
-  const urlSearchParams = new URLSearchParams(firstURL);
-  const bounds = urlSearchParams.has('bbox')
-    ? urlSearchParams.get('bbox').split(',').map(Number)
-    : selectedLayerNode.bbox;
-  return new BitmapLayer({
-    bounds: bounds,
-    image: firstURL,
-    opacity: 0.5,
   });
 };
 

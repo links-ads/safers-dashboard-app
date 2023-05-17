@@ -6,11 +6,12 @@ import { Card, Row } from 'reactstrap';
 
 import BaseMap from 'components/BaseMap/BaseMap';
 import { useMap } from 'components/BaseMap/MapContext';
+import { TiledRasterLayer } from 'components/BaseMap/TiledRasterLayer';
 import { MAP_TYPES } from 'constants/common';
 import {
   getPolygonLayer,
   getViewState,
-  getBitmapLayer,
+  // getBitmapLayer,
   getBoundedViewState,
   getIconLayer,
   reshapeEventsData,
@@ -45,7 +46,9 @@ const MapComponent = ({
     );
     const newViewState = getViewState([longitude, latitude], zoom);
     updateViewState(newViewState);
-    return selectedLayer?.geometry ? getBitmapLayer(selectedLayer) : null;
+    return selectedLayer?.geometry
+      ? new TiledRasterLayer({ data: Object.values(selectedLayer?.urls)[0] })
+      : null;
   }, [deckRef, selectedLayer, updateViewState]);
 
   const eventsLayer = useMemo(() => {
