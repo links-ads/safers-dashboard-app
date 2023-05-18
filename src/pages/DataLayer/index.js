@@ -23,11 +23,7 @@ import { MAP } from 'constants/common';
 import { fetchEndpoint } from 'helpers/apiHelper';
 import { getBoundingBox, isWKTValid } from 'helpers/mapHelper';
 import { setFilteredAlerts, setAlertApiParams } from 'store/alerts.slice';
-import {
-  setDateRangeDisabled,
-  configSelector,
-  dateRangeSelector,
-} from 'store/common.slice';
+import { setDateRangeDisabled, dateRangeSelector } from 'store/common.slice';
 import {
   fetchDataLayers,
   fetchMapRequests,
@@ -50,7 +46,6 @@ import {
 import {
   SLIDER_SPEED,
   DATA_LAYERS_PANELS,
-  EUROPEAN_BBOX,
   WILDFIRE_LAYER_TYPES,
   DEFAULT_WILDFIRE_GEOMETRY_BUFFER,
 } from './constants';
@@ -65,11 +60,7 @@ const DataLayerDashboard = ({ t }) => {
   const dispatch = useDispatch();
   const timer = useRef(null);
 
-  const config = useSelector(configSelector);
   const defaultAoi = useSelector(defaultAoiSelector);
-  const dataLayerBoundingBox = config?.restrict_data_to_aoi
-    ? defaultAoi.features[0].bbox
-    : EUROPEAN_BBOX;
 
   const dataLayers = useSelector(dataLayersSelector);
   const metaData = useSelector(metaDataSelector);
@@ -89,7 +80,6 @@ const DataLayerDashboard = ({ t }) => {
   const [sliderRangeLimit, setSliderRangeLimit] = useState(0);
   const [sliderChangeComplete, setSliderChangeComplete] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [bitmapLayer, setBitmapLayer] = useState(undefined);
   const [showLegend, setShowLegend] = useState(false);
   const [activeTab, setActiveTab] = useState(DATA_LAYERS_PANELS.mapLayers);
   const [timestamp, setTimestamp] = useState('');
@@ -98,7 +88,6 @@ const DataLayerDashboard = ({ t }) => {
 
   const resetMap = () => {
     setCurrentLayer(undefined);
-    setBitmapLayer(undefined);
   };
 
   //fetch data to populate and 'Domain' selects
@@ -127,7 +116,6 @@ const DataLayerDashboard = ({ t }) => {
     setSliderValue(0);
     setIsPlaying(false);
     setTimestamp('');
-    setBitmapLayer(undefined);
     setSliderRangeLimit(0);
     setCurrentLayer(undefined);
   }, [activeTab]);
@@ -172,8 +160,7 @@ const DataLayerDashboard = ({ t }) => {
       const urls = getUrls();
       const timestamps = getTimestamps();
       setTimestamp(timestamps[sliderValue]);
-      const imageUrl = urls[0].replace('{bbox}', dataLayerBoundingBox);
-      setBitmapLayer(getBitmapLayer(imageUrl));
+
       setSliderRangeLimit(urls.length - 1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -181,16 +168,6 @@ const DataLayerDashboard = ({ t }) => {
 
   useEffect(() => {
     if (currentLayer?.urls) {
-      if (sliderChangeComplete) {
-        const urls = getUrls();
-        if (urls[sliderValue]) {
-          const imageUrl = urls[sliderValue].replace(
-            '{bbox}',
-            dataLayerBoundingBox,
-          );
-          setBitmapLayer(getBitmapLayer(imageUrl));
-        }
-      }
       const timestamps = getTimestamps();
       if (timestamps[sliderValue]) {
         setTimestamp(timestamps[sliderValue]);
@@ -232,26 +209,6 @@ const DataLayerDashboard = ({ t }) => {
 
   const getTimestamps = () => {
     return Object.keys(currentLayer?.urls);
-  };
-
-  const getBitmapLayer = url => {
-    /*
-     extract bounds from url; if this is an operational layer, it will have been replaced by dataLayerBoundingBox
-     if this is an on-demand layer, it will have been hard-coded by the backend
-    */
-    const urlSearchParams = new URLSearchParams(url);
-    const urlParams = Object.fromEntries(urlSearchParams.entries());
-    const bounds = urlParams?.bbox
-      ? urlParams.bbox.split(',').map(Number)
-      : dataLayerBoundingBox;
-
-    return {
-      id: 'bitmap-layer',
-      bounds: bounds,
-      image: url,
-      //_imageCoordinateSystem: COORDINATE_SYSTEM.LNGLAT,
-      opacity: 0.5,
-    };
   };
 
   const formatTooltip = value =>
@@ -375,7 +332,6 @@ const DataLayerDashboard = ({ t }) => {
     setSortByDate,
     getSlider,
     getLegend,
-    bitmapLayer,
     handleResetAOI,
     timeSeriesData,
     featureInfoData,

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import { BitmapLayer } from 'deck.gl';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import {
@@ -15,6 +14,7 @@ import {
 import SimpleBar from 'simplebar-react';
 
 import BaseMap from 'components/BaseMap/BaseMap';
+import { TiledRasterLayer } from 'components/BaseMap/TiledRasterLayer';
 import JsonFormatter from 'components/JsonFormatter';
 import { resetMetaData } from 'store/datalayer.slice';
 import { formatDate } from 'utility';
@@ -39,7 +39,6 @@ const DataLayer = ({
   setCurrentLayer,
   getSlider,
   getLegend,
-  bitmapLayer,
   timestamp,
   showLegend,
   legendUrl,
@@ -116,9 +115,13 @@ const DataLayer = ({
       );
     }
 
-    const layers = bitmapLayer
-      ? [new BitmapLayer(bitmapLayer), tempLayerData]
-      : [];
+    const data = currentLayer?.urls[timestamp];
+
+    const layers = [
+      new TiledRasterLayer({
+        data,
+      }),
+    ];
 
     return (
       <Card className="map-card mb-0" style={{ height: 670 }}>
@@ -265,7 +268,6 @@ DataLayer.propTypes = {
   setCurrentLayer: PropTypes.any,
   getSlider: PropTypes.any,
   getLegend: PropTypes.any,
-  bitmapLayer: PropTypes.any,
   viewState: PropTypes.any,
   timestamp: PropTypes.string,
   showLegend: PropTypes.bool,
