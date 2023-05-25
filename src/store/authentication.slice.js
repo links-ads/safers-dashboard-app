@@ -51,8 +51,7 @@ export const authenticateOauth2 = createAsyncThunk(
     dispatch(setLoading({ status: false }));
 
     if (response.status === 200) {
-      const { access_token, expires_in, refresh_token, token_type, user_id } =
-        response.data;
+      const { access_token, expires_in, user_id } = response.data;
       setSessionData(access_token, null, user_id, false, true);
 
       const userResponse = await api.get(`${endpoints.user.profile}${user_id}`);
@@ -226,7 +225,7 @@ export const refreshOAuthToken = createAsyncThunk(
 );
 
 export const initialState = {
-  user: null, // TODO: THIS IS ACTUALLY user_id
+  userId: null,
   signUpOauth2Success: false,
   isLoggedIn: false,
   error: false,
@@ -250,7 +249,7 @@ const authenticationSlice = createSlice({
   extraReducers: builder => {
     builder
       .addCase(authenticateOauth2.fulfilled, (state, { payload }) => {
-        state.user = payload.user_id;
+        state.userId = payload.user_id;
         state.tokenExpiresIn = payload.expires_in;
         state.isLoggedIn = true;
         state.error = false;
