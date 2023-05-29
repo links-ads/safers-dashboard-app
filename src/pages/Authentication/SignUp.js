@@ -246,7 +246,7 @@ const SignUp = () => {
                           {roles.map(role => {
                             return (
                               <option key={role.name} value={role.name}>
-                                {role.label}
+                                {role.title}
                               </option>
                             );
                           })}
