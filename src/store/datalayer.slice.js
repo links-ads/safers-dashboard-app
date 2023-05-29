@@ -145,7 +145,7 @@ export const deleteMapRequest = createAsyncThunk(
 
 export const fetchMapRequests = createAsyncThunk(
   `${name}/fetchMapRequests`,
-  async (options, { rejectWithValue }) => {
+  async ({ options }, { rejectWithValue }) => {
     const response = await api.get(
       endpoints.dataLayers.mapRequests.concat(
         '?',
