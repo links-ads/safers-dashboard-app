@@ -102,8 +102,6 @@ const SignUp = () => {
   });
 
   const formSubmit = (values, setSubmitting) => {
-    values.organization =
-      values.role === citizenId ? null : values.organization;
     dispatch(registration(values));
     setSubmitting(false);
   };
