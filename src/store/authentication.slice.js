@@ -72,27 +72,11 @@ export const signUpOauth2 = createAsyncThunk(
   `${name}/signUpOauth2`,
   async (userInfo, { rejectWithValue }) => {
     const response = await api.post(
-      endpoints.authentication.oAuth2SignUp,
+      endpoints.authentication.oAuth2Register,
       userInfo,
     );
 
     if (response.status === 200) {
-      return response.data;
-    }
-
-    return rejectWithValue({ error: response.data });
-  },
-);
-
-export const signUp = createAsyncThunk(
-  `${name}/signUp`,
-  async (userInfo, { rejectWithValue }) => {
-    const response = await api.post(endpoints.authentication.signUp, userInfo);
-
-    if (response.status === 200) {
-      const { access_token, user } = response.data;
-      setSessionData(access_token, null, user);
-
       return response.data;
     }
 
@@ -219,12 +203,6 @@ const authenticationSlice = createSlice({
       })
       .addCase(signUpOauth2.rejected, (state, { payload }) => {
         state.signUpOauth2Success = false;
-        state.error = payload.error;
-      })
-      .addCase(signUp.fulfilled, state => {
-        state.error = false;
-      })
-      .addCase(signUp.rejected, (state, { payload }) => {
         state.error = payload.error;
       })
       .addCase(
