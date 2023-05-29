@@ -68,29 +68,6 @@ export const authenticateOauth2 = createAsyncThunk(
   },
 );
 
-export const signIn = createAsyncThunk(
-  `${name}/signIn`,
-  async ({ email, password, rememberMe }, { dispatch, rejectWithValue }) => {
-    dispatch(setLoading({ status: true, message: 'Please wait...' }));
-
-    const response = await api.post(endpoints.authentication.signIn, {
-      email,
-      password,
-    });
-
-    dispatch(setLoading({ status: false }));
-
-    if (response.status === 200) {
-      const { access_token, refresh_token, user } = response.data;
-      setSessionData(access_token, refresh_token, user, rememberMe);
-
-      return user;
-    }
-
-    return rejectWithValue({ error: response.data });
-  },
-);
-
 export const signUpOauth2 = createAsyncThunk(
   `${name}/signUpOauth2`,
   async (userInfo, { rejectWithValue }) => {
@@ -232,18 +209,6 @@ const authenticationSlice = createSlice({
         state.error = false;
       })
       .addCase(authenticateOauth2.rejected, (state, { payload }) => {
-        state.errorSignIn = payload.error;
-        state.error = true;
-      })
-      .addCase(signIn.fulfilled, (state, { payload }) => {
-        state.user = payload;
-        state.tokenExpiresIn = payload.oauth2
-          ? payload.oauth2.expires_in
-          : null;
-        state.isLoggedIn = true;
-        state.error = false;
-      })
-      .addCase(signIn.rejected, (state, { payload }) => {
         state.errorSignIn = payload.error;
         state.error = true;
       })
