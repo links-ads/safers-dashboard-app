@@ -20,15 +20,10 @@ import logodark from 'assets/images/background-light-logo.png';
 import logolight from 'assets/images/background-light-logo.png';
 import PreLoader from 'components/PreLoader';
 import { SIGNIN_REDIRECT } from 'config';
-import {
-  isUserRembembered,
-  userSelector,
-  isLoggedInSelector,
-} from 'store/authentication.slice';
+import { isLoggedInSelector } from 'store/authentication.slice';
 import { fetchAois, aoisSelector, isLoadingSelector } from 'store/common.slice';
 import {
   setDefaultAoi,
-  setUserInfo,
   userInfoSelector,
   defaultAoiSelector,
 } from 'store/user.slice';
@@ -68,8 +63,6 @@ const Authentication = () => {
       } else {
         navigate('/user/select-aoi');
       }
-    } else {
-      dispatch(isUserRembembered());
     }
   }, [allAoi, dispatch, isLoggedIn, navigate, user]);
 

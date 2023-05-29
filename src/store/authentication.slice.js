@@ -3,7 +3,6 @@ import {
   createSlice,
   createSelector,
 } from '@reduxjs/toolkit';
-import lodash from 'lodash';
 import storage from 'redux-persist/lib/storage/session';
 
 import * as api from 'api/base';
@@ -89,28 +88,6 @@ export const signIn = createAsyncThunk(
     }
 
     return rejectWithValue({ error: response.data });
-  },
-);
-
-export const isUserRembembered = createAsyncThunk(
-  `${name}/isUserRembembered`,
-  async (_, { rejectWithValue }) => {
-    const session = getSession();
-
-    if (session && !lodash.isEmpty(session)) {
-      const response = await api.post(endpoints.authentication.refreshToken, {
-        refresh: session.refresh_token,
-      });
-
-      if (response.status === 200) {
-        const newSession = { ...session, access_token: response.data.access };
-        setSession(newSession, true);
-
-        return newSession.user;
-      }
-
-      return rejectWithValue({ error: response.data });
-    }
   },
 );
 
@@ -267,18 +244,6 @@ const authenticationSlice = createSlice({
         state.error = false;
       })
       .addCase(signIn.rejected, (state, { payload }) => {
-        state.errorSignIn = payload.error;
-        state.error = true;
-      })
-      .addCase(isUserRembembered.fulfilled, (state, { payload }) => {
-        state.user = payload ? payload : {};
-        state.tokenExpiresIn = payload.oauth2
-          ? payload.oauth2.expires_in
-          : null;
-        state.isLoggedIn = true;
-        state.error = false;
-      })
-      .addCase(isUserRembembered.rejected, (state, { payload }) => {
         state.errorSignIn = payload.error;
         state.error = true;
       })
