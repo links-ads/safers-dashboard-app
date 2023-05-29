@@ -130,7 +130,7 @@ export const signOut = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const session = getSession();
 
-    const response = await api.post(endpoints.authentication.signOut);
+    const response = await api.post(endpoints.authentication.oAuth2Logout);
 
     if (response.status === 200) {
       deleteSession();
@@ -150,9 +150,7 @@ export const signOut = createAsyncThunk(
 export const refreshOAuthToken = createAsyncThunk(
   `${name}/refreshOAuthToken`,
   async (_, { rejectWithValue }) => {
-    const response = await api.post(
-      endpoints.authentication.oAuth2RefreshToken,
-    );
+    const response = await api.post(endpoints.authentication.oAuth2Refresh);
 
     if (response.status === 200) {
       return response.data;
@@ -245,8 +243,6 @@ const authenticationSlice = createSlice({
 export const { signOutSuccess } = authenticationSlice.actions;
 
 const baseSelector = state => state?.auth;
-
-export const userSelector = createSelector(baseSelector, auth => auth?.user);
 
 export const tokenLastUpdatedSelector = createSelector(
   baseSelector,
