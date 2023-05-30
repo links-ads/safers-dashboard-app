@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-import countryList from 'country-list';
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
@@ -70,20 +69,18 @@ const UpdateProfile = ({ t }) => {
   const [citizenId, setcitizenId] = useState('');
   const [currentRole, setCurrentRole] = useState(null);
 
+  const usersRole = roles.find(role => role.name === user?.role);
+
   const formInit = {
-    first_name: user?.first_name || '',
-    last_name: user?.last_name || '',
-    organization: user?.organization || '',
-    country: user?.country || '',
-    city: user?.city || '',
-    role: user?.role || '',
-    address: user?.address || '',
+    firstName: user?.profile?.user?.firstName ?? '',
+    lastName: user?.profile?.user?.lastName ?? '',
+    organization: user?.organization ?? '',
+    role: usersRole?.title ?? '',
   };
+
   const [error, setError] = useState(false);
   const fileUploader = useRef(null);
   const dispatch = useDispatch();
-
-  const countryNames = countryList.getNames().sort();
 
   useEffect(() => {
     dispatch(fetchUserProfile(id));
@@ -157,21 +154,10 @@ const UpdateProfile = ({ t }) => {
     fileUploader.current.click();
   };
 
-  const myProfileSchema = Yup.object()
-    .shape({
-      first_name: Yup.string().required(t('field-empty-err', { ns: 'common' })),
-      last_name: Yup.string().required(t('field-empty-err', { ns: 'common' })),
-      role: Yup.string().required(t('field-empty-err', { ns: 'common' })),
-    })
-    .when((values, schema) => {
-      if (values.role !== citizenId) {
-        return schema.shape({
-          organization: Yup.string().required(
-            t('field-empty-err', { ns: 'common' }),
-          ),
-        });
-      }
-    });
+  const myProfileSchema = Yup.object().shape({
+    firstName: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+    lastName: Yup.string().required(t('field-empty-err', { ns: 'common' })),
+  });
 
   if (!user) {
     return null;
@@ -216,7 +202,7 @@ const UpdateProfile = ({ t }) => {
                   </div>
                   <Media body className="ms-4 align-self-center">
                     <h1 className="h5">
-                      {user.first_name} {user.last_name}
+                      {user.firstName} {user.lastName}
                     </h1>
                     <h2 className="h6">{currentRole}</h2>
                   </Media>
@@ -230,19 +216,6 @@ const UpdateProfile = ({ t }) => {
                   </Col>
                   <Col md="6" className="p-2 dflt-seperator">
                     {user.email}
-                  </Col>
-                  <Col md="6" className="p-2 dflt-seperator">
-                    <i className="bx bx-map me-2"></i>
-                    <span>{t('Location', { ns: 'common' })}</span>
-                  </Col>
-                  <Col md="6" className="p-2 dflt-seperator">
-                    {user.address && user.address.length > 0
-                      ? `${user.address}, `
-                      : ''}
-                    {user.city && user.city.length > 0 ? `${user.city}, ` : ''}
-                    {user.country && user.country.length > 0
-                      ? `${user.country}`
-                      : ''}
                   </Col>
                   <Col md="6" className="p-2 dflt-seperator">
                     <i className="bx bx-shopping-bag me-2"></i>
@@ -276,9 +249,15 @@ const UpdateProfile = ({ t }) => {
                 onSubmit={(values, { setSubmitting }) => {
                   dispatch(
                     updateUserProfile({
-                      id,
-                      userInfo: values,
-                      isCitizen: values.role === citizenId,
+                      ...user,
+                      profile: {
+                        ...user.profile,
+                        user: {
+                          ...user.profile.user,
+                          firstName: values.firstName,
+                          lastName: values.lastName,
+                        },
+                      },
                     }),
                   );
                   setSubmitting(false);
@@ -302,17 +281,17 @@ const UpdateProfile = ({ t }) => {
                           </Label>
                           <Input
                             type="text"
-                            id="first_name"
-                            className={getError('first_name', errors, touched)}
-                            name="first_name"
+                            id="firstName"
+                            className={getError('firstName', errors, touched)}
+                            name="firstName"
                             placeholder="First name"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.first_name}
+                            value={values.firstName}
                             autoComplete="on"
                             data-testid="update-profile-firstName"
                           />
-                          {getError('first_name', errors, touched, false)}
+                          {getError('firstName', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>
@@ -322,17 +301,17 @@ const UpdateProfile = ({ t }) => {
                           </Label>
                           <Input
                             type="text"
-                            id="last_name"
-                            className={getError('last_name', errors, touched)}
-                            name="last_name"
+                            id="lastName"
+                            className={getError('lastName', errors, touched)}
+                            name="lastName"
                             placeholder="Last name"
                             onChange={handleChange}
                             onBlur={handleBlur}
-                            value={values.last_name}
+                            value={values.lastName}
                             autoComplete="on"
                             data-testid="update-profile-lastName"
                           />
-                          {getError('last_name', errors, touched, false)}
+                          {getError('lastName', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>
@@ -341,7 +320,7 @@ const UpdateProfile = ({ t }) => {
                             {t('Organization', { ns: 'common' })}
                           </Label>
                           <Input
-                            type="select"
+                            type="text"
                             id="organization"
                             className={getError(
                               'organization',
@@ -349,83 +328,10 @@ const UpdateProfile = ({ t }) => {
                               touched,
                             )}
                             name="organization"
-                            placeholder="organization"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            // disabled={values.role === citizenId}
-                            disabled={true}
-                            value={
-                              values.role === citizenId
-                                ? ''
-                                : values.organization
-                            }
-                            autoComplete="on"
+                            value={values.organization}
                             data-testid="update-profile-org"
-                          >
-                            <option value={''}>
-                              {values.role === citizenId
-                                ? 'N/A'
-                                : '--Select organisation--'}
-                            </option>
-                            {orgList.map(org => {
-                              return (
-                                <option key={org.id} value={org.id}>
-                                  {org.name}
-                                </option>
-                              );
-                            })}
-                          </Input>
-                          {getError('organization', errors, touched, false)}
-                        </div>
-                      </Col>
-                      <Col md={6}>
-                        <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">
-                            {t('Country')}
-                          </Label>
-                          <Input
-                            id="country"
-                            className={getError('country', errors, touched)}
-                            name="country"
-                            placeholder="select country"
-                            type="select"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.country}
-                            data-testid="update-profile-country"
-                          >
-                            <option value={''}>
-                              --{t('Select your country')}--
-                            </option>
-                            {countryNames.map(countryName => {
-                              return (
-                                <option key={countryName} value={countryName}>
-                                  {countryName}
-                                </option>
-                              );
-                            })}
-                          </Input>
-                          {getError('country', errors, touched, false)}
-                        </div>
-                      </Col>
-                      <Col md={6}>
-                        <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">
-                            {t('City')}
-                          </Label>
-                          <Input
-                            type="text"
-                            id="city"
-                            className={getError('city', errors, touched)}
-                            name="city"
-                            placeholder="city"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.city}
-                            autoComplete="on"
-                            data-testid="update-profile-city"
+                            disabled={true}
                           />
-                          {getError('city', errors, touched, false)}
                         </div>
                       </Col>
                       <Col md={6}>
@@ -434,49 +340,14 @@ const UpdateProfile = ({ t }) => {
                             {t('Role')}
                           </Label>
                           <Input
+                            type="text"
                             id="role"
                             className={getError('role', errors, touched)}
                             name="role"
-                            placeholder="select role"
-                            type="select"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
                             value={values.role}
-                            disabled={true}
                             data-testid="update-profile-role"
-                          >
-                            <option value={''}>
-                              --{t('Select your role')}--
-                            </option>
-                            {roles.map(roleObj => {
-                              return (
-                                <option key={roleObj.id} value={roleObj.id}>
-                                  {roleObj.label}
-                                </option>
-                              );
-                            })}
-                          </Input>
-                          {getError('role', errors, touched, false)}
-                        </div>
-                      </Col>
-                      <Col md={6}>
-                        <div className="mb-3">
-                          <Label htmlFor="formrow-password-Input">
-                            {t('Address')}
-                          </Label>
-                          <Input
-                            type="text"
-                            id="address"
-                            className={getError('address', errors, touched)}
-                            name="address"
-                            placeholder="address"
-                            onChange={handleChange}
-                            onBlur={handleBlur}
-                            value={values.address}
-                            autoComplete="on"
-                            data-testid="update-profile-address"
+                            disabled={true}
                           />
-                          {getError('address', errors, touched, false)}
                         </div>
                       </Col>
                     </Row>

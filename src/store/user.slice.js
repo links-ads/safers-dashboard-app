@@ -43,16 +43,8 @@ export const fetchUserProfile = createAsyncThunk(
 
 export const updateUserProfile = createAsyncThunk(
   `${name}/updateUserProfile`,
-  async ({ id, userInfo, isCitizen }, { rejectWithValue }) => {
-    const response = await api.patch(`${endpoints.user.profile}${id}`, {
-      organization: isCitizen ? null : userInfo.organization,
-      role: userInfo.role,
-      first_name: userInfo.first_name,
-      last_name: userInfo.last_name,
-      country: userInfo.country,
-      city: userInfo.city,
-      address: userInfo.address,
-    });
+  async (user, { rejectWithValue }) => {
+    const response = await api.put(`${endpoints.user.profile}${user.id}`, user);
 
     if (response.status === 200) {
       return response.data;
@@ -152,10 +144,12 @@ const userSlice = createSlice({
         state.error = true;
       })
       .addCase(updateUserProfile.fulfilled, (state, { payload }) => {
-        state.updateStatus = payload;
+        state.info = payload;
+        state.updateStatus = true;
         state.error = false;
       })
       .addCase(updateUserProfile.rejected, state => {
+        state.updateStatus = false;
         state.error = true;
       })
       .addCase(deleteUserProfile.fulfilled, (state, { payload }) => {
