@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { Formik } from 'formik';
-import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -66,7 +65,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (roles.length) {
-      const role = _.find(roles, { name: 'citizen' });
+      const role = roles.find(r => r.name === 'citizen');
       setcitizenId(role.name);
     }
   }, [roles]);

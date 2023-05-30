@@ -33,7 +33,7 @@ const CommsList = ({ commID, setCommID }) => {
     if (id) {
       setCommID(id);
       let copyCommList = _.cloneDeep(commList);
-      let selectedComm = _.find(copyCommList, { id });
+      let selectedComm = copyCommList.find(comm => comm.id === id);
       selectedComm.isSelected = true;
       setViewState(getViewState(selectedComm.location, viewState.zoom));
     } else {

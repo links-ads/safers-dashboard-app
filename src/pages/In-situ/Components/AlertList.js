@@ -128,7 +128,7 @@ const AlertList = ({
     if (id) {
       setAlertId(id);
       let alertsToEdit = _.cloneDeep(filteredAlerts);
-      let selectedAlert = _.find(alertsToEdit, { id });
+      let selectedAlert = alertsToEdit.find(alert => alert.id === id);
       let camera = _.find(cameraList.features, {
         properties: { id: selectedAlert.camera_id },
       });

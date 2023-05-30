@@ -183,7 +183,7 @@ const EventAlerts = ({ t }) => {
   };
 
   const setFavorite = id => {
-    const selectedAlert = _.find(filteredAlerts, { id });
+    const selectedAlert = filteredAlerts.find(alert => alert.id === id);
     dispatch(
       setEventFavorite({ eventId: id, isFavorite: !selectedAlert.favorite }),
     )
@@ -207,7 +207,7 @@ const EventAlerts = ({ t }) => {
     if (id) {
       dispatch(fetchEventDetail(id));
       let clonedAlerts = _.cloneDeep(filteredAlerts);
-      let selectedAlert = _.find(clonedAlerts, { id });
+      let selectedAlert = clonedAlerts.find(alert => alert.id === id);
       selectedAlert.isSelected = true;
       const pickedInfo = {
         object: {

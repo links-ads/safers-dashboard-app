@@ -200,7 +200,7 @@ const FireAlerts = ({ t }) => {
   };
 
   const validateEvent = id => {
-    let selectedAlert = { ..._.find(filteredAlerts, { id }) };
+    let selectedAlert = { ...filteredAlerts.find(alert => alert.id === id) };
     selectedAlert.type = 'VALIDATED';
     dispatch(validateAlert(id));
     hideTooltip();
@@ -231,7 +231,7 @@ const FireAlerts = ({ t }) => {
   const setSelectedAlert = (id, isEdit) => {
     if (id) {
       let clonedAlerts = _.cloneDeep(filteredAlerts);
-      let selectedAlert = _.find(clonedAlerts, { id });
+      let selectedAlert = clonedAlerts.find(alert => alert.id === id);
       selectedAlert.isSelected = true;
       setAlertId(id);
       const pickedInfo = {

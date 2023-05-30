@@ -37,7 +37,7 @@ const MissionList = ({ missionId, setMissionId }) => {
     if (id) {
       setMissionId(id);
       let copyMissionList = _.cloneDeep(missionList);
-      let selectedMission = _.find(copyMissionList, { id });
+      let selectedMission = copyMissionList.find(mission => mission.id === id);
       selectedMission.isSelected = true;
       setViewState(getViewState(selectedMission.location, viewState.zoom));
     } else {
