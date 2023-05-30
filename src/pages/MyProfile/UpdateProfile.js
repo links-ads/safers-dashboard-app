@@ -128,7 +128,7 @@ const UpdateProfile = ({ t }) => {
 
   useEffect(() => {
     if (orgList.length && user?.organization) {
-      const organization = _.find(orgList, { id: user.organization });
+      const organization = orgList.find(org => org.name === user.organization);
       setorgName(organization.name.split('-')[0]);
     }
   }, [orgList, user]);
