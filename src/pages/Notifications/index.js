@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Card } from 'reactstrap';
 
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
+import BaseMap from 'components/BaseMap/BaseMap';
 import { PAGE_SIZE } from 'constants/common';
 import { dateRangeSelector } from 'store/common.slice';
 import {
@@ -25,7 +26,24 @@ import SortSection from './Components/SortSection';
 const Notifications = () => {
   const dispatch = useDispatch();
 
-  const notifications = useSelector(allNotificationsSelector);
+  // const notifications = useSelector(allNotificationsSelector);
+
+  const notifications = useMemo(
+    () =>
+      new Array(20).fill().map((_, i) => ({
+        id: i,
+        type: 'Test Type',
+        status: 'Test Status',
+        scopeRestriction: 'None',
+        description:
+          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet erat ipsum. Maecenas eget convallis arcu. Donec eget leo id metus maximus commodo vitae non felis. Cras et fringilla ante, in laoreet massa.',
+        country: 'Test Country',
+        timestamp: new Date().toISOString(),
+        source: 'Test Source',
+      })),
+    [],
+  );
+
   const notificationParams = useSelector(notificationParamsSelector);
   const dateRange = useSelector(dateRangeSelector);
 
@@ -109,7 +127,7 @@ const Notifications = () => {
           </Col>
         </Row>
         <Row>
-          <Col xl={12}>
+          <Col xl={5}>
             <SortSection
               filteredNotifications={filteredNotifications}
               setFilterdNotifications={setFilterdNotifications}
@@ -131,6 +149,22 @@ const Notifications = () => {
                 />
               </Col>
             </Row>
+          </Col>
+          <Col xl={7} className="mx-auto">
+            <Card className="map-card mb-0" style={{ height: 670 }}>
+              {/* TODO: is right basemap? */}
+              <BaseMap
+                layers={[]}
+                // hoverInfo={hoverInfo}
+                // renderTooltip={renderTooltip}
+                // onClick={showTooltip}
+                // widgets={[getSearchButton]}
+                // setWidth={setNewWidth}
+                // setHeight={setNewHeight}
+                screenControlPosition="top-right"
+                navControlPosition="bottom-right"
+              />
+            </Card>
           </Col>
         </Row>
       </div>
