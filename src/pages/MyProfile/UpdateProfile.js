@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 
 import countryList from 'country-list';
 import { Formik } from 'formik';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector, useDispatch } from 'react-redux';
@@ -97,11 +96,11 @@ const UpdateProfile = ({ t }) => {
   }
   useEffect(() => {
     if (user && roles.length) {
-      const currentRoleObj = _.find(roles, { id: user.role });
+      const currentRoleObj = roles.find(role => role.id === user.role);
       if (currentRoleObj) {
         setCurrentRole(currentRoleObj.name);
       }
-      const objCitizen = _.find(roles, { name: 'citizen' });
+      const objCitizen = roles.find(role => role.name === 'citizen');
       setcitizenId(objCitizen.id);
     }
   }, [user, roles]);
