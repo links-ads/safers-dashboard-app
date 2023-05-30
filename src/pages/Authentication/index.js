@@ -20,21 +20,17 @@ import logodark from 'assets/images/background-light-logo.png';
 import logolight from 'assets/images/background-light-logo.png';
 import PreLoader from 'components/PreLoader';
 import { SIGNIN_REDIRECT } from 'config';
-import {
-  isUserRembembered,
-  userSelector,
-  isLoggedInSelector,
-} from 'store/authentication.slice';
+import { isLoggedInSelector } from 'store/authentication.slice';
 import { fetchAois, aoisSelector, isLoadingSelector } from 'store/common.slice';
 import {
   setDefaultAoi,
-  setUserInfo,
+  userInfoSelector,
   defaultAoiSelector,
 } from 'store/user.slice';
 
 import ForgotPassword from './ForgotPassword';
+import OAuth2 from './OAuth2';
 import ResetPassword from './ResetPassword';
-import SignIn from './SignIn';
 import SignUp from './SignUp';
 
 const Authentication = () => {
@@ -43,7 +39,7 @@ const Authentication = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const isLoggedIn = useSelector(isLoggedInSelector);
-  const user = useSelector(userSelector);
+  const user = useSelector(userInfoSelector);
   const allAoi = useSelector(aoisSelector);
   const isLoading = useSelector(isLoadingSelector);
   const defaultAoi = useSelector(defaultAoiSelector);
@@ -59,7 +55,6 @@ const Authentication = () => {
   // User info is recorded in user store
   useEffect(() => {
     if (isLoggedIn) {
-      dispatch(setUserInfo(user));
       if (user?.default_aoi) {
         const objAoi = _.find(allAoi, {
           features: [{ properties: { id: user.default_aoi } }],
@@ -68,8 +63,6 @@ const Authentication = () => {
       } else {
         navigate('/user/select-aoi');
       }
-    } else {
-      dispatch(isUserRembembered());
     }
   }, [allAoi, dispatch, isLoggedIn, navigate, user]);
 
@@ -114,7 +107,7 @@ const Authentication = () => {
               </Nav>
               <TabContent activeTab={currentPage}>
                 <TabPane title="SIGN IN" tabId="sign-in">
-                  <SignIn />
+                  <OAuth2 />
                 </TabPane>
                 <TabPane title="SIGN UP" tabId="sign-up">
                   <SignUp />

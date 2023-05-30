@@ -1,15 +1,12 @@
 export const endpoints = {
   authentication: {
-    signIn: '/auth/login/',
-    signUp: '/auth/register/',
-    signOut: '/auth/logout/',
-    forgotPswReset: '/auth/password/reset/',
-    resetPsw: '/auth/password/reset/confirm/',
-    refreshToken: '/auth/token/refresh/',
-    oAuth2SignIn: '/oauth2/login',
-    oAuth2SignUp: '/oauth2/register',
-    oAuth2RefreshToken: '/oauth2/refresh',
+    oAuth2Login: '/auth/login',
+    oAuth2Logout: '/auth/logout',
+    oAuth2Register: '/auth/register',
+    oAuth2Authenticate: '/auth/authenticate',
+    oAuth2Refresh: '/auth/refresh',
   },
+
   aoi: {
     getAll: '/aois/',
   },

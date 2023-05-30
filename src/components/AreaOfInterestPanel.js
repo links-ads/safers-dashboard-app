@@ -8,11 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import toastr from 'toastr';
 
-import { userSelector } from 'store/authentication.slice';
 import { fetchAois, aoisSelector } from 'store/common.slice';
 import {
   setUserDefaultAoi,
   defaultAoiSelector,
+  userInfoSelector,
   setAoiSuccessMessageSelector,
 } from 'store/user.slice';
 
@@ -26,7 +26,7 @@ const AreaOfInterestPanel = ({ t }) => {
   toastr.options = {
     preventDuplicates: true,
   };
-  const user = useSelector(userSelector);
+  const user = useSelector(userInfoSelector);
   const uid = user?.id;
   const allAoi = useSelector(aoisSelector);
   const aoiSetSuccess = useSelector(setAoiSuccessMessageSelector);
