@@ -81,21 +81,6 @@ export const resetUserPassword = createAsyncThunk(
   },
 );
 
-export const uploadProfileImage = createAsyncThunk(
-  `${name}/uploadProfileImage`,
-  async (file, { rejectWithValue }) => {
-    const response = await api.post(endpoints.myprofile.uploadProfImg, {
-      file,
-    });
-
-    if (response.status === 200) {
-      return response.data;
-    }
-
-    return rejectWithValue({ error: true });
-  },
-);
-
 export const initialState = {
   defaultAoi: null,
   info: null,
@@ -105,10 +90,8 @@ export const initialState = {
   updateStatus: null,
   setAoiSuccessMessage: null,
   resetPasswordSuccessMessage: null,
-  uploadProfileImage: null,
   deleteAccSuccessRes: null,
   deleteAccFailRes: null,
-  uploadProfileImageFailRes: null,
   resetPswFailRes: null,
 };
 
@@ -166,14 +149,6 @@ const userSlice = createSlice({
       })
       .addCase(resetUserPassword.rejected, state => {
         state.error = true;
-      })
-      .addCase(uploadProfileImage.fulfilled, (state, { payload }) => {
-        state.uploadProfileImage = payload;
-        state.error = false;
-      })
-      .addCase(uploadProfileImage.rejected, state => {
-        state.uploadProfileImageFailRes = true;
-        state.error = true;
       });
   },
 });
@@ -197,11 +172,6 @@ export const userInfoSelector = createSelector(
   user => user?.info,
 );
 
-export const uploadProfileImageSelector = createSelector(
-  baseSelector,
-  user => user?.uploadProfileImage,
-);
-
 export const deleteAccSuccessResSelector = createSelector(
   baseSelector,
   user => user?.deleteAccSuccessRes,
@@ -210,11 +180,6 @@ export const deleteAccSuccessResSelector = createSelector(
 export const deleteAccFailResSelector = createSelector(
   baseSelector,
   user => user?.deleteAccFailRes,
-);
-
-export const uploadProfileImageFailResSelector = createSelector(
-  baseSelector,
-  user => user?.uploadProfileImageFailRes,
 );
 
 export const updateStatusSelector = createSelector(

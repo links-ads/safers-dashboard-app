@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Formik } from 'formik';
 import PropTypes from 'prop-types';
@@ -32,14 +32,11 @@ import {
   fetchUserProfile,
   updateUserProfile,
   deleteUserProfile,
-  uploadProfileImage,
   resetStatus,
   userInfoSelector,
   deleteAccSuccessResSelector,
   deleteAccFailResSelector,
-  uploadProfileImageSelector,
   updateStatusSelector,
-  uploadProfileImageFailResSelector,
   defaultAoiSelector,
 } from 'store/user.slice';
 
@@ -52,9 +49,7 @@ const UpdateProfile = ({ t }) => {
     preventDuplicates: true,
   };
 
-  const uploadFileSuccessRes = useSelector(uploadProfileImageSelector);
   const deleteAccSuccessRes = useSelector(deleteAccSuccessResSelector);
-  const uploadFileFailRes = useSelector(uploadProfileImageFailResSelector);
   const deleteAccFailRes = useSelector(deleteAccFailResSelector);
   const updateStatus = useSelector(updateStatusSelector);
   const user = useSelector(userInfoSelector);
@@ -79,18 +74,15 @@ const UpdateProfile = ({ t }) => {
   };
 
   const [error, setError] = useState(false);
-  const fileUploader = useRef(null);
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchUserProfile(id));
+
     if (roles.length === 0) dispatch(fetchRoles());
     if (orgList.length === 0) dispatch(fetchOrganisations());
   }, [dispatch, id, orgList.length, roles.length]);
 
-  if (uploadFileSuccessRes?.detail) {
-    toastr.success(uploadFileSuccessRes.detail, '');
-  }
   useEffect(() => {
     if (user && roles.length) {
       const currentRoleObj = roles.find(role => role.id === user.role);
@@ -114,13 +106,9 @@ const UpdateProfile = ({ t }) => {
   }
 
   useEffect(() => {
-    const error = uploadFileFailRes
-      ? uploadFileFailRes
-      : deleteAccFailRes
-      ? deleteAccFailRes
-      : false;
+    const error = deleteAccFailRes ? deleteAccFailRes : false;
     setError(error);
-  }, [uploadFileFailRes, deleteAccFailRes]);
+  }, [deleteAccFailRes]);
 
   useEffect(() => {
     if (orgList.length && user?.organization) {
@@ -128,13 +116,6 @@ const UpdateProfile = ({ t }) => {
       setorgName(organization.name.split('-')[0]);
     }
   }, [orgList, user]);
-
-  const onChangeFile = event => {
-    event.stopPropagation();
-    event.preventDefault();
-    var file = event.target.files[0];
-    dispatch(uploadProfileImage(file));
-  };
 
   const confirmAccDelete = () => {
     dispatch(deleteUserProfile(id));
@@ -150,8 +131,6 @@ const UpdateProfile = ({ t }) => {
     document.body.classList.add('no_padding');
   };
 
-  const handleClick = () => {
-    fileUploader.current.click();
   };
 
   const myProfileSchema = Yup.object().shape({
@@ -179,25 +158,6 @@ const UpdateProfile = ({ t }) => {
                       src={avatar}
                       alt=""
                       className="avatar-md rounded-circle img-thumbnail"
-                    />
-                    <div className="text-center mt-2 d-none">
-                      <a
-                        className="lnk-edit"
-                        onClick={() => {
-                          handleClick();
-                        }}
-                      >
-                        {t('Edit Image')}
-                      </a>
-                    </div>
-                    <input
-                      type="file"
-                      id="file"
-                      ref={fileUploader}
-                      style={{ display: 'none' }}
-                      onChange={e => {
-                        onChangeFile(e);
-                      }}
                     />
                   </div>
                   <Media body className="ms-4 align-self-center">
