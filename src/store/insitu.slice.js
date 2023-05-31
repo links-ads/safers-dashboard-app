@@ -6,6 +6,7 @@ import {
 import queryString from 'query-string';
 
 import * as api from 'api/base';
+import { OK } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { getDefaultDateRange } from 'utility';
 
@@ -18,7 +19,7 @@ export const fetchCameras = createAsyncThunk(
       endpoints.insitu.cameraList.concat('?', queryString.stringify(options)),
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -31,7 +32,7 @@ export const fetchCameraSources = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const response = await api.get(endpoints.insitu.getSources);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -44,7 +45,7 @@ export const fetchCameraDetail = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     const response = await api.get(`${endpoints.insitu.cameraList}${id}/`);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -57,7 +58,7 @@ export const fetchCameraAlerts = createAsyncThunk(
   async (options, { rejectWithValue }) => {
     const response = await api.get(endpoints.insitu.getMedia, options);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -73,7 +74,7 @@ export const setCameraFavorite = createAsyncThunk(
       { is_favorite: isFavorite },
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       const result = await response.json();
       console.log('CAMERA FAV RESULT: ', result);
       const successMessage = `sucessfully ${

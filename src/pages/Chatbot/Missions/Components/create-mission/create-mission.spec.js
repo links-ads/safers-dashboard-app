@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { OK } from 'api/constants';
 import { server, rest } from 'mocks/server';
 import { screen, render, waitFor } from 'test-utils';
 
@@ -19,7 +20,7 @@ describe('CreateMission', () => {
   it('renders', async () => {
     server.use(
       rest.get('*/teams', async (req, res, ctx) => {
-        return res(ctx.status(200), ctx.json([]));
+        return res(ctx.status(OK), ctx.json([]));
       }),
     );
     render(<CreateMission t={str => str} />, { state });

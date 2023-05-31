@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import * as api from 'api/base';
+import { OK } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 
 const name = 'dashboard';
@@ -14,7 +15,7 @@ export const fetchStats = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     const response = await api.get(endpoints.dashboard.getStats, params);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -27,7 +28,7 @@ export const fetchWeatherStats = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     const response = await api.get(endpoints.dashboard.getWeatherStats, params);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -43,7 +44,7 @@ export const fetchWeatherVariables = createAsyncThunk(
       params,
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -56,7 +57,7 @@ export const fetchInSituMedia = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     const response = await api.get(endpoints.dashboard.getInSitu, params);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -69,7 +70,7 @@ export const fetchTweets = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     const response = await api.get(endpoints.dashboard.getInSitu, params);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
