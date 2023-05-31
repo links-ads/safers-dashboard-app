@@ -3,23 +3,26 @@ import {
   createSlice,
   createSelector,
 } from '@reduxjs/toolkit';
+import storage from 'redux-persist/lib/storage/session';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-import { deleteSession } from 'helpers/authHelper';
+import { deleteSession, getSession } from 'helpers/authHelper';
+import { redirectAfterSignOut } from 'store/authentication.slice';
 
 const name = 'user';
 
 export const setUserDefaultAoi = createAsyncThunk(
   `${name}/setUserDefaultAoi`,
-  async ({ uid, aoi }, { rejectWithValue }) => {
-    const response = await api.patch(`${endpoints.user.profile}${uid}`, {
-      default_aoi: aoi.features[0].properties.id,
+  async (user, { rejectWithValue }) => {
+    const response = await api.put(`${endpoints.user.profile}${user.id}`, {
+      ...user,
+      default_aoi: user?.default_aoi.features[0].properties.id,
     });
 
     if (response.status === 200) {
       return {
-        aoi,
+        aoi: user?.default_aoi,
         msg: response.data,
       };
     }
@@ -43,16 +46,8 @@ export const fetchUserProfile = createAsyncThunk(
 
 export const updateUserProfile = createAsyncThunk(
   `${name}/updateUserProfile`,
-  async ({ id, userInfo, isCitizen }, { rejectWithValue }) => {
-    const response = await api.patch(`${endpoints.user.profile}${id}`, {
-      organization: isCitizen ? null : userInfo.organization,
-      role: userInfo.role,
-      first_name: userInfo.first_name,
-      last_name: userInfo.last_name,
-      country: userInfo.country,
-      city: userInfo.city,
-      address: userInfo.address,
-    });
+  async (user, { rejectWithValue }) => {
+    const response = await api.put(`${endpoints.user.profile}${user.id}`, user);
 
     if (response.status === 200) {
       return response.data;
@@ -65,11 +60,19 @@ export const updateUserProfile = createAsyncThunk(
 export const deleteUserProfile = createAsyncThunk(
   `${name}/deleteUserProfile`,
   async (id, { rejectWithValue }) => {
+    const session = getSession();
+
     const response = await api.del(`${endpoints.user.profile}${id}`);
 
-    if (response.status === 200) {
+    if (response.status === 204) {
       deleteSession();
-      return response.data;
+      storage.removeItem('persist:root');
+
+      if (session.isSSOsession) {
+        redirectAfterSignOut();
+      }
+
+      return;
     }
 
     return rejectWithValue({ error: true });
@@ -89,34 +92,14 @@ export const resetUserPassword = createAsyncThunk(
   },
 );
 
-export const uploadProfileImage = createAsyncThunk(
-  `${name}/uploadProfileImage`,
-  async (file, { rejectWithValue }) => {
-    const response = await api.post(endpoints.myprofile.uploadProfImg, {
-      file,
-    });
-
-    if (response.status === 200) {
-      return response.data;
-    }
-
-    return rejectWithValue({ error: true });
-  },
-);
-
 export const initialState = {
   defaultAoi: null,
   info: null,
-  // aoiSetSuccess: null,
   error: false,
   getAOIerror: false,
   updateStatus: null,
   setAoiSuccessMessage: null,
   resetPasswordSuccessMessage: null,
-  uploadProfileImage: null,
-  deleteAccSuccessRes: null,
-  deleteAccFailRes: null,
-  uploadProfileImageFailRes: null,
   resetPswFailRes: null,
 };
 
@@ -152,18 +135,18 @@ const userSlice = createSlice({
         state.error = true;
       })
       .addCase(updateUserProfile.fulfilled, (state, { payload }) => {
-        state.updateStatus = payload;
+        state.info = payload;
+        state.updateStatus = true;
         state.error = false;
       })
       .addCase(updateUserProfile.rejected, state => {
+        state.updateStatus = false;
         state.error = true;
       })
       .addCase(deleteUserProfile.fulfilled, (state, { payload }) => {
-        state.deleteAccSuccessRes = payload;
         state.error = false;
       })
       .addCase(deleteUserProfile.rejected, (state, { payload }) => {
-        state.deleteAccFailRes = payload;
         state.error = true;
       })
       .addCase(resetUserPassword.fulfilled, (state, { payload }) => {
@@ -171,14 +154,6 @@ const userSlice = createSlice({
         state.error = false;
       })
       .addCase(resetUserPassword.rejected, state => {
-        state.error = true;
-      })
-      .addCase(uploadProfileImage.fulfilled, (state, { payload }) => {
-        state.uploadProfileImage = payload;
-        state.error = false;
-      })
-      .addCase(uploadProfileImage.rejected, state => {
-        state.uploadProfileImageFailRes = true;
         state.error = true;
       });
   },
@@ -201,26 +176,6 @@ export const setAoiSuccessMessageSelector = createSelector(
 export const userInfoSelector = createSelector(
   baseSelector,
   user => user?.info,
-);
-
-export const uploadProfileImageSelector = createSelector(
-  baseSelector,
-  user => user?.uploadProfileImage,
-);
-
-export const deleteAccSuccessResSelector = createSelector(
-  baseSelector,
-  user => user?.deleteAccSuccessRes,
-);
-
-export const deleteAccFailResSelector = createSelector(
-  baseSelector,
-  user => user?.deleteAccFailRes,
-);
-
-export const uploadProfileImageFailResSelector = createSelector(
-  baseSelector,
-  user => user?.uploadProfileImageFailRes,
 );
 
 export const updateStatusSelector = createSelector(

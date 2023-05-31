@@ -20,14 +20,12 @@ import BaseMap from './BaseMap/BaseMap';
 
 import 'toastr/build/toastr.min.css';
 
-//i18n
+toastr.options = {
+  preventDuplicates: true,
+};
 
 const AreaOfInterestPanel = ({ t }) => {
-  toastr.options = {
-    preventDuplicates: true,
-  };
   const user = useSelector(userInfoSelector);
-  const uid = user?.id;
   const allAoi = useSelector(aoisSelector);
   const aoiSetSuccess = useSelector(setAoiSuccessMessageSelector);
   const defaultAoi = useSelector(defaultAoiSelector);
@@ -56,9 +54,13 @@ const AreaOfInterestPanel = ({ t }) => {
     }
   }, [aoiSetSuccess, t]);
 
-  const handleSubmit = () => {
-    dispatch(setUserDefaultAoi({ uid, aoi: selectedAoi }));
-  };
+  const handleSubmit = () =>
+    dispatch(
+      setUserDefaultAoi({
+        ...user,
+        default_aoi: selectedAoi,
+      }),
+    );
 
   const setMap = defaultAoi => {
     setSelectedAoi(defaultAoi);

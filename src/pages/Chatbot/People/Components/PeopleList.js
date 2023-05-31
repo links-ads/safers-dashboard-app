@@ -32,7 +32,9 @@ const PeopleList = ({ peopleId, setPeopleId }) => {
     if (people_id) {
       setPeopleId(people_id);
       let copyPeopleList = _.cloneDeep(peopleList);
-      let selectedPeople = _.find(copyPeopleList, { id: people_id });
+      let selectedPeople = copyPeopleList.find(
+        person => person.id === people_id,
+      );
       selectedPeople.isSelected = true;
       setViewState(getViewState(selectedPeople.location, viewState.zoom));
     } else {

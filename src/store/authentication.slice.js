@@ -49,7 +49,7 @@ export const authenticateOauth2 = createAsyncThunk(
 
     dispatch(setLoading({ status: false }));
 
-    if (response.status === 200) {
+    if (response.status === 200 || response.status === 201) {
       const { access_token, expires_in, user_id } = response.data;
       setSessionData(access_token, null, user_id, false, true);
 
@@ -76,7 +76,8 @@ export const signUpOauth2 = createAsyncThunk(
       userInfo,
     );
 
-    if (response.status === 200) {
+    if (response.status === 201) {
+      window.location = `${CLIENT_BASE_URL}/auth/sign-in`;
       return response.data;
     }
 
@@ -115,7 +116,7 @@ export const resetPassword = createAsyncThunk(
   },
 );
 
-const redirectAfterSignOut = () => {
+export const redirectAfterSignOut = () => {
   const params = {
     client_id: AUTH_CLIENT_ID,
     tenant_id: AUTH_TENANT_ID,

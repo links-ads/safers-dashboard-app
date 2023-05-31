@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
@@ -22,7 +21,7 @@ const InfoContainer = ({ t }) => {
   const [event, setEvent] = useState(null);
 
   useEffect(() => {
-    const event = _.find(allAlerts, { id: id });
+    const event = allAlerts.find(alert => alert.id === id);
     setEvent(event);
   }, [allAlerts, id]);
 
