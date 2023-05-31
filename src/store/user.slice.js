@@ -20,7 +20,6 @@ export const setUserDefaultAoi = createAsyncThunk(
       ...user,
       default_aoi: user?.default_aoi.features[0].properties.id,
     });
-    console.log('RESPONSE: ', response);
 
     if (response.status === OK) {
       return {
