@@ -301,7 +301,7 @@ const Tooltip = ({
                   className="save-event-button"
                   onClick={() => {
                     setEditToggle(false);
-                    editInfo(object.id);
+                    editInfo(object.properties.id);
                   }}
                 >
                   {t('save', { ns: 'common' })}
