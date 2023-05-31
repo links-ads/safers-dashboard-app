@@ -49,7 +49,7 @@ export const authenticateOauth2 = createAsyncThunk(
 
     dispatch(setLoading({ status: false }));
 
-    if (response.status === 200) {
+    if (response.status === 200 || response.status === 201) {
       const { access_token, expires_in, user_id } = response.data;
       setSessionData(access_token, null, user_id, false, true);
 
