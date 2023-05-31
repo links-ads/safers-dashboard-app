@@ -3,10 +3,12 @@ import {
   createSlice,
   createSelector,
 } from '@reduxjs/toolkit';
+import storage from 'redux-persist/lib/storage/session';
 
 import * as api from 'api/base';
 import { endpoints } from 'api/endpoints';
-import { deleteSession } from 'helpers/authHelper';
+import { deleteSession, getSession } from 'helpers/authHelper';
+import { redirectAfterSignOut } from 'store/authentication.slice';
 
 const name = 'user';
 
@@ -57,11 +59,19 @@ export const updateUserProfile = createAsyncThunk(
 export const deleteUserProfile = createAsyncThunk(
   `${name}/deleteUserProfile`,
   async (id, { rejectWithValue }) => {
+    const session = getSession();
+
     const response = await api.del(`${endpoints.user.profile}${id}`);
 
-    if (response.status === 200) {
+    if (response.status === 204) {
       deleteSession();
-      return response.data;
+      storage.removeItem('persist:root');
+
+      if (session.isSSOsession) {
+        redirectAfterSignOut();
+      }
+
+      return;
     }
 
     return rejectWithValue({ error: true });
@@ -84,14 +94,11 @@ export const resetUserPassword = createAsyncThunk(
 export const initialState = {
   defaultAoi: null,
   info: null,
-  // aoiSetSuccess: null,
   error: false,
   getAOIerror: false,
   updateStatus: null,
   setAoiSuccessMessage: null,
   resetPasswordSuccessMessage: null,
-  deleteAccSuccessRes: null,
-  deleteAccFailRes: null,
   resetPswFailRes: null,
 };
 
@@ -136,11 +143,9 @@ const userSlice = createSlice({
         state.error = true;
       })
       .addCase(deleteUserProfile.fulfilled, (state, { payload }) => {
-        state.deleteAccSuccessRes = payload;
         state.error = false;
       })
       .addCase(deleteUserProfile.rejected, (state, { payload }) => {
-        state.deleteAccFailRes = payload;
         state.error = true;
       })
       .addCase(resetUserPassword.fulfilled, (state, { payload }) => {
@@ -170,16 +175,6 @@ export const setAoiSuccessMessageSelector = createSelector(
 export const userInfoSelector = createSelector(
   baseSelector,
   user => user?.info,
-);
-
-export const deleteAccSuccessResSelector = createSelector(
-  baseSelector,
-  user => user?.deleteAccSuccessRes,
-);
-
-export const deleteAccFailResSelector = createSelector(
-  baseSelector,
-  user => user?.deleteAccFailRes,
 );
 
 export const updateStatusSelector = createSelector(

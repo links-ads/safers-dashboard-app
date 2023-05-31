@@ -115,7 +115,7 @@ export const resetPassword = createAsyncThunk(
   },
 );
 
-const redirectAfterSignOut = () => {
+export const redirectAfterSignOut = () => {
   const params = {
     client_id: AUTH_CLIENT_ID,
     tenant_id: AUTH_TENANT_ID,
