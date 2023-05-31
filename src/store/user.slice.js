@@ -14,14 +14,15 @@ const name = 'user';
 
 export const setUserDefaultAoi = createAsyncThunk(
   `${name}/setUserDefaultAoi`,
-  async ({ uid, aoi }, { rejectWithValue }) => {
-    const response = await api.patch(`${endpoints.user.profile}${uid}`, {
-      default_aoi: aoi.features[0].properties.id,
+  async (user, { rejectWithValue }) => {
+    const response = await api.put(`${endpoints.user.profile}${user.id}`, {
+      ...user,
+      default_aoi: user?.default_aoi.features[0].properties.id,
     });
 
     if (response.status === 200) {
       return {
-        aoi,
+        aoi: user?.default_aoi,
         msg: response.data,
       };
     }
