@@ -76,7 +76,8 @@ export const signUpOauth2 = createAsyncThunk(
       userInfo,
     );
 
-    if (response.status === 200) {
+    if (response.status === 201) {
+      window.location = `${CLIENT_BASE_URL}/auth/sign-in`;
       return response.data;
     }
 
