@@ -37,9 +37,10 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     restriction: Yup.string().when('scope', {
       is: 'Restricted',
-      then: Yup.string().required(
-        t('Restriction needed if scope is restricted', { ns: 'common' }),
-      ),
+      then: schema =>
+        schema.required(
+          t('Restriction needed if scope is restricted', { ns: 'common' }),
+        ),
     }),
     description: Yup.string().required(t('field-empty-err', { ns: 'common' })),
   });
