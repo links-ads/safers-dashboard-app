@@ -81,7 +81,7 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
     }
     return isOpen ? (
       <Lightbox
-        mainSrc={card.media_url}
+        mainSrc={card.media_url ?? card.url}
         enableZoom={true}
         imageCaption={
           <div className="position-fixed top-0 start-0 m-2">
