@@ -6,6 +6,7 @@ import {
 import storage from 'redux-persist/lib/storage/session';
 
 import * as api from 'api/base';
+import { OK, NO_CONTENT } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { deleteSession, getSession } from 'helpers/authHelper';
 import { redirectAfterSignOut } from 'store/authentication.slice';
@@ -20,7 +21,7 @@ export const setUserDefaultAoi = createAsyncThunk(
       default_aoi: user?.default_aoi.features[0].properties.id,
     });
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         aoi: user?.default_aoi,
         msg: response.data,
@@ -36,7 +37,7 @@ export const fetchUserProfile = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     const response = await api.get(`${endpoints.user.profile}${id}`);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -49,7 +50,7 @@ export const updateUserProfile = createAsyncThunk(
   async (user, { rejectWithValue }) => {
     const response = await api.put(`${endpoints.user.profile}${user.id}`, user);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -64,7 +65,7 @@ export const deleteUserProfile = createAsyncThunk(
 
     const response = await api.del(`${endpoints.user.profile}${id}`);
 
-    if (response.status === 204) {
+    if (response.status === NO_CONTENT) {
       deleteSession();
       storage.removeItem('persist:root');
 
@@ -84,7 +85,7 @@ export const resetUserPassword = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     const response = await api.post(endpoints.user.resetPsw, { ...params });
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 

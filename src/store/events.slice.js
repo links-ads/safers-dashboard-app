@@ -6,6 +6,7 @@ import {
 import queryString from 'query-string';
 
 import * as api from 'api/base';
+import { OK } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { setLoading } from 'store/common.slice';
 
@@ -29,7 +30,7 @@ export const fetchEvents = createAsyncThunk(
       dispatch(setLoading({ status: false }));
     }
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         data: response.data,
         fromPage,
@@ -51,7 +52,7 @@ export const fetchEventDetail = createAsyncThunk(
 
     dispatch(setLoading({ status: false }));
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -64,7 +65,7 @@ export const fetchEventCameraMedia = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     const response = await api.get(endpoints.eventAlerts.getInSitu, params);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -77,7 +78,7 @@ export const fetchEventTweets = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     const response = await api.get(endpoints.eventAlerts.getTweets, params);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -93,7 +94,7 @@ export const setEventFavorite = createAsyncThunk(
       { is_favorite: isFavorite },
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         msg: `Successfully ${
           isFavorite ? 'added to' : 'removed from'
@@ -112,7 +113,7 @@ export const validateEvent = createAsyncThunk(
       alert_id: eventId,
     });
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -132,7 +133,7 @@ export const editEventInfo = createAsyncThunk(
 
     dispatch(setLoading({ status: false }));
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 

@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import * as api from 'api/base';
+import { OK } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { getDefaultDateRange } from 'utility';
 
@@ -15,7 +16,7 @@ export const fetchNotifications = createAsyncThunk(
   async (options, { rejectWithValue }) => {
     const response = await api.get(endpoints.notifications.getAll, options);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -28,7 +29,7 @@ export const fetchNotificationSources = createAsyncThunk(
   async (options, { rejectWithValue }) => {
     const response = await api.get(endpoints.notifications.sources, options);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -44,7 +45,7 @@ export const fetchNotificationScopeRestrictions = createAsyncThunk(
       options,
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 

@@ -2,6 +2,7 @@ import { rest } from 'msw';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 
+import { BAD_REQUEST } from 'api/constants';
 import { server } from 'mocks/server';
 import { getFilteredRecords } from 'pages/Chatbot/filter';
 
@@ -42,7 +43,7 @@ describe('Reports Slice', () => {
       it('should dispatch fetch reports failure', async () => {
         server.use(
           rest.get('*/api/chatbot/reports', (req, res, ctx) =>
-            res(ctx.status(400, 'Test Error')),
+            res(ctx.status(BAD_REQUEST, 'Test Error')),
           ),
         );
 
@@ -105,7 +106,7 @@ describe('Reports Slice', () => {
       it('should dispatch fetch report detail failure', async () => {
         server.use(
           rest.get('*/api/chatbot/reports/test-id', (req, res, ctx) =>
-            res(ctx.status(400, 'Test Error')),
+            res(ctx.status(BAD_REQUEST, 'Test Error')),
           ),
         );
 

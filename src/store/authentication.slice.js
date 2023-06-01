@@ -6,6 +6,7 @@ import {
 import storage from 'redux-persist/lib/storage/session';
 
 import * as api from 'api/base';
+import { OK, CREATED } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { setLoading } from 'store/common.slice';
 import { setUserInfo } from 'store/user.slice';
@@ -49,12 +50,12 @@ export const authenticateOauth2 = createAsyncThunk(
 
     dispatch(setLoading({ status: false }));
 
-    if (response.status === 200 || response.status === 201) {
+    if (response.status === OK || response.status === CREATED) {
       const { access_token, expires_in, user_id } = response.data;
       setSessionData(access_token, null, user_id, false, true);
 
       const userResponse = await api.get(`${endpoints.user.profile}${user_id}`);
-      if (userResponse.status === 200) {
+      if (userResponse.status === OK) {
         const user = userResponse.data;
         dispatch(setUserInfo(user));
       }
@@ -76,7 +77,7 @@ export const signUpOauth2 = createAsyncThunk(
       userInfo,
     );
 
-    if (response.status === 201) {
+    if (response.status === CREATED) {
       window.location = `${CLIENT_BASE_URL}/auth/sign-in`;
       return response.data;
     }
@@ -93,7 +94,7 @@ export const resetForgottenUserPasswordRequest = createAsyncThunk(
       email,
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -108,7 +109,7 @@ export const resetPassword = createAsyncThunk(
       ...data,
     });
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -133,7 +134,7 @@ export const signOut = createAsyncThunk(
 
     const response = await api.post(endpoints.authentication.oAuth2Logout);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       deleteSession();
       storage.removeItem('persist:root');
 
@@ -153,7 +154,7 @@ export const refreshOAuthToken = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const response = await api.post(endpoints.authentication.oAuth2Refresh);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
