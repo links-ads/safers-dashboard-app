@@ -51,8 +51,9 @@ export const authenticateOauth2 = createAsyncThunk(
     dispatch(setLoading({ status: false }));
 
     if (response.status === OK || response.status === CREATED) {
-      const { access_token, expires_in, user_id } = response.data;
-      setSessionData(access_token, null, user_id, false, true);
+      const { access_token, refresh_token, expires_in, user_id } =
+        response.data;
+      setSessionData(access_token, refresh_token, user_id, false, true);
 
       const userResponse = await api.get(`${endpoints.user.profile}${user_id}`);
       if (userResponse.status === OK) {
@@ -152,10 +153,20 @@ export const signOut = createAsyncThunk(
 export const refreshOAuthToken = createAsyncThunk(
   `${name}/refreshOAuthToken`,
   async (_, { rejectWithValue }) => {
-    const response = await api.post(endpoints.authentication.oAuth2Refresh);
+    const session = getSession();
+
+    const response = await api.post(endpoints.authentication.oAuth2Refresh, {
+      refresh_token: session.refresh_token,
+    });
 
     if (response.status === OK) {
-      return response.data;
+      const { access_token, refresh_token, expires_in, user_id } =
+        response.data;
+      setSessionData(access_token, refresh_token, user_id, false, true);
+
+      return {
+        expires_in,
+      };
     }
 
     return rejectWithValue({ error: response.data });

@@ -31,7 +31,11 @@ export const setupInterceptors = store => {
     async config => {
       const isPermitted = isWhitelisted(config.url);
       if (!isPermitted || (isPermitted && config.method === 'post')) {
-        store.dispatch(setLoading({ status: true, message: 'Please wait..' }));
+        if (config.url !== endpoints.authentication.oAuth2Refresh) {
+          store.dispatch(
+            setLoading({ status: true, message: 'Please wait..' }),
+          );
+        }
       }
 
       const session = getSession();
