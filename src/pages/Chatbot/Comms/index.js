@@ -17,10 +17,11 @@ import {
 } from 'store/comms.slice';
 import { defaultAoiSelector } from 'store/user.slice';
 
-import CommsList from './Components/CommsList';
+import Comm from './Components/Comm';
 import CreateMessage from './Components/CreateMessage';
 import SortSection from './Components/SortSection';
 import MapSection from '../Components/FormMapSection';
+import ListView from '../Components/ListView';
 
 const Comms = ({ pollingFrequency }) => {
   const { deckRef, updateViewState } = useMap();
@@ -42,8 +43,15 @@ const Comms = ({ pollingFrequency }) => {
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMessage, setToggleCreateNewMessage] = useState(false);
   const [commsParams, setCommsParams] = useState({});
+  const [pageData, setPageData] = useState([]);
 
   const commsList = filteredComms ?? allComms;
+
+  // Get the index, then divide that by 4 and ceil it, gets the page.
+  let selectedIndex = 1;
+  if (selectedComm) {
+    selectedIndex = commsList.findIndex(comm => comm.id === selectedComm.id);
+  }
 
   useEffect(() => {
     setCommsParams(previous => {
@@ -108,7 +116,7 @@ const Comms = ({ pollingFrequency }) => {
     [defaultAoi.features, updateViewState],
   );
 
-  const onClick = info => {
+  const handleMapItemClick = info => {
     const id = info?.object?.properties.id;
 
     if (id) {
@@ -117,6 +125,17 @@ const Comms = ({ pollingFrequency }) => {
       if (comm) {
         setSelectedComm(comm);
       }
+    }
+  };
+
+  const handleListItemClick = comm => {
+    if (comm) {
+      setSelectedComm(comm);
+
+      updateViewState({
+        longitude: comm.location[0],
+        latitude: comm.location[1],
+      });
     }
   };
 
@@ -153,10 +172,20 @@ const Comms = ({ pollingFrequency }) => {
 
             <Row>
               <Col xl={12} className="px-3">
-                <CommsList
-                  selectedComm={selectedComm}
-                  setSelectedComm={setSelectedComm}
-                />
+                <ListView
+                  items={commsList}
+                  selectedIndex={selectedIndex}
+                  setPageData={setPageData}
+                >
+                  {pageData.map(comm => (
+                    <Comm
+                      key={comm.id}
+                      comm={comm}
+                      selectedComm={selectedComm}
+                      selectComm={handleListItemClick}
+                    />
+                  ))}
+                </ListView>
               </Col>
             </Row>
           </Col>
@@ -177,7 +206,7 @@ const Comms = ({ pollingFrequency }) => {
             coordinates={coordinates}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
-            onClick={onClick}
+            onClick={handleMapItemClick}
             clearMap={() => setCoordinates([])}
           />
         </Col>
