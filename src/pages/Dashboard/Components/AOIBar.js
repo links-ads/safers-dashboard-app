@@ -33,7 +33,6 @@ const AOIBar = ({
   const { setViewState } = useMap();
   const dispatch = useDispatch();
 
-  const [eventList, setEventList] = useState([]);
   const [selectedLayer, setSelectedLayer] = useState(null);
 
   const defaultAoi = useSelector(defaultAoiSelector);
@@ -70,10 +69,6 @@ const AOIBar = ({
   useEffect(() => {
     updateEventList();
   }, [dateRange, updateEventList]);
-
-  useEffect(() => {
-    setEventList(filteredEvents);
-  }, [filteredEvents]);
 
   const updateRasterLayer = newLayerId => {
     const selectedNode = mapRequests.find(layer => layer.key === newLayerId);
@@ -134,7 +129,7 @@ const AOIBar = ({
             }
             <MapComponent
               selectedLayer={selectedLayer}
-              eventList={eventList}
+              eventList={filteredEvents}
               orgPplList={orgPplList}
               orgReportList={orgReportList}
               commsList={commsList}
