@@ -19,6 +19,8 @@ import { defaultAoiSelector } from 'store/user.slice';
 import EventsPanel from './EventsPanel';
 import MapComponent from './Map';
 
+const DATE_FORMAT = 'YYYY-MM-DD';
+
 const AOIBar = ({
   orgPplList,
   orgReportList,
@@ -48,8 +50,8 @@ const AOIBar = ({
     const dateRangeParams = dateRange
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {
-          start_date: moment().subtract(3, 'days'),
-          end_date: moment(),
+          start_date: moment().subtract(3, 'days').format(DATE_FORMAT),
+          end_date: moment().format(DATE_FORMAT),
         };
 
     const eventParams = {
