@@ -27,7 +27,7 @@ const getBadge = person => {
   );
 };
 
-const People = ({ person, selectedPerson, selectPerson }) => {
+const Person = ({ person, selectedPerson, selectPerson }) => {
   const { t } = useTranslation();
 
   const isSelected = person.id === selectedPerson?.id;
@@ -75,10 +75,10 @@ const People = ({ person, selectedPerson, selectPerson }) => {
   );
 };
 
-People.propTypes = {
+Person.propTypes = {
   person: PropTypes.object,
   selectedPerson: PropTypes.object,
   selectPerson: PropTypes.func,
 };
 
-export default People;
+export default Person;

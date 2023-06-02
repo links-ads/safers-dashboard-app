@@ -18,9 +18,10 @@ import {
 } from 'store/people.slice';
 import { defaultAoiSelector } from 'store/user.slice';
 
-import PeopleList from './Components/PeopleList';
+import Person from './Components/People';
 import SortSection from './Components/SortSection';
 import MapSection from '../Components/DefaultMapSection';
+import ListView from '../Components/ListView';
 
 const People = ({ pollingFrequency }) => {
   const { deckRef, updateViewState } = useMap();
@@ -40,8 +41,17 @@ const People = ({ pollingFrequency }) => {
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [activities, setActivities] = useState([]);
   const [peopleParams, setPeopleParams] = useState({});
+  const [pageData, setPageData] = useState([]);
 
-  let peopleList = filteredPeople ?? allPeople;
+  const peopleList = filteredPeople ?? allPeople;
+
+  // Get the index, then divide that by 4 and ceil it, gets the page.
+  let selectedIndex = 1;
+  if (selectedPerson) {
+    selectedIndex = peopleList.findIndex(
+      person => person.id === selectedPerson.id,
+    );
+  }
 
   useEffect(() => {
     (async () => {
@@ -115,7 +125,7 @@ const People = ({ pollingFrequency }) => {
     [defaultAoi.features, updateViewState],
   );
 
-  const onClick = info => {
+  const handleMapItemClick = info => {
     const id = info?.object?.properties.id;
 
     if (id) {
@@ -124,6 +134,17 @@ const People = ({ pollingFrequency }) => {
       if (person) {
         setSelectedPerson(person);
       }
+    }
+  };
+
+  const handleListItemClick = person => {
+    if (person) {
+      setSelectedPerson(person);
+
+      updateViewState({
+        longitude: person.location[0],
+        latitude: person.location[1],
+      });
     }
   };
 
@@ -149,10 +170,20 @@ const People = ({ pollingFrequency }) => {
           />
           <Row>
             <Col xl={12} className="px-3">
-              <PeopleList
-                selectedPerson={selectedPerson}
-                setSelectedPerson={setSelectedPerson}
-              />
+              <ListView
+                items={peopleList}
+                selectedIndex={selectedIndex}
+                setPageData={setPageData}
+              >
+                {pageData.map(person => (
+                  <Person
+                    key={person.id}
+                    person={person}
+                    selectedPerson={selectedPerson}
+                    selectPerson={handleListItemClick}
+                  />
+                ))}
+              </ListView>
             </Col>
           </Row>
         </Col>
@@ -160,7 +191,7 @@ const People = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getInfoByArea={getPeopleByArea}
-            onClick={onClick}
+            onClick={handleMapItemClick}
           />
         </Col>
       </Row>
