@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -8,7 +8,9 @@ import { Row, Col, Card } from 'reactstrap';
 import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import BaseMap from 'components/BaseMap/BaseMap';
-import { PAGE_SIZE } from 'constants/common';
+import { useMap } from 'components/BaseMap/MapContext';
+import { PAGE_SIZE, MAP_TYPES } from 'constants/common';
+import { getIconLayer, getViewState } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchNotifications,
@@ -22,27 +24,13 @@ import {
 
 import NotificationsList from './Components/NotificationsList';
 import SortSection from './Components/SortSection';
+import Tooltip from './Components/Tooltip';
 
 const Notifications = () => {
   const dispatch = useDispatch();
+  const { viewState, setViewState } = useMap();
 
-  // const notifications = useSelector(allNotificationsSelector);
-
-  const notifications = useMemo(
-    () =>
-      new Array(20).fill().map((_, i) => ({
-        id: i,
-        type: 'Test Type',
-        status: 'Test Status',
-        scopeRestriction: 'None',
-        description:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sit amet erat ipsum. Maecenas eget convallis arcu. Donec eget leo id metus maximus commodo vitae non felis. Cras et fringilla ante, in laoreet massa.',
-        country: 'Test Country',
-        timestamp: new Date().toISOString(),
-        source: 'Test Source',
-      })),
-    [],
-  );
+  const notifications = useSelector(allNotificationsSelector);
 
   const notificationParams = useSelector(notificationParamsSelector);
   const dateRange = useSelector(dateRangeSelector);
@@ -54,8 +42,21 @@ const Notifications = () => {
   const [notificationScopeRestriction, setNotificationScopeRestriction] =
     useState('all');
   const [sortOrder, setSortOrder] = useState('-date');
+  const [iconLayer, setIconLayer] = useState(null);
+  const [selectedNotification, setSelectedNotification] = useState({});
 
   const { t } = useTranslation();
+
+  const mapData = notifications.map(notification => ({
+    ...notification,
+    geometry: { type: 'Point', coordinates: notification.center },
+  }));
+
+  useEffect(() => {
+    setIconLayer(
+      getIconLayer(mapData, MAP_TYPES.ALERTS, 'flag', selectedNotification),
+    );
+  }, [mapData, selectedNotification]);
 
   useEffect(() => {
     dispatch(fetchNotificationSources());
@@ -116,6 +117,40 @@ const Notifications = () => {
     );
   }, [filteredNotifications]);
 
+  const onNotificationClick = notification => {
+    if (notification?.id === selectedNotification?.id) {
+      setSelectedNotification({});
+    } else {
+      setSelectedNotification(notification);
+
+      setViewState(
+        getViewState(notification.center, viewState.zoom, notification),
+      );
+    }
+  };
+
+  const onClick = info => {
+    if (info.objects) {
+      // Prevents clicks on grouped icons
+      return;
+    } else if (info.picked && info.object) {
+      onNotificationClick(info.object.properties);
+    }
+  };
+
+  const renderTooltip = info => {
+    const { object, coordinate: tempCoords } = info;
+    const coordinate = tempCoords || object?.geometry.coordinates;
+    if (object) {
+      return (
+        <Tooltip object={object?.properties} coordinate={coordinate} t={t} />
+      );
+    }
+    if (!object) {
+      return null;
+    }
+  };
+
   return (
     <div className="page-content">
       <div className="mx-2 sign-up-aoi-map-bg">
@@ -146,18 +181,19 @@ const Notifications = () => {
                   setPaginatedNotifications={setPaginatedNotifications}
                   currentPage={currentPage}
                   setCurrentPage={setCurrentPage}
+                  setSelectedNotification={onNotificationClick}
+                  selectedNotification={selectedNotification}
                 />
               </Col>
             </Row>
           </Col>
           <Col xl={7} className="mx-auto">
             <Card className="map-card mb-0" style={{ height: 670 }}>
-              {/* TODO: is right basemap? */}
               <BaseMap
-                layers={[]}
-                // hoverInfo={hoverInfo}
-                // renderTooltip={renderTooltip}
-                // onClick={showTooltip}
+                layers={[iconLayer]}
+                hoverInfo={selectedNotification}
+                renderTooltip={renderTooltip}
+                onClick={onClick}
                 // widgets={[getSearchButton]}
                 // setWidth={setNewWidth}
                 // setHeight={setNewHeight}
