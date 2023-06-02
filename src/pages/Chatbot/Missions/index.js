@@ -18,9 +18,10 @@ import {
 import { defaultAoiSelector } from 'store/user.slice';
 
 import CreateMission from './Components/create-mission/CreateMission';
-import MissionList from './Components/MissionList';
+import Mission from './Components/Mission';
 import SortSection from './Components/SortSection';
 import MapSection from '../Components/FormMapSection';
+import ListView from '../Components/ListView';
 
 const Missions = ({ pollingFrequency }) => {
   const { deckRef, updateViewState } = useMap();
@@ -41,8 +42,17 @@ const Missions = ({ pollingFrequency }) => {
   const [togglePolygonMap, setTogglePolygonMap] = useState(false);
   const [toggleCreateNewMission, setToggleCreateNewMission] = useState(false);
   const [missionParams, setMissionParams] = useState({});
+  const [pageData, setPageData] = useState([]);
 
   const missionsList = filteredMissions ?? allMissions;
+
+  // Get the index, then divide that by 4 and ceil it, gets the page.
+  let selectedIndex = 1;
+  if (selectedMission) {
+    selectedIndex = missionsList.findIndex(
+      mission => mission.id === selectedMission.id,
+    );
+  }
 
   useEffect(() => {
     setMissionParams(previous => {
@@ -108,7 +118,7 @@ const Missions = ({ pollingFrequency }) => {
     [defaultAoi.features, updateViewState],
   );
 
-  const onClick = info => {
+  const handleMapItemClick = info => {
     const id = info?.object?.properties.id;
 
     if (id) {
@@ -117,6 +127,17 @@ const Missions = ({ pollingFrequency }) => {
       if (mission) {
         setSelectedMission(mission);
       }
+    }
+  };
+
+  const handleListItemClick = mission => {
+    if (mission) {
+      setSelectedMission(mission);
+
+      updateViewState({
+        longitude: mission.location[0],
+        latitude: mission.location[1],
+      });
     }
   };
 
@@ -152,10 +173,20 @@ const Missions = ({ pollingFrequency }) => {
 
             <Row>
               <Col xl={12} className="px-3">
-                <MissionList
-                  selectedMission={selectedMission}
-                  setSelectedMission={setSelectedMission}
-                />
+                <ListView
+                  items={missionsList}
+                  selectedIndex={selectedIndex}
+                  setPageData={setPageData}
+                >
+                  {pageData.map(mission => (
+                    <Mission
+                      key={mission.id}
+                      mission={mission}
+                      selectedMission={selectedMission}
+                      selectMission={handleListItemClick}
+                    />
+                  ))}
+                </ListView>
               </Col>
             </Row>
           </Col>
@@ -176,7 +207,7 @@ const Missions = ({ pollingFrequency }) => {
             coordinates={coordinates}
             setCoordinates={setCoordinates}
             togglePolygonMap={togglePolygonMap}
-            onClick={onClick}
+            onClick={handleMapItemClick}
             clearMap={() => setCoordinates([])}
           />
         </Col>

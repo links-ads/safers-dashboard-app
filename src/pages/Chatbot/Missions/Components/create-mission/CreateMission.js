@@ -56,7 +56,7 @@ const CreateMission = ({ onCancel, coordinates, setCoordinates }) => {
 
   useEffect(() => {
     if (orgList && user?.organization) {
-      const organization = orgList.find(org => org.id === user.organization);
+      const organization = orgList.find(org => org.name === user.organization);
       setorgName(organization.name.split('-')[0]);
     }
   }, [orgList, user]);
