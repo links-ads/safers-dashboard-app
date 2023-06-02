@@ -14,13 +14,13 @@ import {
   fetchReports,
   allReportsSelector,
   filteredReportsSelector,
-  reportsBoundingBoxSelector,
 } from 'store/reports.slice';
 import { defaultAoiSelector } from 'store/user.slice';
 
-import ReportList from './Components/ReportList';
+import Report from './Components/Report';
 import SortSection from './Components/SortSection';
 import MapSection from '../Components/DefaultMapSection';
+import ListView from '../Components/ListView';
 
 const Reports = ({ pollingFrequency }) => {
   const { deckRef, viewState, updateViewState } = useMap();
@@ -32,14 +32,21 @@ const Reports = ({ pollingFrequency }) => {
   const filteredReports = useSelector(filteredReportsSelector);
   const dateRange = useSelector(dateRangeSelector);
 
-  const gBbox = useSelector(reportsBoundingBoxSelector);
-
   const [selectedReport, setSelectedReport] = useState(undefined);
   const [iconLayer, setIconLayer] = useState(undefined);
-  const [boundingBox, setBoundingBox] = useState(gBbox);
+  const [boundingBox, setBoundingBox] = useState(undefined);
   const [reportParams, setReportParams] = useState({});
+  const [pageData, setPageData] = useState([]);
 
   const reportsList = filteredReports || allReports;
+
+  // Get the index, then divide that by 4 and ceil it, gets the page.
+  let selectedIndex = 1;
+  if (selectedReport) {
+    selectedIndex = reportsList.findIndex(
+      report => report.report_id === selectedReport.report_id,
+    );
+  }
 
   useEffect(() => {
     setReportParams(previous => {
@@ -92,7 +99,7 @@ const Reports = ({ pollingFrequency }) => {
     [defaultAoi.features, updateViewState],
   );
 
-  const onClick = info => {
+  const handleMapItemClick = info => {
     const id = info?.object?.properties.id;
 
     if (id) {
@@ -104,6 +111,16 @@ const Reports = ({ pollingFrequency }) => {
     }
   };
 
+  const handleListItemClick = report => {
+    if (report) {
+      setSelectedReport(report);
+
+      updateViewState({
+        longitude: report.location[0],
+        latitude: report.location[1],
+      });
+    }
+  };
   return (
     <div className="mx-2">
       <Row className="justify-content-end mb-2">
@@ -125,10 +142,20 @@ const Reports = ({ pollingFrequency }) => {
           />
           <Row>
             <Col xl={12} className="px-3">
-              <ReportList
-                selectedReport={selectedReport}
-                setSelectedReport={setSelectedReport}
-              />
+              <ListView
+                items={reportsList}
+                selectedIndex={selectedIndex}
+                setPageData={setPageData}
+              >
+                {pageData.map(report => (
+                  <Report
+                    key={report.report_id}
+                    report={report}
+                    selectedReport={selectedReport}
+                    selectReport={handleListItemClick}
+                  />
+                ))}
+              </ListView>
             </Col>
           </Row>
         </Col>
@@ -136,7 +163,7 @@ const Reports = ({ pollingFrequency }) => {
           <MapSection
             iconLayer={iconLayer}
             getInfoByArea={getReportsByArea}
-            onClick={onClick}
+            onClick={handleMapItemClick}
           />
         </Col>
       </Row>
