@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import _ from 'lodash';
 import { useTranslation } from 'react-i18next';
@@ -43,20 +43,24 @@ const Notifications = () => {
     useState('all');
   const [sortOrder, setSortOrder] = useState('-date');
   const [iconLayer, setIconLayer] = useState(null);
-  const [selectedNotification, setSelectedNotification] = useState({});
+  const [selectedNotification, setSelectedNotification] = useState(undefined);
 
   const { t } = useTranslation();
 
-  const mapData = notifications.map(notification => ({
-    ...notification,
-    geometry: { type: 'Point', coordinates: notification.center },
-  }));
+  const mapData = useMemo(
+    () =>
+      notifications.map(notification => ({
+        ...notification,
+        geometry: { type: 'Point', coordinates: notification.center },
+      })),
+    [notifications],
+  );
 
   useEffect(() => {
     setIconLayer(
       getIconLayer(mapData, MAP_TYPES.ALERTS, 'flag', selectedNotification),
     );
-  }, [selectedNotification]);
+  }, [selectedNotification, mapData]);
 
   useEffect(() => {
     dispatch(fetchNotificationSources());
@@ -119,7 +123,7 @@ const Notifications = () => {
 
   const onNotificationClick = notification => {
     if (notification?.id === selectedNotification?.id) {
-      setSelectedNotification({});
+      setSelectedNotification(undefined);
     } else {
       setSelectedNotification(notification);
 

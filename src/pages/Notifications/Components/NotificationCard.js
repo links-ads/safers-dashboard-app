@@ -35,9 +35,9 @@ const NotificatonCard = ({
   return (
     <Card
       className={`notifications-card mb-2 ${
-        isSelected ? 'notification-card-active' : ''
+        isSelected ? 'alert-card-active' : ''
       }`}
-      onClick={() => setSelectedNotification(isSelected ? {} : notification)}
+      onClick={() => setSelectedNotification(notification)}
     >
       <CardBody className="px-0 py-1 my-2">
         <Row>
