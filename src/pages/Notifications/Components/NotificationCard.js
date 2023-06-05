@@ -15,15 +15,13 @@ const BADGETYPES = {
   },
 };
 
-const getBadge = (card, badgeType) => {
-  return (
-    <Badge
-      className={`me-1 rounded-pill notification-badge ${badgeType.style}  py-0 px-2 pb-0 mb-0`}
-    >
-      <span>{card[badgeType.attr]}</span>
-    </Badge>
-  );
-};
+const getBadge = (notification, badgeType) => (
+  <Badge
+    className={`me-1 rounded-pill notification-badge ${badgeType.style} py-0 px-2 pb-0 mb-0`}
+  >
+    <span>{notification[badgeType.attr]}</span>
+  </Badge>
+);
 
 const NotificatonCard = ({
   notification,
@@ -36,7 +34,9 @@ const NotificatonCard = ({
 
   return (
     <Card
-      className={`alert-card mb-2 ${isSelected ? 'alert-card-active' : ''}`}
+      className={`notifications-card mb-2 ${
+        isSelected ? 'notification-card-active' : ''
+      }`}
       onClick={() => setSelectedNotification(isSelected ? {} : notification)}
     >
       <CardBody className="px-0 py-1 my-2">

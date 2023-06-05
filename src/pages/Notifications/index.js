@@ -56,7 +56,7 @@ const Notifications = () => {
     setIconLayer(
       getIconLayer(mapData, MAP_TYPES.ALERTS, 'flag', selectedNotification),
     );
-  }, [mapData, selectedNotification]);
+  }, [selectedNotification]);
 
   useEffect(() => {
     dispatch(fetchNotificationSources());
@@ -138,16 +138,12 @@ const Notifications = () => {
     }
   };
 
-  const renderTooltip = info => {
-    const { object, coordinate: tempCoords } = info;
-    const coordinate = tempCoords || object?.geometry.coordinates;
-    if (object) {
-      return (
-        <Tooltip object={object?.properties} coordinate={coordinate} t={t} />
-      );
-    }
-    if (!object) {
-      return null;
+  const renderTooltip = notification => {
+    if (!notification?.id) return null;
+
+    const { center } = notification;
+    if (notification) {
+      return <Tooltip object={notification} coordinate={center} t={t} />;
     }
   };
 
