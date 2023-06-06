@@ -74,7 +74,10 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
           id="staticBackdrop"
         >
           <video height={560} controls>
-            <source src={card.url} type={card.format || 'video/mp4'} />
+            <source
+              src={card.media_url ?? card.remote_url}
+              type={card.format || 'video/mp4'}
+            />
           </video>
         </Modal>
       );
