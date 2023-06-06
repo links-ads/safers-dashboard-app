@@ -9,8 +9,9 @@ import 'toastr/build/toastr.min.css';
 import 'rc-pagination/assets/index.css';
 import BaseMap from 'components/BaseMap/BaseMap';
 import { useMap } from 'components/BaseMap/MapContext';
+import SearchButton from 'components/SearchButton';
 import { PAGE_SIZE, MAP_TYPES } from 'constants/common';
-import { getIconLayer, getViewState } from 'helpers/mapHelper';
+import { getBoundingBox, getIconLayer, getViewState } from 'helpers/mapHelper';
 import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchNotifications,
@@ -34,6 +35,8 @@ const Notifications = () => {
 
   const notificationParams = useSelector(notificationParamsSelector);
   const dateRange = useSelector(dateRangeSelector);
+
+  const [boundingBox, setBoundingBox] = useState(undefined);
 
   const [filteredNotifications, setFilterdNotifications] = useState([]);
   const [paginatedNotifications, setPaginatedNotifications] = useState([]);
@@ -97,6 +100,11 @@ const Notifications = () => {
       params.order = sortOrder;
     }
 
+    if (boundingBox) {
+      params.default_bbox = false;
+      params.bbox = boundingBox.toString();
+    }
+
     dispatch(setNotificationParams(params));
     dispatch(fetchNotifications(params));
     dispatch(setNewNotificationState(false, true));
@@ -108,6 +116,7 @@ const Notifications = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     dateRange,
+    boundingBox,
     notificationSource,
     notificationScopeRestriction,
     sortOrder,
@@ -151,6 +160,23 @@ const Notifications = () => {
     }
   };
 
+  const getNotificationsByArea = () => {
+    setBoundingBox(
+      getBoundingBox(
+        [viewState.longitude, viewState.latitude],
+        viewState.zoom,
+        viewState.width,
+        viewState.height,
+      ),
+    );
+  };
+
+  const getSearchButton = index => {
+    return (
+      <SearchButton index={index} getInfoByArea={getNotificationsByArea} />
+    );
+  };
+
   return (
     <div className="page-content">
       <div className="mx-2 sign-up-aoi-map-bg">
@@ -192,9 +218,9 @@ const Notifications = () => {
               <BaseMap
                 layers={[iconLayer]}
                 hoverInfo={selectedNotification}
-                renderTooltip={renderTooltip}
+                // renderTooltip={renderTooltip}
                 onClick={onClick}
-                // widgets={[getSearchButton]}
+                widgets={[getSearchButton]}
                 // setWidth={setNewWidth}
                 // setHeight={setNewHeight}
                 screenControlPosition="top-right"
