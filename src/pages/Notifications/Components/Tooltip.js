@@ -22,13 +22,7 @@ const Field = ({ label, value }) => (
   </Row>
 );
 
-const Tooltip = ({ object, coordinate, setFavorite, t }) => {
-  const [favToggle, setFavToggle] = useState(object?.favorite);
-
-  useEffect(() => {
-    setFavToggle(object.favorite);
-  }, [object.favorite]);
-
+const Tooltip = ({ object, coordinate, t }) => {
   const stringFields = Object.entries(object).reduce(
     (acc, [key, value]) =>
       typeof value === 'string'
@@ -53,23 +47,6 @@ const Tooltip = ({ object, coordinate, setFavorite, t }) => {
     >
       <div className="my-2 mx-4 map-tooltip">
         <Row className="mb-2">
-          <Col md={1}>
-            <button
-              type="button"
-              className="btn px-0"
-              onClick={e => {
-                e.stopPropagation();
-                setFavorite(object.id);
-                setFavToggle(!favToggle);
-              }}
-            >
-              <i
-                className={`mdi mdi-star${
-                  !favToggle ? '-outline' : ''
-                } card-title`}
-              ></i>
-            </button>
-          </Col>
           <Col>
             <CardTitle className="mt-0 card-title">{object.title}</CardTitle>
             <CardSubtitle className="font-14 text-muted">
@@ -90,7 +67,6 @@ const Tooltip = ({ object, coordinate, setFavorite, t }) => {
 Tooltip.propTypes = {
   object: PropTypes.any,
   coordinate: PropTypes.array,
-  setFavorite: PropTypes.func,
   t: PropTypes.func,
 };
 
