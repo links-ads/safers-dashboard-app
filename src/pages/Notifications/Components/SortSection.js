@@ -30,7 +30,7 @@ const SortSection = ({
     <>
       <hr />
       <Row className="my-2">
-        <Col md={4} className="mx-0 my-1 d-flex">
+        <Col xl={9} className="mx-0 my-1 d-flex">
           <Input
             id="sortByDate"
             className="btn-sm sort-select-input"
@@ -93,7 +93,7 @@ const SortSection = ({
           </Input>
         </Col>
         <Col></Col>
-        <Col xl={3} className="d-flex justify-content-end">
+        <Col xl={2} className="d-flex justify-content-end">
           <span className="my-auto alert-report-text">
             {t('Results')} {filteredNotifications.length}
           </span>
