@@ -50,7 +50,7 @@ const MapSection = ({
   };
 
   const validate = id => {
-    let selectedAlert = _.find(filteredAlerts, { id });
+    let selectedAlert = filteredAlerts.find(alert => alert.id === id);
     selectedAlert.status = 'VALIDATED';
     dispatch(validateEvent(id));
     const to = PAGE_SIZE * currentPage;
@@ -59,7 +59,7 @@ const MapSection = ({
   };
 
   const editInfo = (id, desc) => {
-    let selectedAlert = _.find(filteredAlerts, { id });
+    let selectedAlert = filteredAlerts.find(alert => alert.id === id);
     selectedAlert.description = desc;
     dispatch(editEventInfo({ eventId: id, editInfo: desc }));
     const to = PAGE_SIZE * currentPage;

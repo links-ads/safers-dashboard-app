@@ -74,14 +74,17 @@ const Alert = ({ card, alertId, setSelectedAlert, setFavorite, t }) => {
           id="staticBackdrop"
         >
           <video height={560} controls>
-            <source src={card.url} type={card.format || 'video/mp4'} />
+            <source
+              src={card.media_url ?? card.remote_url}
+              type={card.format || 'video/mp4'}
+            />
           </video>
         </Modal>
       );
     }
     return isOpen ? (
       <Lightbox
-        mainSrc={card.url}
+        mainSrc={card.media_url ?? card.remote_url}
         enableZoom={true}
         imageCaption={
           <div className="position-fixed top-0 start-0 m-2">

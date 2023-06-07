@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import * as api from 'api/base';
+import { OK } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { getFilteredRecords } from 'pages/Chatbot/filter';
 
@@ -18,7 +19,7 @@ export const fetchReports = createAsyncThunk(
       options,
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         isPolling,
         data: response.data,
@@ -36,7 +37,7 @@ export const fetchReportDetail = createAsyncThunk(
       endpoints.chatbot.reports.getReportInfo.replace(':report_id', id),
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         data: response.data,
       };

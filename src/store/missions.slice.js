@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import * as api from 'api/base';
+import { OK } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { getFilteredRecords } from 'pages/Chatbot/filter';
 
@@ -21,7 +22,7 @@ export const fetchMissions = createAsyncThunk(
       options,
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         isPolling,
         feFilters,
@@ -40,7 +41,7 @@ export const fetchMissionDetail = createAsyncThunk(
       endpoints.chatbot.missions.getMissionInfo.replace(':mission_id', id),
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         data: response.data,
       };
@@ -58,7 +59,7 @@ export const createMission = createAsyncThunk(
       mission,
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     } else {
       return rejectWithValue({ error: true });

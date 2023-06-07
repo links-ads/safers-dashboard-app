@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 import { Formik } from 'formik';
-import _ from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -66,7 +65,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (roles.length) {
-      const role = _.find(roles, { name: 'citizen' });
+      const role = roles.find(r => r.name === 'citizen');
       setcitizenId(role.name);
     }
   }, [roles]);
@@ -81,33 +80,27 @@ const SignUp = () => {
     }
   }, [navigate, signUpOauth2Success]);
 
-  const signUpSchema = Yup.object()
-    .shape({
-      email: Yup.string()
-        .email('Invalid email address')
-        .required('The field cannot be empty'),
-      password: Yup.string()
-        .matches(pwdRegEx, pwdValidationTxt)
-        .required('The field cannot be empty'),
-      first_name: Yup.string().required('The field cannot be empty'),
-      last_name: Yup.string().required('The field cannot be empty'),
-      role: Yup.string().required('The field cannot be empty'),
-      accepted_terms: Yup.bool().oneOf(
-        [true],
-        'Please accept the terms and conditions',
-      ),
-    })
-    .when((values, schema) => {
-      if (values.role !== citizenId) {
-        return schema.shape({
-          organization: Yup.string().required('The field cannot be empty'),
-        });
-      }
-    });
+  const signUpSchema = Yup.object().shape({
+    email: Yup.string()
+      .email('Invalid email address')
+      .required('The field cannot be empty'),
+    password: Yup.string()
+      .matches(pwdRegEx, pwdValidationTxt)
+      .required('The field cannot be empty'),
+    first_name: Yup.string().required('The field cannot be empty'),
+    last_name: Yup.string().required('The field cannot be empty'),
+    role: Yup.string().required('The field cannot be empty'),
+    accepted_terms: Yup.bool().oneOf(
+      [true],
+      'Please accept the terms and conditions',
+    ),
+    organization: Yup.string().when('role', {
+      is: val => val !== citizenId,
+      then: schema => schema.required('The field cannot be empty'),
+    }),
+  });
 
   const formSubmit = (values, setSubmitting) => {
-    values.organization =
-      values.role === citizenId ? null : values.organization;
     dispatch(registration(values));
     setSubmitting(false);
   };
@@ -252,7 +245,7 @@ const SignUp = () => {
                           {roles.map(role => {
                             return (
                               <option key={role.name} value={role.name}>
-                                {role.label}
+                                {role.title}
                               </option>
                             );
                           })}

@@ -42,8 +42,8 @@ const SortSection = ({
     else
       dispatch(
         setFilteredEvents(
-          _.filter(alerts, o =>
-            o.title.toLowerCase().includes(query.toLowerCase()),
+          alerts.filter(alert =>
+            alert.title.toLowerCase().includes(query.toLowerCase()),
           ),
         ),
       );

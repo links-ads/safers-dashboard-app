@@ -1,8 +1,6 @@
 /* eslint-disable init-declarations */
 import React from 'react';
 
-import _ from 'lodash';
-
 import { ROLES } from 'mockData/common';
 import { UPDATED_USER_INFO, USERS } from 'mockData/user';
 import { act, fireEvent, render, screen, waitFor } from 'test-utils';
@@ -23,7 +21,7 @@ xdescribe('Test Update Profile Component', () => {
   });
 
   it('displays user details', () => {
-    const role = _.find(ROLES, { id: USERS.role });
+    const role = ROLES.find(role => role.id === USERS.role);
 
     expect(
       screen.getByText(USERS.first_name, { exact: false }),
@@ -76,7 +74,7 @@ xdescribe('Test Update Profile Component', () => {
     await waitFor(() =>
       expect(
         screen.getByRole('button', { name: 'UPDATE DETAILS' }),
-      ).not.toBeDisabled(),
+      ).toBeEnabled(),
     );
   });
 

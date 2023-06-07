@@ -5,6 +5,7 @@ import {
 } from '@reduxjs/toolkit';
 
 import * as api from 'api/base';
+import { OK } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 
 import { getDefaultDateRange } from '../utility';
@@ -16,7 +17,7 @@ export const fetchConfig = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const response = await api.get(endpoints.common.config);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -29,7 +30,7 @@ export const fetchOrganisations = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const response = await api.get(endpoints.common.organizations);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -42,7 +43,7 @@ export const fetchRoles = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const response = await api.get(endpoints.common.roles);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -55,7 +56,7 @@ export const fetchTeams = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const response = await api.get(endpoints.common.teams);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -68,7 +69,7 @@ export const fetchAois = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const response = await api.get(endpoints.aoi.getAll);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -81,7 +82,7 @@ export const fetchTweets = createAsyncThunk(
   async (params, { rejectWithValue }) => {
     const response = await api.get(endpoints.dashboard.getInSitu, params);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 

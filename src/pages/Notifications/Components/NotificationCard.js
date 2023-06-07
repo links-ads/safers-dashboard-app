@@ -15,31 +15,44 @@ const BADGETYPES = {
   },
 };
 
-const NotificatonCard = ({ card }) => {
+const getBadge = (notification, badgeType) => (
+  <Badge
+    className={`me-1 rounded-pill notification-badge ${badgeType.style} py-0 px-2 pb-0 mb-0`}
+  >
+    <span>{notification[badgeType.attr]}</span>
+  </Badge>
+);
+
+const NotificatonCard = ({
+  notification,
+  selectedNotification,
+  setSelectedNotification,
+}) => {
   const { t } = useTranslation();
 
-  const getBadge = badgeType => {
-    return (
-      <Badge
-        className={`me-1 rounded-pill notification-badge ${badgeType.style}  py-0 px-2 pb-0 mb-0`}
-      >
-        <span>{card[badgeType.attr]}</span>
-      </Badge>
-    );
-  };
+  const isSelected = notification.id === selectedNotification?.id;
 
   return (
-    <Card className={'notifications-card mb-2 '}>
+    <Card
+      className={`notifications-card mb-2 ${
+        isSelected ? 'alert-card-active' : ''
+      }`}
+      onClick={() => setSelectedNotification(notification)}
+    >
       <CardBody className="px-0 py-1 my-2">
         <Row>
           <Col className="ms-4">
             <Row>
               <Col>
                 <CardText className="mb-2">
-                  {card?.type ? getBadge(BADGETYPES.TYPE) : null}
-                  {card?.status ? getBadge(BADGETYPES.STATUS) : null}
-                  {card?.scopeRestriction
-                    ? getBadge(BADGETYPES.SCOPE_RESTRICTION)
+                  {notification?.type
+                    ? getBadge(notification, BADGETYPES.TYPE)
+                    : null}
+                  {notification?.status
+                    ? getBadge(notification, BADGETYPES.STATUS)
+                    : null}
+                  {notification?.scopeRestriction
+                    ? getBadge(notification, BADGETYPES.SCOPE_RESTRICTION)
                     : null}
                 </CardText>
               </Col>
@@ -47,23 +60,25 @@ const NotificatonCard = ({ card }) => {
             <Row>
               <Col>
                 <Row>
-                  <CardText className="card-desc">{card?.description}</CardText>
+                  <CardText className="card-desc">
+                    {notification?.description}
+                  </CardText>
                 </Row>
                 <Row>
                   <CardText className="card-desc text-capitalize">
-                    {t('location')}: {card?.country}
+                    {t('location')}: {notification?.country}
                   </CardText>
                 </Row>
                 <Row className="mt-2">
                   <Col className="">
                     <span className="text-muted card-desc">
-                      {formatDate(card.timestamp)}
+                      {formatDate(notification.timestamp)}
                     </span>
                   </Col>
                   <Col>
                     <CardText className="bg-danger">
                       <span className="float-end notification-source-text me-2 text-uppercase">
-                        {card.source}
+                        {notification.source}
                       </span>
                     </CardText>
                   </Col>
@@ -78,10 +93,9 @@ const NotificatonCard = ({ card }) => {
 };
 
 NotificatonCard.propTypes = {
-  card: PropTypes.any,
-  alertId: PropTypes.string,
-  setSelectedAlert: PropTypes.func,
-  setFavorite: PropTypes.func,
+  notification: PropTypes.any,
+  setSelectedNotification: PropTypes.func,
+  selectedNotification: PropTypes.object,
 };
 
 export default NotificatonCard;
