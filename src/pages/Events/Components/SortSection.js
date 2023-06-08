@@ -20,8 +20,8 @@ const SortSection = ({
 }) => {
   const alerts = useSelector(allEventsSelector);
 
-  const ongoing = alerts.filter(alert => alert.status === 'ONGOING').length;
-  const closed = alerts.filter(alert => alert.status === 'CLOSED').length;
+  const ongoing = alerts.filter(alert => alert.status === 'Ongoing').length;
+  const closed = alerts.filter(alert => alert.status === 'Closed').length;
   const dispatch = useDispatch();
 
   const handleChecked = value => {
@@ -58,7 +58,7 @@ const SortSection = ({
             data-testid="onGoing"
             name="status"
             type="checkbox"
-            value="ONGOING"
+            value="Ongoing"
             onChange={e => handleChecked(e.target.value)}
           />
           <Label check for="onGoing">
@@ -71,7 +71,7 @@ const SortSection = ({
             data-testid="closedEvents"
             name="status"
             type="checkbox"
-            value="CLOSED"
+            value="Closed"
             onChange={e => handleChecked(e.target.value)}
           />
           <Label check for="closedEvents">
