@@ -6,6 +6,7 @@ import {
 import queryString from 'query-string';
 
 import * as api from 'api/base';
+import { OK, CREATED } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { setLoading } from 'store/common.slice';
 
@@ -29,7 +30,7 @@ export const fetchAlerts = createAsyncThunk(
       dispatch(setLoading({ status: false }));
     }
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         data: response.data,
         fromPage,
@@ -45,7 +46,7 @@ export const fetchAlertSource = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const response = await api.get(endpoints.fireAlerts.source);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -61,7 +62,7 @@ export const setAlertFavorite = createAsyncThunk(
       { is_favorite: isFavorite },
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return {
         msg: `Successfully ${
           isFavorite ? 'added to' : 'removed from'
@@ -81,7 +82,7 @@ export const validateAlert = createAsyncThunk(
       { type: 'VALIDATED' },
     );
 
-    if (response.status === 200 || response.status === 201) {
+    if (response.status === OK || response.status === CREATED) {
       return response.data['detail'];
     }
 
@@ -98,7 +99,7 @@ export const editAlertInfo = createAsyncThunk(
       { information: editInfo },
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return 'Successfully updated the information';
     }
 

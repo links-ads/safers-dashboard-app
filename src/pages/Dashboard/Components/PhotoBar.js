@@ -96,7 +96,9 @@ const PhotoBar = ({ t }) => {
             return (
               <div key={photo.id} className="p-3 my-3 ml-3">
                 <img
-                  src={photo.url}
+                  src={
+                    photo.thumbnail_url ?? photo.media_url ?? photo.remote_url
+                  }
                   width="100%"
                   height="120px"
                   alt={`Camera ${photo.camera_id}`}

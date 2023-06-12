@@ -15,6 +15,8 @@ const NotificationsList = ({
   setPaginatedNotifications,
   currentPage,
   setCurrentPage,
+  setSelectedNotification,
+  selectedNotification,
 }) => {
   const updatePage = page => {
     setCurrentPage(page);
@@ -28,8 +30,13 @@ const NotificationsList = ({
   return (
     <>
       <Row>
-        {paginatedNotifications.map(alert => (
-          <NotificatonCard key={alert.id} card={alert} />
+        {paginatedNotifications.map(notification => (
+          <NotificatonCard
+            key={notification.id}
+            notification={notification}
+            selectedNotification={selectedNotification}
+            setSelectedNotification={setSelectedNotification}
+          />
         ))}
       </Row>
 
@@ -51,6 +58,8 @@ NotificationsList.propTypes = {
   setPaginatedNotifications: PropTypes.func,
   currentPage: PropTypes.number,
   setCurrentPage: PropTypes.func,
+  setSelectedNotification: PropTypes.func,
+  selectedNotification: PropTypes.object,
 };
 
 export default NotificationsList;

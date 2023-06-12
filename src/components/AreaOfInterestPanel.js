@@ -8,11 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Input, Row, Col, FormGroup, Label } from 'reactstrap';
 import toastr from 'toastr';
 
-import { userSelector } from 'store/authentication.slice';
 import { fetchAois, aoisSelector } from 'store/common.slice';
 import {
   setUserDefaultAoi,
   defaultAoiSelector,
+  userInfoSelector,
   setAoiSuccessMessageSelector,
 } from 'store/user.slice';
 
@@ -20,14 +20,12 @@ import BaseMap from './BaseMap/BaseMap';
 
 import 'toastr/build/toastr.min.css';
 
-//i18n
+toastr.options = {
+  preventDuplicates: true,
+};
 
 const AreaOfInterestPanel = ({ t }) => {
-  toastr.options = {
-    preventDuplicates: true,
-  };
-  const user = useSelector(userSelector);
-  const uid = user?.id;
+  const user = useSelector(userInfoSelector);
   const allAoi = useSelector(aoisSelector);
   const aoiSetSuccess = useSelector(setAoiSuccessMessageSelector);
   const defaultAoi = useSelector(defaultAoiSelector);
@@ -56,9 +54,13 @@ const AreaOfInterestPanel = ({ t }) => {
     }
   }, [aoiSetSuccess, t]);
 
-  const handleSubmit = () => {
-    dispatch(setUserDefaultAoi({ uid, aoi: selectedAoi }));
-  };
+  const handleSubmit = () =>
+    dispatch(
+      setUserDefaultAoi({
+        ...user,
+        default_aoi: selectedAoi,
+      }),
+    );
 
   const setMap = defaultAoi => {
     setSelectedAoi(defaultAoi);

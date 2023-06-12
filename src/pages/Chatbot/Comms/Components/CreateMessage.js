@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
 import { Formik } from 'formik';
-import _ from 'lodash';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
@@ -38,9 +37,10 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
     scope: Yup.string().required(t('field-empty-err', { ns: 'common' })),
     restriction: Yup.string().when('scope', {
       is: 'Restricted',
-      then: Yup.string().required(
-        t('Restriction needed if scope is restricted', { ns: 'common' }),
-      ),
+      then: schema =>
+        schema.required(
+          t('Restriction needed if scope is restricted', { ns: 'common' }),
+        ),
     }),
     description: Yup.string().required(t('field-empty-err', { ns: 'common' })),
   });
@@ -52,7 +52,7 @@ const CreateMessage = ({ coordinates, onCancel, setCoordinates }) => {
 
   useEffect(() => {
     if (orgList.length && user?.organization) {
-      const organization = _.find(orgList, { id: user.organization });
+      const organization = orgList.find(org => org.name === user.organization);
       setorgName(organization.name.split('-')[0]);
     }
   }, [orgList, user]);

@@ -3,12 +3,13 @@ import {
   createSlice,
   createSelector,
 } from '@reduxjs/toolkit';
-import lodash from 'lodash';
 import storage from 'redux-persist/lib/storage/session';
 
 import * as api from 'api/base';
+import { OK, CREATED } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { setLoading } from 'store/common.slice';
+import { setUserInfo } from 'store/user.slice';
 
 import {
   AUTH_BASE_URL,
@@ -22,83 +23,50 @@ import { setSession, deleteSession, getSession } from '../helpers/authHelper';
 const name = 'auth';
 
 const setSessionData = (
-  token,
-  refreshToken,
-  user,
+  access_token,
+  refresh_token,
+  user_id,
   rememberMe = false,
   isSSOsession = false,
 ) => {
   const sessionData = {
-    access_token: token,
-    refresh_token: refreshToken,
-    userId: user.id,
+    access_token,
+    refresh_token,
+    userId: user_id,
     isSSOsession,
   };
   setSession(sessionData, rememberMe);
 };
 
-export const signInOauth2 = createAsyncThunk(
-  `${name}/signInOauth2`,
+export const authenticateOauth2 = createAsyncThunk(
+  `${name}/authenticateOauth2`,
   async (authCode, { dispatch, rejectWithValue }) => {
-    const response = await api.post(endpoints.authentication.oAuth2SignIn, {
-      code: authCode,
-    });
+    const response = await api.post(
+      endpoints.authentication.oAuth2Authenticate,
+      {
+        code: authCode,
+      },
+    );
 
     dispatch(setLoading({ status: false }));
 
-    if (response.status === 200) {
-      const { access_token, user } = response.data;
-      setSessionData(access_token, null, user, false, true);
+    if (response.status === OK || response.status === CREATED) {
+      const { access_token, refresh_token, expires_in, user_id } =
+        response.data;
+      setSessionData(access_token, refresh_token, user_id, false, true);
 
-      return user;
+      const userResponse = await api.get(`${endpoints.user.profile}${user_id}`);
+      if (userResponse.status === OK) {
+        const user = userResponse.data;
+        dispatch(setUserInfo(user));
+      }
+      return {
+        user_id,
+        expires_in,
+      };
     }
 
     return rejectWithValue({ error: response.data.detail });
-  },
-);
-
-export const signIn = createAsyncThunk(
-  `${name}/signIn`,
-  async ({ email, password, rememberMe }, { dispatch, rejectWithValue }) => {
-    dispatch(setLoading({ status: true, message: 'Please wait...' }));
-
-    const response = await api.post(endpoints.authentication.signIn, {
-      email,
-      password,
-    });
-
-    dispatch(setLoading({ status: false }));
-
-    if (response.status === 200) {
-      const { access_token, refresh_token, user } = response.data;
-      setSessionData(access_token, refresh_token, user, rememberMe);
-
-      return user;
-    }
-
-    return rejectWithValue({ error: response.data });
-  },
-);
-
-export const isUserRembembered = createAsyncThunk(
-  `${name}/isUserRembembered`,
-  async (_, { rejectWithValue }) => {
-    const session = getSession();
-
-    if (session && !lodash.isEmpty(session)) {
-      const response = await api.post(endpoints.authentication.refreshToken, {
-        refresh: session.refresh_token,
-      });
-
-      if (response.status === 200) {
-        const newSession = { ...session, access_token: response.data.access };
-        setSession(newSession, true);
-
-        return newSession.user;
-      }
-
-      return rejectWithValue({ error: response.data });
-    }
   },
 );
 
@@ -106,27 +74,12 @@ export const signUpOauth2 = createAsyncThunk(
   `${name}/signUpOauth2`,
   async (userInfo, { rejectWithValue }) => {
     const response = await api.post(
-      endpoints.authentication.oAuth2SignUp,
+      endpoints.authentication.oAuth2Register,
       userInfo,
     );
 
-    if (response.status === 200) {
-      return response.data;
-    }
-
-    return rejectWithValue({ error: response.data });
-  },
-);
-
-export const signUp = createAsyncThunk(
-  `${name}/signUp`,
-  async (userInfo, { rejectWithValue }) => {
-    const response = await api.post(endpoints.authentication.signUp, userInfo);
-
-    if (response.status === 200) {
-      const { access_token, user } = response.data;
-      setSessionData(access_token, null, user);
-
+    if (response.status === CREATED) {
+      window.location = `${CLIENT_BASE_URL}/auth/sign-in`;
       return response.data;
     }
 
@@ -142,7 +95,7 @@ export const resetForgottenUserPasswordRequest = createAsyncThunk(
       email,
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -157,7 +110,7 @@ export const resetPassword = createAsyncThunk(
       ...data,
     });
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -165,7 +118,7 @@ export const resetPassword = createAsyncThunk(
   },
 );
 
-const redirectAfterSignOut = () => {
+export const redirectAfterSignOut = () => {
   const params = {
     client_id: AUTH_CLIENT_ID,
     tenant_id: AUTH_TENANT_ID,
@@ -180,9 +133,9 @@ export const signOut = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     const session = getSession();
 
-    const response = await api.post(endpoints.authentication.signOut);
+    const response = await api.post(endpoints.authentication.oAuth2Logout);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       deleteSession();
       storage.removeItem('persist:root');
 
@@ -200,12 +153,20 @@ export const signOut = createAsyncThunk(
 export const refreshOAuthToken = createAsyncThunk(
   `${name}/refreshOAuthToken`,
   async (_, { rejectWithValue }) => {
-    const response = await api.post(
-      endpoints.authentication.oAuth2RefreshToken,
-    );
+    const session = getSession();
 
-    if (response.status === 200) {
-      return response.data;
+    const response = await api.post(endpoints.authentication.oAuth2Refresh, {
+      refresh_token: session.refresh_token,
+    });
+
+    if (response.status === OK) {
+      const { access_token, refresh_token, expires_in, user_id } =
+        response.data;
+      setSessionData(access_token, refresh_token, user_id, false, true);
+
+      return {
+        expires_in,
+      };
     }
 
     return rejectWithValue({ error: response.data });
@@ -213,7 +174,7 @@ export const refreshOAuthToken = createAsyncThunk(
 );
 
 export const initialState = {
-  user: {},
+  userId: null,
   signUpOauth2Success: false,
   isLoggedIn: false,
   error: false,
@@ -236,39 +197,13 @@ const authenticationSlice = createSlice({
   },
   extraReducers: builder => {
     builder
-      .addCase(signInOauth2.fulfilled, (state, { payload }) => {
-        state.user = payload;
-        state.tokenExpiresIn = payload.oauth2
-          ? payload.oauth2.expires_in
-          : null;
+      .addCase(authenticateOauth2.fulfilled, (state, { payload }) => {
+        state.userId = payload.user_id;
+        state.tokenExpiresIn = payload.expires_in;
         state.isLoggedIn = true;
         state.error = false;
       })
-      .addCase(signInOauth2.rejected, (state, { payload }) => {
-        state.errorSignIn = payload.error;
-        state.error = true;
-      })
-      .addCase(signIn.fulfilled, (state, { payload }) => {
-        state.user = payload;
-        state.tokenExpiresIn = payload.oauth2
-          ? payload.oauth2.expires_in
-          : null;
-        state.isLoggedIn = true;
-        state.error = false;
-      })
-      .addCase(signIn.rejected, (state, { payload }) => {
-        state.errorSignIn = payload.error;
-        state.error = true;
-      })
-      .addCase(isUserRembembered.fulfilled, (state, { payload }) => {
-        state.user = payload ? payload : {};
-        state.tokenExpiresIn = payload.oauth2
-          ? payload.oauth2.expires_in
-          : null;
-        state.isLoggedIn = true;
-        state.error = false;
-      })
-      .addCase(isUserRembembered.rejected, (state, { payload }) => {
+      .addCase(authenticateOauth2.rejected, (state, { payload }) => {
         state.errorSignIn = payload.error;
         state.error = true;
       })
@@ -279,12 +214,6 @@ const authenticationSlice = createSlice({
       })
       .addCase(signUpOauth2.rejected, (state, { payload }) => {
         state.signUpOauth2Success = false;
-        state.error = payload.error;
-      })
-      .addCase(signUp.fulfilled, state => {
-        state.error = false;
-      })
-      .addCase(signUp.rejected, (state, { payload }) => {
         state.error = payload.error;
       })
       .addCase(
@@ -327,8 +256,6 @@ const authenticationSlice = createSlice({
 export const { signOutSuccess } = authenticationSlice.actions;
 
 const baseSelector = state => state?.auth;
-
-export const userSelector = createSelector(baseSelector, auth => auth?.user);
 
 export const tokenLastUpdatedSelector = createSelector(
   baseSelector,

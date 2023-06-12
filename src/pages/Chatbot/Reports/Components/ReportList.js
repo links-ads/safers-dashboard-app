@@ -37,7 +37,7 @@ const ReportList = ({ reportId, setReportId }) => {
     if (id) {
       setReportId(id);
       let copyReportList = _.cloneDeep(reportList);
-      let selectedReport = _.find(copyReportList, { id });
+      let selectedReport = copyReportList.find(report => report.id === id);
       selectedReport.isSelected = true;
       setViewState(getViewState(selectedReport.location, viewState.zoom));
     } else {

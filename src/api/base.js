@@ -1,6 +1,7 @@
 import axios from 'axios';
 import storage from 'redux-persist/lib/storage/session';
 
+import { OK, UNAUTHORIZED, INTERNAL_SERVER_ERROR } from 'api/constants';
 import { signOutSuccess } from 'store/authentication.slice';
 import { setLoading } from 'store/common.slice';
 
@@ -30,7 +31,11 @@ export const setupInterceptors = store => {
     async config => {
       const isPermitted = isWhitelisted(config.url);
       if (!isPermitted || (isPermitted && config.method === 'post')) {
-        store.dispatch(setLoading({ status: true, message: 'Please wait..' }));
+        if (config.url !== endpoints.authentication.oAuth2Refresh) {
+          store.dispatch(
+            setLoading({ status: true, message: 'Please wait..' }),
+          );
+        }
       }
 
       const session = getSession();
@@ -98,13 +103,13 @@ export async function del(url, config = {}) {
 const handleError = (error, store) => {
   if (error.response) {
     switch (error.response.status) {
-      case 401:
+      case UNAUTHORIZED:
         deleteSession();
         storage.removeItem('persist:root');
         store.dispatch(signOutSuccess());
         window.location.href = '/auth/sign-in';
         return Promise.reject(error);
-      case 500:
+      case INTERNAL_SERVER_ERROR:
         window.location.href = '/pages-500';
         return Promise.reject(error);
 
@@ -117,7 +122,7 @@ const handleError = (error, store) => {
 };
 export function isSuccessResp(status) {
   //2xx Status Codes [Success]
-  if (status >= 200 && status <= 299) {
+  if (status >= OK && status <= 299) {
     return true;
   }
   return false;

@@ -8,6 +8,7 @@ import queryString from 'query-string';
 import toastr from 'toastr';
 
 import * as api from 'api/base';
+import { OK, CREATED, NO_CONTENT } from 'api/constants';
 import { endpoints } from 'api/endpoints';
 import { doesItOverlapAoi } from 'helpers/mapHelper';
 import { defaultAoiSelector } from 'store/user.slice';
@@ -23,7 +24,7 @@ export const fetchDataLayers = createAsyncThunk(
       endpoints.dataLayers.getAll.concat('?', queryString.stringify(options)),
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -36,7 +37,7 @@ export const fetchMetadata = createAsyncThunk(
   async (endpoint, { rejectWithValue }) => {
     const response = await api.get(endpoint);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -49,7 +50,7 @@ export const fetchFeatureInfo = createAsyncThunk(
   async (url, { rejectWithValue }) => {
     const response = await api.get(url);
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -65,7 +66,7 @@ export const fetchTimeSeriesInfo = createAsyncThunk(
     for (const [request_index, url] of options.entries()) {
       const response = await api.get(url);
 
-      if (response.status === 200) {
+      if (response.status === OK) {
         // Remove longitude / latitude and time entries in followup responses
         if (request_index > FIRST_REQUEST) {
           /*
@@ -103,7 +104,7 @@ export const postMapRequest = createAsyncThunk(
       mapRequest,
     );
 
-    if (response.status === 201) {
+    if (response.status === CREATED) {
       toastr.success(
         `Successfully create a map request called ${response?.data.title}`,
         response.data?.category_info?.group,
@@ -126,7 +127,7 @@ export const deleteMapRequest = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     const response = await api.del(`${endpoints.dataLayers.mapRequests}${id}`);
 
-    if (response.status === 204) {
+    if (response.status === NO_CONTENT) {
       toastr.success(
         `Successfully deleted map request ${id}`,
         'Delete Map Request',
@@ -145,7 +146,7 @@ export const deleteMapRequest = createAsyncThunk(
 
 export const fetchMapRequests = createAsyncThunk(
   `${name}/fetchMapRequests`,
-  async (options, { rejectWithValue }) => {
+  async ({ options }, { rejectWithValue }) => {
     const response = await api.get(
       endpoints.dataLayers.mapRequests.concat(
         '?',
@@ -153,7 +154,7 @@ export const fetchMapRequests = createAsyncThunk(
       ),
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
@@ -171,7 +172,7 @@ export const fetchFilteredMapRequests = createAsyncThunk(
       ),
     );
 
-    if (response.status === 200) {
+    if (response.status === OK) {
       return response.data;
     }
 
