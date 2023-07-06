@@ -199,7 +199,7 @@ const SidebarContent = props => {
               <Link to="/notifications">
                 <i className="bx bx-bell"></i>
                 <span className="text-capitalize">
-                  {props.t('Notifications')}
+                  {props.t('Recommendations')}
                 </span>
                 {isNewNotification && (
                   <span className="new-info-indicator float-end">
