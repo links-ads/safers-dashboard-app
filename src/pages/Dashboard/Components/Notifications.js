@@ -53,7 +53,7 @@ const NotificationsBar = ({
         <p className="align-self-baseline alert-title">
           {t('Area of Interest')} : {nameOfAOI}
         </p>
-        {config?.display_dashboard_notificatios ? (
+        {config?.display_dashboard_notifications ? (
           <>
             <Row xs={1} sm={2} md={3} lg={5}>
               <NotificationCard
