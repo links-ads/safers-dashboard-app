@@ -9,6 +9,7 @@ import SimpleBar from 'simplebar-react';
 
 import { SIGNIN_REDIRECT } from 'config';
 import { newItemsCountAlertSelector } from 'store/alerts.slice';
+import { configSelector } from 'store/common.slice';
 import {
   dataLayerNewItemsCountSelector,
   dataLayerIsNewAlertSelector,
@@ -28,6 +29,7 @@ import {
 // import { withRouter } from 'react-router-dom'
 
 const SidebarContent = props => {
+  const config = useSelector(configSelector);
   const newAlertsCount = useSelector(newItemsCountAlertSelector);
   const newEventsCount = useSelector(newEventCountSelector);
   const isNewNotification = useSelector(isNewNotificationSelector);
@@ -135,11 +137,12 @@ const SidebarContent = props => {
               <Link to="/dashboard">
                 <i className="bx bxs-home"></i>
                 <span className="text-capitalize">{props.t('Dashboard')}</span>
-                {getDashboardNotificationCount() > 0 && (
-                  <span className="new-info-indicator float-end">
-                    {getDashboardNotificationCount()}
-                  </span>
-                )}
+                {config?.display_menu_notifications &&
+                  getDashboardNotificationCount() > 0 && (
+                    <span className="new-info-indicator float-end">
+                      {getDashboardNotificationCount()}
+                    </span>
+                  )}
               </Link>
             </li>
             <li>
@@ -148,7 +151,7 @@ const SidebarContent = props => {
                 <span className="text-capitalize">
                   {props.t('fire-alerts')}
                 </span>
-                {newAlertsCount > 0 && (
+                {config?.display_menu_notifications && newAlertsCount > 0 && (
                   <span className="new-info-indicator float-end">
                     {newAlertsCount}
                   </span>
@@ -159,7 +162,7 @@ const SidebarContent = props => {
               <Link to="/event-alerts">
                 <i className="bx bxs-hot"></i>
                 <span className="text-capitalize">{props.t('Events')}</span>
-                {newEventsCount > 0 && (
+                {config?.display_menu_notifications && newEventsCount > 0 && (
                   <span className="new-info-indicator float-end">
                     {newEventsCount}
                   </span>
@@ -172,7 +175,9 @@ const SidebarContent = props => {
                 <span className="text-capitalize">
                   {props.t('Data Layers')}
                 </span>
-                {isNewMapRequestAlert && !isMapRequestPageActive ? (
+                {config?.display_menu_notifications &&
+                isNewMapRequestAlert &&
+                !isMapRequestPageActive ? (
                   <span className="new-info-indicator float-end">
                     {newMapRequestCount}
                   </span>
@@ -199,9 +204,9 @@ const SidebarContent = props => {
               <Link to="/notifications">
                 <i className="bx bx-bell"></i>
                 <span className="text-capitalize">
-                  {props.t('Notifications')}
+                  {props.t('Recommendations')}
                 </span>
-                {isNewNotification && (
+                {config?.display_menu_notifications && isNewNotification && (
                   <span className="new-info-indicator float-end">
                     {newNotificationsCount}
                   </span>

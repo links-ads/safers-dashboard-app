@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import { useSelector } from 'react-redux';
 import { Container, Row } from 'reactstrap';
 
+import { configSelector } from 'store/common.slice';
 import { defaultAoiSelector } from 'store/user.slice';
 
 import NotificationCard from './NotificationCard';
@@ -44,6 +45,7 @@ const NotificationsBar = ({
 }) => {
   const defaultAOI = useSelector(defaultAoiSelector);
   const nameOfAOI = defaultAOI?.features[0]?.properties?.name;
+  const config = useSelector(configSelector);
 
   return (
     <div className="mx-2 px-1">
@@ -51,88 +53,98 @@ const NotificationsBar = ({
         <p className="align-self-baseline alert-title">
           {t('Area of Interest')} : {nameOfAOI}
         </p>
-        <Row xs={1} sm={2} md={3} lg={5}>
-          <NotificationCard
-            cardName={t('fire-alerts')}
-            iconClass="bx bx-error-circle"
-            contentRenderer={() => (
-              <AreaCount
+        {config?.display_dashboard_notifications ? (
+          <>
+            <Row xs={1} sm={2} md={3} lg={5}>
+              <NotificationCard
+                cardName={t('fire-alerts')}
+                iconClass="bx bx-error-circle"
+                contentRenderer={() => (
+                  <AreaCount
+                    t={t}
+                    noDataMessage={t('No new activities', { ns: 'dashboard' })}
+                    label="act"
+                    itemsCounts={activityStatusCounts}
+                  />
+                )}
+                linkURL="/fire-alerts"
+                toggleLayer={() => toggleLayerCallback('alerts')}
+                isVisible={visibleLayers.alerts}
                 t={t}
-                noDataMessage={t('No new activities', { ns: 'dashboard' })}
-                label="act"
-                itemsCounts={activityStatusCounts}
               />
-            )}
-            linkURL="/fire-alerts"
-            toggleLayer={() => toggleLayerCallback('alerts')}
-            isVisible={visibleLayers.alerts}
-            t={t}
-          />
-          <NotificationCard
-            cardName={t('people')}
-            iconClass="fas fa-user-alt"
-            contentRenderer={() => (
-              <AreaCount
+              <NotificationCard
+                cardName={t('people')}
+                iconClass="fas fa-user-alt"
+                contentRenderer={() => (
+                  <AreaCount
+                    t={t}
+                    noDataMessage={t('No new people activity', {
+                      ns: 'dashboard',
+                    })}
+                    label="ppl"
+                    itemsCounts={peopleStatusCounts}
+                  />
+                )}
+                linkURL="/chatbot?tab=1"
+                toggleLayer={() => toggleLayerCallback('people')}
+                isVisible={visibleLayers.people}
                 t={t}
-                noDataMessage={t('No new people activity', { ns: 'dashboard' })}
-                label="ppl"
-                itemsCounts={peopleStatusCounts}
               />
-            )}
-            linkURL="/chatbot?tab=1"
-            toggleLayer={() => toggleLayerCallback('people')}
-            isVisible={visibleLayers.people}
-            t={t}
-          />
-          <NotificationCard
-            cardName={t('Reports')}
-            iconClass="fas fa-file-image"
-            contentRenderer={() => (
-              <AreaCount
+              <NotificationCard
+                cardName={t('Reports')}
+                iconClass="fas fa-file-image"
+                contentRenderer={() => (
+                  <AreaCount
+                    t={t}
+                    noDataMessage={t('No new reports', { ns: 'dashboard' })}
+                    label="reps"
+                    itemsCounts={reportStatusCounts}
+                  />
+                )}
+                linkURL="/chatbot?tab=4"
+                toggleLayer={() => toggleLayerCallback('reports')}
+                isVisible={visibleLayers.reports}
                 t={t}
-                noDataMessage={t('No new reports', { ns: 'dashboard' })}
-                label="reps"
-                itemsCounts={reportStatusCounts}
               />
-            )}
-            linkURL="/chatbot?tab=4"
-            toggleLayer={() => toggleLayerCallback('reports')}
-            isVisible={visibleLayers.reports}
-            t={t}
-          />
-          <NotificationCard
-            cardName={t('mission')}
-            iconClass="fas fa-flag-checkered"
-            contentRenderer={() => (
-              <AreaCount
+              <NotificationCard
+                cardName={t('mission')}
+                iconClass="fas fa-flag-checkered"
+                contentRenderer={() => (
+                  <AreaCount
+                    t={t}
+                    noDataMessage={t('No new missions', { ns: 'dashboard' })}
+                    label="miss"
+                    itemsCounts={missionStatusCounts}
+                  />
+                )}
+                linkURL="/chatbot?tab=3"
+                toggleLayer={() => toggleLayerCallback('missions')}
+                isVisible={visibleLayers.missions}
                 t={t}
-                noDataMessage={t('No new missions', { ns: 'dashboard' })}
-                label="miss"
-                itemsCounts={missionStatusCounts}
               />
-            )}
-            linkURL="/chatbot?tab=3"
-            toggleLayer={() => toggleLayerCallback('missions')}
-            isVisible={visibleLayers.missions}
-            t={t}
-          />
-          <NotificationCard
-            cardName={t('Communications')}
-            iconClass="fas fa-envelope"
-            contentRenderer={() => (
-              <AreaCount
+              <NotificationCard
+                cardName={t('Communications')}
+                iconClass="fas fa-envelope"
+                contentRenderer={() => (
+                  <AreaCount
+                    t={t}
+                    noDataMessage={t('No new communications', {
+                      ns: 'dashboard',
+                    })}
+                    label="Comms"
+                    itemsCounts={communicationStatusCounts}
+                  />
+                )}
+                linkURL="/chatbot?tab=2"
+                toggleLayer={() => toggleLayerCallback('communications')}
+                isVisible={visibleLayers.communications}
                 t={t}
-                noDataMessage={t('No new communications', { ns: 'dashboard' })}
-                label="Comms"
-                itemsCounts={communicationStatusCounts}
               />
-            )}
-            linkURL="/chatbot?tab=2"
-            toggleLayer={() => toggleLayerCallback('communications')}
-            isVisible={visibleLayers.communications}
-            t={t}
-          />
-        </Row>
+            </Row>
+          </>
+        ) : (
+          <></>
+        )}
       </Container>
     </div>
   );

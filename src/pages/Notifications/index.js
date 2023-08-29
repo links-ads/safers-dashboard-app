@@ -183,7 +183,7 @@ const Notifications = () => {
         <Row>
           <Col xl={12} className="d-flex justify-content-between">
             <p className="align-self-baseline alert-title">
-              {t('Notification List', { ns: 'common' })}
+              {t('Recommendation List', { ns: 'common' })}
             </p>
           </Col>
         </Row>
