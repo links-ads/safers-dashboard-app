@@ -115,7 +115,10 @@ const DataLayer = ({
       );
     }
 
-    const data = currentLayer?.urls[timestamp];
+    const data =
+      currentLayer?.urls && timestamp in currentLayer.urls
+        ? currentLayer.urls[timestamp]
+        : null;
 
     const layers = [
       new TiledRasterLayer({
