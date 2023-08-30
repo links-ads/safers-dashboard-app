@@ -20,6 +20,7 @@ import { dateRangeSelector } from 'store/common.slice';
 import {
   fetchCameras,
   fetchCameraSources,
+  fetchCameraTags,
   fetchCameraAlerts,
   resetCameraAlertsResponseState,
   setFilteredCameraAlerts,
@@ -52,6 +53,7 @@ const InSituAlerts = () => {
   const [iconLayer, setIconLayer] = useState(undefined);
   const [sortOrder, setSortOrder] = useState(undefined);
   const [inSituSource, setInSituSource] = useState(undefined);
+  const [cameraTag, setCameraTag] = useState(undefined);
   const [boundingBox, setBoundingBox] = useState(undefined);
   const [alertId, setAlertId] = useState(undefined);
   const [hoverInfo, setHoverInfo] = useState(undefined);
@@ -89,6 +91,10 @@ const InSituAlerts = () => {
   }, [dispatch]);
 
   useEffect(() => {
+    dispatch(fetchCameraTags());
+  }, [dispatch]);
+
+  useEffect(() => {
     dispatch(
       fetchCameras({
         camera_id: inSituSource,
@@ -103,21 +109,27 @@ const InSituAlerts = () => {
       ? { start_date: dateRange[0], end_date: dateRange[1] }
       : {};
 
+    let urlQueryParameters = {
+      type: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
+      order: sortOrder ? sortOrder : '-date',
+      camera_id: inSituSource,
+      bbox: boundingBox ? boundingBox.toString() : undefined,
+      default_date: false,
+      default_bbox: !boundingBox,
+      ...dateRangeParams,
+    };
+    if (cameraTag) {
+      /* only add a value for tags if one exists; an empty value will fail server validation */
+      urlQueryParameters['tags'] = cameraTag;
+    }
+
     setAlertId(undefined);
-    dispatch(
-      fetchCameraAlerts({
-        type: checkedStatus.length > 0 ? checkedStatus.toString() : undefined,
-        order: sortOrder ? sortOrder : '-date',
-        camera_id: inSituSource,
-        bbox: boundingBox ? boundingBox.toString() : undefined,
-        default_date: false,
-        default_bbox: !boundingBox,
-        ...dateRangeParams,
-      }),
-    );
+
+    dispatch(fetchCameraAlerts(urlQueryParameters));
   }, [
     sortOrder,
     inSituSource,
+    cameraTag,
     dateRange,
     boundingBox,
     checkedStatus,
@@ -220,9 +232,11 @@ const InSituAlerts = () => {
               sortOrder={sortOrder}
               checkedStatus={checkedStatus}
               inSituSource={inSituSource}
+              cameraTag={cameraTag}
               setSortOrder={setSortOrder}
               setCheckedStatus={setCheckedStatus}
               setInSituSource={setInSituSource}
+              setCameraTag={setCameraTag}
             />
             <Row>
               <Col xl={12} className="px-3">
