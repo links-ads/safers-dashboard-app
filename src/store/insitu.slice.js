@@ -40,6 +40,19 @@ export const fetchCameraSources = createAsyncThunk(
   },
 );
 
+export const fetchCameraTags = createAsyncThunk(
+  `${name}/fetchCameraTags`,
+  async (_, { rejectWithValue }) => {
+    const response = await api.get(endpoints.insitu.getTags);
+
+    if (response.status === OK) {
+      return response.data;
+    }
+
+    return rejectWithValue({ error: true });
+  },
+);
+
 export const fetchCameraDetail = createAsyncThunk(
   `${name}/fetchCameraDetail`,
   async (id, { rejectWithValue }) => {
@@ -165,6 +178,14 @@ const camerasSlice = createSlice({
       .addCase(fetchCameraSources.rejected, state => {
         state.error = true;
       })
+
+      .addCase(fetchCameraTags.fulfilled, (state, { payload }) => {
+        state.cameraTags = payload;
+        state.error = false;
+      })
+      .addCase(fetchCameraTags.rejected, state => {
+        state.error = true;
+      })
       .addCase(fetchCameraDetail.fulfilled, (state, { payload }) => {
         state.cameraInfo = payload;
         state.error = false;
@@ -229,6 +250,11 @@ export const paginatedCameraAlertsSelector = createSelector(
 export const cameraSourcesSelector = createSelector(
   baseSelector,
   inSituAlerts => inSituAlerts?.cameraSources,
+);
+
+export const cameraTagsSelector = createSelector(
+  baseSelector,
+  inSituAlerts => inSituAlerts?.cameraTags,
 );
 
 export const cameraAlertsSuccessSelector = createSelector(

@@ -9,21 +9,30 @@ import { Row, Col, Input } from 'reactstrap';
 import {
   filteredCameraAlertsSelector,
   cameraSourcesSelector,
+  cameraTagsSelector,
 } from 'store/insitu.slice';
 
 const SortSection = ({
   t,
   sortOrder,
   inSituSource,
+  cameraTag,
   setSortOrder,
   setInSituSource,
+  setCameraTag,
 }) => {
   const filteredAlerts = useSelector(filteredCameraAlertsSelector);
   const cameraSources = useSelector(cameraSourcesSelector);
+  const cameraTags = useSelector(cameraTagsSelector);
 
   const filterByAlertSource = inSituSource => {
     setInSituSource(inSituSource);
   };
+
+  const filterByCameraTag = cameraTag => {
+    setCameraTag(cameraTag);
+  };
+
   const filterByDate = sortOrder => {
     setSortOrder(sortOrder);
   };
@@ -58,6 +67,26 @@ const SortSection = ({
             </option>
           </Input>
         </Col>
+        <Col xl={3} className="my-1">
+          <Input
+            id="inSituTag"
+            className="btn-sm sort-select-input"
+            name="inSituTag"
+            type="select"
+            onChange={e => filterByCameraTag(e.target.value)}
+            value={cameraTag}
+          >
+            <option value="" key={''}>
+              {' '}
+              ------ {t('Tag')} : {t('Any')} -------
+            </option>
+            {cameraTags.map(camTag => (
+              <option key={camTag} value={camTag}>
+                {camTag}
+              </option>
+            ))}
+          </Input>
+        </Col>
         <Col xl={4} className="my-1">
           <Input
             id="inSituSource"
@@ -79,7 +108,7 @@ const SortSection = ({
             ))}
           </Input>
         </Col>
-        <Col xl={3}></Col>
+        <Col xl={1}></Col>
       </Row>
     </>
   );
@@ -88,9 +117,11 @@ const SortSection = ({
 SortSection.propTypes = {
   sortOrder: PropTypes.any,
   inSituSource: PropTypes.any,
+  cameraTag: PropTypes.any,
   checkedStatus: PropTypes.any,
   setSortOrder: PropTypes.func,
   setInSituSource: PropTypes.func,
+  setCameraTag: PropTypes.func,
   setCheckedStatus: PropTypes.func,
   t: PropTypes.func,
 };

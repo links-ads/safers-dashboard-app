@@ -53,6 +53,7 @@ export const endpoints = {
     getMedia: '/cameras/media/',
     setFavorite: '/cameras/media/:media_id/favorite/',
     getSources: '/cameras/media/sources',
+    getTags: '/cameras/media/tags',
   },
   chatbot: {
     reports: {
