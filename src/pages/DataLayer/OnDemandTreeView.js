@@ -122,8 +122,13 @@ const OnDemandTreeView = ({
               isParentOfSelected(node.key) ? `alert-card-active selected` : ''
             } mb-2`}
             onClick={() => {
+              let isSameNode = false;
               setSelectedNode(node);
-              setCurrentLayer(oldLayer => {
+              const selectedLayer = setCurrentLayer(oldLayer => {
+                if (oldLayer?.key === node?.key) {
+                  isSameNode = true;
+                }
+
                 if (oldLayer) {
                   resetMap();
                 } else {
@@ -152,9 +157,13 @@ const OnDemandTreeView = ({
                 }
               });
 
+              /* if there are child nodes then expand them */
+              /* if this is a leaf node, then toggle the layer */
               return node.children
                 ? toggleExpandCollapse(id)
-                : setSelectedLayer(node);
+                : isSameNode
+                ? setSelectedNode(null) // unselect node will force corresponding layer to be unselected
+                : setSelectedLayer(node); // node is already selected; select corresponding layer
             }}
             onMouseEnter={async () => {
               setTooltipInfo(undefined);
