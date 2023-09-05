@@ -51,11 +51,12 @@ const TreeView = ({ data, setCurrentLayer, resetMap }) => {
       if (selectedLayer?.id === id) {
         resetMap();
         setSelectedLayer({});
+        setSelNode(null);
       } else {
         setSelectedLayer(node);
+        setSelNode(node);
       }
     }
-    setSelNode(node);
   };
 
   const toggleMetaInfo = metaURL => {
