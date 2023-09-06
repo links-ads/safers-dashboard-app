@@ -80,11 +80,12 @@ const SortSection = ({
               {' '}
               ------ {t('Tag')} : {t('Any')} -------
             </option>
-            {cameraTags.map(camTag => (
-              <option key={camTag} value={camTag}>
-                {camTag}
-              </option>
-            ))}
+            {cameraTags &&
+              cameraTags.map(camTag => (
+                <option key={camTag} value={camTag}>
+                  {camTag}
+                </option>
+              ))}
           </Input>
         </Col>
         <Col xl={4} className="my-1">
@@ -101,11 +102,12 @@ const SortSection = ({
               {' '}
               ---------- {t('Source')} : {t('All')} -----------
             </option>
-            {cameraSources.map(camSrc => (
-              <option key={camSrc} value={camSrc}>
-                {camSrc}
-              </option>
-            ))}
+            {cameraSources &&
+              cameraSources.map(camSrc => (
+                <option key={camSrc} value={camSrc}>
+                  {camSrc}
+                </option>
+              ))}
           </Input>
         </Col>
         <Col xl={1}></Col>
