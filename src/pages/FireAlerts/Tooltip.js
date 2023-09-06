@@ -78,26 +78,20 @@ const Tooltip = ({
             </CardSubtitle>
           </Col>
         </Row>
-        {object.media && object.media.length > 0 && (
+
+        {object.media_urls && object.media_urls.length > 0 && (
           <Row className="no-gutters mx-0 text-center">
-            {object.media[0] && (
-              <Col className="px-1">
+            {object.media_urls.map((media_url, i) => (
+              <Col className="px-1" key={i}>
                 <CardImg
-                  className="img-fluid tooltip-img"
-                  src={object.media[0]}
+                  className="img-fluid tooltipimg"
                   alt=""
+                  src={
+                    media_url.thumbnail ? media_url.thumbnail : media_url.image
+                  }
                 />
               </Col>
-            )}
-            {object.media[1] && (
-              <Col className="px-1">
-                <CardImg
-                  className="img-fluid tooltip-img"
-                  src={object.media[1]}
-                  alt=""
-                />
-              </Col>
-            )}
+            ))}
           </Row>
         )}
         <Row className="mt-3 px-1 g-0">
