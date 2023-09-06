@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 
 import PropTypes from 'prop-types';
 import { withTranslation } from 'react-i18next';
+import Lightbox from 'react-image-lightbox';
 import { Popup } from 'react-map-gl';
 import {
   Button,
@@ -17,6 +18,8 @@ import {
 } from 'reactstrap';
 
 import { formatDate } from 'utility';
+
+import 'react-image-lightbox/style.css';
 
 //i18n
 
@@ -34,6 +37,7 @@ const Tooltip = ({
   const [editToggle, setEditToggle] = useState(isEdit);
   const [favToggle, setFavToggle] = useState(object.favorite);
   const [information, setInformation] = useState(object.information);
+  const [isLightboxOpen, setIsLightboxOpen] = useState(false);
 
   useEffect(() => {
     setEditToggle(isEdit);
@@ -82,15 +86,23 @@ const Tooltip = ({
         {object.media_urls && object.media_urls.length > 0 && (
           <Row className="no-gutters mx-0 text-center">
             {object.media_urls.map((media_url, i) => (
-              <Col className="px-1" key={i}>
-                <CardImg
-                  className="img-fluid tooltipimg"
-                  alt=""
-                  src={
-                    media_url.thumbnail ? media_url.thumbnail : media_url.image
-                  }
-                />
-              </Col>
+              <>
+                <Col className="px-1" key={i}>
+                  <img
+                    className="img-fluid tooltipimg"
+                    alt=""
+                    src={media_url.thumbnail ?? media_url.image}
+                    onClick={() => setIsLightboxOpen(true)}
+                  />
+                </Col>
+                {isLightboxOpen && (
+                  <Lightbox
+                    mainSrc={media_url.image}
+                    enableZoom={true}
+                    onCloseRequest={() => setIsLightboxOpen(false)}
+                  />
+                )}
+              </>
             ))}
           </Row>
         )}
